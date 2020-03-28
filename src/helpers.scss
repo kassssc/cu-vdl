@@ -1,0 +1,173 @@
+// Slightly lighten a color
+// @access public
+// @param {Color} $color - color to tint
+// @param {Number} $percentage - percentage of `$color` in returned color
+// @return {Color}
+@function tint($color, $percentage) {
+  @return mix(white, $color, $percentage);
+}
+
+// Slightly darken a color
+// @access public
+// @param {Color} $color - color to shade
+// @param {Number} $percentage - percentage of `$color` in returned color
+// @return {Color}
+@function shade($color, $percentage) {
+  @return mix(black, $color, $percentage);
+}
+
+.color-pink {
+  color: $chula !important;
+}
+.color-dark-grey {
+  color: $dark-grey !important;
+}
+
+.unselectable {
+  -webkit-touch-callout: none !important; /* iOS Safari */
+    -webkit-user-select: none !important; /* Safari */
+     -khtml-user-select: none !important; /* Konqueror HTML */
+       -moz-user-select: none !important; /* Firefox */
+        -ms-user-select: none !important; /* Internet Explorer/Edge */
+            user-select: none !important; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+.flex-column {
+  flex-direction: column !important;
+}
+.flex-wrap {
+  flex-wrap: wrap !important;
+}
+.justify-start {
+  justify-content: flex-start !important;
+}
+.justify-center {
+  justify-content: center !important;
+}
+.justify-between {
+  justify-content: space-between !important;
+}
+.justify-evenly {
+  justify-content: space-evenly !important;
+}
+.justify-around {
+  justify-content: space-around !important;
+}
+.justify-end {
+  justify-content: flex-end !important;
+}
+.align-center {
+  align-items: center !important;
+}
+.align-start {
+  align-items: flex-start !important;
+}
+.align-end {
+  align-items: flex-end !important;
+}
+.align-left {
+  align-self: flex-start;
+}
+
+.text-center {
+  text-align: center !important;
+}
+.text-left {
+  text-align: left !important;
+}
+.text-right {
+  text-align: right !important;
+}
+
+.no-wrap {
+  white-space: nowrap !important;
+}
+
+.full-width {
+  width: 100% !important;
+  max-width: 9999px !important;
+}
+.disable-hover {
+  pointer-events: none !important;
+}
+
+$fontWeights: (
+  ('light', 500),
+  ('regular', 600),
+  ('semibold', 700),
+  ('bold', 800),
+  ('heavy', 900),
+);
+
+$fontWeightKey: 'text-';
+@each $weight in $fontWeights {
+  $weightKey: nth($weight, 1);
+  $weightValue: nth($weight, 2);
+  .#{$fontWeightKey}#{$weightKey} {
+    font-weight: $weightValue !important;
+  }
+}
+
+$sizeUnit: rem;
+$marginKey: 'm';
+$paddingKey: 'p';
+$separator: '-';
+$sizes: (
+  ('none', 0),
+  ('xxs', 0.125),
+  ('xs', 0.25),
+  ('sm', 0.5),
+  ('md', 1),
+  ('lg', 2),
+  ('xl', 3),
+  ('xxl', 4),
+  ('xxxl', 8),
+);
+$positions: (
+  ('t', 'top'),
+  ('r', 'right'),
+  ('b', 'bottom'),
+  ('l', 'left'),
+);
+
+
+@function sizeValue($key, $value) {
+    @return if($key == 'none', 0, $value + $sizeUnit);
+}
+
+@each $size in $sizes {
+  $sizeKey: nth($size, 1);
+  $sizeValue: nth($size, 2);
+  .#{$marginKey}#{$separator}#{$sizeKey} {
+      margin: sizeValue($sizeKey, $sizeValue) !important;
+  }
+  .#{$paddingKey}#{$separator}#{$sizeKey} {
+      padding: sizeValue($sizeKey, $sizeValue) !important;
+  }
+  @each $position in $positions {
+      $posKey: nth($position, 1);
+      $posValue: nth($position, 2);
+      .#{$marginKey}#{$separator}#{$posKey}#{$separator}#{$sizeKey} {
+          margin-#{$posValue}: sizeValue($sizeKey, $sizeValue) !important;
+      }
+      .#{$paddingKey}#{$separator}#{$posKey}#{$separator}#{$sizeKey} {
+          padding-#{$posValue}: sizeValue($sizeKey, $sizeValue) !important;
+      }
+  }
+  .#{$marginKey}#{$separator}x#{$separator}#{$sizeKey} {
+    margin-left: sizeValue($sizeKey, $sizeValue) !important;
+    margin-right: sizeValue($sizeKey, $sizeValue) !important;
+  }
+  .#{$marginKey}#{$separator}y#{$separator}#{$sizeKey} {
+    margin-top: sizeValue($sizeKey, $sizeValue) !important;
+    margin-bottom: sizeValue($sizeKey, $sizeValue) !important;
+  }
+  .#{$paddingKey}#{$separator}x#{$separator}#{$sizeKey} {
+    padding-left: sizeValue($sizeKey, $sizeValue) !important;
+    padding-right: sizeValue($sizeKey, $sizeValue) !important;
+  }
+  .#{$paddingKey}#{$separator}y#{$separator}#{$sizeKey} {
+    padding-top: sizeValue($sizeKey, $sizeValue) !important;
+    padding-bottom: sizeValue($sizeKey, $sizeValue) !important;
+  }
+}

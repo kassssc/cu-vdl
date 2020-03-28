@@ -1,18 +1,34 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<div class="page-container">
+  <titlebar />
+  <router-view />
+</div>
 </template>
 
+<style scoped lang="scss">
+.page-container {
+  margin-top: 95px;
+  padding: 0 30px;
+  width: 100%;
+  max-width: 2000px;
+}
+</style>
+
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { mapGetters } from 'vuex'
+
+import Titlebar from '@/components/Titlebar.vue'
 
 export default {
-  name: 'Home',
+  name: 'home',
   components: {
-    HelloWorld
-  }
+    'titlebar': Titlebar,
+  },
+  computed: {
+    ...mapGetters([
+      'lang',
+      'intro',
+    ])
+  },
 }
 </script>

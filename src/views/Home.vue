@@ -1,34 +1,30 @@
 <template>
-<div class="page-container">
-  <titlebar />
-  <router-view />
-</div>
+<div class="page max-width-1500">
+  <div class="max-width-800 mt-3 mb-5">
+    <h1 class="mb-3 mt-2 pb-1 border-bottom-pink">
+      {{ $t(`home.title`) }}
+    </h1>
+    <h4 class="font-chatthai intro-text easy-to-read">
+      {{ $t(`home.details`) }}
+    </h4>
+  </div>
+  <services-section />
+  <org-chart-section />
+  <contact-section />
+</div>  
 </template>
 
-<style scoped lang="scss">
-.page-container {
-  margin-top: 95px;
-  padding: 0 30px;
-  width: 100%;
-  max-width: 2000px;
-}
-</style>
-
 <script>
-import { mapGetters } from 'vuex'
-
-import Titlebar from '@/components/Titlebar.vue'
+import Services from '@/components/Services'
+import OrgChart from '@/components/OrgChart'
+import Contact from '@/components/Contact'
 
 export default {
   name: 'home',
   components: {
-    'titlebar': Titlebar,
-  },
-  computed: {
-    ...mapGetters([
-      'lang',
-      'intro',
-    ])
-  },
+    'services-section': Services,
+    'org-chart-section': OrgChart,
+    'contact-section': Contact
+  }
 }
 </script>

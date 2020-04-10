@@ -4,18 +4,21 @@ import router from './router'
 import store from './store'
 import i18n from './lang'
 
-import 'bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import VueScrollactive from 'vue-scrollactive'
+import VueScrollTo from 'vue-scrollto'
+import Datepicker from 'vuejs-datepicker'
 
 import Checkbox from '@/util/Checkbox.vue'
-
+import FormInlineSelect from '@/util/FormInlineSelect.vue'
 
 Vue.config.productionTip = false
 
-Vue.use(BootstrapVue)
-Vue.use(IconsPlugin)
+Vue.use(VueScrollactive)
+Vue.use(VueScrollTo)
+
+Vue.component('checkbox', Checkbox)
+Vue.component('datepicker', Datepicker)
+Vue.component('form-inline-select', FormInlineSelect)
 
 Vue.mixin({
   methods: {
@@ -24,22 +27,6 @@ Vue.mixin({
     },
   }
 })
-
-Vue.directive('click-outside', {
-  bind () {
-    this.event = event => this.vm.$emit(this.expression, event)
-    this.el.addEventListener('click', this.stopProp)
-    document.body.addEventListener('click', this.event)
-  },   
-  unbind() {
-    this.el.removeEventListener('click', this.stopProp)
-    document.body.removeEventListener('click', this.event)
-  },
-  
-  stopProp(event) { event.stopPropagation() }
-})
-
-Vue.component('checkbox', Checkbox)
 
 new Vue({
   router,

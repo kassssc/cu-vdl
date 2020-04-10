@@ -19,8 +19,8 @@
 .color-pink {
   color: $chula !important;
 }
-.color-dark-grey {
-  color: $dark-grey !important;
+.color-light-text {
+  color: $light-text !important;
 }
 
 .unselectable {
@@ -32,53 +32,6 @@
             user-select: none !important; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-.flex-column {
-  flex-direction: column !important;
-}
-.flex-wrap {
-  flex-wrap: wrap !important;
-}
-.justify-start {
-  justify-content: flex-start !important;
-}
-.justify-center {
-  justify-content: center !important;
-}
-.justify-between {
-  justify-content: space-between !important;
-}
-.justify-evenly {
-  justify-content: space-evenly !important;
-}
-.justify-around {
-  justify-content: space-around !important;
-}
-.justify-end {
-  justify-content: flex-end !important;
-}
-.align-center {
-  align-items: center !important;
-}
-.align-start {
-  align-items: flex-start !important;
-}
-.align-end {
-  align-items: flex-end !important;
-}
-.align-left {
-  align-self: flex-start;
-}
-
-.text-center {
-  text-align: center !important;
-}
-.text-left {
-  text-align: left !important;
-}
-.text-right {
-  text-align: right !important;
-}
-
 .no-wrap {
   white-space: nowrap !important;
 }
@@ -87,6 +40,7 @@
   width: 100% !important;
   max-width: 9999px !important;
 }
+
 .disable-hover {
   pointer-events: none !important;
 }

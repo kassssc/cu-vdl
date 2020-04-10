@@ -1,17 +1,19 @@
 <template>
-<div class="checkbox" @click="updateValue()">
-  <div class="box d-flex justify-content-center align-items-center"
-       :class="{'checked': value}">
-    <i v-if="value" class="fas fa-check"></i>
+<div class="checkbox"
+     @click="updateValue()">
+  <div class="box d-flex justify-content-center align-items-center my-1"
+       :class="{'checked': internalValue}">
+    <i class="fas fa-check" />
   </div>
-  <label class="form-label mb-0 ml-2">
+  <label class="ml-2"
+         :class="{'disabled': disabled}">
     {{ label }}
   </label>
   <input type="checkbox"
          ref="hiddenInput"
          :value="internalValue"
          v-model="internalValue"
-         @change="$emit('input', $event.target.value === 'true')"
+         @change="onChange()"
          class="hidden-input">
 </div>
 </template>
@@ -19,27 +21,39 @@
 <style lang="scss" scoped>
 .checkbox {
   display: flex;
-  align-items: center;
   cursor: pointer;
   .box {
-    width: 20px;
+    min-width: 20px;
     height: 20px;
     border-radius: 3px;
-    background: $grey;
+    background: $light-accent;
+    transition: all 100ms ease-in-out;
     i {
       font-size: 0.8em;
       color: $bg;
+      opacity: 0;
+      visibility: hidden;
     }
     &.checked {
       background: $chula;
+      i {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+  label {
+    cursor: pointer;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    @include unselectable;
+    &.disabled {
+      color: $muted;
     }
   }
 }
 .hidden-input {
   display: none;
-}
-label {
-  cursor: pointer;
 }
 </style>
 
@@ -48,20 +62,40 @@ export default {
   name: 'checkbox',
   props: {
     label: {
+      default: '',
       type: String
     },
     value: {
+      default: false,
+      type: Boolean
+    },
+    disabled: {
+      default: false,
       type: Boolean
     }
   },
   data () {
     return {
-      internalValue: undefined
+      internalValue: false
     }
   },
   methods: {
     updateValue () {
-      this.$refs.hiddenInput.click()
+      if (!this.disabled) {
+        this.$refs.hiddenInput.click()
+      }
+    },
+    onChange () {
+      this.$emit('input', this.internalValue)
+      this.$emit('change')
+    }
+  },
+  beforeMount () {
+    this.internalValue = this.value
+  },
+  watch: {
+    value (val) {
+      this.internalValue = val
     }
   }
 }

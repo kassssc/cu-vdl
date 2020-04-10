@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="mb-5 font-chatthai" >
     <div class="row">
       <div class="col mr-5">
         <form>
           <div class="form-group row">
             <div class="col-sm-2 col-form-label" />
             <div class="col-sm-10">
-              <h2 class="font-weight-bold">
+              <h2 class="mb-0">
                 {{ $t(`contact.title`) }}
               </h2>
             </div>
@@ -16,7 +16,7 @@
               {{ $t(`contact.form.to`) }}
             </label>
             <div class="col-sm-10">
-              <input type="text" class="form-control full-width">
+              <input type="text" class="form-control">
             </div>
           </div>
           <div class="form-group row">
@@ -24,7 +24,7 @@
               {{ $t(`contact.form.name`) }}
             </label>
             <div class="col-sm-10">
-              <input type="text" class="form-control full-width">
+              <input type="text" class="form-control">
             </div>
           </div>
           <div class="form-group row">
@@ -32,7 +32,7 @@
               {{ $t(`contact.form.company`) }}
             </label>
             <div class="col-sm-10">
-              <input type="text" class="form-control full-width">
+              <input type="text" class="form-control">
             </div>
           </div>
           <div class="form-group row">
@@ -40,7 +40,7 @@
               {{ $t(`contact.form.tel`) }}
             </label>
             <div class="col-sm-10">
-              <input type="text" class="form-control full-width">
+              <input type="text" class="form-control">
             </div>
           </div>
           <div class="form-group row">
@@ -48,7 +48,7 @@
               {{ $t(`contact.form.email`) }}
             </label>
             <div class="col-sm-10">
-              <input type="text" class="form-control full-width">
+              <input type="text" class="form-control">
             </div>
           </div>
           <div class="form-group row">
@@ -56,7 +56,7 @@
               {{ $t(`contact.form.subject`) }}
             </label>
             <div class="col-sm-10">
-              <input type="text" class="form-control full-width">
+              <input type="text" class="form-control">
             </div>
           </div>
           <div class="form-group row">
@@ -64,13 +64,13 @@
               {{ $t(`contact.form.details`) }}
             </label>
             <div class="col-sm-10">
-              <textarea class="form-control full-width" rows="10" />
+              <textarea class="form-control" rows="10" />
             </div>
           </div>
           <div class="form-group row">
             <div class="col-sm-2 col-form-label" />
             <div class="col-sm-10">
-              <button type="submit" class="custom pink lg">
+              <button type="submit" class="btn btn-primary btn-width-md">
                 {{ $t(`contact.form.send`) }}
               </button>
             </div>
@@ -78,9 +78,9 @@
         </form>
       </div>
       <div class="col">
-        <h3 class="mb-2 font-weight-bold">
+        <h2 class="mb-2">
           {{ $t(`contact.addr.title`)}}
-        </h3>
+        </h2>
         <h4 class="mb-4">
           {{ $t(`contact.addr.addr`) }}
         </h4>
@@ -98,24 +98,6 @@
 </template>
 
 <style scoped lang="scss">
-.field-label.is-normal {
-  max-width: 80px;
-  label {
-    font-size: 1.1rem;
-  }
-}
-input, textarea {
-  max-width: 500px;
-  width: 100%;
-}
-textarea {
-  resize: vertical;
-  min-height: 35px;
-}
-button {
-  width: 20%;
-  min-width: 80px;
-}
 </style>
 
 <script>

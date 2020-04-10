@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './views/Login'
+import MainContent from './views/MainContent.vue'
 import Home from './views/Home.vue'
-import About from './views/About.vue'
-import TrackSubmissions from './views/TrackSubmissions.vue'
+import Submissions from './views/Submissions.vue'
+import SubmissionsList from './views/SubmissionsList.vue'
+import ViewSubmission from './views/ViewSubmission.vue'
 import SubmitSamples from './views/SubmitSamples.vue'
+import SampleInfo from './views/SampleInfo.vue'
+import ReviewSubmission from './views/ReviewSubmission.vue'
 
 Vue.use(Router)
 
@@ -12,23 +16,44 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home,
+      component: MainContent,
       children :  [
         {
-          path: '/',
-          name: 'about',
-          component: About
+          path: '',
+          name: 'home',
+          component: Home
         },
         {
           path: '/tracksubmissions',
-          name: 'tracksubmissions',
-          component: TrackSubmissions
+          component: Submissions,
+          children: [
+            {
+              path: '',
+              name: 'submissionslist',
+              component: SubmissionsList
+            },
+            {
+              path: 'view/:id',
+              name: 'viewsubmission',
+              component: ViewSubmission
+            }
+          ]
         },
         {
           path: '/submitsamples',
-          name: 'submitsamples',
-          component: SubmitSamples
+          component: SubmitSamples,
+          children: [
+            {
+              path: '',
+              name: 'submitsamples',
+              component: SampleInfo
+            }, 
+            {
+              path: 'review',
+              name: 'reviewsubmission',
+              component: ReviewSubmission
+            }
+          ]
         }
       ]
     },
@@ -37,5 +62,10 @@ export default new Router({
       name: 'login',
       component: Login
     }
-  ]
+  ],
+  hash: false,
+  mode: 'history',
+  scrollBehavior () {
+    return { x: 0, y: 0 }
+  }
 })

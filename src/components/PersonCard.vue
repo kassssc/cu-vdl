@@ -3,9 +3,9 @@
   <div class="portrait"
        :style="{'background-image': gen_URL(img)}">
   </div>
-  <h6 class="name mb-0 font-weight-bold">
+  <h5 class="name mb-0 font-weight-bold">
     {{ name }}
-  </h6>
+  </h5>
 </div>
 </template>
 

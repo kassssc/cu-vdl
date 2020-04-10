@@ -16,7 +16,11 @@ const messages = {
       password: 'Password',
       remember: 'Remember Me',
       login: 'Login',
-      back: 'Back'
+      back: 'Back',
+      forgotPassword: 'Forgot Password',
+      phone: 'Phone',
+      fax: 'Fax',
+      notify: 'Notifications'
     },
     home: {
       title: 'About Us',
@@ -121,7 +125,21 @@ const messages = {
         tel: 'Tel: 02-218-9606',
         fax: 'Fax: 02-218-9532'
       },
-    }
+    },
+    track: {
+      title: 'Track Submissions',
+      submission: 'Submission',
+      searchPlaceholder: 'Search by submission number...'
+    },
+    submit: {
+      title: 'Submit Samples',
+      nav: {
+        info: 'Basic Info',
+        batch: 'Batch'
+      },
+      review: 'Review & Submit'
+    },
+    footer: '2020 Faculty of Veterinary Science, Chulalongkorn University'
   },
   th: {
     title: 'หน่วยชันสูตรโรคสัตว์กลาง จุฬาลงกรณ์มหาวิทยาลัย',
@@ -135,7 +153,11 @@ const messages = {
       password: 'รหัสผ่าน',
       remember: 'จำไว้ในระบบ',
       login: 'เข้าสู่ระบบ',
-      back: 'กลับไป'
+      back: 'กลับไป',
+      forgotPassword: 'ลืมรหัสผ่าน',
+      phone: 'โทรศัพท์',
+      fax: 'โทรสาร',
+      notify: 'แจ้งผลโดย'
     },
     home: {
       title: 'เกี่ยวกับเรา',
@@ -240,7 +262,21 @@ const messages = {
         tel: 'โทร: 02-218-9606',
         fax: 'แฟ็กซ์: 02-218-9532'
       },
-    }
+    },
+    track: {
+      title: 'ติดตามผลและรายงาน  ',
+      submission: 'ข้อมูลการส่งตัวอย่าง',
+      searchPlaceholder: 'ค้นหาด้วยหมายเลขการส่ง...'
+    },
+    submit: {
+      title: 'ส่งตัวอย่าง',
+      nav: {
+        info: 'ข้อมูลเบื้องต้น',
+        batch: 'กลุ่ม'
+      },
+      review: 'สรุปและส่ง'
+    },
+    footer: '2020 Faculty of Veterinary Science, Chulalongkorn University'
   }
 }
 

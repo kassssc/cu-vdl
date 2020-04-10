@@ -1,7 +1,9 @@
 <template>
 <div>
-  <h1>Track Submissions</h1>
-</div>  
+  <h2>
+    Review
+  </h2>
+</div>
 </template>
 
 <style lang="scss" scoped>
@@ -10,6 +12,6 @@
 
 <script>
 export default {
-  name: 'track-submissions'
+  name: 'review-submission'
 }
 </script>

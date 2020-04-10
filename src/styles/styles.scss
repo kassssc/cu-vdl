@@ -1,0 +1,272 @@
+@font-face {
+  font-family: 'CHULALONGKORN';
+  src: url('./assets/CHULALONGKORN-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CS ChatThai';
+  src: url('./assets/CSChatThai.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+::selection {
+  background: rgba($chula,.99); /* WebKit/Blink Browsers */
+  color: $bg;
+}
+::-moz-selection {
+  background: rgba($chula,.99); /* Gecko Browsers */
+  color: $bg;
+}
+
+html {
+  font-size: 18px;
+  @media only screen and (max-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+#app {
+  font-family: 'CHULALONGKORN', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-chatthai {
+  font-family: 'CS ChatThai';
+}
+
+button.btn, a.btn {
+  @include unselectable;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  &.btn-primary {
+    color: $bg;
+  }
+  &.btn-warning {
+    color: $bg;
+  }
+  &.btn-transparent {
+    &:hover {
+      background: $light-accent;
+    }
+  }
+  &.btn-width-md {
+    min-width: 150px;
+  }
+  &:focus, &:active {
+    box-shadow: none !important;
+  }
+}
+
+input.form-control,
+input.custom,
+select.form-control,
+textarea.form-control,
+.vdp-datepicker input.form-control {
+  transition: all 150ms ease-in-out;
+  letter-spacing: 0.04em;
+  &[disabled] {
+    cursor: not-allowed;
+  }
+  &.invalid:not(:focus) {
+    background: rgba($chula, 0.75);
+  }
+}
+
+select.form-control {
+  border: 4px solid $light-accent;
+  cursor: pointer;
+  &:focus, &:active {
+    border: 4px solid $light-accent;
+  }
+}
+
+textarea.form-control {
+  line-height: 1.2em;
+  padding: 0.5em
+}
+
+.vdp-datepicker {
+  .input-group {
+    input {
+      border-radius: 0.25rem !important;
+      background: $light-accent;
+    }
+    input[disabled="disabled"] {
+      background: $lighter-accent;
+      cursor: not-allowed;
+    }
+    .append-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 999;
+      color: $muted;
+    }
+  }
+  .vdp-datepicker__calendar {
+    //background: transparent;
+    //backdrop-filter: blur(15px);
+    background: $bg;
+    border-radius: 5px;
+    border: 0px solid transparent;
+    font-weight: bold;
+    color: $text;
+    top: 43px;
+    box-shadow: 2px 2px 6px 2px $light-text;
+    span {
+      &.cell {
+        border-radius: 3px;
+        font-size: 1.2rem;
+        border: 2px solid transparent;
+        &.day, &.month, &.year {
+          &.selected {
+            background: $chula;
+            color: $bg;
+          }
+          &:not(.blank):not(.disabled):hover {
+            border: 2px solid $chula;
+          }
+        }
+        &.day-header {
+          color: $muted;
+        }
+      }
+    }
+    header span {
+      &.prev, &.next, &.day__month_btn, &.month__year_btn {
+        border-radius: 3px;
+        font-size: 1.4rem;
+        &:hover {
+          color: $bg;
+          background: $chula;
+        }
+      } 
+    }
+  }
+}
+
+// Get rid of number spinner
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+input[type=number] {
+  -moz-appearance:textfield; /* Firefox */
+}
+
+.form-group {
+  label {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: $light-text;
+    letter-spacing: 0.03em;
+    line-height: 1.1em;
+    i {
+      font-size: 1px;
+      color: $chula;  
+    }
+    &.col-form-label {
+      text-align: right;
+    }
+  }
+  &.form-group-sm {
+    margin-bottom: 10px;
+    &[class*="col-"] {
+      padding-right: 5px;
+      padding-left: 5px;
+    }
+  }
+}
+
+.form-header {
+  width: 200px;
+}
+.form-body {
+  flex-grow: 1;
+  max-width: 1000px;
+}
+
+.page {
+  position: relative;
+  width: 100%;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 100px; // for titlebar
+}
+
+.color-text {
+  color: $text;
+}
+.color-light-text {
+  color: $light-text;
+}
+.color-muted {
+  color: $muted;
+}
+
+.border-bottom-pink {
+  border-bottom: 2px solid $chula;
+}
+.border-bottom-lighter {
+  border-bottom: 1px solid $light-accent;
+}
+.border-top-lighter {
+  border-top: 1px solid $light-accent;
+}
+.border-bottom-light {
+  border-bottom: 2px solid $light-accent;
+}
+.border-bottom-medium {
+  border-bottom: 2px solid $medium-accent;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+.easy-to-read {
+  line-height: 1.3em;
+  letter-spacing: 0.03em;
+}
+
+.max-width-800 {
+  max-width: 800px;
+}
+.max-width-1350 {
+  max-width: 1350px;
+}
+.max-width-1500 {
+  max-width: 1500px;
+}
+.fill-page {
+  height: 100vh;
+  width: 100vw;
+}
+
+.sidebar {
+  width: 250px;
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  top: 95px;
+  margin-right: 30px;
+  transition: width 100ms linear;
+  white-space: nowrap;
+  overflow: hidden;
+  &.folded {
+    width: 40px;
+  }
+  .fold-btn {
+    width: 40px;
+    i {
+      transition: 100ms ease-in-out;
+    }
+  }
+}

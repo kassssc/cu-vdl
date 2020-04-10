@@ -1,10 +1,8 @@
 <template>
-  <div class="no-wrap">
-
-    <h2 class="font-weight-bold mb-1">
+  <div class="font-chatthai no-wrap mb-5">
+    <h2 class="mb-3 pb-1 border-bottom-pink">
       {{ $t(`org.title`) }}
     </h2>
-    <div class="h-line mb-5"></div>
 
     <div class="grid-main">
       <div class="d-flex flex-column align-items-center">
@@ -97,10 +95,10 @@
   background: $chula;
   border-radius: 5px;
   border: 2px solid transparent;
-  padding: 0.15em 0.4em;
+  padding: 0em 0.3em;
   color: $bg;
-  font-weight: 700;
-  font-size: 1.1rem;
+  font-weight: bold;
+  font-size: 1.3rem;
   text-align: center;
   min-width: 125px;
   &::selection {

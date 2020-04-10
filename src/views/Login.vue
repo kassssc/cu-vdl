@@ -1,43 +1,56 @@
 <template>
-<div class="login-container d-flex flex-column justify-content-center align-items-center">
+<div class="fill-page d-flex flex-column justify-content-center align-items-center">
   <form class="login-form">
-    <router-link to="/" tag="button" class="custom md mb-3 align-self-start">
-      <i class="fas fa-chevron-left mr-1"></i> {{ $t(`general.back`) }}
+    <router-link to="/"
+                 tag="button"
+                 class="btn btn-transparent mb-3 align-self-start">
+      <i class="fas fa-chevron-left mr-1" /> {{ $t(`general.back`) }}
     </router-link>
     <div class="login-logo" />
-    <div class="form-group">
-      <label class="form-label" for="exampleInputEmail1">
-        {{ $t(`general.email`) }}
-      </label>
-      <input type="email"
-             class="form-control"
-             id="login-email" aria-describedby="emailHelp">
+    <div class="form-row w-100">
+      <div class="form-group col-12">
+        <label>
+          {{ $t(`general.email`) }}
+        </label>
+        <input type="email"
+               class="form-control form-control-lg"
+               v-model="loginForm.email">
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label" for="exampleInputPassword1">
-        {{ $t(`general.password`) }}
-      </label>
-      <input type="password"
-             class="form-control">
+    <div class="form-row w-100">
+      <div class="form-group col-12">
+        <label>
+          {{ $t(`general.password`) }}
+        </label>
+        <input type="password"
+               class="form-control form-control-lg"
+               v-model="loginForm.password">
+      </div>
     </div>
-    <div class="form-group">
-      <checkbox v-model="loginForm.stayLoggedIn"
-                :label="$t(`general.remember`)" />
+    <div class="form-row w-100">
+      <div class="form-group col-12 d-flex justify-content-between">
+        <checkbox v-model="loginForm.stayLoggedIn"
+                  :label="$t(`general.remember`)" />
+        <a class="btn btn-transparent btn-sm"
+           role="button">
+          {{ $t(`general.forgotPassword`) }}
+        </a>
+      </div>
     </div>
-    <button type="submit"
-            class="custom pink lg full-width"
-            @click="login()">
-      {{ $t(`general.login`) }}
-    </button>
+    <div class="form-row w-100">
+      <div class="form-group col-12">
+        <button type="submit"
+                class="btn btn-primary btn-lg btn-block"
+                @click="login()">
+          {{ $t(`general.login`) }}
+        </button>
+      </div>
+    </div>
   </form>
 </div>
 </template>
 
 <style lang="scss" scoped>
-.login-container {
-  width: 100vw;
-  height: 100vh;
-}
 .login-logo {
   width: 250px;
   height: 250px;
@@ -57,6 +70,8 @@
 </style>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'login',
   data () {
@@ -69,8 +84,12 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'loginout'
+    ]),
     login () {
-      this.$router.push('/')
+      this.loginout(true)
+      this.$router.push({name: 'submissionslist'})
     }
   }
 }

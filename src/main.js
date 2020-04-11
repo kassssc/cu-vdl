@@ -28,6 +28,12 @@ Vue.mixin({
   }
 })
 
+Vue.directive('focus-on-create', {
+  inserted: function (el) {
+    el.focus()
+  }
+})
+
 new Vue({
   router,
   store,

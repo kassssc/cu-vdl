@@ -2,13 +2,22 @@
 <div class="checkbox"
      @click="updateValue()">
   <div class="box d-flex justify-content-center align-items-center my-1"
-       :class="{'checked': internalValue}">
+       :class="{
+         'checked': internalValue,
+         'disabled': disabled
+       }">
     <i class="fas fa-check" />
   </div>
-  <label class="ml-2"
-         :class="{'disabled': disabled}">
-    {{ label }}
-  </label>
+  <div class="w-100 d-flex justify-content-between">
+    <label class="ml-2"
+           :class="{'disabled': disabled}">
+      {{ label }}
+    </label>
+    <label class="ml-2"
+           :class="{'disabled': disabled}">
+      {{ secondaryLabel }}
+    </label>
+  </div>
   <input type="checkbox"
          ref="hiddenInput"
          :value="internalValue"
@@ -41,6 +50,9 @@
         visibility: visible;
       }
     }
+    &.disabled {
+      background: $lighter-accent;
+    }
   }
   label {
     cursor: pointer;
@@ -63,6 +75,10 @@ export default {
   props: {
     label: {
       default: '',
+      type: String
+    },
+    secondaryLabel: {
+      default: undefined,
       type: String
     },
     value: {

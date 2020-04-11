@@ -249,6 +249,16 @@ input[type=number] {
   width: 100vw;
 }
 
+.small-icon {
+  font-size: 0.8rem;
+}
+
+.subcontainer {
+  padding: 1em;
+  border-radius: 5px;
+  background: $lighter-accent;
+}
+
 .sidebar {
   width: 250px;
   position: sticky;

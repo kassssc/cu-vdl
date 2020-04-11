@@ -1,28 +1,65 @@
- <template>
-<div class="form-row py-1">
-  <div class="form-group mb-0 col-5 pl-4">
-    <checkbox :label="test.name"
-              v-model="internalValue.selected"
-              @change="onCheckboxChange" />
+<template>
+<div class="form-row subcontainer">
+  <div class="col-12">
+    <h4 class="mb-1">เพิ่มรายการทดสอบ</h4>
   </div>
-  <div class="form-group mb-0 col-2 text-right">
-    <h5>
-      {{ `${test.price}฿` }}
-    </h5>
+  <div class="form-group col-4 mb-0">
+    <label>
+      เลือกไวรัส
+    </label>
+    <select class="form-control" v-model="testName">
+      <option v-for="test in tests"
+              :key="test.id"
+              :value="test.name">
+        {{ test.name }}
+      </option>
+    </select>
   </div>
-  <div class="form-group mb-0 col-2 d-flex">
-    <input type="number" min="0" ref="sampleCountInput"
-           class="form-control form-control-sm text-right w-75"
-           :class="{'invalid': isInvalid }"
-           v-model.number="internalValue.sampleCount"
-           @focus="$event.target.select()"
-           @blur="onInputBlur()">
-    <h5 class="ml-2">นาที</h5>
+  <div class="form-group col-4 mb-0">
+    <label>ระดับความเข้มข้น</label>
+    <input type="text"
+           placeholder="ex. undiluted, 1:200,1:400"
+           v-model="dilutions"
+           class="form-control pr-4"
+           @keyup.enter="parseOutput()">
+    <div class="hint">
+      <i class="fas fa-question"></i>
+      <div class="hint-container">
+        <h5>
+          ให้ใส่รายการความเข้มข้นทุกระดับที่ต้องการตรวจ โดยขั้นด้วย คอมม่า ( , )
+          ยกตัวอย่างเช่น
+        </h5>
+        <h5 class="text-primary">
+          undiluted, 1:200, 1:400
+        </h5>
+      </div>
+    </div>
   </div>
-  <div class="form-group col-2 mb-0 text-right">
-    <h5>
-      {{ (totalPrice) > 0? `${totalPrice.toLocaleString()}฿` : '' }}
-    </h5>
+  <div class="form-group col-3 mb-0">
+    <label>ระยะสัมผัสเชื้อ (นาที)</label>
+    <input type="text"
+            placeholder="ex. 5, 10, 15"
+            v-model="contactTimes"
+            class="form-control pr-4"
+            @keyup.enter="parseOutput()">
+    <div class="hint">
+      <i class="fas fa-question"></i>
+      <div class="hint-container">
+        <h5>
+          ให้ใส่รายการระยะเวลาสัมผัสเชื้อทุกเวลาที่ต้องการตรวจ โดยขั้นด้วย คอมม่า ( , )
+          ยกตัวอย่างเช่น
+        </h5>
+        <h5 class="text-primary">
+          5, 10, 15
+        </h5>
+      </div>
+    </div>
+  </div>
+  <div class="form-group col-1 mb-0 align-items-end d-flex">
+    <a class="btn btn-primary btn-block"
+       @click="parseOutput()">
+      เพิ่ม
+    </a>
   </div>
 </div>
 </template>
@@ -34,57 +71,85 @@
     margin-top: 0.4em;
   }
 }
+
+.hint {
+  width: 25px;
+  padding-top: 3px;
+  position: absolute;
+  right: 0.5em;
+  top: 28px;
+  cursor: pointer;
+  i {
+    font-size: 1rem;
+    color: $light-text;
+  }
+  &:hover {
+    .hint-container {
+      transform: scale(1);
+    }
+    i {
+      color: $chula;
+    }
+  }
+  .hint-container {
+    text-align: left;
+    padding: 1em;
+    z-index: 1000;
+    width: 250px;
+    position: absolute;
+    top: -150px;
+    right: 0px;
+    transition: transform 100ms ease-in-out;
+    transform-origin: 100% 100%;
+    transform: scale(0);
+    background: $light-accent;
+    border-radius: 5px;
+  }
+}
 </style>
 
 <script>
+import { uniq } from 'lodash'
+
 export default {
   name: 'form-disinfectant-test-input',
   props: [
-    'test',
+    'tests'
   ],
-  computed: {
-    totalPrice () {
-      return this.test.price * this.internalValue.sampleCount
-    },
-    isInvalid () {
-      return this.internalValue.selected && !this.internalValue.sampleCount
-    }
-  },
   data () {
     return {
-      internalValue: {
-        id: this.test.id,
-        selected: false,
-        sampleCount: null
-      }
+      testName: null,
+      dilutions: null,
+      contactTimes: null
     }
   },
   methods: {
-    onCheckboxChange () {
-      if (!this.internalValue.selected) {
-        this.internalValue.sampleCount = null
-      } else {
-        this.$refs.sampleCountInput.focus()
+    parseOutput () {
+      if (!this.testName || !this.dilutions || !this.contactTimes) {
+        return
       }
-      this.$emit('input', this.internalValue)
-      this.$emit('change')
-    },
-    onInputBlur () {
-      // Floor to not allow decimals
-      let newCount = Math.floor(this.internalValue.sampleCount)
-      // Set to null if left empty or negative
-      if (!newCount || newCount <= 0) {
-        newCount = null
-      // Set to 100 if larger than 100
-      } else if (newCount > 100) {
-        newCount = 100
+      let parsedOutput = {}
+      parsedOutput[this.testName] = {}
+      let dilutionArr = this.dilutions.split(',')
+        .map( s => s.trim().toLowerCase() )
+        .filter( s => s )
+      let contactTimeArr = this.contactTimes.split(',')
+        .map( s => s.trim().toLowerCase() )
+        .filter( s => s )
+      dilutionArr = uniq(dilutionArr)
+      contactTimeArr = uniq(contactTimeArr)
+      if (dilutionArr.length < 1 || contactTimeArr.length < 1) {
+        return
       }
-      this.internalValue.sampleCount = newCount
-      if (!this.internalValue.selected && this.internalValue.sampleCount) {
-        this.internalValue.selected = true
-      }
-      this.$emit('input', this.internalValue)
-      this.$emit('change')
+      dilutionArr.forEach( d => {
+        parsedOutput[this.testName][d] = []
+        contactTimeArr.forEach( t => parsedOutput[this.testName][d].push(t))
+      })
+      this.testName = null
+      this.dilutions = null
+      this.contactTimes = null
+      console.log(parsedOutput)
+      this.$emit('add', parsedOutput)
     }
   }
 }

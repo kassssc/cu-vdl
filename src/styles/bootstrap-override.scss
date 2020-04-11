@@ -8,6 +8,7 @@ $body-bg: $bg;
 
 $headings-font-weight: bold;
 $headings-margin-bottom: 0;
+$h6-font-size: 1.1rem;
 
 $border-radius:  .25rem;
 $border-radius-lg: .2rem;
@@ -44,6 +45,8 @@ $input-height-sm: 30px;
 
 $input-padding-y-lg: .5em;
 $input-padding-x-lg: .8em;
+
+$input-placeholder-color: $placeholder;
 
 $form-grid-gutter-width: 1em;
 $form-group-margin-bottom: 1em;

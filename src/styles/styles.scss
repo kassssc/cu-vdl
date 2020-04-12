@@ -59,6 +59,17 @@ button.btn, a.btn {
   &:focus, &:active {
     box-shadow: none !important;
   }
+  &.btn-x {
+    padding: 0;
+    color: $medium-accent;
+    background: transparent;
+    height: 30px;
+    i { font-size: 0.9rem; }
+    &:hover {
+      color: $chula;
+      background: transparent;
+    }
+  }
 }
 
 input.form-control,

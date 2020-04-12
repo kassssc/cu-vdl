@@ -7,32 +7,32 @@
                   :modifyUrl="false"
                   class="d-flex align-items-center">
       <div class="d-flex align-items-center">
-        <a href="#info"
-           class="btn btn-transparent btn-sm scrollactive-item">
+        <a  href="#info"
+            class="btn btn-transparent btn-sm scrollactive-item">
           ข้อมูลเบื้องต้น
         </a>
         <i class="fas fa-long-arrow-alt-right mx-1" />
       </div>
       <div class="d-flex align-items-center">
-        <a href="#report"
-           class="btn btn-transparent btn-sm scrollactive-item">
+        <a  href="#report"
+            class="btn btn-transparent btn-sm scrollactive-item">
           รายงาน
         </a>
         <i class="fas fa-long-arrow-alt-right mx-1" />
       </div>
-      <div v-for="(section, idx) in submission.batches"
-           :key="idx"
-           class="d-flex align-items-center">
-        <a :href="'#batch' + (idx+1)"
+      <div  v-for="(section, idx) in submission.batches"
+            :key="idx"
+            class="d-flex align-items-center">
+        <a  :href="'#batch' + (idx+1)"
             class="btn btn-transparent btn-sm scrollactive-item">
-          {{ submission.batches.length > 1 ? `กลุ่ม ${idx+1}` : 'รายการทดสอบ' }}
+          {{ getBatchNavLabel(idx + 1) }}
         </a>
         <i class="fas fa-long-arrow-alt-right mx-1" />
       </div>
     </scrollactive>
-    <router-link :to="{name: 'reviewsubmission'}"
-                 tag="a"
-                 class="btn btn-transparent btn-sm">
+    <router-link  :to="{name: 'reviewsubmission'}"
+                  tag="a"
+                  class="btn btn-transparent btn-sm">
       {{ $t(`submit.review`) }}
     </router-link>
   </div>
@@ -61,7 +61,7 @@
             <label>
               ชื่อผู้ส่ง
             </label>
-            <input type="text"
+            <input  type="text"
                     class="form-control"
                     v-model="submission.info.submittorName"
                     disabled >
@@ -95,7 +95,7 @@
               <option>ฟาร์มสมชาย</option>
             </select>
           </div>
-          <div v-if="submission.type === 1" class="form-group col-2">
+          <div v-if="isGeneralSubmission" class="form-group col-2">
             <label>
               วันที่เก็บตัวอย่าง
             </label>
@@ -107,7 +107,7 @@
               </div>
             </datepicker>
           </div>
-          <div v-if="submission.type === 1" class="form-group col-4">
+          <div v-if="isGeneralSubmission" class="form-group col-4">
             <label>
               ชนิดตัวอย่าง <i class="fas fa-star-of-life" />
             </label>
@@ -120,7 +120,7 @@
           </div>
         </div>
 
-        <div v-if="submission.type === 1" class="form-row">
+        <div v-if="isGeneralSubmission" class="form-row">
           <div class="form-group col-3">
             <label>
               ชนิดสัตว์
@@ -138,7 +138,7 @@
             <label>
               พันธุ์
             </label>
-            <input type="text"
+            <input  type="text"
                     class="form-control"
                     v-model="submission.info.animalSpecies">
           </div>
@@ -146,26 +146,25 @@
             <label>
               อายุ
             </label>
-            <input class="form-control"
+            <input  class="form-control"
                     v-model="submission.info.animalAge">
           </div>
           <div class="form-group col-2">
             <label>
               จำนวนที่เลี้ยง
             </label>
-            <input type="number"
+            <input  type="number"
                     class="form-control"
                     v-model.number="submission.info.animalCount">
           </div>
         </div>
 
-        <div v-if="submission.type === 1" class="form-row">
+        <div v-if="isGeneralSubmission" class="form-row">
           <div class="form-group col-6">
             <label>
               ประวัติการป่วย
             </label>
-            <textarea type="text"
-                      rows="5"
+            <textarea type="text" rows="5"
                       class="form-control"
                       v-model="submission.info.illness" />
           </div>
@@ -173,8 +172,7 @@
             <label>
               ประวัติการทำวัคซีน
             </label>
-            <textarea type="number"
-                      rows="5"
+            <textarea type="number" rows="5"
                       class="form-control"
                       v-model="submission.info.vaccinations" />
           </div>
@@ -183,8 +181,8 @@
     </div>
     <!-- END INFO SECTION -->
   
-    <div id="report"
-         class="row w-100 border-bottom-pink p-4">
+    <div  id="report"
+          class="row w-100 border-bottom-pink p-4">
       <div class="col-2">
         <h3>
           รายงาน
@@ -201,29 +199,29 @@
             <label>
               {{ $t(`general.email`)}}
             </label>
-            <input type="text"
-                   class="form-control"
-                   v-model="submission.info.notifyBy.email">
+            <input  type="text"
+                    class="form-control"
+                    v-model="submission.info.notifyBy.email">
           </div>
           <div class="form-group col-4">
             <label>
               {{ $t(`general.phone`)}}
             </label>
-            <input type="number"
-                   class="form-control"
-                   v-model="submission.info.notifyBy.phone">
+            <input  type="number"
+                    class="form-control"
+                    v-model="submission.info.notifyBy.phone">
           </div>
           <div class="form-group col-4">
             <label>
               {{ $t(`general.fax`)}}
             </label>
-            <input type="number"
-                   class="form-control"
-                   v-model="submission.info.notifyBy.fax">
+            <input  type="number"
+                    class="form-control"
+                    v-model="submission.info.notifyBy.fax">
           </div>
         </div>
   
-        <template v-if="submission.type === 2">
+        <template v-if="isDisinfectantSubmission">
           <h4 class="d-inline">รายงานเป็นภาษา </h4>
           <i class="fas fa-star-of-life text-primary small-icon d-inline" />
           <div class="form-row">  
@@ -241,22 +239,25 @@
     <!-- END REPORT SECTION -->
   
     <!-- BATCH SECTION -->
-    <div v-for="(batch, idxBatch) in submission.batches"
-         :key="idxBatch"
-         :id="'batch' + (idxBatch+1)"
-         class="batch expand-in-batch submission-section position-relative border-bottom-light pb-4 px-4 pt-5">
-      <a v-if="submission.batches.length > 1"
-         class="btn btn-x batch-section"
-         @click="removeBatch(idxBatch)">
+    <div  v-for="(batch, idxBatch) in submission.batches"
+          :key="idxBatch"
+          :id="'batch' + (idxBatch+1)"
+          class="batch expand-in-batch submission-section position-relative border-bottom-light pb-4 px-4 pt-5">
+      <a  v-if="hasMultipleBatches"
+          class="btn btn-x batch-section"
+          @click="removeBatch(idxBatch)">
         <i class="fas fa-times" />
       </a>
 
       <!-- GENERAL BATCH -->
-      <div v-if="submission.type === 1">
+      <div v-if="isGeneralSubmission">
         <div class="row w-100">
           <div class="col-2">
             <h3 class="mb-2">
-              {{ submission.batches.length > 1 ? `กลุ่มการทดสอบ ${idxBatch+1}` : 'รายการทดสอบ' }}
+              {{ 
+                  hasMultipleBatches?
+                  `กลุ่มการทดสอบ ${idxBatch+1}` : 'รายการทดสอบ'
+              }}
             </h3>
             <h5 class="ml-3 color-light-text">
               {{ `งาน${testType(batch.testType).name}`}}
@@ -279,11 +280,11 @@
             <div class="form-row">
               <div class="form-group col-2">
                 <h4>จำนวนตัวอย่าง</h4>
-                <input type="number"
-                       class="form-control text-right"
-                       :value="batch.sampleCount"
-                       @focus="$event.target.select()"
-                       @blur="onSampleCountInputBlur($event.target.value, batch)" >
+                <input  type="number"
+                        class="form-control text-right"
+                        :value="batch.sampleCount"
+                        @focus="$event.target.select()"
+                        @blur="onSampleCountInputBlur($event.target.value, batch)" >
               </div>
             </div>
             <div class="form-row no-gutters mt-3">
@@ -311,7 +312,7 @@
               </div>
             </div>
   
-            <div v-for="category in testType(batch.testType).testCategories"
+            <div  v-for="category in testType(batch.testType).testCategories"
                   :key="category.name"
                   class="row no-gutters test-row">
               <div class="col-2 pr-2">
@@ -320,9 +321,9 @@
                 </h5>
               </div>
               <div class="col-10">
-                <div v-for="test in testCategory(batch.testType, category.id)"
-                     :key="test.id"
-                     class="test-row form-row align-items-end">
+                <div  v-for="test in testCategory(batch.testType, category.id)"
+                      :key="test.id"
+                      class="test-row form-row align-items-end">
                   <div class="form-group mb-0 col-6">
                     <checkbox :label="test.name"
                               :disabled="
@@ -340,7 +341,7 @@
                   </div>
                   <div class="form-group col-1 mb-0 text-right color-muted">
                     <div v-if="batch.tests[test.id].selected && batch.sampleCount"
-                          class="d-flex">
+                         class="d-flex">
                       <i class="fas fa-times mt-1 small-icon"></i>
                       <h5 class="mx-2">
                         {{ batch.sampleCount }}
@@ -384,9 +385,9 @@
                   เพิ่มรายการ
                 </a>
                 <div v-if="batch.customTests.length > 0"
-                     class="custom-test-price">
+                     class="custom-test-price text-wrap">
                   <h5>รอประเมินราคา</h5>
-                  <h6 class="color-muted">(ประมาน 500฿ ต่อรายการ)</h6>
+                  <h6 class="color-muted">(ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h6>
                 </div>
               </div>
             </div>
@@ -517,14 +518,15 @@
       <!-- END GENERAL BATCH -->
 
       <!-- DISINFECTANT BATCH -->
-      <div v-if="submission.type === 2">
+      <div v-else-if="isDisinfectantSubmission">
         <div class="row w-100">
           <div class="col-2">
             <h3 class="mb-2">
-              {{ submission.batches.length > 1 ? `กลุ่มการทดสอบ ${idxBatch+1}` : 'รายการทดสอบ' }}
+              การทดสอบ
             </h3>
-            <h5 class="ml-3 color-light-text">
-              {{ `ทดสอบต่อ ${testType(batch.testType).name}`}}
+            <h5 v-if="hasMultipleBatches"
+                class="color-light-text">
+              {{ batch.disinfectantName }}
             </h5>
           </div>
 
@@ -533,7 +535,8 @@
               <div class="form-group col-6">
                 <h4>ชื่อนํ้ายาฆ่าเชื้อ</h4>
                 <input type="text"
-                       class="form-control">
+                       class="form-control"
+                       v-model.lazy="batch.disinfectantName">
               </div>
             </div>
 
@@ -603,7 +606,7 @@
                          :key="time"
                          class="test-row position-relative">
                       <h5 class="d-inline">{{ time }}</h5>
-                      <h5 class="d-inline color-muted ml-1">นาที</h5>
+                      <h5 class="d-inline ml-1">นาที</h5>
                       <a class="btn btn-sm btn-x disinfectant-test"
                          @click="batch.tests[test][dilution].splice(idx, 1)">
                         <i class="fas fa-times" />
@@ -668,10 +671,14 @@
     </div>
     <!-- END BATCH SECTION -->
   
-    <a class="btn btn-primary btn-width-md align-self-center my-4"
-       @click="addBatch()">
-      เพิ่มกลุ่มการทดสอบ
-    </a>
+    <a  class="btn btn-primary btn-width-md align-self-center my-4"
+        @click="addBatch()">
+      {{ 
+          isGeneralSubmission?      'เพิ่มกลุ่มการทดสอบ' :
+          isDisinfectantSubmission? 'เพิ่มรายการนํ้ายาฆ่าเชื้อ' : ''
+      }}
+    </a> 
+
   </form>
 
   <!-- <div class="modal fade" id="sampleInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -760,36 +767,25 @@
 }
 
 a.btn.btn-x {
-  padding: 0;
-  &:hover {
-    color: $chula;
-    background: transparent;
-  }
   &.batch-section {
     position: absolute;
     height: 35px;
     width: 35px;
     right: 15px;
-    top: 15px;
+    top: 20px;
+    i { font-size: 1.25rem; }
   }
   &.custom-test {
     position: absolute;
     height: 28px;
     width: 28px;
     right: 265px;
-    top: 3px;
-    i {
-      font-size: 0.9rem;
-    }
+    top: 6px;
   }
   &.disinfectant-test {
     height: 25px;
     width: 25px;
     margin-left: 10px;
-    top: -20px;
-    i {
-      font-size: 0.9rem;
-    }
   }
 }
 
@@ -820,6 +816,7 @@ a.btn.btn-x {
   top: 10px;
   right: 70px;
   text-align: right;
+  width: 150px;
 }
 
 
@@ -910,7 +907,7 @@ export default {
   data () {
     return {
       submission: {
-        type: 2,
+        type: 1,
         info: {},
         batches: [{}]
       }
@@ -923,6 +920,15 @@ export default {
       'testType',
       'testCategory'
     ]),
+    isGeneralSubmission () {
+      return this.submission.type === 1
+    },
+    isDisinfectantSubmission () {
+      return this.submission.type === 2
+    },
+    hasMultipleBatches () {
+      return this.submission.batches.length > 1
+    }
   },
   beforeMount () {
     this.onReportTypeChange()
@@ -930,7 +936,7 @@ export default {
   methods: {
     onReportTypeChange () {
       // General type
-      if (this.submission.type === 1) {
+      if (this.isGeneralSubmission) {
         this.submission.info = {
           submittorName: 'สมควร สมสกุล',
           submitDate: '04/04/20',
@@ -960,7 +966,7 @@ export default {
           }
         ]
       // Disinfectant Type
-      } else if (this.submission.type === 2) {
+      } else if (this.isDisinfectantSubmission) {
         this.submission.info = {
           submittorName: 'สมควร สมสกุล',
           submitDate: '04/04/20',
@@ -978,6 +984,7 @@ export default {
         this.submission.batches = [
           {
             testType: 5,
+            disinfectantName: '',
             sampleCount: null,
             totalPrice: 0,
             tests: {},
@@ -994,16 +1001,19 @@ export default {
       batch.samples = []
       batch.sensitivityTests = ''
       batch.tests = {}
+      batch.customTests = []
       // Initialize test selection data
-      let newTests = {}
-      for (let test of this.testType(batch.testType).testInfo) {
-        newTests[test.id] = {
-          id: test.id,
-          selected: false,
+      if (this.isGeneralSubmission) {
+        let newTests = {}
+        for (let test of this.testType(batch.testType).testInfo) {
+          newTests[test.id] = {
+            id: test.id,
+            selected: false,
+          }
         }
-      }
-      batch.tests = Object.assign({}, batch.tests, newTests)
-      if (this.submission.type === 2) {
+        batch.tests = Object.assign({}, batch.tests, newTests)
+      } else if (this.isDisinfectantSubmission) {
+        batch.disinfectantName = ''
         batch.tests = {}
       }
     },
@@ -1063,7 +1073,7 @@ export default {
 
     addBatch () {
       // General type
-      if (this.submission.type === 1) {
+      if (this.isGeneralSubmission) {
         this.submission.batches.push({
           testType: 1,
           sampleCount: null,
@@ -1073,9 +1083,10 @@ export default {
           customTests: []
         })
       // Disinfectant Type
-      } else if (this.submission.type === 2) {
+      } else if (this.isDisinfectantSubmission) {
         this.submission.batches.push({
           testType: 5,
+          disinfectantName: '',
           sampleCount: null,
           totalPrice: 0,
           tests: {},
@@ -1126,6 +1137,12 @@ export default {
         )
       })
     },
+
+    getBatchNavLabel (number) {
+      return  (!this.hasMultipleBatches)? 'รายการทดสอบ' :
+              (this.isGeneralSubmission)? `กลุ่ม ${number}` :
+              (this.isDisinfectantSubmission)? `นํ้ายาฆ่าเชื้อ ${number}` : '???'
+    }
   }
 }
 </script>

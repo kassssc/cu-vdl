@@ -14,7 +14,7 @@
           {{ $t(`services.download`) }}
         </a>
       </div>
-      <img :src="require(`../assets/0${i+1}.png`)"
+      <img :src="servicesImg[i]"
            class="ml-3 img unselectable">
     </div>
     <h3 class="mb-5 mt-1 font-weight-bold">
@@ -38,8 +38,8 @@ export default {
   name: 'services',
   computed: {
     ...mapGetters([
-      'lang',
-      'downloads'
+      'downloads',
+      'servicesImg'
     ])
   },
   data: () => {

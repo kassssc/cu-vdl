@@ -1,7 +1,7 @@
 <template>
 <div class="person-card">
   <div class="portrait"
-       :style="{'background-image': gen_URL(img)}">
+       :style="{'background-image': `url(${img})`}">
   </div>
   <h5 class="name mb-0 font-weight-bold">
     {{ name }}

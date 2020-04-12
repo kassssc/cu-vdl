@@ -63,7 +63,7 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    background-image: url('../assets/logo.png');
+    background-image: url('https://i.ibb.co/PWZBG5p/logo.png');
     transition: all 100ms ease-in-out;
   }
 }
@@ -88,6 +88,12 @@
       background: $chula;
       cursor: default;
     }
+  }
+}
+// Firefox style fixes for no backdrop-filter support
+@-moz-document url-prefix(){
+  #titlebar {
+    background: $bg;
   }
 }
 </style>

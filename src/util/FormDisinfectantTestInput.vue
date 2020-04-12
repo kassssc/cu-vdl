@@ -148,7 +148,6 @@ export default {
       this.testName = null
       this.dilutions = null
       this.contactTimes = null
-      console.log(parsedOutput)
       this.$emit('add', parsedOutput)
     }
   }

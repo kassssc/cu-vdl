@@ -24,15 +24,15 @@ export default new Vuex.Store({
       org_chart: {
         left: {
           boss: {
-            img: 'boss.png'
+            img: 'https://i.ibb.co/KrcGxKJ/boss.jpg'
           },
           vets: {
             people: [
               {
-                img: 'vet1.png'
+                img: 'https://i.ibb.co/GM8S577/vet1.png'
               },
               {
-                img: 'vet2.png'
+                img: 'https://i.ibb.co/T0z5kjN/vet2.png'
               },
             ]
           }
@@ -40,38 +40,38 @@ export default new Vuex.Store({
         middle: {
           people: [
             {
-              img: 'virus.png'
+              img: 'https://i.ibb.co/QmkCcY2/virus.png'
             },
             {
-              img: 'serum.png'
+              img: 'https://i.ibb.co/t3Z9Cmr/serum.png'
             },
             {
-              img: 'bacteria.png'
+              img: 'https://i.ibb.co/RYGSCJk/bacteria.png'
             },
             {
-              img: 'bio.png'
+              img: 'https://i.ibb.co/dWYtw3S/bio.png'
             },
             {
-              img: 'blood1.png'
+              img: 'https://i.ibb.co/VQJGGSZ/blood1.png'
             },
             {
-              img: 'blood2.png'
+              img: 'https://i.ibb.co/7vnjSKV/blood2.png'
             },
             {
-              img: 'blood3.png'
+              img: 'https://i.ibb.co/zR7DZGM/blood3.png'
             },
           ]
         },
         right: {
           people: [
             {
-              img: 'staff.png'
+              img: 'https://i.ibb.co/n3yYwMj/staff.png'
             },
             {
-              img: 'service.png'
+              img: 'https://i.ibb.co/wYKrPzT/service.png'
             },
             {
-              img: 'lab.png'
+              img: 'https://i.ibb.co/3ByBS3y/lab.png'
             },
           ]
         }
@@ -82,6 +82,13 @@ export default new Vuex.Store({
         'virology.pdf',
         'serology.pdf',
         'molecular.pdf'
+      ],
+      servicesImg: [
+        'https://i.ibb.co/jh444d8/01.png',
+        'https://i.ibb.co/pRsWJYs/02.png',
+        'https://i.ibb.co/TkMRLzT/03.png',
+        'https://i.ibb.co/55CTcdM/04.png',
+        'https://i.ibb.co/Xtp2SC7/05.png'
       ]
     },
     submission: {
@@ -308,15 +315,15 @@ export default new Vuex.Store({
           name: 'ไวรัส',
           reportType: 2,
           testInfo: [
-            { id: 65, name: 'CSFV (SK6)',            price: 3000 },
-            { id: 66, name: 'ADV',                   price: 3000 },
-            { id: 67, name: 'PRRSV (US) (MARC145)',  price: 3000 },
-            { id: 68, name: 'PRRSV (EU) (MARC145)',  price: 3000 },
-            { id: 69, name: 'HP-PRRSV (MARC145)',    price: 3000 },
-            { id: 70, name: 'SIV (H1N1) (MDCK)',     price: 3000 },
-            { id: 71, name: 'H5N1',                  price: 3000 },
-            { id: 72, name: 'NDV',                   price: 3000 },
-            { id: 73, name: 'PCV2 (PK15)',           price: 3000 },
+            { id: 65, name: 'CSFV (SK6)',            virusType: 1, price: 3000 },
+            { id: 66, name: 'ADV (SK6)',             virusType: 1, price: 3000 },
+            { id: 67, name: 'PRRSV (US) (MARC145)',  virusType: 2, price: 3000 },
+            { id: 68, name: 'PRRSV (EU) (MARC145)',  virusType: 2, price: 3000 },
+            { id: 69, name: 'HP-PRRSV (MARC145)',    virusType: 2, price: 3000 },
+            { id: 70, name: 'SIV (H1N1) (MDCK)',     virusType: 3, price: 3000 },
+            { id: 71, name: 'H5N1',                  virusType: 4, price: 3000 },
+            { id: 72, name: 'NDV',                   virusType: 5, price: 3000 },
+            { id: 73, name: 'PCV2 (PK15)',           virusType: 6, price: 3000 },
           ]
         },
         {
@@ -339,6 +346,9 @@ export default new Vuex.Store({
     },
     org_chart: state => {
       return state.data.org_chart
+    },
+    servicesImg: state => {
+      return state.data.servicesImg
     },
     downloads: state => {
       return state.data.downloads

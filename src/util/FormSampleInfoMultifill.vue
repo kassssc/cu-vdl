@@ -1,0 +1,137 @@
+<template>
+<div class="subcontainer p-3 mt-3"
+     :class="{'folded': folded}">
+  <div class="fold-section w-100 d-flex justify-content-between align-items-center mb-3"
+       @click="folded = !folded">
+    <h4 class="w-100">
+      เติมข้อมูลทีละหลายช่อง
+    </h4>
+    <a class="btn btn-icon">
+      <i class="fas fa-chevron-up"
+         :class="{'rotate': folded}"/>
+    </a>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-4 mb-2">
+      <label>หมายเลขตัวอย่าง</label>
+      <input  type="text"
+              class="form-control"
+              placeholder="ex. 1-4, 6, 7, 9-10"
+              v-model.lazy="sampleNumRaw" >
+      <div class="hint">
+        <i class="fas fa-question color-text-light"></i>
+        <div class="hint-container">
+          <h5>
+            ให้ใส่ระยะหมายเลขตัวอย่างที่ต้องการใส่ข้อมูล หรือสามารถใส่เลขตัวอย่างเฉยๆก็ได้ โดยขั้นทุกอย่างด้วย คอมม่า ( , )
+            <br>ยกตัวอย่างเช่น
+            <span class="text-primary">
+              1-3, 5, 7, 9-10
+            </span>
+          </h5>
+          <h5>
+            จะใส่ข้อมูลทับช่องของตัวอย่างหมายเลข
+            <span class="text-primary">1,2,3,5,7,9, และ 10</span>
+          </h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label>ID ตัวอย่าง</label>
+      <input  type="text"
+              class="form-control"
+              v-model.lazy="sampleId">
+    </div>
+    <div class="form-group col-6">
+      <label>ข้อมูลเพิ่มเติม</label>
+      <input  type="text"
+              class="form-control"
+              v-model.lazy="extraInfo">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group mb-0 col-4">
+      <a  class="btn btn-primary btn-block"
+          @click="submit()">
+        เพิ่มข้อมูล
+      </a>
+    </div>
+  </div>
+</div>
+</template>
+
+<style lang="scss" scoped>
+.subcontainer {
+  transition: height 125ms linear;
+  overflow: hidden;
+  &.folded {
+    height: 75px;
+  }
+  height: 310px;
+}
+.fold-section {
+  cursor: pointer;
+  border-radius: 5px;
+  &:hover {
+    a.btn {
+      background: $accent;
+      color: $chula;
+    }
+  }
+}
+.hint-container {
+  width: 450px;
+  bottom: -7px;
+  right: -460px;
+  transform-origin: 0% 85%;
+}
+</style>
+
+<script>
+import { uniq } from 'lodash'
+
+export default {
+  name: 'form-sample-info-multifill',
+  props: ['maxSamples'],
+  computed: {
+    processedSampleNums () {
+      const ranges = this.sampleNumRaw
+        .replace(/\s/g, '')       // Remove whitespace
+        .split(',')
+        .filter( s => /^\d{1,}-\d{1,}$|^\d{1,}$/g.test(s) )
+
+      // 1-4, 5, 6-6, -9, cc9-10cc, cc8cc, 6-10-3, 6-xx-3, cc-4-5, 8-2, 1-2, 1-2, 1-999, ,,, , 999
+      return uniq(ranges)
+        .map( r => r.split('-').map( n => parseInt(n) ) )
+        .filter( arr => {
+          if (arr.length > 1) {
+            return arr[0] < arr[1] && arr[1] <= this.maxSamples
+          } else {
+            return arr[0] <= this.maxSamples
+          }
+        })
+    }
+  },
+  data () {
+    return {
+      folded: true,
+      sampleNumRaw: null,
+      sampleId: null,
+      extraInfo: null
+    }
+  },
+  methods: {
+    submit () {
+      //this.sampleNumRaw = null
+      //this.sampleId = null
+      //this.extraInfo = null
+      this.$emit('add', {
+        ranges: this.processedSampleNums,
+        sampleId: this.sampleId,
+        extraInfo: this.extraInfo
+      })
+    }
+  }
+}
+</script>

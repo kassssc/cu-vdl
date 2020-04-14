@@ -1,15 +1,14 @@
 <template>
 <div class="fill-page d-flex flex-column justify-content-center align-items-center">
   <form class="login-form">
-    <router-link to="/"
-                 tag="button"
-                 class="btn btn-transparent mb-3 align-self-start">
-      <i class="fas fa-chevron-left mr-1" /> {{ $t(`general.back`) }}
-    </router-link>
+    <a  class="btn btn-transparent mb-3 align-self-start"
+        @click="$router.go(-1)">
+      <i class="fas fa-chevron-left mr-2" />{{ $t(`general.back`) }}
+    </a>
     <div class="login-logo" />
     <div class="form-row w-100">
       <div class="form-group col-12">
-        <label>
+        <label class="mb-2">
           {{ $t(`general.email`) }}
         </label>
         <input type="email"
@@ -19,7 +18,7 @@
     </div>
     <div class="form-row w-100">
       <div class="form-group col-12">
-        <label>
+        <label class="mb-2">
           {{ $t(`general.password`) }}
         </label>
         <input type="password"
@@ -30,8 +29,9 @@
     <div class="form-row w-100">
       <div class="form-group col-12 d-flex justify-content-between">
         <checkbox v-model="loginForm.stayLoggedIn"
+                  class="mt-1"
                   :label="$t(`general.remember`)" />
-        <a class="btn btn-transparent btn-sm"
+        <a class="btn btn-transparent btn-sm color-text-light"
            role="button">
           {{ $t(`general.forgotPassword`) }}
         </a>
@@ -39,11 +39,10 @@
     </div>
     <div class="form-row w-100">
       <div class="form-group col-12">
-        <button type="submit"
-                class="btn btn-primary btn-lg btn-block"
-                @click="login()">
+        <a class="btn btn-primary btn-lg btn-block"
+           @click="login()">
           {{ $t(`general.login`) }}
-        </button>
+        </a>
       </div>
     </div>
   </form>

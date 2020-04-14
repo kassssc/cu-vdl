@@ -35,7 +35,7 @@
     min-width: 20px;
     height: 20px;
     border-radius: 3px;
-    background: $light-accent;
+    background: $accent;
     transition: all 100ms ease-in-out;
     i {
       font-size: 0.8em;
@@ -51,13 +51,15 @@
       }
     }
     &.disabled {
-      background: $lighter-accent;
+      background: $accent-light;
     }
   }
   label {
     cursor: pointer;
     margin-top: 0.2em;
     margin-bottom: 0.2em;
+    font-size: 1.15rem;
+    color: $text-medium ;
     @include unselectable;
     &.disabled {
       color: $muted;

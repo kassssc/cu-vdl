@@ -1,5 +1,5 @@
 $primary: $chula;
-$secondary: $light-accent;
+$secondary: $accent;
 $danger: $red;
 $warning: $orange;
 
@@ -11,7 +11,7 @@ $headings-margin-bottom: 0;
 $h6-font-size: 1.1rem;
 
 $border-radius:  .25rem;
-$border-radius-lg: .2rem;
+$border-radius-lg: .27rem;
 $border-radius-sm: .2rem;
 
 $font-size-sm: 1.1rem;
@@ -26,12 +26,14 @@ $input-btn-padding-x: .6rem;
 // Buttons
 $btn-font-weight: bold;
 $btn-transition: none;
+$btn-white-space: nowrap;
 
 // Forms
-$label-margin-bottom: .1rem;
+$label-margin-bottom: .2rem;
 $input-font-weight: bold;
-$input-bg: $light-accent;
-$input-disabled-bg: $lighter-accent;
+$input-font-size: 1.3rem;
+$input-bg: $accent;
+$input-disabled-bg: $accent-light;
 $input-color: $text;
 $input-border-color: transparent;
 $input-border-width: 0;
@@ -49,6 +51,12 @@ $input-padding-x-lg: .8em;
 $input-placeholder-color: $placeholder;
 
 $form-grid-gutter-width: 1em;
-$form-group-margin-bottom: 1em;
+$form-group-margin-bottom: 1.3rem;
 
-@import '~bootstrap/scss/bootstrap';
+// Modals
+$modal-transition: transform 100ms linear;
+$modal-content-border-width: 0;
+$modal-header-border-width: 0;
+$modal-footer-border-width: 0;
+
+@import "~bootstrap/scss/bootstrap";

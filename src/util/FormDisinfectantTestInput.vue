@@ -18,12 +18,12 @@
   <div class="form-group col-4 mb-0">
     <label>ระดับความเข้มข้น</label>
     <input type="text"
-           placeholder="ex. undiluted, 1:200,1:400"
+           placeholder="ex. undiluted, 1:200, 1:400"
            v-model="dilutions"
            class="form-control pr-4"
            @keyup.enter="parseOutput()">
     <div class="hint">
-      <i class="fas fa-question"></i>
+      <i class="fas fa-question color-text-light"></i>
       <div class="hint-container">
         <h5>
           ให้ใส่รายการความเข้มข้นทุกระดับที่ต้องการตรวจ โดยขั้นด้วย คอมม่า ( , )
@@ -43,7 +43,7 @@
             class="form-control pr-4"
             @keyup.enter="parseOutput()">
     <div class="hint">
-      <i class="fas fa-question"></i>
+      <i class="fas fa-question color-text-light"></i>
       <div class="hint-container">
         <h5>
           ให้ใส่รายการระยะเวลาสัมผัสเชื้อทุกเวลาที่ต้องการตรวจ โดยขั้นด้วย คอมม่า ( , )
@@ -65,46 +65,11 @@
 </template>
 
 <style lang="scss" scoped>
-.form-group {
-  i {
-    font-size: 0.8em;
-    margin-top: 0.4em;
-  }
-}
-
-.hint {
-  width: 25px;
-  padding-top: 3px;
-  position: absolute;
-  right: 0.5em;
-  top: 28px;
-  cursor: pointer;
-  i {
-    font-size: 1rem;
-    color: $light-text;
-  }
-  &:hover {
-    .hint-container {
-      transform: scale(1);
-    }
-    i {
-      color: $chula;
-    }
-  }
-  .hint-container {
-    text-align: left;
-    padding: 1em;
-    z-index: 1000;
-    width: 250px;
-    position: absolute;
-    top: -150px;
-    right: 0px;
-    transition: transform 100ms ease-in-out;
-    transform-origin: 100% 100%;
-    transform: scale(0);
-    background: $light-accent;
-    border-radius: 5px;
-  }
+.hint-container {
+  width: 250px;
+  top: -150px;
+  right: 0px;
+  transform-origin: 100% 100%;
 }
 </style>
 

@@ -22,7 +22,7 @@
 <style scoped lang="scss">
 a.router-link-active {
   color: $chula;
-  background: $light-accent;
+  background: $accent;
   cursor: default;
   &:hover {
     color: $chula;

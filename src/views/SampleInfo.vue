@@ -39,20 +39,22 @@
 
   <form class="font-chatthai d-flex flex-column px-4 pb-5 mb-5 max-width-1350 transition">    
     
-    <div id="info" class="row w-100 px-4 pt-4">
+    <div id="info" class="row w-100 px-4 pt-5">
       <div class="col-2">
         <h3>
           ข้อมูลเบื้องต้น
         </h3>
       </div>
       <div class="col-10">
+        <h4 class="mb-1 color-text-medium">
+          ประเภทการตรวจ
+        </h4>
         <div class="form-row mb-4">
-          <div class="form-group col-6 mb-0">
-            <h4 class="mb-1">
-              ประเภทการตรวจ
-            </h4>
+          <div class="form-group col-6">
             <form-inline-select :options="reportTypes"
                                 v-model="submission.type"
+                                :warnBeforeChange="false"
+                                warningMsg="ข้อมูลที่ถูกกรอกไว้แล้วด้านล่างจะหายไปถ้าท่านเปลี่ยนตัวเลือกนี้"
                                 @change="onReportTypeChange()" />
           </div>
         </div>
@@ -164,7 +166,7 @@
             <label>
               ประวัติการป่วย
             </label>
-            <textarea type="text" rows="5"
+            <textarea type="text" rows="4"
                       class="form-control"
                       v-model="submission.info.illness" />
           </div>
@@ -172,7 +174,7 @@
             <label>
               ประวัติการทำวัคซีน
             </label>
-            <textarea type="number" rows="5"
+            <textarea type="number" rows="4"
                       class="form-control"
                       v-model="submission.info.vaccinations" />
           </div>
@@ -189,7 +191,7 @@
         </h3>
       </div>
       <div class="col-10">
-        <h4 class="d-inline">
+        <h4 class="d-inline color-text-medium">
           {{ $t(`general.notify`)}}
         </h4>
         <i class="fas fa-star-of-life text-primary small-icon d-inline" />
@@ -225,7 +227,7 @@
           <h4 class="d-inline">รายงานเป็นภาษา </h4>
           <i class="fas fa-star-of-life text-primary small-icon d-inline" />
           <div class="form-row">  
-            <div class="form-group d-flex col-4">
+            <div class="form-group d-flex col-4 mb-2">
               <checkbox label="ไทย"
                         class="mr-4"
                         v-model="submission.info.reportLang.thai" />
@@ -233,6 +235,10 @@
                         v-model="submission.info.reportLang.eng" />
             </div>
           </div>
+          <h5 v-show="isDisinfectantSubmission && !submission.info.reportLang.thai && !submission.info.reportLang.eng"
+              class="text-primary">
+            <i class="fas fa-exclamation-triangle mr-2" />กรุณาเลือกภาษารายงานอย่างน้อย 1 ภาษา
+          </h5>
         </template>
       </div>
     </div>
@@ -242,7 +248,7 @@
     <div  v-for="(batch, idxBatch) in submission.batches"
           :key="idxBatch"
           :id="'batch' + (idxBatch+1)"
-          class="batch expand-in-batch submission-section position-relative border-bottom-light pb-4 px-4 pt-5">
+          class="batch expand-in-batch submission-section position-relative border-bottom-medium px-4 py-5">
       <a  v-if="hasMultipleBatches"
           class="btn btn-x batch-section"
           @click="removeBatch(idxBatch)">
@@ -267,10 +273,10 @@
             </h5>
           </div>
           <div class="col-10">
-            <h4 class="mb-1">
+            <h4 class="mb-1 color-text-medium">
               เลือกประเภทงานทดสอบ
             </h4>
-            <div class="form-row">
+            <div class="form-row mb-4">
               <div class="form-group col-8">
                 <form-inline-select :options="tests(submission.type)"
                                     v-model="batch.testType"
@@ -279,7 +285,7 @@
             </div>
             <div class="form-row">
               <div class="form-group col-2">
-                <h4>จำนวนตัวอย่าง</h4>
+                <h4 class="color-text-medium">จำนวนตัวอย่าง</h4>
                 <input  type="number"
                         class="form-control text-right"
                         :value="batch.sampleCount"
@@ -287,24 +293,24 @@
                         @blur="onSampleCountInputBlur($event.target.value, batch)" >
               </div>
             </div>
-            <div class="form-row no-gutters mt-3">
-              <div class="col-2">
+            <div class="form-row no-gutters border-bottom-lighter pb-1">
+              <div class="col-2 color-text-medium">
                 <h4>
                   เลือกการทดสอบ
                 </h4>
               </div>
-              <div class="col-10">
+              <div class="col-10 mt-2">
                 <div class="form-row">
                   <div class="col-6"></div>
                   <div class="col-2 text-right">
-                    <h5 class="color-light-text">
+                    <h5 class="color-text-medium">
                       ราคา/ตัวอย่าง
                     </h5>
                   </div>
                   <div class="col-1">
                   </div>
                   <div class="col-2">
-                    <h5 class="color-light-text text-right">
+                    <h5 class="color-text-medium text-right">
                       ยอดค่าบริการ
                     </h5>
                   </div>
@@ -315,7 +321,7 @@
             <div  v-for="category in testType(batch.testType).testCategories"
                   :key="category.name"
                   class="row no-gutters test-row">
-              <div class="col-2 pr-2">
+              <div class="col-2 pr-2 color-text-medium">
                 <h5>
                   {{ category.name }}
                 </h5>
@@ -363,7 +369,7 @@
             <div v-if="batch.testType === 4"
                  class="row no-gutters border-bottom-lighter">
               <div class="col-2 pt-2 pr-2">
-                <h5>รายการอื่นๆ</h5>
+                <h5 class="color-text-medium">รายการอื่นๆ</h5>
               </div>
               <div class="col-10 position-relative py-1">
                 <div v-for="(customTest, idx) of batch.customTests"
@@ -392,7 +398,7 @@
               </div>
             </div>
     
-            <div class="form-row no-gutters mt-2">
+            <div class="form-row no-gutters pt-2 pb-4 border-bottom-lighter">
               <div class="col-2"></div>
               <div class="col-10">
                 <div class="form-row">
@@ -416,7 +422,7 @@
                       รายการทดสอบ
                     </h5>
                   </div>
-                  <div class="col-1 text-right no-wrap">
+                  <div class="col-1 text-right nowrap">
                     <h5 class="color-light-text mt-2 ml-3">
                       รวมเป็น
                     </h5>
@@ -438,12 +444,12 @@
             </div>
   
             <div v-if="includesSensitivityTest(batch)"
-                 class="form-row no-gutters mt-4 py-3 border-bottom-lighter border-top-lighter">
+                 class="form-row no-gutters pt-4  border-bottom-lighter">
               <div class="col-2">
                 <h5 class="mb-2">
                   เลือกยาต้านจุลชีพเพื่อการทดสอบความไว
                 </h5>
-                <h5>
+                <h5 class="color-text-light">
                   (เลือกได้ถึง 8 รายการ)
                 </h5>
               </div>
@@ -464,54 +470,54 @@
             </h4>
           </div>
   
-          <div v-if="batch.sampleCount <= 0" class="col-10">
-            <h4 class="text-primary">
+          <div v-show="batch.sampleCount <= 0" class="col-10">
+            <i class="fas fa-exclamation-triangle mr-2 text-primary d-inline" />
+            <h4 class="text-primary d-inline">
               กรุณาใส่จำนวนตัวอย่างก่อน
             </h4>
           </div>
   
-          <div v-if="batch.sampleCount > 0" class="col-10">
+          <div v-show="batch.sampleCount > 0" class="col-10">
   
             <div class="form-row w-100">
-              <div class="form-group form-group-sm col-1">
+              <div class="form-group form-group-sm col-1 text-right mr-3">
                 <h5>หมายเลข</h5>
               </div>
-              <div class="form-group form-group-sm col-2">
-                <h5>ข้อมูล</h5>
-              </div>
-              <div class="form-group form-group-sm col-2">
-                <h5>ข้อมูล</h5>
-              </div>
-              <div class="form-group form-group-sm col-2">
-                <h5>ข้อมูล</h5>
+              <div class="form-group form-group-sm col-5">
+                <h5>ID ตัวอย่าง</h5>
               </div>
               <div class="form-group form-group-sm col-5">
-                <h5>ข้อมูล</h5>
+                <h5>ข้อมูลเพิ่มเติม</h5>
               </div>
             </div>
-            <div v-for="(sample, idxSet) in batch.samples"
-                 :key="idxSet"
-                 :id="`batch${idxBatch+1}-set${idxSet+1}`"
+
+            <div v-for="(sample, idxSample) of batch.samples"
+                 :key="idxSample"
+                 :id="`batch${idxBatch+1}-set${idxSample+1}`"
                  class="form-row w-100">
-              <div class="form-group form-group-sm col-1">
-                <h5>{{ idxSet+1 }}</h5>
-              </div>
-              <div class="form-group form-group-sm col-2">
-                <input type="text" class="form-control form-control-sm">
-              </div>
-              <div class="form-group form-group-sm col-2">
-                <input type="text" class="form-control form-control-sm">
-              </div>
-              <div class="form-group form-group-sm col-2">
-                <input type="text" class="form-control form-control-sm">
+              <div class="form-group form-group-sm col-1 text-right mr-3">
+                <h5>{{ idxSample+1 }}</h5>
               </div>
               <div class="form-group form-group-sm col-5">
-                <input type="text" class="form-control form-control-sm">
+                <input  type="text"
+                        class="form-control form-control-sm"
+                        v-model.lazy="sample.sampleId">
+              </div>
+              <div class="form-group form-group-sm col-5">
+                <input  type="text"
+                        class="form-control form-control-sm"
+                        v-model.lazy="sample.extraInfo">
               </div>
             </div>
-            <a type="button" data-toggle="modal" data-target="#sampleInfoModal" class="btn btn-secondary">
-              เติมข้อมูลทีละหลายช่อง
-            </a>
+
+            <div class="form-row w-100">
+              <div class="col-1 mr-3"></div>
+              <div class="col-10 p-0">
+                <form-sample-info-multifill
+                  :max-samples="batch.sampleCount"
+                  @add="updateSampleDetails(batch, $event)" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -531,18 +537,9 @@
           </div>
 
           <div class="col-10">
-            <div class="form-row mb-3">
-              <div class="form-group col-6">
-                <h4>ชื่อนํ้ายาฆ่าเชื้อ</h4>
-                <input type="text"
-                       class="form-control"
-                       v-model.lazy="batch.disinfectantName">
-              </div>
-            </div>
-
-            <h4 class="mb-1">
+            <h5 class="mb-1">
               ทดสอบประสิทธิภาพยาฆ่าเชื้อต่อ
-            </h4>
+            </h5>
             <div class="form-row mb-3">
               <div class="form-group col-6 mb-0">
                 <form-inline-select
@@ -552,8 +549,31 @@
               </div>
             </div>
 
-            <h3 class="mb-3">รายการทดสอบสำหรับ</h3>
+            <h4>ชื่อนํ้ายาฆ่าเชื้อ</h4>
+            <h5 v-show="!submission.info.reportLang.thai && !submission.info.reportLang.eng"
+                class="text-primary">
+              <i class="fas fa-exclamation-triangle mr-2" />กรุณาเลือกภาษารายงานอย่างน้อย 1 ภาษา
+            </h5>
+            <div class="form-row">
+              <div  v-show="submission.info.reportLang.thai"
+                    class="form-group col-6 mb-2">
+                <label>ภาษาไทย</label>
+                <input type="text"
+                       class="form-control"
+                       v-model.lazy="batch.disinfectantName">
+              </div>
+            </div>
+            <div class="form-row mb-3">
+              <div  v-show="submission.info.reportLang.eng"
+                    class="form-group col-6">
+                <label>English</label>
+                <input type="text"
+                        class="form-control"
+                        v-model.lazy="batch.disinfectantNameEng">
+              </div>
+            </div>
 
+            <h3 class="my-3">รายการทดสอบ</h3>
             <div class="form-row border-bottom-lighter px-3 mb-1">
               <div class="col-4">
                 <h5 class="color-light-text">
@@ -681,68 +701,6 @@
 
   </form>
 
-  <!-- <div class="modal fade" id="sampleInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-        <div class="modal-body">
-          <h5>เลขที่ตัวอย่าง</h5>
-          <div class="form-row">
-            <div class="form-group col-1 mb-0">
-              <h5 class=" color-dark-grey">
-                จาก
-              </h5>
-            </div>
-            <div class="form-group col-1 mb-0">
-              <h5 class=" color-dark-grey">
-                ถึง
-              </h5>
-            </div>
-            <div class="form-group col-2 mb-0">
-              <h5 class=" color-dark-grey">
-                ชื่อตัวอย่าง
-              </h5>
-            </div>
-            <div class="form-group col-5 mb-0">
-              <h5 class=" color-dark-grey">
-                รายละเอียด
-              </h5>
-            </div>
-          </div>
-          <div class="form-row w-100 position-relative">
-            <div class="form-group form-group-sm col-1">
-              <input type="number"
-                    class="form-control form-control-sm" />
-            </div>
-            <div class="form-group form-group-sm col-1">
-              <input type="number"
-                    class="form-control form-control-sm" />
-            </div>
-            <div class="form-group form-group-sm col-2">
-              <input type="text"
-                    class="form-control form-control-sm" />
-            </div>
-            <div class="form-group form-group-sm col-5">
-              <input type="text"
-                    class="form-control form-control-sm" />
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
 </div>
 </template>
 
@@ -758,7 +716,7 @@
 
 .test-row {
   &:not(:last-child) {
-    border-bottom: 1px solid $light-accent;
+    border-bottom: 1px solid $accent;
     padding-bottom: 5px;
   }
   &:not(:first-child) {
@@ -824,8 +782,8 @@ a.btn.btn-x {
   position: sticky;
   top: 70px;
   background: $bg;
-  border-bottom: 1px solid $light-accent;
-  z-index: 9999;
+  border-bottom: 1px solid $accent;
+  z-index: 999;
   box-shadow: 0 5px 5px -5px #333;
   a {
     &.button {
@@ -833,7 +791,7 @@ a.btn.btn-x {
       padding: 0.1em 0.3em;
     }
     &.active {
-      background: $light-accent;
+      background: $accent;
       color: $chula;
     }
   }
@@ -897,12 +855,14 @@ import { mapGetters } from 'vuex'
 import { merge } from 'lodash'
 import FormDisinfectantTestInput from '@/util/FormDisinfectantTestInput.vue'
 import FormAntibioticsSensitivity from '@/util/FormAntibioticsSensitivity.vue'
+import FormSampleInfoMultifill from '@/util/FormSampleInfoMultifill.vue'
 
 export default {
   name: 'sample-info',
   components: {
     FormDisinfectantTestInput,
-    FormAntibioticsSensitivity
+    FormAntibioticsSensitivity,
+    FormSampleInfoMultifill
   },
   data () {
     return {
@@ -985,6 +945,7 @@ export default {
           {
             testType: 5,
             disinfectantName: '',
+            disinfectantNameEng: '',
             sampleCount: null,
             totalPrice: 0,
             tests: {},
@@ -1014,6 +975,7 @@ export default {
         batch.tests = Object.assign({}, batch.tests, newTests)
       } else if (this.isDisinfectantSubmission) {
         batch.disinfectantName = ''
+        batch.disinfectantNameEng = ''
         batch.tests = {}
       }
     },
@@ -1051,10 +1013,13 @@ export default {
       // Update batch samples list
       const diff = Math.abs(batch.sampleCount - batch.samples.length)
       if (batch.sampleCount > batch.samples.length) {
-        const arr = Array(diff).fill({
-          // sample template goes there
-        })
-        batch.samples.push(...arr)
+        for (let i = batch.samples.length; i < batch.sampleCount; i++) {
+          batch.samples[i] = Object.assign(
+            {},
+            batch.samples[i],
+            { sampleId: null, extraInfo: null }
+          )
+        }
       } else if (batch.sampleCount < batch.samples.length) {
         batch.samples.splice(batch.samples.length - diff, diff)
       }
@@ -1069,6 +1034,18 @@ export default {
         .filter( test => sensitivityTestIds.includes(test.id) )
         .reduce( (acc, test) => acc || test.selected, false)
       return sensitivityTestActive || (batch.customTests && batch.customTests.length > 0) 
+    },
+
+    updateSampleDetails(batch, payload) {
+      for (const range of payload.ranges) {
+        if (range.length > 1) {
+          for (let i = range[0]-1; i < range[1]; i++) {
+            batch.samples.splice(i, 1, { sampleId: payload.sampleId, extraInfo: payload.extraInfo })
+          }
+        } else {
+          batch.samples.splice(range[0]-1, 1, { sampleId: payload.sampleId, extraInfo: payload.extraInfo })
+        }
+      }
     },
 
     addBatch () {
@@ -1111,13 +1088,16 @@ export default {
 
     addDisinfectantTest (val, batch) {
       batch.tests = Object.assign({}, batch.tests, merge(batch.tests, val))
+      const basePrice = 3000
       // Total tests
       const totalTests = Object.values(batch.tests)
         .reduce( (acc, test) => {
           return acc + Object.values(test).flat().length
         }, 0)
+      //const numCells = 1
+
       // Calculate Total Price
-      batch.totalPrice = totalTests * 3000
+      batch.totalPrice = basePrice + basePrice*(totalTests)
     },
 
     removeBatch (idx) {

@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    loggedIn: false,
+    loggedIn: true,
     nav: [
       {
         path: '/',
@@ -321,8 +321,8 @@ export default new Vuex.Store({
             { id: 68, name: 'PRRSV (EU) (MARC145)',  virusType: 2, price: 3000 },
             { id: 69, name: 'HP-PRRSV (MARC145)',    virusType: 2, price: 3000 },
             { id: 70, name: 'SIV (H1N1) (MDCK)',     virusType: 3, price: 3000 },
-            { id: 71, name: 'H5N1',                  virusType: 4, price: 3000 },
-            { id: 72, name: 'NDV',                   virusType: 5, price: 3000 },
+            { id: 71, name: 'H5N1 (EGG)',            virusType: 4, price: 3000 },
+            { id: 72, name: 'NDV (EGG)',             virusType: 4, price: 3000 },
             { id: 73, name: 'PCV2 (PK15)',           virusType: 6, price: 3000 },
           ]
         },
@@ -377,9 +377,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    change_lang: (context, lang) => {
-      context.commit('UPDATE_LANG', lang)
-    },
     loginout: (context, loggedInState) => {
       context.commit('LOG_IN_OUT', loggedInState)
     }

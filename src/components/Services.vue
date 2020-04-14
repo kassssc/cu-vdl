@@ -9,7 +9,7 @@
           {{ (i + 1) + '. ' + $t(`services.list[${i}]`) }}
         </h3>
         <a :href="'/downloads/' + downloads[i]" download target="_blank"
-           class="btn btn-secondary mr-1" >
+           class="btn btn-grey mr-1" >
           <i class="fas fa-cloud-download-alt mr-1 mt-1"></i>
           {{ $t(`services.download`) }}
         </a>

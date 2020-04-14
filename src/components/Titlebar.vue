@@ -25,10 +25,21 @@
     </router-link>
     <div v-if="loggedIn"
           class="d-flex align-items-center">
-      <h5 class="mx-3">
+      <div class="position-relative ml-1 mr-3">
+        <button class="btn btn-transparent btn-icon">
+          <i class="fas fa-bell"></i>
+        </button>
+        <div class="notifications-badge">
+          8
+        </div>
+      </div>
+      <h5 class="mx-1">
         สมควร สมสกุล
       </h5>
-      <button class="btn btn-transparent"
+      <button class="btn btn-transparent btn-icon mx-1">
+        <i class="fas fa-cog"></i>
+      </button>
+      <button class="btn btn-transparent btn-icon ml-1"
               @click="logout()">
         <i class="fas fa-sign-out-alt" />
       </button>
@@ -39,17 +50,17 @@
 
 <style scoped lang="scss">
 #titlebar {
-  z-index: 9999;
+  z-index: 999;
   position: fixed;
   top: 0; left: 0;
   padding: 1em 30px;
   width: 100%; 
   height: 95px;
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid transparent;
   transition: all 100ms ease-in-out;
   &.scrolled {
-    border-bottom: 1px solid $light-accent;
+    border-bottom: 1px solid $accent;
     height: 70px;
     #logo-img {
       width: 40px;
@@ -67,7 +78,17 @@
     transition: all 100ms ease-in-out;
   }
 }
-.lang-selector {
+.notifications-badge {
+  position: absolute;
+  text-align: center;
+  font-weight: bold;
+  width: 25px;
+  top: -9px;
+  right: -10px;
+  border-radius: 4px;
+  @include color-chula-white;
+}
+/* .lang-selector {
   height: 30px;
   width: 60px;
   border-radius: 5px;
@@ -89,7 +110,7 @@
       cursor: default;
     }
   }
-}
+} */
 // Firefox style fixes for no backdrop-filter support
 @-moz-document url-prefix(){
   #titlebar {

@@ -11,7 +11,7 @@
       *Filters go here*
     </h4>
   </div>
-  <div class="d-flex flex-column full-width">
+  <div class="d-flex flex-column w-100">
     <div class="d-flex justify-content-between align-items-center">
       <h2>
         {{ $t(`track.title`) }}
@@ -94,7 +94,7 @@ button.sort-btn {
   font-size: 1.3rem;
   &.selected {
     color: $chula;
-    background: $light-accent;
+    background: $accent;
   }
   &:hover {
     i { opacity: 1; }
@@ -149,13 +149,13 @@ table {
   }
   tbody {
     tr {
-      border-bottom: 1px solid $medium-accent;
+      border-bottom: 1px solid $accent;
       &:hover {
-        background: $light-accent;
+        background: $accent;
         cursor: pointer;
       }
       td {
-        color: $light-text;
+        color: $text-medium;
         padding: 0.3em 0.55em;
       }
     }

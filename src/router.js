@@ -1,23 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from './views/Login'
 import MainContent from './views/MainContent.vue'
 import Home from './views/Home.vue'
-import Submissions from './views/Submissions.vue'
-import SubmissionsList from './views/SubmissionsList.vue'
-import ViewSubmission from './views/ViewSubmission.vue'
-import SubmitSamples from './views/SubmitSamples.vue'
-import SampleInfo from './views/SampleInfo.vue'
-import ReviewSubmission from './views/ReviewSubmission.vue'
-
+import store from './store.js'
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
       component: MainContent,
-      children :  [
+      children: [
         {
           path: '',
           name: 'home',
@@ -25,33 +18,37 @@ export default new Router({
         },
         {
           path: '/tracksubmissions',
-          component: Submissions,
+          component: () => import(/* webpackChunkName: "group-submissions" */ '@/views/Submissions.vue'),
           children: [
             {
               path: '',
               name: 'submissionslist',
-              component: SubmissionsList
+              component: () => import(/* webpackChunkName: "group-submissions" */ '@/views/SubmissionsList.vue'),
+              meta: { requiresLogin: true }
             },
             {
               path: 'view/:id',
               name: 'viewsubmission',
-              component: ViewSubmission
+              component: () => import(/* webpackChunkName: "group-submissions" */ '@/views/ViewSubmission.vue'),
+              meta: { requiresLogin: true }
             }
           ]
         },
         {
           path: '/submitsamples',
-          component: SubmitSamples,
+          component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/SubmitSamples.vue'),
           children: [
             {
               path: '',
               name: 'submitsamples',
-              component: SampleInfo
+              component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/SampleInfo.vue'),
+              meta: { requiresLogin: true }
             }, 
             {
               path: 'review',
               name: 'reviewsubmission',
-              component: ReviewSubmission
+              component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/ReviewSubmission.vue'),
+              meta: { requiresLogin: true }
             }
           ]
         }
@@ -60,7 +57,11 @@ export default new Router({
     {
       path: '/login',
       name: 'login',
-      component: Login
+      component: () => import(/* webpackChunkName: "group-login" */ '@/views/Login.vue'),
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ],
   hash: false,
@@ -69,3 +70,15 @@ export default new Router({
     return { x: 0, y: 0 }
   }
 })
+
+// Route Guard
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresLogin) &&
+      !store.state.loggedIn) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
+})
+
+export default router

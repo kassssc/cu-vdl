@@ -104,7 +104,7 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'contact-us',
+  name: 'contact',
   components: { },
   computed: {
     ...mapGetters([

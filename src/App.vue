@@ -4,18 +4,10 @@
 </div>
 </template>
 
-<style lang="scss">
-@import "@/styles/bootstrap-override.scss";
-@import "@/styles/styles.scss";
-@import "@/styles/helpers.scss";
-</style>
-
 <script>
 
 export default {
   name: 'app',
-  components: {
-  },
   data() {
     return {
     }

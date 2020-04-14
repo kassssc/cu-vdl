@@ -13,6 +13,11 @@ import FormInlineSelect from '@/util/FormInlineSelect.vue'
 
 Vue.config.productionTip = false
 
+import 'bootstrap';
+
+import '@/styles/bootstrap-override.scss'
+import '@/styles/styles.scss'
+
 Vue.use(VueScrollactive)
 Vue.use(VueScrollTo)
 
@@ -20,18 +25,16 @@ Vue.component('checkbox', Checkbox)
 Vue.component('datepicker', Datepicker)
 Vue.component('form-inline-select', FormInlineSelect)
 
-Vue.mixin({
+/* Vue.mixin({
   methods: {
     gen_URL: function (url) {
       return 'url(' + require('./assets/' + url) + ')'
     },
   }
 })
-
+ */
 Vue.directive('focus-on-create', {
-  inserted: function (el) {
-    el.focus()
-  }
+  inserted: el => el.focus()
 })
 
 new Vue({

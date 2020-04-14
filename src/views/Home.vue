@@ -8,9 +8,9 @@
       {{ $t(`home.details`) }}
     </h4>
   </div>
-  <services-section />
-  <org-chart-section />
-  <contact-section />
+  <services />
+  <org-chart />
+  <contact />
 </div>  
 </template>
 
@@ -22,9 +22,9 @@ import Contact from '@/components/Contact'
 export default {
   name: 'home',
   components: {
-    'services-section': Services,
-    'org-chart-section': OrgChart,
-    'contact-section': Contact
+    Services,
+    OrgChart,
+    Contact
   }
 }
 </script>

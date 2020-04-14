@@ -3,15 +3,18 @@ $red: #D2767F ;
 $orange: #D28962;
 
 //*
-$chula: #BE5877;
-$bg: #FFFFFF;
-$text: #444444;
-$light-text: #606060;
-$lighter-accent: #F6F6F6;
-$light-accent: #E5E5E5;
-$medium-accent: #CCCCCC;
-$muted: #999999;
-$placeholder: #A7A7A7;
+$chula:   #be5877;
+$bg:      #fefcfa;
+
+$text:       #555250;
+$text-medium:#5F5C5A;
+$text-light: #736F6C;
+$muted:      #9B9897;
+$placeholder:#b0adaa;
+
+$accent-dark:   #d6cfcc;
+$accent:        #eae5e2;
+$accent-light:  #f8f4f1;
 /*/
 $chula: #C0818C;
 $bg: #20201E;
@@ -31,4 +34,9 @@ $placeholder: #555555;
        -moz-user-select: none; /* Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+@mixin color-chula-white {
+  background: $chula;
+  color: $bg;
 }

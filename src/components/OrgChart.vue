@@ -93,32 +93,32 @@
 }
 .label-tag {
   background: $chula;
+  color: $bg;
   border-radius: 5px;
   border: 2px solid transparent;
   padding: 0em 0.3em;
-  color: $bg;
   font-weight: bold;
   font-size: 1.3rem;
   text-align: center;
   min-width: 125px;
   &::selection {
     color: $chula; /* WebKit/Blink Browsers */
-    background: rgba(245, 240, 235, 0.99);
+    background: rgba($bg, 0.99);
   }
   &::-moz-selection {
     color: $chula; /* Gecko Browsers */
-    background: rgba(245, 240, 235, 0.99);
+    background: rgba($bg, 0.99);
   }
   &.outline {
     border: 2px solid $chula;
     color: $chula;
     background: transparent;
     &::selection {
-      background: rgba(190,88,119,.99); /* WebKit/Blink Browsers */
+      background: rgba($chula,.99); /* WebKit/Blink Browsers */
       color: $bg;
     }
     &::-moz-selection {
-      background: rgba(190,88,119,.99); /* Gecko Browsers */
+      background: rgba($chula,.99); /* Gecko Browsers */
       color: $bg;
     }
   }

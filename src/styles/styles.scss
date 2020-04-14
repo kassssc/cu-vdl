@@ -58,7 +58,7 @@ button.btn, a.btn {
   }
   &.btn-icon {
     i {
-      transition: 200ms linear;
+      transition: transform 200ms linear;
     }
     &:hover {
       color: $chula;

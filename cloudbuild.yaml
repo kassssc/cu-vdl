@@ -9,4 +9,4 @@ steps:
 
 # Deploy
 - name: 'gcr.io/cuvetlab/firebase'
-  args: ['deploy', '--project=cuvetlab', '--only=hosting']
+  args: ['deploy', '--only=hosting']

@@ -1,705 +1,755 @@
 <template>
 <div class="d-flex flex-column">
 
-  <div id="submit-samples-nav" class="d-flex align-items-center py-3">
-    <scrollactive active-class="active"
-                  :offset="220"
-                  :modifyUrl="false"
-                  class="d-flex align-items-center">
-      <div class="d-flex align-items-center">
-        <a  href="#info"
-            class="btn btn-transparent btn-sm scrollactive-item">
-          ข้อมูลเบื้องต้น
-        </a>
-        <i class="fas fa-long-arrow-alt-right mx-1" />
-      </div>
-      <div class="d-flex align-items-center">
-        <a  href="#report"
-            class="btn btn-transparent btn-sm scrollactive-item">
-          รายงาน
-        </a>
-        <i class="fas fa-long-arrow-alt-right mx-1" />
-      </div>
-      <div  v-for="(section, idx) in submission.batches"
-            :key="idx"
-            class="d-flex align-items-center">
-        <a  :href="'#batch' + (idx+1)"
-            class="btn btn-transparent btn-sm scrollactive-item">
-          {{ getBatchNavLabel(idx + 1) }}
-        </a>
-        <i class="fas fa-long-arrow-alt-right mx-1" />
-      </div>
-    </scrollactive>
-    <router-link  :to="{name: 'reviewsubmission'}"
-                  tag="a"
-                  class="btn btn-transparent btn-sm">
-      {{ $t(`submit.review`) }}
-    </router-link>
-  </div>
-
-  <form class="font-chatthai d-flex flex-column px-4 pb-5 mb-5 max-width-1350 transition">    
-    
-    <div id="info" class="row w-100 px-4 pt-5">
-      <div class="col-2">
-        <h3>
-          ข้อมูลเบื้องต้น
-        </h3>
-      </div>
-      <div class="col-10">
-        <h4 class="mb-1 color-text-medium">
-          ประเภทการตรวจ
-        </h4>
-        <div class="form-row mb-4">
-          <div class="form-group col-6">
-            <form-inline-select :options="reportTypes"
-                                v-model="submission.type"
-                                :warnBeforeChange="false"
-                                warningMsg="ข้อมูลที่ถูกกรอกไว้แล้วด้านล่างจะหายไปถ้าท่านเปลี่ยนตัวเลือกนี้"
-                                @change="onReportTypeChange()" />
-          </div>
+  <template v-if="!inReviewMode">
+    <div class="submit-samples-nav d-flex align-items-center py-3">
+      <scrollactive active-class="active"
+                    :offset="220"
+                    :modifyUrl="false"
+                    class="d-flex align-items-center">
+        <div class="d-flex align-items-center">
+          <a  href="#info"
+              class="btn btn-transparent btn-sm scrollactive-item">
+            ข้อมูลเบื้องต้น
+          </a>
+          <i class="fas fa-long-arrow-alt-right mx-1" />
         </div>
-        <div class="form-row">
-          <div class="form-group col-4">
-            <label>
-              ชื่อผู้ส่ง
-            </label>
-            <input  type="text"
-                    class="form-control"
-                    v-model="submission.info.submittorName"
-                    disabled >
-          </div>
-          <div class="form-group col-2">
-            <label>
-              วันที่ส่งตัวอย่าง
-            </label>
-            <datepicker format="dd/MM/yy"
-                        v-model="submission.info.submitDate"
-                        :disabled="true"
-                        :bootstrap-styling="true">
-              <div slot="afterDateInput" class="append-icon">
-                <i class="far fa-calendar-alt" />
-              </div>
-            </datepicker>
-          </div>
+        <div class="d-flex align-items-center">
+          <a  href="#report"
+              class="btn btn-transparent btn-sm scrollactive-item">
+            รายงาน
+          </a>
+          <i class="fas fa-long-arrow-alt-right mx-1" />
         </div>
-
-        <div class="form-row">
-          <div class="form-group col-4">
-            <label>
-              องค์กรเจ้าของตัวอย่าง <i class="fas fa-star-of-life" />
-            </label>
-            <select class="form-control"
-                    v-model="submission.info.orgId">
-              <option>เลือก...</option>
-              <option>ฟาร์มสมควร</option>
-              <option>ฟาร์มสมหมาย</option>
-              <option>ฟาร์มสมคิด</option>
-              <option>ฟาร์มสมชาย</option>
-            </select>
-          </div>
-          <div v-if="isGeneralSubmission" class="form-group col-2">
-            <label>
-              วันที่เก็บตัวอย่าง
-            </label>
-            <datepicker format="dd/MM/yy"
-                        v-model="submission.info.sampleTakenDate"
-                        :bootstrap-styling="true">
-              <div slot="afterDateInput" class="append-icon">
-                <i class="far fa-calendar-alt" />
-              </div>
-            </datepicker>
-          </div>
-          <div v-if="isGeneralSubmission" class="form-group col-4">
-            <label>
-              ชนิดตัวอย่าง <i class="fas fa-star-of-life" />
-            </label>
-            <select class="form-control"
-                    v-model="submission.info.sampleTypeId">
-              <option>เลือก...</option>
-              <option>เลือด</option>
-              <option>นํ้าลาย</option>
-            </select>
-          </div>
+        <div  v-for="(section, idx) in submission.batches"
+              :key="idx"
+              class="d-flex align-items-center">
+          <a  :href="'#batch' + (idx+1)"
+              class="btn btn-transparent btn-sm scrollactive-item">
+            {{ getBatchNavLabel(idx + 1) }}
+          </a>
+          <i class="fas fa-long-arrow-alt-right mx-1" />
         </div>
-
-        <div v-if="isGeneralSubmission" class="form-row">
-          <div class="form-group col-3">
-            <label>
-              ชนิดสัตว์
-            </label>
-            <select class="form-control"
-                    v-model="submission.info.animalTypeId">
-              <option>เลือก...</option>
-              <option>สุกร</option>
-              <option>สุนัข</option>
-              <option>กระต่าย</option>
-              <option>ม้า</option>
-            </select>
-          </div>
-          <div class="form-group col-3">
-            <label>
-              พันธุ์
-            </label>
-            <input  type="text"
-                    class="form-control"
-                    v-model="submission.info.animalSpecies">
-          </div>
-          <div class="form-group col-4">
-            <label>
-              อายุ
-            </label>
-            <input  class="form-control"
-                    v-model="submission.info.animalAge">
-          </div>
-          <div class="form-group col-2">
-            <label>
-              จำนวนที่เลี้ยง
-            </label>
-            <input  type="number"
-                    class="form-control"
-                    v-model.number="submission.info.animalCount">
-          </div>
-        </div>
-
-        <div v-if="isGeneralSubmission" class="form-row">
-          <div class="form-group col-6">
-            <label>
-              ประวัติการป่วย
-            </label>
-            <textarea type="text" rows="4"
-                      class="form-control"
-                      v-model="submission.info.illness" />
-          </div>
-          <div class="form-group col-6">
-            <label>
-              ประวัติการทำวัคซีน
-            </label>
-            <textarea type="number" rows="4"
-                      class="form-control"
-                      v-model="submission.info.vaccinations" />
-          </div>
-        </div>
-      </div>
+      </scrollactive>
+      <button class="btn btn-transparent btn-sm"
+              @click="inReviewMode = true">
+        {{ $t(`submit.review`) }}
+      </button>
     </div>
-    <!-- END INFO SECTION -->
   
-    <div  id="report"
-          class="row w-100 border-bottom-pink p-4">
-      <div class="col-2">
-        <h3>
-          รายงาน
-        </h3>
-      </div>
-      <div class="col-10">
-        <h4 class="d-inline color-text-medium">
-          {{ $t(`general.notify`)}}
-        </h4>
-        <i class="fas fa-star-of-life text-primary small-icon d-inline" />
-        
-        <div class="form-row">
-          <div class="form-group col-4">
-            <label>
-              {{ $t(`general.email`)}}
-            </label>
-            <input  type="text"
-                    class="form-control"
-                    v-model="submission.info.notifyBy.email">
-          </div>
-          <div class="form-group col-4">
-            <label>
-              {{ $t(`general.phone`)}}
-            </label>
-            <input  type="number"
-                    class="form-control"
-                    v-model="submission.info.notifyBy.phone">
-          </div>
-          <div class="form-group col-4">
-            <label>
-              {{ $t(`general.fax`)}}
-            </label>
-            <input  type="number"
-                    class="form-control"
-                    v-model="submission.info.notifyBy.fax">
-          </div>
+    <form class="font-chatthai d-flex flex-column px-3 py-0 pb-xl-5 mb-5 max-width-1300">    
+      
+      <div id="info" class="row w-100 pt-4 pt-xl-5">
+        <div class="col-xl-2 col-12">
+          <h3 class="mb-2">
+            ข้อมูลเบื้องต้น
+          </h3>
         </div>
-  
-        <template v-if="isDisinfectantSubmission">
-          <h4 class="d-inline">รายงานเป็นภาษา </h4>
-          <i class="fas fa-star-of-life text-primary small-icon d-inline" />
-          <div class="form-row">  
-            <div class="form-group d-flex col-4 mb-2">
-              <checkbox label="ไทย"
-                        class="mr-4"
-                        v-model="submission.info.reportLang.thai" />
-              <checkbox label="English"
-                        v-model="submission.info.reportLang.eng" />
+        <div class="col-12 col-xl-10">
+          <h4 class="mb-1 color-text-medium">
+            ประเภทการตรวจ
+          </h4>
+          <div class="form-row mb-4">
+            <div class="form-group col-8 col-xl-6">
+              <form-inline-select :options="reportTypes"
+                                  v-model="submission.type"
+                                  :warnBeforeChange="false"
+                                  warningMsg="ข้อมูลที่ถูกกรอกไว้แล้วด้านล่างจะหายไปถ้าท่านเปลี่ยนตัวเลือกนี้"
+                                  @change="onReportTypeChange()" />
             </div>
           </div>
-          <h5 v-show="isDisinfectantSubmission && !submission.info.reportLang.thai && !submission.info.reportLang.eng"
-              class="text-primary">
-            <i class="fas fa-exclamation-triangle mr-2" />กรุณาเลือกภาษารายงานอย่างน้อย 1 ภาษา
-          </h5>
-        </template>
-      </div>
-    </div>
-    <!-- END REPORT SECTION -->
-  
-    <!-- BATCH SECTION -->
-    <div  v-for="(batch, idxBatch) in submission.batches"
-          :key="idxBatch"
-          :id="'batch' + (idxBatch+1)"
-          class="batch expand-in-batch submission-section position-relative border-bottom-medium px-4 py-5">
-      <a  v-if="hasMultipleBatches"
-          class="btn btn-x batch-section"
-          @click="removeBatch(idxBatch)">
-        <i class="fas fa-times" />
-      </a>
-
-      <!-- GENERAL BATCH -->
-      <div v-if="isGeneralSubmission">
-        <div class="row w-100">
-          <div class="col-2">
-            <h3 class="mb-2">
-              {{ 
-                  hasMultipleBatches?
-                  `กลุ่มการทดสอบ ${idxBatch+1}` : 'รายการทดสอบ'
-              }}
-            </h3>
-            <h5 class="ml-3 color-light-text">
-              {{ `งาน${testType(batch.testType).name}`}}
-            </h5>
-            <h5 v-if="batch.sampleCount" class="ml-3 color-light-text">
-              {{ `${batch.sampleCount} ตัวอย่าง` }}
-            </h5>
-          </div>
-          <div class="col-10">
-            <h4 class="mb-1 color-text-medium">
-              เลือกประเภทงานทดสอบ
-            </h4>
-            <div class="form-row mb-4">
-              <div class="form-group col-8">
-                <form-inline-select :options="tests(submission.type)"
-                                    v-model="batch.testType"
-                                    @change="updateBatchTestInfo(batch)" />
-              </div>
+          <div class="form-row">
+            <div class="form-group col-4">
+              <label>
+                ชื่อผู้ส่ง
+              </label>
+              <input  type="text"
+                      class="form-control"
+                      v-model="submission.info.submittorName"
+                      disabled >
             </div>
-            <div class="form-row">
-              <div class="form-group col-2">
-                <h4 class="color-text-medium">จำนวนตัวอย่าง</h4>
-                <input  type="number"
-                        class="form-control text-right"
-                        :value="batch.sampleCount"
-                        @focus="$event.target.select()"
-                        @blur="onSampleCountInputBlur($event.target.value, batch)" >
-              </div>
-            </div>
-            <div class="form-row no-gutters border-bottom-lighter pb-1">
-              <div class="col-2 color-text-medium">
-                <h4>
-                  เลือกการทดสอบ
-                </h4>
-              </div>
-              <div class="col-10 mt-2">
-                <div class="form-row">
-                  <div class="col-6"></div>
-                  <div class="col-2 text-right">
-                    <h5 class="color-text-medium">
-                      ราคา/ตัวอย่าง
-                    </h5>
-                  </div>
-                  <div class="col-1">
-                  </div>
-                  <div class="col-2">
-                    <h5 class="color-text-medium text-right">
-                      ยอดค่าบริการ
-                    </h5>
-                  </div>
+            <div class="form-group col-2">
+              <label>
+                วันที่ส่งตัวอย่าง
+              </label>
+              <datepicker format="dd/MM/yy"
+                          v-model="submission.info.submitDate"
+                          :disabled="true"
+                          :bootstrap-styling="true">
+                <div slot="afterDateInput" class="append-icon">
+                  <i class="far fa-calendar-alt" />
                 </div>
-              </div>
+              </datepicker>
             </div>
+          </div>
   
-            <div  v-for="category in testType(batch.testType).testCategories"
-                  :key="category.name"
-                  class="row no-gutters test-row">
-              <div class="col-2 pr-2 color-text-medium">
-                <h5>
-                  {{ category.name }}
-                </h5>
-              </div>
-              <div class="col-10">
-                <div  v-for="test in testCategory(batch.testType, category.id)"
-                      :key="test.id"
-                      class="test-row form-row align-items-end">
-                  <div class="form-group mb-0 col-6">
-                    <checkbox :label="test.name"
-                              :disabled="
-                                (test.min && batch.sampleCount < test.min) ||
-                                (test.max && batch.sampleCount > test.max)
-                              "
-                              :secondary-label="test.constraint"
-                              v-model="batch.tests[test.id].selected"
-                              @change="onTestCheckboxChange(batch, test.id)" />
-                  </div>
-                  <div class="form-group text-right mb-0 col-2">
-                    <h5>
-                      {{ `${test.price}฿` }}
-                    </h5>
-                  </div>
-                  <div class="form-group col-1 mb-0 text-right color-muted">
-                    <div v-if="batch.tests[test.id].selected && batch.sampleCount"
-                         class="d-flex">
-                      <i class="fas fa-times mt-1 small-icon"></i>
-                      <h5 class="mx-2">
-                        {{ batch.sampleCount }}
-                      </h5>
-                      <i class="fas fa-equals mt-1 small-icon"></i>
-                    </div>
-                  </div>
-                  <div class="form-group col-2 mb-0 text-right">
-                    <div v-if="batch.tests[test.id].selected && batch.sampleCount">
-                      <h5>
-                        {{ `${(test.price * batch.sampleCount).toLocaleString()}฿` }}
-                      </h5>
-                    </div>
-                  </div>
+          <div class="form-row">
+            <div class="form-group col-4">
+              <label>
+                องค์กรเจ้าของตัวอย่าง <i class="fas fa-star-of-life" />
+              </label>
+              <select class="form-control"
+                      v-model="submission.info.orgId">
+                <option>เลือก...</option>
+                <option>ฟาร์มสมควร</option>
+                <option>ฟาร์มสมหมาย</option>
+                <option>ฟาร์มสมคิด</option>
+                <option>ฟาร์มสมชาย</option>
+              </select>
+            </div>
+            <div v-if="isGeneralSubmission" class="form-group col-2">
+              <label>
+                วันที่เก็บตัวอย่าง
+              </label>
+              <datepicker format="dd/MM/yy"
+                          v-model="submission.info.sampleTakenDate"
+                          :bootstrap-styling="true">
+                <div slot="afterDateInput" class="append-icon">
+                  <i class="far fa-calendar-alt" />
                 </div>
-              </div>
+              </datepicker>
             </div>
-
-            <div v-if="batch.testType === 4"
-                 class="row no-gutters border-bottom-lighter">
-              <div class="col-2 pt-2 pr-2">
-                <h5 class="color-text-medium">รายการอื่นๆ</h5>
-              </div>
-              <div class="col-10 position-relative py-1">
-                <div v-for="(customTest, idx) of batch.customTests"
-                      :key="idx"
-                      class="position-relative form-row py-1">
-                  <div class="form-group col-8 mb-0">
-                    <input v-focus-on-create
-                           type="text"
-                           class="form-control form-control-sm"
-                           v-model="batch.customTests[idx]">
-                  </div>
-                  <a class="btn btn-sm btn-x custom-test"
-                     @click="batch.customTests.splice(idx, 1)">
-                    <i class="fas fa-times" />
-                  </a>
-                </div>
-                <a class="btn btn-primary btn-sm my-2"
-                   @click="batch.customTests.push('')">
-                  เพิ่มรายการ
-                </a>
-                <div v-if="batch.customTests.length > 0"
-                     class="custom-test-price text-wrap">
-                  <h5>รอประเมินราคา</h5>
-                  <h6 class="color-muted">(ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h6>
-                </div>
-              </div>
-            </div>
-    
-            <div class="form-row no-gutters pt-2 pb-4 border-bottom-lighter">
-              <div class="col-2"></div>
-              <div class="col-10">
-                <div class="form-row">
-                  <div class="col-5"></div>
-                  <div class="col-1 text-right">
-                    <h2 class="text-primary">
-                      {{ batch.sampleCount? batch.sampleCount : 0 }}
-                    </h2>
-                    <h5 class="color-light-text">
-                      ตัวอย่าง
-                    </h5>
-                  </div>
-                  <div class="col-2 text-right">
-                    <h2 class="text-primary">
-                      {{
-                        Object.values(batch.tests).reduce( (acc,t) => acc + (t.selected? 1:0), 0) +
-                          (batch.customTests? batch.customTests.length : 0)
-                      }}
-                    </h2>
-                    <h5 class="color-light-text">
-                      รายการทดสอบ
-                    </h5>
-                  </div>
-                  <div class="col-1 text-right nowrap">
-                    <h5 class="color-light-text mt-2 ml-3">
-                      รวมเป็น
-                    </h5>
-                  </div>
-                  <div class="col-2 text-right">
-                    <h2 class="text-primary">
-                      {{ `${batch.totalPrice.toLocaleString()}฿` }}
-                    </h2>
-                    <h5 class="color-light-text">
-                      ค่าบริการ
-                    </h5>
-                    <h6 v-if="batch.testType === 4"
-                        class="color-muted">
-                      *ไม่รวมรายการอื่นๆ
-                    </h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-  
-            <div v-if="includesSensitivityTest(batch)"
-                 class="form-row no-gutters pt-4  border-bottom-lighter">
-              <div class="col-2">
-                <h5 class="mb-2">
-                  เลือกยาต้านจุลชีพเพื่อการทดสอบความไว
-                </h5>
-                <h5 class="color-text-light">
-                  (เลือกได้ถึง 8 รายการ)
-                </h5>
-              </div>
-              <div class="col-10">
-                <form-antibiotics-sensitivity
-                  :options="testType(batch.testType).sensitivityTestOptions"
-                  v-model="batch.sensitivityTests" />
-              </div>
-            </div>
-  
-          </div>
-        </div>
-  
-        <div class="row w-100 mt-5">
-          <div class="col-2">
-            <h4>
-              รายละเอียดตัวอย่าง
-            </h4>
-          </div>
-  
-          <div v-show="batch.sampleCount <= 0" class="col-10">
-            <i class="fas fa-exclamation-triangle mr-2 text-primary d-inline" />
-            <h4 class="text-primary d-inline">
-              กรุณาใส่จำนวนตัวอย่างก่อน
-            </h4>
-          </div>
-  
-          <div v-show="batch.sampleCount > 0" class="col-10">
-  
-            <div class="form-row w-100">
-              <div class="form-group form-group-sm col-1 text-right mr-3">
-                <h5>หมายเลข</h5>
-              </div>
-              <div class="form-group form-group-sm col-5">
-                <h5>ID ตัวอย่าง</h5>
-              </div>
-              <div class="form-group form-group-sm col-5">
-                <h5>ข้อมูลเพิ่มเติม</h5>
-              </div>
-            </div>
-
-            <div v-for="(sample, idxSample) of batch.samples"
-                 :key="idxSample"
-                 :id="`batch${idxBatch+1}-set${idxSample+1}`"
-                 class="form-row w-100">
-              <div class="form-group form-group-sm col-1 text-right mr-3">
-                <h5>{{ idxSample+1 }}</h5>
-              </div>
-              <div class="form-group form-group-sm col-5">
-                <input  type="text"
-                        class="form-control form-control-sm"
-                        v-model.lazy="sample.sampleId">
-              </div>
-              <div class="form-group form-group-sm col-5">
-                <input  type="text"
-                        class="form-control form-control-sm"
-                        v-model.lazy="sample.extraInfo">
-              </div>
-            </div>
-
-            <div class="form-row w-100">
-              <div class="col-1 mr-3"></div>
-              <div class="col-10 p-0">
-                <form-sample-info-multifill
-                  :max-samples="batch.sampleCount"
-                  @add="updateSampleDetails(batch, $event)" />
-              </div>
+            <div v-if="isGeneralSubmission" class="form-group col-4">
+              <label>
+                ชนิดตัวอย่าง <i class="fas fa-star-of-life" />
+              </label>
+              <select class="form-control"
+                      v-model="submission.info.sampleTypeId">
+                <option>เลือก...</option>
+                <option>เลือด</option>
+                <option>นํ้าลาย</option>
+              </select>
             </div>
           </div>
-        </div>
-      </div>
-      <!-- END GENERAL BATCH -->
-
-      <!-- DISINFECTANT BATCH -->
-      <div v-else-if="isDisinfectantSubmission">
-        <div class="row w-100">
-          <div class="col-2">
-            <h3 class="mb-2">
-              การทดสอบ
-            </h3>
-            <h5 v-if="hasMultipleBatches"
-                class="color-light-text">
-              {{ batch.disinfectantName }}
-            </h5>
+  
+          <div v-if="isGeneralSubmission" class="form-row">
+            <div class="form-group col-3">
+              <label>
+                ชนิดสัตว์
+              </label>
+              <select class="form-control"
+                      v-model="submission.info.animalTypeId">
+                <option>เลือก...</option>
+                <option>สุกร</option>
+                <option>สุนัข</option>
+                <option>กระต่าย</option>
+                <option>ม้า</option>
+              </select>
+            </div>
+            <div class="form-group col-3">
+              <label>
+                พันธุ์
+              </label>
+              <input  type="text"
+                      class="form-control"
+                      v-model.lazy="submission.info.animalSpecies">
+            </div>
+            <div class="form-group col-4">
+              <label>
+                อายุ
+              </label>
+              <input  class="form-control"
+                      v-model.lazy="submission.info.animalAge">
+            </div>
+            <div class="form-group col-2">
+              <label>
+                จำนวนที่เลี้ยง
+              </label>
+              <input  type="number"
+                      class="form-control"
+                      v-model.number="submission.info.animalCount">
+            </div>
           </div>
-
-          <div class="col-10">
-            <h5 class="mb-1">
-              ทดสอบประสิทธิภาพยาฆ่าเชื้อต่อ
-            </h5>
-            <div class="form-row mb-3">
-              <div class="form-group col-6 mb-0">
-                <form-inline-select
-                  :options="tests(submission.type)"
-                  v-model="batch.testType"
-                  @change="updateBatchTestInfo(batch)" />
-              </div>
-            </div>
-
-            <h4>ชื่อนํ้ายาฆ่าเชื้อ</h4>
-            <h5 v-show="!submission.info.reportLang.thai && !submission.info.reportLang.eng"
-                class="text-primary">
-              <i class="fas fa-exclamation-triangle mr-2" />กรุณาเลือกภาษารายงานอย่างน้อย 1 ภาษา
-            </h5>
-            <div class="form-row">
-              <div  v-show="submission.info.reportLang.thai"
-                    class="form-group col-6 mb-2">
-                <label>ภาษาไทย</label>
-                <input type="text"
-                       class="form-control"
-                       v-model.lazy="batch.disinfectantName">
-              </div>
-            </div>
-            <div class="form-row mb-3">
-              <div  v-show="submission.info.reportLang.eng"
-                    class="form-group col-6">
-                <label>English</label>
-                <input type="text"
+  
+          <div v-if="isGeneralSubmission" class="form-row">
+            <div class="form-group col-6">
+              <label>
+                ประวัติการป่วย
+              </label>
+              <textarea type="text" rows="4"
                         class="form-control"
-                        v-model.lazy="batch.disinfectantNameEng">
+                        v-model.lazy="submission.info.illness" />
+            </div>
+            <div class="form-group col-6">
+              <label>
+                ประวัติการทำวัคซีน
+              </label>
+              <textarea type="number" rows="4"
+                        class="form-control"
+                        v-model.lazy="submission.info.vaccinations" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END INFO SECTION -->
+    
+      <div  id="report"
+            class="row w-100 border-bottom-pink py-4">
+        <div class="col-xl-2 col-12">
+          <h3 class="mb-2">
+            รายงาน
+          </h3>
+        </div>
+        <div class="col-xl-10 col-12">
+          <h4 class="d-inline color-text-medium">
+            {{ $t(`general.notify`)}}
+          </h4>
+          <i class="fas fa-star-of-life text-primary small-icon d-inline" />
+          
+          <div class="form-row">
+            <div class="form-group col-4">
+              <label>
+                {{ $t(`general.email`)}}
+              </label>
+              <input  type="text"
+                      class="form-control"
+                      v-model.trim="submission.info.notifyBy.email">
+            </div>
+            <div class="form-group col-4">
+              <label>
+                {{ $t(`general.phone`)}}
+              </label>
+              <input  type="number"
+                      class="form-control"
+                      v-model.trim="submission.info.notifyBy.phone">
+            </div>
+            <div class="form-group col-4">
+              <label>
+                {{ $t(`general.fax`)}}
+              </label>
+              <input  type="number"
+                      class="form-control"
+                      v-model.trim="submission.info.notifyBy.fax">
+            </div>
+          </div>
+
+          <div v-show="noNotifications" class="mb-3">
+            <i class="fas fa-exclamation-triangle mr-1 text-primary d-inline" />
+            <h5 class="text-primary mb-3 d-inline">
+              กรุณาใส่ช่องทางการแจ้งผลอย่างน้อย 1 ช่องทาง
+            </h5>
+          </div>
+    
+          <template v-if="isDisinfectantSubmission">
+            <h4 class="d-inline">รายงานเป็นภาษา </h4>
+            <i class="fas fa-star-of-life text-primary small-icon d-inline" />
+            <div class="form-row">  
+              <div class="form-group d-flex col-4 mb-2">
+                <checkbox label="ไทย"
+                          class="mr-4"
+                          v-model="submission.info.reportLang.thai" />
+                <checkbox label="English"
+                          v-model="submission.info.reportLang.eng" />
               </div>
             </div>
-
-            <h3 class="my-3">รายการทดสอบ</h3>
-            <div class="form-row border-bottom-lighter px-3 mb-1">
-              <div class="col-4">
-                <h5 class="color-light-text">
-                  ทดสอบต่อไวรัส
-                </h5>
+            <div v-show="noLang">
+              <i class="fas fa-exclamation-triangle mr-1 d-inline text-primary" />
+              <h5 class="text-primary d-inline">
+                กรุณาเลือกภาษารายงานอย่างน้อย 1 ภาษา
+              </h5>
+            </div>
+          </template>
+        </div>
+      </div>
+      <!-- END REPORT SECTION -->
+    
+      <!-- BATCH SECTION -->
+      <div  v-for="(batch, idxBatch) in submission.batches"
+            :key="idxBatch"
+            :id="'batch' + (idxBatch+1)"
+            class="batch expand-in-batch submission-section position-relative border-bottom-medium py-5">
+        <a  v-if="hasMultipleBatches"
+            class="btn btn-x batch-section"
+            @click="removeBatch(idxBatch)">
+          <i class="fas fa-times" />
+        </a>
+  
+        <!-- GENERAL BATCH -->
+        <div v-if="isGeneralSubmission">
+          <div class="row w-100">
+            <div class="col-xl-2 col-12">
+              <h3 class="mb-2">
+                {{ 
+                    hasMultipleBatches?
+                    `กลุ่มการทดสอบ ${idxBatch+1}` : 'รายการทดสอบ'
+                }}
+              </h3>
+              <h5 class="ml-3 color-light-text d-xl-block d-none">
+                {{ `งาน${testType(batch.testType).name}`}}
+              </h5>
+              <h5 v-if="batch.sampleCount"
+                  class="ml-3 color-light-text d-xl-block d-none">
+                {{ `${batch.sampleCount} ตัวอย่าง` }}
+              </h5>
+            </div>
+            <div class="col-xl-10 col-12">
+              <h4 class="mb-1 color-text-medium">
+                เลือกประเภทงานทดสอบ
+              </h4>
+              <div class="form-row mb-4">
+                <div class="form-group col-8">
+                  <form-inline-select :options="tests(submission.type)"
+                                      v-model="batch.testType"
+                                      @change="updateBatchTestInfo(batch)" />
+                </div>
               </div>
-              <div class="col-8">
-                <div class="row">
-                  <div class="col-4">
-                    <h5 class="color-light-text">
-                      ความเข้มข้น
-                    </h5>
-                  </div>
-                  <div class="col-8">
-                    <h5 class="color-light-text">
-                      ระยะสัมผัส
-                    </h5>
+              <div class="form-row">
+                <div class="form-group col-2">
+                  <h4 class="color-text-medium">จำนวนตัวอย่าง</h4>
+                  <input  type="number"
+                          class="form-control text-right"
+                          :value="batch.sampleCount"
+                          @focus="$event.target.select()"
+                          @blur="onSampleCountInputBlur($event.target.value, batch)" >
+                </div>
+              </div>
+              <div class="form-row no-gutters border-bottom-lighter pb-1">
+                <div class="col-2 color-text-medium">
+                  <h4>
+                    เลือกการทดสอบ
+                  </h4>
+                </div>
+                <div class="col-10 mt-2">
+                  <div class="form-row">
+                    <div class="col-6"></div>
+                    <div class="col-2 text-right">
+                      <h5 class="color-text-medium">
+                        ราคา/ตัวอย่าง
+                      </h5>
+                    </div>
+                    <div class="col-1">
+                    </div>
+                    <div class="col-2">
+                      <h5 class="color-text-medium text-right">
+                        ยอดค่าบริการ
+                      </h5>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div v-for="(dilutions, test) in batch.tests"
-                 :key="test"
-                 class="form-row test-row border-bottom-lighter px-3">
-              <div class="col-4 position-relative">
-                <h5 class="d-inline">
-                  {{ test }}
-                </h5>
-                <a class="btn btn-sm btn-x disinfectant-test"
-                   @click="$delete(batch.tests, test)">
-                  <i class="fas fa-times" />
-                </a>
+    
+              <div  v-for="category in testType(batch.testType).testCategories"
+                    :key="category.name"
+                    class="row no-gutters test-row">
+                <div class="col-2 pr-2 color-text-medium">
+                  <h5>
+                    {{ category.name }}
+                  </h5>
+                </div>
+                <div class="col-10">
+                  <div  v-for="test in testCategory(batch.testType, category.id)"
+                        :key="test.id"
+                        class="test-row form-row align-items-end">
+                    <div class="form-group mb-0 col-6">
+                      <checkbox :label="test.name"
+                                :disabled="
+                                  (test.min && batch.sampleCount < test.min) ||
+                                  (test.max && batch.sampleCount > test.max)
+                                "
+                                :secondary-label="test.constraint"
+                                v-model="batch.tests[test.id].selected"
+                                @change="onTestCheckboxChange(batch, test.id)" />
+                    </div>
+                    <div class="form-group text-right mb-0 col-2">
+                      <h5>
+                        {{ `${test.price}฿` }}
+                      </h5>
+                    </div>
+                    <div class="form-group col-1 mb-0 text-right color-muted">
+                      <div v-if="batch.tests[test.id].selected && batch.sampleCount"
+                           class="d-flex">
+                        <i class="fas fa-times mt-1 small-icon"></i>
+                        <h5 class="mx-2">
+                          {{ batch.sampleCount }}
+                        </h5>
+                        <i class="fas fa-equals mt-1 small-icon"></i>
+                      </div>
+                    </div>
+                    <div class="form-group col-2 mb-0 text-right">
+                      <div v-if="batch.tests[test.id].selected && batch.sampleCount">
+                        <h5>
+                          {{ `${(test.price * batch.sampleCount).toLocaleString()}฿` }}
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="col-8">
-                <div v-for="(times, dilution) in dilutions"
-                     :key="dilution"
-                     class="row test-row">
-                  <div class="col-4 position-relative">
-                    <h5 class="d-inline">
-                      {{ dilution }}
-                    </h5>
-                    <a class="btn btn-sm btn-x disinfectant-test"
-                       @click="$delete(batch.tests[test], dilution)">
+  
+              <div v-if="isBacteriaTest(batch)"
+                   class="row no-gutters border-bottom-lighter">
+                <div class="col-2 pt-2 pr-2">
+                  <h5 class="color-text-medium">รายการอื่นๆ</h5>
+                </div>
+                <div class="col-10 position-relative py-1">
+                  <div  v-for="(customTest, idx) of batch.customTests"
+                        :key="idx"
+                        class="position-relative form-row py-1">
+                    <div class="form-group col-8 mb-0">
+                      <input  v-focus-on-create
+                              type="text"
+                              class="form-control form-control-sm"
+                              v-model.lazy="batch.customTests[idx]">
+                    </div>
+                    <a  class="btn btn-sm btn-x custom-test"
+                        @click="batch.customTests.splice(idx, 1)">
                       <i class="fas fa-times" />
                     </a>
                   </div>
-                  <div class="col-4">
-                    <div v-for="(time, idx) in times"
-                         :key="time"
-                         class="test-row position-relative">
-                      <h5 class="d-inline">{{ time }}</h5>
-                      <h5 class="d-inline ml-1">นาที</h5>
-                      <a class="btn btn-sm btn-x disinfectant-test"
-                         @click="batch.tests[test][dilution].splice(idx, 1)">
-                        <i class="fas fa-times" />
-                      </a>
+                  <a  class="btn btn-primary btn-sm my-2"
+                      @click="batch.customTests.push('')">
+                    เพิ่มรายการ
+                  </a>
+                  <div  v-if="batch.customTests.length > 0"
+                        class="custom-test-price text-wrap">
+                    <h5>รอประเมินราคา</h5>
+                    <h6 class="color-muted">(ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h6>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="form-row no-gutters pt-2 pb-4 border-bottom-lighter">
+                <div class="col-2"></div>
+                <div class="col-10">
+                  <div class="form-row">
+                    <div class="col-5"></div>
+                    <div class="col-1 text-right">
+                      <h2 class="text-primary">
+                        {{ batch.sampleCount? batch.sampleCount : 0 }}
+                      </h2>
+                      <h5 class="color-light-text">
+                        ตัวอย่าง
+                      </h5>
+                    </div>
+                    <div class="col-2 text-right">
+                      <h2 class="text-primary">
+                        {{
+                          Object.values(batch.tests).reduce( (acc,t) => acc + (t.selected? 1:0), 0) +
+                            (batch.customTests? batch.customTests.length : 0)
+                        }}
+                      </h2>
+                      <h5 class="color-light-text">
+                        รายการทดสอบ
+                      </h5>
+                    </div>
+                    <div class="col-1 text-right nowrap">
+                      <h5 class="color-light-text mt-2 ml-3">
+                        รวมเป็น
+                      </h5>
+                    </div>
+                    <div class="col-2 text-right">
+                      <h2 class="text-primary">
+                        {{ `${batch.totalPrice.toLocaleString()}฿` }}
+                      </h2>
+                      <h5 class="color-light-text">
+                        ค่าบริการ
+                      </h5>
+                      <h6 v-if="isBacteriaTest(batch)"
+                          class="color-muted">
+                        *ไม่รวมรายการอื่นๆ
+                      </h6>
                     </div>
                   </div>
                 </div>
               </div>
+    
+              <div v-if="includesSensitivityTest(batch)"
+                   class="form-row no-gutters pt-4  border-bottom-lighter">
+                <div class="col-2">
+                  <h5 class="mb-2">
+                    เลือกยาต้านจุลชีพเพื่อการทดสอบความไว
+                  </h5>
+                  <h5 class="color-text-light">
+                    (เลือกได้ถึง 8 รายการ)
+                  </h5>
+                </div>
+                <div class="col-10">
+                  <form-antibiotics-sensitivity
+                    :options="testType(batch.testType).sensitivityTestOptions"
+                    v-model="batch.sensitivityTests" />
+                </div>
+              </div>
+    
             </div>
-
-            <div v-if="Object.keys(batch.tests).length <= 0"
-                 class="border-bottom-lighter">
-              <h4 class="color-muted my-3 ml-3">
-                ยังไม่มีรายการทดสอบ
+          </div>
+    
+          <div class="row w-100 mt-5">
+            <div class="col-xl-2 col-12">
+              <h4 class="mb-2">
+                รายละเอียดตัวอย่าง
               </h4>
             </div>
-
-            <div class="form-row mt-3">
-              <div class="col-4">
+    
+            <div v-show="batch.sampleCount <= 0" class="col-10 mt-1">
+              <i class="fas fa-exclamation-triangle mr-2 text-primary d-inline" />
+              <h5 class="text-primary d-inline">
+                กรุณาใส่จำนวนตัวอย่างก่อน
+              </h5>
+            </div>
+    
+            <div v-show="batch.sampleCount > 0" class="col-xl-10 col-12">
+    
+              <div class="form-row w-100">
+                <div class="form-group form-group-sm col-1 text-right mr-3">
+                  <h5>หมายเลข</h5>
+                </div>
+                <div class="form-group form-group-sm col-5">
+                  <h5>ID ตัวอย่าง</h5>
+                </div>
+                <div class="form-group form-group-sm col-5">
+                  <h5>ข้อมูลเพิ่มเติม</h5>
+                </div>
               </div>
-              <div class="col-2 text-right">
-                <h5 class="color-light-text mt-2 ml-3">
-                  รวมเป็น
-                </h5>
+  
+              <div  v-for="(sample, idxSample) of batch.samples"
+                    :key="idxSample"
+                    :id="`batch${idxBatch+1}-set${idxSample+1}`"
+                    class="form-row w-100">
+                <div class="form-group form-group-sm col-1 text-right mr-3">
+                  <h5>{{ idxSample+1 }}</h5>
+                </div>
+                <div class="form-group form-group-sm col-5">
+                  <input  type="text"
+                          class="form-control form-control-sm"
+                          v-model.lazy="sample.sampleId">
+                </div>
+                <div class="form-group form-group-sm col-5">
+                  <input  type="text"
+                          class="form-control form-control-sm"
+                          v-model.lazy="sample.extraInfo">
+                </div>
               </div>
-              <div class="col-2 text-right">
-                <h2 class="text-primary">
-                  {{ 
-                    Object.values(batch.tests).reduce( (acc, test) => {
-                      return acc + Object.values(test).flat().length
-                    }, 0)
-                  }}
-                </h2>
-                <h5 class="color-light-text">
-                  รายการตรวจ
-                </h5>
-              </div>
-              <div class="col-1 pt-2 d-flex color-light-text">
-                <i class="fas fa-times small-icon mt-1" />
-                <h5 class="mx-2">3000฿</h5>
-                <i class="fas fa-equals small-icon mt-1" />
-              </div>
-              <div class="col-2 text-right">
-                <h2 class="text-primary">
-                  {{ `${batch.totalPrice.toLocaleString()}฿` }}
-                </h2>
-                <h5 class="color-light-text">
-                  ค่าบริการ
-                </h5>
+  
+              <div class="form-row w-100">
+                <div class="col-1 mr-3"></div>
+                <div class="col-10 p-0">
+                  <form-sample-info-multifill
+                    :max-samples="batch.sampleCount"
+                    @add="updateSampleDetails(batch, $event)" />
+                </div>
               </div>
             </div>
-
-            <form-disinfectant-test-input
-              class="mt-4"
-              :tests="testType(batch.testType).testInfo"
-              @add="addDisinfectantTest($event, batch)" />
-
           </div>
         </div>
-      </div>
-      <!-- END DISINFECTANT BATCH -->
-    </div>
-    <!-- END BATCH SECTION -->
+        <!-- END GENERAL BATCH -->
   
-    <a  class="btn btn-primary btn-width-md align-self-center my-4"
-        @click="addBatch()">
-      {{ 
-          isGeneralSubmission?      'เพิ่มกลุ่มการทดสอบ' :
-          isDisinfectantSubmission? 'เพิ่มรายการนํ้ายาฆ่าเชื้อ' : ''
-      }}
-    </a> 
+        <!-- DISINFECTANT BATCH -->
+        <div v-else-if="isDisinfectantSubmission">
+          <div class="row w-100">
+            <div class="col-xl-2 col-12">
+              <h3 class="mb-2">
+                การทดสอบ
+              </h3>
+              <h5 v-if="hasMultipleBatches"
+                  class="color-light-text">
+                {{ batch.disinfectantName }}
+              </h5>
+            </div>
+  
+            <div class="col-xl-10 col-12">
+              <h5 class="mb-1">
+                ทดสอบประสิทธิภาพยาฆ่าเชื้อต่อ
+              </h5>
+              <div class="form-row mb-3">
+                <div class="form-group col-6">
+                  <form-inline-select
+                    :options="tests(submission.type)"
+                    v-model="batch.testType"
+                    @change="updateBatchTestInfo(batch)" />
+                </div>
+              </div>
+  
+              <h4>ชื่อนํ้ายาฆ่าเชื้อ</h4>
+              
+              <div v-show="noLang">
+                <i class="fas fa-exclamation-triangle mr-1 d-inline text-primary" />
+                <h5 class="text-primary d-inline">
+                  กรุณาเลือกภาษารายงานอย่างน้อย 1 ภาษา
+                </h5>
+              </div>
+              
+              <div class="form-row">
+                <div  v-show="submission.info.reportLang.thai"
+                      class="form-group col-6 mb-2">
+                  <label>ภาษาไทย</label>
+                  <input type="text"
+                         class="form-control"
+                         v-model.lazy="batch.disinfectantName">
+                </div>
+              </div>
+              <div class="form-row mb-3">
+                <div  v-show="submission.info.reportLang.eng"
+                      class="form-group col-6">
+                  <label>English</label>
+                  <input type="text"
+                          class="form-control"
+                          v-model.lazy="batch.disinfectantNameEng">
+                </div>
+              </div>
+  
+              <h3 class="my-3">รายการทดสอบ</h3>
+              <div class="form-row border-bottom-lighter px-3 pb-2 mb-1">
+                <div class="col-4">
+                  <h5 class="color-light-text">
+                    ชื่อ{{ isVirusBatch(batch)? 'ไวรัส' : isBacteriaBatch(batch)? 'แบคทีเรีย' : '' }}
+                  </h5>
+                </div>
+                <div class="col-8">
+                  <div class="form-row">
+                    <div class="col-3">
+                      <h5 class="color-light-text">
+                        ความเข้มข้น
+                      </h5>
+                    </div>
+                    <div class="col-8">
+                      <div class="form-row">
+                        <div class="col-4">
+                          <h5 class="color-light-text">
+                            ระยะสัมผัส
+                          </h5>
+                        </div>
+                        <div v-show="isBacteriaBatch(batch)" class="col-8">
+                          <h5 class="color-light-text">
+                            ระยะหลังการเจือจาง
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <div v-for="(dilutions, test) in batch.tests"
+                   :key="test"
+                   class="form-row test-row border-bottom-lighter px-3">
+                <div class="col-4 position-relative">
+                  <h4 class="d-inline">
+                    {{ test }}
+                  </h4>
+                  <a class="btn btn-sm btn-x disinfectant-test"
+                     @click="$delete(batch.tests, test)">
+                    <i class="fas fa-times" />
+                  </a>
+                </div>
+                <div class="col-8">
+                  <div v-for="(times, dilution) in dilutions"
+                       :key="dilution"
+                       class="form-row test-row">
+                    <div class="col-3 position-relative">
+                      <h4 class="d-inline">
+                        {{ dilution }}
+                      </h4>
+                      <a class="btn btn-sm btn-x disinfectant-test"
+                         @click="$delete(batch.tests[test], dilution)">
+                        <i class="fas fa-times" />
+                      </a>
+                    </div>
+                    <div class="col-8">
+                      <template v-if="isVirusBatch(batch)">
+                        <div v-for="time in times"
+                             :key="time"
+                             class="test-row position-relative">
+                          <h5 class="d-inline">{{ time }}</h5>
+                          <h5 class="d-inline ml-1">นาที</h5>
+                        </div>
+                      </template>
 
-  </form>
+                      <template v-else-if="isBacteriaBatch(batch)">
+                        <div  v-for="(dilutionTimes, time) in times"
+                              :key="time"
+                              class="form-row test-row">
+                          <div class="col-4">
+                              <h5 class="d-inline">{{ time }}</h5>
+                              <h5 class="d-inline ml-1">นาที</h5>
+                          </div>
+                          <div class="col-4">
+                            <div  v-for="dt in dilutionTimes"
+                                  :key="dt"
+                                  class="form-row test-row">
+                              <div class="col-12">
+                                <h5 class="d-inline">{{ dt }}</h5>
+                                <h5 class="d-inline ml-1">วัน</h5>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </template>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <div v-if="Object.keys(batch.tests).length <= 0"
+                   class="border-bottom-lighter">
+                <h4 class="color-muted my-3 ml-3">
+                  ยังไม่มีรายการทดสอบ
+                </h4>
+              </div>
+  
+              <!-- <div class="form-row mt-3">
+                <div class="col-4">
+                </div>
+                <div class="col-2 text-right">
+                  <h5 class="color-light-text mt-2 ml-3">
+                    รวมเป็น
+                  </h5>
+                </div>
+                <div class="col-2 text-right">
+                  <h2 class="text-primary">
+                    {{ 
+                      Object.values(batch.tests).reduce( (acc, test) => {
+                        return acc + Object.values(test).flat().length
+                      }, 0)
+                    }}
+                  </h2>
+                  <h5 class="color-light-text">
+                    รายการตรวจ
+                  </h5>
+                </div>
+                <div class="col-1 pt-2 d-flex color-light-text">
+                  <i class="fas fa-times small-icon mt-1" />
+                  <h5 class="mx-2">3000฿</h5>
+                  <i class="fas fa-equals small-icon mt-1" />
+                </div>
+                <div class="col-2 text-right">
+                  <h2 class="text-primary">
+                    {{ `${batch.totalPrice.toLocaleString()}฿` }}
+                  </h2>
+                  <h5 class="color-light-text">
+                    ค่าบริการ
+                  </h5>
+                </div>
+              </div> -->
+  
+              <form-disinfectant-test-input
+                class="mt-4"
+                :testType="batch.testType"
+                :tests="testType(batch.testType).testInfo"
+                @add="addDisinfectantTest($event, batch)" />
+  
+            </div>
+          </div>
+        </div>
+        <!-- END DISINFECTANT BATCH -->
+      </div>
+      <!-- END BATCH SECTION -->
+    
+      <a  class="btn btn-primary btn-width-md align-self-center my-4"
+          @click="addBatch()">
+        {{ 
+            isGeneralSubmission?      'เพิ่มกลุ่มการทดสอบ' :
+            isDisinfectantSubmission? 'เพิ่มรายการนํ้ายาฆ่าเชื้อ' : ''
+        }}
+      </a> 
+  
+    </form>
+  </template>
+
+  <review-submission
+    v-else
+    :submission="submission"
+    @back="inReviewMode = false"/>
 
 </div>
 </template>
@@ -778,7 +828,7 @@ a.btn.btn-x {
 }
 
 
-#submit-samples-nav {
+.submit-samples-nav {
   position: sticky;
   top: 70px;
   background: $bg;
@@ -856,13 +906,15 @@ import { merge } from 'lodash'
 import FormDisinfectantTestInput from '@/util/FormDisinfectantTestInput.vue'
 import FormAntibioticsSensitivity from '@/util/FormAntibioticsSensitivity.vue'
 import FormSampleInfoMultifill from '@/util/FormSampleInfoMultifill.vue'
+import ReviewSubmission from '@/components/ReviewSubmission.vue'
 
 export default {
   name: 'sample-info',
   components: {
     FormDisinfectantTestInput,
     FormAntibioticsSensitivity,
-    FormSampleInfoMultifill
+    FormSampleInfoMultifill,
+    ReviewSubmission
   },
   data () {
     return {
@@ -870,7 +922,8 @@ export default {
         type: 1,
         info: {},
         batches: [{}]
-      }
+      },
+      inReviewMode: false
     }
   },
   computed: {
@@ -888,6 +941,12 @@ export default {
     },
     hasMultipleBatches () {
       return this.submission.batches.length > 1
+    },
+    noLang () {
+      return this.isDisinfectantSubmission && !this.submission.info.reportLang.thai && !this.submission.info.reportLang.eng
+    },
+    noNotifications () {
+      return !Object.values(this.submission.info.notifyBy).reduce( (acc, i) => acc || i, false )
     }
   },
   beforeMount () {
@@ -1038,12 +1097,12 @@ export default {
 
     updateSampleDetails(batch, payload) {
       for (const range of payload.ranges) {
-        if (range.length > 1) {
-          for (let i = range[0]-1; i < range[1]; i++) {
-            batch.samples.splice(i, 1, { sampleId: payload.sampleId, extraInfo: payload.extraInfo })
-          }
-        } else {
-          batch.samples.splice(range[0]-1, 1, { sampleId: payload.sampleId, extraInfo: payload.extraInfo })
+        const start = range[0] - 1
+        const end = range.length > 1? range[1] : range[0]
+        for (let i = start; i < end; i++) {
+          batch.samples.splice(i, 1, { 
+            sampleId: payload.sampleId, extraInfo: payload.extraInfo
+          })
         }
       }
     },
@@ -1122,6 +1181,16 @@ export default {
       return  (!this.hasMultipleBatches)? 'รายการทดสอบ' :
               (this.isGeneralSubmission)? `กลุ่ม ${number}` :
               (this.isDisinfectantSubmission)? `นํ้ายาฆ่าเชื้อ ${number}` : '???'
+    },
+
+    isBacteriaTest (batch) {
+      return batch.testType === 4
+    },
+    isVirusBatch(batch) {
+      return batch.testType === 5
+    },
+    isBacteriaBatch(batch) {
+      return batch.testType === 6
     }
   }
 }

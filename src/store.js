@@ -199,8 +199,8 @@ export default new Vuex.Store({
           name: 'แบคทีเรีย',
           reportType: 1,
           testInfo: [
-            { id: 53, category: 12,   name: 'Bacterial Identification + Sensivitity Test (Conventional)',       price: 300 },
-            { id: 54, category: 12,   name: 'Bacterial Identification + Sensivitity Test (VITEK 2)',            price: 800 },
+            { id: 53, category: 12,   name: 'Bacterial Identification + Sensitivity Test (Conventional)',       price: 300 },
+            { id: 54, category: 12,   name: 'Bacterial Identification + Sensitivity Test (VITEK 2)',            price: 800 },
             { id: 55, category: 11,   name: 'Bacterial Identification (Conventional)',                          price: 200 },
             { id: 56, category: 11,   name: 'Bacterial Identification (VITEK 2)',                               price: 400 },
             { id: 57, category: 12,   name: 'Bacterial Identification + Salmonella spp. + Sensitivity Test',    price: 500 },

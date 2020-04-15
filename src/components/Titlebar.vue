@@ -2,8 +2,11 @@
 <div id="titlebar" class="d-flex justify-content-between align-items-center">
   <div class="d-flex align-items-center">
     <div id="logo-img" />
-    <h4 class="text-primary">
+    <h4 class="text-primary d-none d-xl-block">
       {{ $t(`title`) }}
+    </h4>
+    <h4 class="text-primary d-xl-none">
+      หน่วยชันสูตรโรคสัตว์กลาง จุฬาฯ
     </h4>
   </div>
   <div class="d-flex align-items-center">
@@ -17,7 +20,7 @@
         {{ lang }}
       </button>
     </div> -->
-    <router-link v-if="!loggedIn"
+    <router-link  v-if="!loggedIn"
                   :to="{name: 'login'}"
                   tag="button"
                   class="btn btn-primary btn-width-md ml-3">
@@ -33,13 +36,16 @@
           8
         </div>
       </div>
-      <h5 class="mx-1">
+      <h5 class="mx-1 d-none d-xl-block">
         สมควร สมสกุล
       </h5>
-      <button class="btn btn-transparent btn-icon mx-1">
+      <h6 class="mx-1 d-xl-none d-block">
+        สมควร สมสกุล
+      </h6>
+      <button class="btn btn-transparent btn-icon mx-1 d-none d-xl-block">
         <i class="fas fa-cog"></i>
       </button>
-      <button class="btn btn-transparent btn-icon ml-1"
+      <button class="btn btn-transparent btn-icon ml-1 d-none d-xl-block"
               @click="logout()">
         <i class="fas fa-sign-out-alt" />
       </button>

@@ -13,7 +13,7 @@ import FormInlineSelect from '@/util/FormInlineSelect.vue'
 
 Vue.config.productionTip = false
 
-import 'bootstrap';
+import 'bootstrap'  // Bootstrap js
 
 import '@/styles/bootstrap-override.scss'
 import '@/styles/styles.scss'

@@ -44,12 +44,12 @@ const router = new Router({
               component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/SampleInfo.vue'),
               meta: { requiresLogin: true }
             }, 
-            {
-              path: 'review',
-              name: 'reviewsubmission',
-              component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/ReviewSubmission.vue'),
-              meta: { requiresLogin: true }
-            }
+            // {
+            //   path: 'review',
+            //   name: 'reviewsubmission',
+            //   component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/ReviewSubmission.vue'),
+            //   meta: { requiresLogin: true }
+            // }
           ]
         }
       ]

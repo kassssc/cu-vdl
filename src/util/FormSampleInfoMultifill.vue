@@ -1,14 +1,14 @@
 <template>
 <div class="subcontainer p-3 mt-3"
      :class="{'folded': folded}">
-  <div class="fold-section w-100 d-flex justify-content-between align-items-center mb-3"
-       @click="folded = !folded">
+  <div  class="fold-section w-100 d-flex justify-content-between align-items-center mb-3"
+        @click="folded = !folded">
     <h4 class="w-100">
       เติมข้อมูลทีละหลายช่อง
     </h4>
     <a class="btn btn-icon">
-      <i class="fas fa-chevron-up"
-         :class="{'rotate': folded}"/>
+      <i  class="fas fa-chevron-up"
+          :class="{'rotate': folded}"/>
     </a>
   </div>
   <div class="form-row">
@@ -17,7 +17,8 @@
       <input  type="text"
               class="form-control"
               placeholder="ex. 1-4, 6, 7, 9-10"
-              v-model.lazy="sampleNumRaw" >
+              v-model="sampleRange"
+              @blur="processRawSampleRange()">
       <div class="hint">
         <i class="fas fa-question color-text-light"></i>
         <div class="hint-container">
@@ -47,7 +48,8 @@
       <label>ข้อมูลเพิ่มเติม</label>
       <input  type="text"
               class="form-control"
-              v-model.lazy="extraInfo">
+              v-model.lazy="extraInfo"
+              @keyup.enter="submit()">
     </div>
   </div>
   <div class="form-row">
@@ -94,15 +96,22 @@ import { uniq } from 'lodash'
 export default {
   name: 'form-sample-info-multifill',
   props: ['maxSamples'],
-  computed: {
-    processedSampleNums () {
-      const ranges = this.sampleNumRaw
-        .replace(/\s/g, '')       // Remove whitespace
+  data () {
+    return {
+      folded: true,
+      sampleRange: '',
+      sampleId: null,
+      extraInfo: null,
+      rangeArr: []
+    }
+  },
+  methods: {
+    processRawSampleRange () {
+      const ranges = uniq(this.sampleRange
         .split(',')
-        .filter( s => /^\d{1,}-\d{1,}$|^\d{1,}$/g.test(s) )
-
-      // 1-4, 5, 6-6, -9, cc9-10cc, cc8cc, 6-10-3, 6-xx-3, cc-4-5, 8-2, 1-2, 1-2, 1-999, ,,, , 999
-      return uniq(ranges)
+        .filter( s => /^\s*\d+\s*-\d+\s*$|^\s*\d+\s*$/g.test(s) )
+      )
+      this.rangeArr = ranges
         .map( r => r.split('-').map( n => parseInt(n) ) )
         .filter( arr => {
           if (arr.length > 1) {
@@ -111,23 +120,16 @@ export default {
             return arr[0] <= this.maxSamples
           }
         })
-    }
-  },
-  data () {
-    return {
-      folded: true,
-      sampleNumRaw: null,
-      sampleId: null,
-      extraInfo: null
-    }
-  },
-  methods: {
+      this.sampleRange = this.rangeArr.map( r => 
+        r.length > 1? `${r[0]}-${r[1]}` : `${r[0]}`
+      ).join(', ')
+    },
     submit () {
-      //this.sampleNumRaw = null
+      //this.sampleRange = null
       //this.sampleId = null
       //this.extraInfo = null
       this.$emit('add', {
-        ranges: this.processedSampleNums,
+        ranges: this.rangeArr,
         sampleId: this.sampleId,
         extraInfo: this.extraInfo
       })

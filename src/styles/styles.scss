@@ -28,19 +28,23 @@ html {
   }
 }
 
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
 #app {
   font-family: 'CHULALONGKORN', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.font-chatthai {
-  font-family: 'CS ChatThai';
-}
-
 button.btn, a.btn {
   @include unselectable;
   cursor: pointer;
+  &:focus, &:active {
+    box-shadow: none !important;
+  }
   &.btn-primary {
     color: $bg;
   }
@@ -67,9 +71,6 @@ button.btn, a.btn {
   &.btn-width-md {
     min-width: 150px;
   }
-  &:focus, &:active {
-    box-shadow: none !important;
-  }
   &.btn-x {
     padding: 0;
     color: $accent-dark;
@@ -92,9 +93,6 @@ textarea.form-control,
   &[disabled] {
     cursor: not-allowed;
   }
-  &.invalid:not(:focus) {
-    background: rgba($chula, 0.75);
-  }
 }
 
 select.form-control {
@@ -115,58 +113,57 @@ textarea.form-control {
     input {
       border-radius: 0.25rem !important;
       background: $accent;
-    }
-    input[disabled="disabled"] {
-      background: $accent-light;
-      cursor: not-allowed;
+      &[disabled="disabled"] {
+        background: $accent-light;
+        cursor: not-allowed;
+      }
     }
     .append-icon {
       position: absolute;
-      top: 10px;
+      top: 12px;
       right: 10px;
-      z-index: 999;
+      z-index: 100;
       color: $muted;
     }
   }
-  .vdp-datepicker__calendar {
-    //background: transparent;
-    //backdrop-filter: blur(15px);
-    background: $bg;
-    border-radius: 5px;
-    border: 0px solid transparent;
-    font-weight: bold;
-    color: $text;
-    top: 43px;
-    box-shadow: 2px 2px 6px 2px $text-light;
-    span {
-      &.cell {
-        border-radius: 3px;
-        font-size: 1.2rem;
-        border: 2px solid transparent;
-        &.day, &.month, &.year {
-          &.selected {
-            background: $chula;
-            color: $bg;
-          }
-          &:not(.blank):not(.disabled):hover {
-            border: 2px solid $chula;
-          }
+}
+
+.vdp-datepicker__calendar {
+  background: $bg;
+  border-radius: 5px;
+  border: 0px solid transparent;
+  font-weight: bold;
+  color: $text;
+  top: 43px;
+  box-shadow: 2px 2px 6px 2px $text-light;
+  span {
+    &.cell {
+      border-radius: 3px;
+      font-size: 1.2rem;
+      border: 2px solid transparent;
+      &.day, &.month, &.year {
+        &.selected {
+          background: $chula;
+          color: $bg;
         }
-        &.day-header {
-          color: $muted;
+        &:not(.blank):not(.disabled):hover {
+          border: 2px solid $chula;
         }
       }
+      &.day-header {
+        color: $muted;
+      }
     }
-    header span {
-      &.prev, &.next, &.day__month_btn, &.month__year_btn {
-        border-radius: 3px;
-        font-size: 1.4rem;
-        &:hover {
-          color: $bg;
-          background: $chula;
-        }
-      } 
-    }
+  }
+  header span {
+    &.prev, &.next, &.day__month_btn, &.month__year_btn {
+      border-radius: 3px;
+      font-size: 1.4rem;
+      &:hover {
+        color: $bg;
+        background: $chula;
+      }
+    } 
   }
 }
 
@@ -204,14 +201,6 @@ input[type=number] {
   }
 }
 
-.form-header {
-  width: 200px;
-}
-.form-body {
-  flex-grow: 1;
-  max-width: 1000px;
-}
-
 .page {
   position: relative;
   width: 100%;
@@ -220,17 +209,26 @@ input[type=number] {
   padding-top: 100px; // for titlebar
 }
 
+.font-chatthai {
+  font-family: 'CS ChatThai';
+}
 .color-text {
-  color: $text !important;
+  color: $text;
 }
 .color-text-medium {
-  color: $text-medium !important;
+  color: $text-medium;
 }
 .color-text-light {
-  color: $text-light !important;
+  color: $text-light;
 }
 .color-muted {
-  color: $muted !important;
+  color: $muted;
+}
+.easy-to-read {
+  line-height: 1.3em;
+}
+.nowrap {
+  white-space: nowrap;
 }
 
 .border-bottom-pink {
@@ -253,17 +251,11 @@ input[type=number] {
   transform: rotate(180deg);
 }
 
-.easy-to-read {
-  line-height: 1.3em;
-}
-.nowrap {
-  white-space: nowrap;
-}
 .max-width-800 {
   max-width: 800px;
 }
-.max-width-1350 {
-  max-width: 1350px;
+.max-width-1300 {
+  max-width: 1300px;
 }
 .max-width-1500 {
   max-width: 1500px;
@@ -276,6 +268,9 @@ input[type=number] {
 .small-icon {
   font-size: 0.8rem;
 }
+.large-icon {
+  font-size: 1.3rem;
+}
 
 .subcontainer {
   padding: 1em;
@@ -284,7 +279,7 @@ input[type=number] {
 }
 
 .sidebar {
-  width: 250px;
+  width: 275px;
   position: sticky;
   display: flex;
   flex-direction: column;
@@ -329,4 +324,9 @@ input[type=number] {
     background: $accent;
     border-radius: 5px;
   }
+}
+
+.row {
+  margin-left: 0;
+  margin-right: 0;
 }

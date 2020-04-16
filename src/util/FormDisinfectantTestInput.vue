@@ -116,6 +116,15 @@ export default {
     'tests',
     'testType'
   ],
+  watch: {
+    testType () {
+      this.virusName = ''
+      this.bacteriaName = ''
+      this.dilutions = ''
+      this.contactTimes = ''
+      this.dilutionTimes = ''
+    }
+  },
   data () {
     return {
       virusName: '',
@@ -173,11 +182,11 @@ export default {
         return
       }
       let parsedOutput = {}
-      parsedOutput[this.virusName] = {}
-      this.dilutionArr.forEach( d => {
-        parsedOutput[this.virusName][d] = []
-        this.contactTimeArr.forEach( t => parsedOutput[this.virusName][d].push(t) )
-      })
+      parsedOutput[this.virusName] = {
+        dilutions: this.dilutionArr,
+        contactTimes: this.contactTimeArr,
+        cellId: this.tests.find( t => t.name === this.virusName).cellId
+      }
       this.virusName = ''
       this.$emit('add', parsedOutput)
     },
@@ -189,16 +198,13 @@ export default {
         return
       }
       let parsedOutput = {}
-      parsedOutput[this.bacteriaName] = {}
-      this.dilutionArr.forEach( d => {
-        parsedOutput[this.bacteriaName][d] = {}
-        this.contactTimeArr.forEach( t => {
-          parsedOutput[this.bacteriaName][d][t] = []
-          this.dilutionTimeArr.forEach( dt => parsedOutput[this.bacteriaName][d][t].push(dt) )
-        })
-      })
-      this.bacteriaName = ''
+      parsedOutput[this.bacteriaName] = {
+        dilutions: this.dilutionArr,
+        contactTimes: this.contactTimeArr,
+        dilutionTimes: this.dilutionTimeArr
+      }
       this.$emit('add', parsedOutput)
+      this.bacteriaName = ''
     }
   }
 }

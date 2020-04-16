@@ -32,7 +32,7 @@
         <button class="btn btn-transparent btn-icon">
           <i class="fas fa-bell"></i>
         </button>
-        <div class="notifications-badge">
+        <div class="notifications-badge font-chatthai">
           8
         </div>
       </div>
@@ -88,10 +88,12 @@
   position: absolute;
   text-align: center;
   font-weight: bold;
+  font-size: 1.1rem;
   width: 25px;
+  height: 26px;
   top: -9px;
   right: -10px;
-  border-radius: 4px;
+  border-radius: 5px;
   @include color-chula-white;
 }
 /* .lang-selector {

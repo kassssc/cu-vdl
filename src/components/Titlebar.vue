@@ -33,7 +33,7 @@
           <i class="fas fa-bell"></i>
         </button>
         <div class="notifications-badge font-chatthai">
-          8
+          <p>8</p>
         </div>
       </div>
       <h5 class="mx-1 d-none d-xl-block">
@@ -59,15 +59,15 @@
   z-index: 999;
   position: fixed;
   top: 0; left: 0;
-  padding: 1em 30px;
+  padding: 0.5em 30px;
   width: 100%; 
-  height: 95px;
+  height: 80px;
   backdrop-filter: blur(20px);
   border-bottom: 1px solid transparent;
   transition: all 100ms ease-in-out;
   &.scrolled {
     border-bottom: 1px solid $accent;
-    height: 70px;
+    height: 60px;
     #logo-img {
       width: 40px;
       height: 40px;
@@ -89,12 +89,16 @@
   text-align: center;
   font-weight: bold;
   font-size: 1.1rem;
-  width: 25px;
-  height: 26px;
-  top: -9px;
-  right: -10px;
+  padding: 0 0.25em;
+  height: 20px;
+  top: -4px;
+  left: 26px;
   border-radius: 5px;
   @include color-chula-white;
+  p {
+    margin-top: -3px;
+    margin-bottom: 0px;
+  }
 }
 /* .lang-selector {
   height: 30px;

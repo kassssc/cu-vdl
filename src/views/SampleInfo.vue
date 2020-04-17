@@ -2,7 +2,7 @@
 <div class="d-flex flex-column">
 
   <template v-if="!inReviewMode">
-    <div class="submit-samples-nav d-flex align-items-center py-3">
+    <div class="submit-samples-nav d-flex align-items-center p-2">
       <scrollactive active-class="active"
                     :offset="220"
                     :modifyUrl="false"
@@ -37,7 +37,7 @@
       </button>
     </div>
   
-    <form class="font-chatthai d-flex flex-column px-3 py-0 pb-xl-5 mb-5 max-width-1300">    
+    <form class="font-chatthai d-flex flex-column px-3 py-0 pb-xl-5 mb-5 max-width-1250">    
       
       <div id="info" class="row w-100 pt-4 pt-xl-5">
         <div class="col-xl-2 col-12">
@@ -265,7 +265,7 @@
         </a>
   
         <!-- GENERAL BATCH -->
-        <div v-if="isGeneralSubmission">
+        <template v-if="isGeneralSubmission">
           <div class="row w-100">
             <div class="col-xl-2 col-12">
               <h3 class="mb-2">
@@ -357,12 +357,12 @@
                     </div>
                     <div class="form-group col-1 mb-0 text-right color-muted">
                       <div v-if="batch.tests[test.id].selected && batch.sampleCount"
-                           class="d-flex">
-                        <i class="fas fa-times mt-1 small-icon"></i>
-                        <h5 class="mx-2">
+                           class="nowrap">
+                        <i class="fas fa-times small-icon d-inline"></i>
+                        <h5 class="mx-1 d-inline">
                           {{ batch.sampleCount }}
                         </h5>
-                        <i class="fas fa-equals mt-1 small-icon"></i>
+                        <i class="fas fa-equals small-icon d-inline"></i>
                       </div>
                     </div>
                     <div class="form-group col-2 mb-0 text-right">
@@ -439,7 +439,10 @@
                     </div>
                     <div class="col-2 text-right">
                       <h2 class="text-primary">
-                        {{ `${batch.totalPrice.toLocaleString()}฿` }}
+                        {{
+                            Object.values(batch.tests).reduce( (acc,t) => acc + (t.selected? 1:0), 0) > 0 && batch.sampleCount?
+                              `${batch.totalPrice.toLocaleString()}฿` : 'N/A'
+                        }}
                       </h2>
                       <h5 class="color-light-text">
                         ค่าบริการ
@@ -530,11 +533,11 @@
               </div>
             </div>
           </div>
-        </div>
+        </template>
         <!-- END GENERAL BATCH -->
   
         <!-- DISINFECTANT BATCH -->
-        <div v-else-if="isDisinfectantSubmission">
+        <template v-else-if="isDisinfectantSubmission">
           <div class="row w-100">
             <div class="col-xl-2 col-12">
               <h3 class="mb-2">
@@ -550,7 +553,7 @@
               <h5 class="mb-1">
                 ทดสอบประสิทธิภาพยาฆ่าเชื้อต่อ
               </h5>
-              <div class="form-row mb-3">
+              <div class="form-row">
                 <div class="form-group col-6">
                   <form-inline-select
                     :options="tests(submission.type)"
@@ -559,7 +562,7 @@
                 </div>
               </div>
   
-              <h4>ชื่อนํ้ายาฆ่าเชื้อ</h4>
+              <h4 class="mt-3">ชื่อนํ้ายาฆ่าเชื้อ</h4>
               
               <div v-show="noLang">
                 <i class="fas fa-exclamation-triangle mr-1 d-inline text-primary" />
@@ -577,7 +580,7 @@
                          v-model.lazy="batch.disinfectantName">
                 </div>
               </div>
-              <div class="form-row mb-3">
+              <div class="form-row">
                 <div  v-show="submission.info.reportLang.eng"
                       class="form-group col-6">
                   <label>English</label>
@@ -587,28 +590,29 @@
                 </div>
               </div>
   
-              <h3 class="my-3">รายการทดสอบ</h3>
+              <h3 class="mt-3 mb-1">รายการทดสอบ</h3>
               <div class="form-row border-bottom-lighter px-3 pb-2 mb-1">
                 <div class="col-4">
                   <h5 class="color-light-text">
                     ชื่อ{{ isVirusBatch(batch)? 'ไวรัส' : isBacteriaBatch(batch)? 'แบคทีเรีย' : '' }}
                   </h5>
                 </div>
-                <div class="col-8">
+                <div class="col-6">
                   <div class="form-row">
-                    <div class="col-3">
+                    <div class="col-4">
                       <h5 class="color-light-text">
                         ความเข้มข้น
                       </h5>
                     </div>
                     <div class="col-8">
                       <div class="form-row">
-                        <div class="col-4">
+                        <div class="col-6">
                           <h5 class="color-light-text">
                             ระยะสัมผัส
                           </h5>
                         </div>
-                        <div v-show="isBacteriaBatch(batch)" class="col-8">
+                        <div  v-show="isBacteriaBatch(batch)"
+                              class="col-6">
                           <h5 class="color-light-text">
                             ระยะหลังการเจือจาง
                           </h5>
@@ -621,81 +625,143 @@
   
               <div v-for="(info, test) in batch.tests"
                    :key="test"
-                   class="form-row test-row border-bottom-lighter px-3">
-                <div class="col-4 position-relative">
-                  <h4 class="ml-2 d-inline">
+                   class="form-row test-row border-bottom-lighter position-relative px-3">
+                <a class="btn btn-sm btn-x disinfectant-test"
+                    @click="deleteDisinfectantTest(batch, test)">
+                  <i class="fas fa-times" />
+                </a>
+
+                <div class="col-4 pr-5">
+                  <h4 class="d-inline">
                     {{ test }}
                   </h4>
-                  <a class="btn btn-sm btn-x disinfectant-test"
-                     @click="$delete(batch.tests, test)">
-                    <i class="fas fa-times" />
-                  </a>
                 </div>
-                <div class="col-8">
+
+                <div class="col-6">
                   <div v-for="dilution of info.dilutions"
                        :key="dilution"
                        class="form-row test-row">
-                    <div class="col-3 position-relative">
-                      <h4 class="ml-2 d-inline">
+                    <div class="col-4 position-relative">
+                      <h4 class="d-inline">
                         {{ dilution }}
                       </h4>
                     </div>
-                    <div class="col-8">
-                      <template v-if="isVirusBatch(batch)">
-                        <div v-for="time of info.contactTimes"
-                             :key="time"
-                             class="test-row position-relative">
-                          <h5 class="ml-2 d-inline">{{ time }}</h5>
-                          <h5 class="d-inline ml-1">นาที</h5>
-                        </div>
-                      </template>
 
-                      <template v-else-if="isBacteriaBatch(batch)">
-                        <div  v-for="time of info.contactTimes"
-                              :key="time"
-                              class="form-row test-row">
-                          <div class="col-4">
-                              <h5 class="ml-2 d-inline">{{ time }}</h5>
-                              <h5 class="d-inline ml-1">นาที</h5>
-                          </div>
-                          <div class="col-4">
-                            <div  v-for="dt in info.dilutionTimes"
-                                  :key="dt"
-                                  class="form-row test-row">
-                              <div class="col-12">
-                                <h5 class="ml-2 d-inline">{{ dt }}</h5>
-                                <h5 class="d-inline ml-1">วัน</h5>
-                              </div>
+                    <div  v-if="isVirusBatch(batch)"
+                          class="col-4">
+                      <div v-for="time of info.contactTimes"
+                            :key="time"
+                            class="test-row position-relative">
+                        <h5 class="d-inline">{{ time }}</h5>
+                        <h5 class="d-inline ml-1">นาที</h5>
+                      </div>
+                    </div>
+
+                    <div  v-else-if="isBacteriaBatch(batch)"
+                          class="col-8">
+                      <div  v-for="time of info.contactTimes"
+                            :key="time"
+                            class="form-row test-row">
+                        <div class="col-6">
+                            <h5 class="d-inline">{{ time }}</h5>
+                            <h5 class="d-inline ml-1">นาที</h5>
+                        </div>
+                        <div class="col-6">
+                          <div  v-for="dt in info.dilutionTimes"
+                                :key="dt"
+                                class="form-row test-row">
+                            <div class="col-12">
+                              <h5 class="d-inline">{{ dt }}</h5>
+                              <h5 class="d-inline ml-1">วัน</h5>
                             </div>
                           </div>
                         </div>
-                      </template>
-
+                      </div>
                     </div>
+
                   </div>
+                </div>
+
+                <div class="col-2 d-flex flex-column align-items-end justify-content-end pr-4">
+                  <h5>
+                    {{ `${info.price.toLocaleString()}฿` }}
+                  </h5>
+                  <h6 class="color-muted squeeze-up">
+                    ต่อรายการ
+                  </h6>
+                  <h5 class="mt-1">
+                    <i class="fas fa-times small-icon"></i>
+                    {{ info.numTests }}
+                  </h5>
+                  <h6 class="color-muted squeeze-up">
+                    รายการ
+                  </h6>
+                  <h4 class="mt-1 text-primary">
+                    <i class="fas fa-equals mr-1 small-icon"></i>
+                    {{ `${info.totalPrice.toLocaleString()}฿` }}
+                  </h4>
                 </div>
               </div>
   
-              <div v-if="Object.keys(batch.tests).length <= 0"
+              <div v-show="Object.keys(batch.tests).length <= 0"
                    class="border-bottom-lighter">
                 <h4 class="color-muted my-3 ml-3">
                   ยังไม่มีรายการทดสอบ
                 </h4>
               </div>
   
-              <div class="form-row mt-3">
-                <div class="col-7 text-right">
+              <div class="form-row mt-4">
+                <div class="col-9 d-flex justify-content-end align-items-end">
+                  <template v-if="Object.keys(batch.tests).length > 0">
+                    <div  v-show="isVirusBatch(batch)"
+                          class="text-right position-relative cost-container">
+                      <h4 class="text-primary">
+                        <i class="fas fa-plus small-icon"></i>
+                        {{ `${batch.dilutionCost.toLocaleString()}฿` }}
+                      </h4>
+                      <h5 class="color-text-light">
+                        ค่า Dilution
+                      </h5>
+                      <div class="hint-container">
+                        <h4 class="text-primary mb-1">การคำนวณค่า Dilution</h4>
+                        <h5>คำนวณจากจำนวนความเข้มข้นของแต่ละประเภท cell ไวรัส ซึ่งระบุไว้ใน [ ] หลังชื่อไวรัส หากไวรัสหลายตัวภายใต้ cell ประเภทเดียวกันใช้ความเข้มข้นซํ้ากัน จะคิดราคาแค่รอบเดียวเท่านั้น</h5>
+                        <div  v-for="(arr, cell) in batch.uniqueCells"
+                              :key="cell">
+                          <h5 class="text-primary">{{ cell }}</h5>
+                          <h5 class="ml-2">
+                            3,000฿
+                            <i class="fas fa-times small-icon" />
+                            {{ `${arr.length} ความเข้มข้น` }}
+                            <i class="fas fa-equals small-icon" />
+                            <span class="text-primary ml-1">{{ `${(3000 * arr.length).toLocaleString()}฿` }}</span>
+                          </h5>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-right ml-4">
+                      <h4 class="text-primary">
+                        <i class="fas fa-plus small-icon"></i>
+                        3,000฿
+                      </h4>
+                      <h5 class="color-text-light">
+                        ค่าประเมินผล
+                      </h5>
+                    </div>
+                  </template>
                 </div>
-                <div class="col-2 pt-2 text-right">
-                  <h5 class="color-light-text">
+                <div class="col-1 d-flex flex-column align-items-end justify-content-end">
+                  <h5 class="color-text-light mb-4">
                     รวมเป็น
                   </h5>
                 </div>
-                <div class="col-2 text-right">
+                <div class="col-2 pr-4 d-flex flex-column align-items-end justify-content-end">
                   <h2 class="text-primary">
-                    {{ `${batch.totalPrice.toLocaleString()}฿` }}
+                    {{ 
+                        Object.values(batch.tests).length > 0?
+                          `${batch.totalPrice.toLocaleString()}฿` : 'N/A'
+                    }}
                   </h2>
-                  <h5 class="color-light-text">
+                  <h5 class="color-text-light">
                     ค่าบริการ
                   </h5>
                 </div>
@@ -709,7 +775,7 @@
   
             </div>
           </div>
-        </div>
+        </template>
         <!-- END DISINFECTANT BATCH -->
       </div>
       <!-- END BATCH SECTION -->
@@ -765,9 +831,11 @@ a.btn.btn-x {
     top: 6px;
   }
   &.disinfectant-test {
+    position: absolute;
     height: 25px;
     width: 25px;
-    margin-left: 10px;
+    top: 6px;
+    right: 10px;
   }
 }
 .expand-in-batch {
@@ -790,7 +858,7 @@ a.btn.btn-x {
 
 .submit-samples-nav {
   position: sticky;
-  top: 70px;
+  top: 60px;
   background: $bg;
   border-bottom: 1px solid $accent;
   z-index: 999;
@@ -804,6 +872,19 @@ a.btn.btn-x {
       background: $accent;
       color: $chula;
     }
+  }
+}
+
+.cost-container {
+  cursor: pointer;
+  &:hover .hint-container {
+    transform: scale(1);
+  }
+  .hint-container {
+    width: 300px;
+    bottom: 60px;
+    right: -10px;
+    transform-origin: 90% 100%;
   }
 }
 @keyframes expand-in-batch {
@@ -835,7 +916,7 @@ import FormAntibioticsSensitivity from '@/util/FormAntibioticsSensitivity.vue'
 import FormSampleInfoMultifill from '@/util/FormSampleInfoMultifill.vue'
 import ReviewSubmission from '@/components/ReviewSubmission.vue'
 
-import { uniq } from 'lodash'
+import { union } from 'lodash'
 
 export default {
   name: 'sample-info',
@@ -935,6 +1016,8 @@ export default {
             disinfectantName: '',
             disinfectantNameEng: '',
             sampleCount: null,
+            uniqueCells: 0,
+            dilutionCost: 0,
             totalPrice: 0,
             tests: {},
             samples: []
@@ -1014,12 +1097,12 @@ export default {
     },
 
     includesSensitivityTest (batch) {
-      let sensitivityTestIds = this.testType(batch.testType).testInfo
+      const sensitivityTestIds = this.testType(batch.testType).testInfo
         .filter( test => test.category === 12)
         .map( test => test.id )
-      let sensitivityTestActive = Object.values(batch.tests)
+      const sensitivityTestActive = Object.values(batch.tests)
         .filter( test => sensitivityTestIds.includes(test.id) )
-        .reduce( (acc, test) => acc || test.selected, false)
+        .reduce( (acc, test) => acc || test.selected, false )
       return sensitivityTestActive || (batch.customTests && batch.customTests.length > 0) 
     },
 
@@ -1029,7 +1112,8 @@ export default {
         const end = range.length > 1? range[1] : range[0]
         for (let i = start; i < end; i++) {
           batch.samples.splice(i, 1, { 
-            sampleId: payload.sampleId, extraInfo: payload.extraInfo
+            sampleId: payload.sampleId,
+            extraInfo: payload.extraInfo
           })
         }
       }
@@ -1053,6 +1137,8 @@ export default {
           disinfectantName: '',
           sampleCount: null,
           totalPrice: 0,
+          uniqueCells: 0,
+          dilutionCost: 0,
           tests: {},
           samples: []
         })
@@ -1075,47 +1161,45 @@ export default {
 
     addDisinfectantTest (payload, batch) {
       batch.tests = Object.assign({}, batch.tests, payload)
+      this.updateDisinfectantBatchTotalPrice(batch)
+    },
 
-      // Calculate price
-      const basePrice = 3000
-      let totalPrice
+    deleteDisinfectantTest (batch, testKey) {
+      this.$delete(batch.tests, testKey)
+      this.updateDisinfectantBatchTotalPrice(batch)
+    },
+
+    updateDisinfectantBatchTotalPrice (batch) {
+      let totalPrice = Object.values(batch.tests).reduce( (acc, curr) => acc + curr.totalPrice, 0)
       if (this.isVirusBatch(batch)) {
-        const nCombinations = Object.values(batch.tests)
-          .reduce( (tot, test) => {
-            return tot + (test.contactTimes.length * test.dilutions.length)
-          }, 0)
-        let cellsArr = []
-        Object.values(batch.tests).forEach( t => cellsArr.push(t.cellId) )
-        let nCells = uniq(cellsArr).length
-        totalPrice = basePrice + (basePrice * nCombinations) + (basePrice * nCells)
-
-      } else if (this.isBacteriaBatch(batch)) {
-        const nCombinations = Object.values(batch.tests)
-          .reduce( (tot, test) => {
-            return tot + Object.values(test).reduce( (len, dim) => len * dim.length, 1)
-          }, 0)
-        totalPrice = basePrice + (basePrice * nCombinations)
+        const cells = {}
+        Object.values(batch.tests).forEach( t => {
+          cells[t.cellName] = (t.cellName in cells)?
+            union(cells[t.cellName], t.dilutions) : [...t.dilutions]
+        })
+        batch.uniqueCells = cells
+        batch.dilutionCost = Object.values(batch.uniqueCells).reduce( (acc, curr) => acc + 3000 * curr.length, 0)
+        totalPrice += batch.dilutionCost
       }
-      batch.totalPrice = totalPrice
-      
+      batch.totalPrice = 3000 + totalPrice
     },
 
     removeBatch (idx) {
       const batch = document.getElementById(`batch${idx+1}`)
-      batch.classList.add('shrink-out-batch')
-      setTimeout( () => {
-        batch.classList.remove('shrink-out-batch')
-        this.submission.batches.splice(idx, 1)
-      }, 400)
-      this.$nextTick( () => {
-        this.$scrollTo(
-          `#batch${idx}`,
-          500,
-          {
-            offset: 0
-          }
-        )
-      })
+      if (batch) {
+        batch.classList.add('shrink-out-batch')
+        setTimeout( () => {
+          batch.classList.remove('shrink-out-batch')
+          this.submission.batches.splice(idx, 1)
+        }, 400)
+        this.$nextTick( () => {
+          this.$scrollTo(
+            `#batch${idx}`,
+            500,
+            { offset: 0 }
+          )
+        })
+      }
     },
 
     getBatchNavLabel (number) {

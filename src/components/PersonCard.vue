@@ -3,7 +3,7 @@
   <div class="portrait"
        :style="{'background-image': `url(${img})`}">
   </div>
-  <h5 class="name mb-0 font-weight-bold">
+  <h5 class="nowrap">
     {{ name }}
   </h5>
 </div>

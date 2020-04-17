@@ -56,7 +56,7 @@
   }
   label {
     cursor: pointer;
-    margin-top: 0.2em;
+    margin-top: 0.27em;
     margin-bottom: 0.2em;
     font-size: 1.15rem;
     color: $text-medium ;

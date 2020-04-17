@@ -1,6 +1,6 @@
 <template>
-<div class="subcontainer p-3 mt-3"
-     :class="{'folded': folded}">
+<div  class="subcontainer p-3 mt-3"
+      :class="{'folded': folded}">
   <div  class="fold-section w-100 d-flex justify-content-between align-items-center mb-3"
         @click="folded = !folded">
     <h4 class="w-100">
@@ -31,7 +31,9 @@
           </h5>
           <h5>
             จะใส่ข้อมูลทับช่องของตัวอย่างหมายเลข
-            <span class="text-primary">1,2,3,5,7,9, และ 10</span>
+            <span class="text-primary">
+              1,2,3,5,7,9, และ 10
+            </span>
           </h5>
         </div>
       </div>

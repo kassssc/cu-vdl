@@ -17,22 +17,23 @@
       </option>
     </select>
   </div>
-  <div  v-if="testType === 6"
+  <div  v-else-if="testType === 6"
         class="form-group col-6">
     <label>
       ชื่อแบคทีเรีย
     </label>
     <input  type="text"
-            v-model.lazy.trim="bacteriaName"
-            class="form-control">
+            class="form-control"
+            v-model.lazy.trim="bacteriaName">
   </div>
+  
   <div v-if="testType === 6" class="col-6"></div>
   <div class="form-group col-4 mb-0">
     <label>ระดับความเข้มข้น</label>
     <input type="text"
+           class="form-control pr-4"
            placeholder="ex. undiluted, 1:200, 1:400, 20%"
            v-model="dilutions"
-           class="form-control pr-4"
            @blur="onDilutionsBlur()"
            @keyup.enter="parseOutput()">
     <div class="hint">
@@ -60,9 +61,9 @@
   <div class="form-group col-3 mb-0">
     <label>ระยะสัมผัสเชื้อ (นาที)</label>
     <input  type="text"
+            class="form-control pr-4"
             placeholder="ex. 0.5, 5, 10"
             v-model.lazy="contactTimes"
-            class="form-control pr-4"
             @blur="oncontactTimesBlur()"
             @keyup.enter="parseOutput()">
     <div class="hint">
@@ -87,8 +88,8 @@
     <input  type="text"
             placeholder="ex. 3, 7, 10"
             class="form-control pr-4"
-            @blur="onDilutionTimesBlur()"
             v-model.lazy="dilutionTimes"
+            @blur="onDilutionTimesBlur()"
             @keyup.enter="parseOutput()">
     <div class="hint">
       <i class="fas fa-question color-text-light"></i>
@@ -107,10 +108,11 @@
     </div>
   </div>
   <div class="form-group col mb-0 align-items-end d-flex">
-    <a  class="btn btn-primary btn-block"
-        @click="parseOutput()">
+    <button class="btn btn-primary btn-block"
+            :disabled="testType === 5 && !validFormVirus() || testType === 6 && !validFormBacteria()"
+            @click="parseOutput()">
       เพิ่ม
-    </a>
+    </button>
   </div>
 </div>
 </template>
@@ -153,10 +155,8 @@ export default {
   },
   computed: {
     dilutionArr () {
-      return this.process(
-        this.dilutions
-          .toLowerCase()
-        ).filter( s => /^([1-9]\d*:(0|[1-9]\d*)|([1-9][0-9]?|100)%|undiluted)$/.test(s) )
+      return this.process(this.dilutions.toLowerCase())
+        .filter( s => /^([1-9]\d*:(0|[1-9]\d*)|([1-9][0-9]?|100)%|undiluted)$/.test(s) )
         // Matches x:y, z%, or undiluted, no 0s, no leading 0s
     },
     contactTimeArr () {
@@ -198,12 +198,7 @@ export default {
     },
 
     parseOutputVirus () {
-      if (!this.virusName || !this.dilutions || !this.contactTimes) {
-        return
-      }
-      if (this.dilutionArr.length < 1 || this.contactTimeArr.length < 1) {
-        return
-      }
+      if (!this.validFormVirus()) return
 
       const numTests = this.dilutionArr.length * this.contactTimeArr.length
       const price = this.tests.find( t => t.name === this.virusName).price
@@ -221,13 +216,9 @@ export default {
       this.virusName = ''
       this.$emit('add', parsedOutput)
     },
+
     parseOutputBacteria () {
-      if (!this.bacteriaName || !this.dilutions || !this.contactTimes || !this.dilutionTimes) {
-        return
-      }
-      if (this.dilutionArr.length < 1 || this.contactTimeArr.length < 1 || this.dilutionTimeArr.length < 1) {
-        return
-      }
+      if (!this.validFormBacteria()) return
 
       const numTests = this.dilutionArr.length * this.contactTimeArr.length * this.dilutionTimeArr.length
       const price = 3000
@@ -244,6 +235,28 @@ export default {
       }
       this.$emit('add', parsedOutput)
       this.bacteriaName = ''
+    },
+
+    validFormVirus () {
+      return (
+        this.virusName &&
+        this.dilutions &&
+        this.contactTimes &&
+        this.dilutionArr.length > 0 &&
+        this.contactTimeArr.length > 0
+      )
+    },
+
+    validFormBacteria () {
+      return (
+        this.bacteriaName &&
+        this.dilutions &&
+        this.contactTimes &&
+        this.dilutionTimes &&
+        this.dilutionArr.length > 0 &&
+        this.contactTimeArr.length > 0 &&
+        this.dilutionTimeArr.length > 0
+      )
     }
   }
 }

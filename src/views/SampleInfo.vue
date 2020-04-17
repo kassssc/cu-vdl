@@ -381,29 +381,40 @@
                 <div class="col-2 pt-2 pr-2">
                   <h5 class="color-text-medium">รายการอื่นๆ</h5>
                 </div>
-                <div class="col-10 position-relative py-1">
-                  <div  v-for="(customTest, idx) of batch.customTests"
-                        :key="idx"
-                        class="position-relative form-row py-1">
-                    <div class="form-group col-8 mb-0">
-                      <input  v-focus-on-create
-                              type="text"
-                              class="form-control form-control-sm"
-                              v-model.lazy="batch.customTests[idx]">
+                <div class="col-10">
+                  <div class="form-row">
+                    <div class="col-8 py-1">
+                      <div  v-for="(customTest, idx) of batch.customTests"
+                            :key="idx"
+                            class="form-row py-1">
+                        <div class="col-12">
+                          <input  v-focus-on-create
+                                  type="text"
+                                  class="form-control form-control-sm"
+                                  v-model.lazy="batch.customTests[idx]">
+                        </div>
+                      </div>
+                      <a  class="btn btn-primary btn-sm my-2"
+                          @click="batch.customTests.push('')">
+                        เพิ่มรายการ
+                      </a>
                     </div>
-                    <a  class="btn btn-sm btn-x custom-test"
-                        @click="batch.customTests.splice(idx, 1)">
-                      <i class="fas fa-times" />
-                    </a>
-                  </div>
-                  <a  class="btn btn-primary btn-sm my-2"
-                      @click="batch.customTests.push('')">
-                    เพิ่มรายการ
-                  </a>
-                  <div  v-if="batch.customTests.length > 0"
-                        class="custom-test-price text-wrap">
-                    <h5>รอประเมินราคา</h5>
-                    <h6 class="color-muted">(ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h6>
+                    <div class="col-1 py-1">
+                      <div  v-for="(customTest, idx) of batch.customTests"
+                            :key="idx"
+                            class="form-row py-1">
+                        <a  class="btn btn-sm btn-x custom-test"
+                            @click="batch.customTests.splice(idx, 1)">
+                          <i class="fas fa-times" />
+                        </a>
+                      </div>
+                    </div>
+                    <div class="col-2 py-1 text-right pt-2">
+                      <template v-if="batch.customTests.length > 0">
+                        <h5>รอประเมินราคา</h5>
+                        <h6 class="color-muted">(ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h6>
+                      </template>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -424,8 +435,8 @@
                     <div class="col-2 text-right">
                       <h2 class="text-primary">
                         {{
-                          Object.values(batch.tests).reduce( (acc,t) => acc + (t.selected? 1:0), 0) +
-                            (batch.customTests? batch.customTests.length : 0)
+                            Object.values(batch.tests).reduce( (acc, t) => acc + (t.selected? 1:0), 0) +
+                              (batch.customTests? batch.customTests.length : 0)
                         }}
                       </h2>
                       <h5 class="color-light-text">
@@ -440,7 +451,7 @@
                     <div class="col-2 text-right">
                       <h2 class="text-primary">
                         {{
-                            Object.values(batch.tests).reduce( (acc,t) => acc + (t.selected? 1:0), 0) > 0 && batch.sampleCount?
+                            Object.values(batch.tests).reduce( (acc, t) => acc + (t.selected? 1:0), 0) > 0 && batch.sampleCount?
                               `${batch.totalPrice.toLocaleString()}฿` : 'N/A'
                         }}
                       </h2>
@@ -824,11 +835,10 @@ a.btn.btn-x {
     i { font-size: 1.25rem; }
   }
   &.custom-test {
-    position: absolute;
-    height: 28px;
-    width: 28px;
-    right: 265px;
-    top: 6px;
+    height: 30px;
+    width: 25px;
+    padding-top: 0.1em;
+    margin-left: -5px;
   }
   &.disinfectant-test {
     position: absolute;
@@ -847,13 +857,6 @@ a.btn.btn-x {
   max-height: 0;
   opacity: 0;
   animation: shrink-out-batch 700ms cubic-bezier(0.1, 1, 0.2, 1) forwards;
-}
-.custom-test-price {
-  position: absolute;
-  top: 10px;
-  right: 70px;
-  text-align: right;
-  width: 150px;
 }
 
 .submit-samples-nav {
@@ -1147,7 +1150,7 @@ export default {
       this.$nextTick( () => {
         setTimeout( () => {
           const batch = document.getElementById(`${this.submission.batches.length}`)
-          batch.classList.remove('expand-in-batch')
+          if (batch) batch.classList.remove('expand-in-batch')
         }, 400)
         this.$scrollTo(
           `#batch${this.submission.batches.length}`,

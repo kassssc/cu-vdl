@@ -41,26 +41,22 @@ export default {
   },
   beforeMount () {
     this.values = []
-    this.options.forEach( (category) => {
+    this.options.forEach( (category) =>
       this.values.push(new Array(category.items.length).fill(false))
-    })
+    )
   },
   computed: {
     parsedValue () {
       let list = []
       this.values.forEach( (category, idxCategory) => {
         category.forEach( (item, idxItem) => {
-          if (item) {
-            list.push(this.options[idxCategory].items[idxItem])
-          }
+          if (item) list.push(this.options[idxCategory].items[idxItem])
         })
       })
       return list.join(',')
     },
     numSelected () {
-      return this.values.flat().reduce( (acc, curr) => {
-        return acc + (curr? 1:0)
-      }, 0)
+      return this.values.flat().reduce( (acc, curr) => acc + (curr? 1:0), 0)
     },
     maxSelected () {
       return this.numSelected >= this.maxSelection

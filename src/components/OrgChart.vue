@@ -92,8 +92,8 @@
   }
 }
 .label-tag {
-  background: $chula;
-  color: $bg;
+  background: $primary;
+  color: $white;
   border-radius: 5px;
   border: 2px solid transparent;
   padding: 0em 0.3em;
@@ -102,24 +102,24 @@
   text-align: center;
   min-width: 125px;
   &::selection {
-    color: $chula; /* WebKit/Blink Browsers */
-    background: rgba($bg, 0.99);
+    color: $primary; /* WebKit/Blink Browsers */
+    background: rgba($white, 0.99);
   }
   &::-moz-selection {
-    color: $chula; /* Gecko Browsers */
-    background: rgba($bg, 0.99);
+    color: $primary; /* Gecko Browsers */
+    background: rgba($white, 0.99);
   }
   &.outline {
-    border: 2px solid $chula;
-    color: $chula;
+    border: 2px solid $primary;
+    color: $primary;
     background: transparent;
     &::selection {
-      background: rgba($chula,.99); /* WebKit/Blink Browsers */
-      color: $bg;
+      background: rgba($primary,.99); /* WebKit/Blink Browsers */
+      color: $white;
     }
     &::-moz-selection {
-      background: rgba($chula,.99); /* Gecko Browsers */
-      color: $bg;
+      background: rgba($primary,.99); /* Gecko Browsers */
+      color: $white;
     }
   }
 }

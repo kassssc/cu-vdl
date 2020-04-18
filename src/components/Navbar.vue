@@ -21,11 +21,11 @@
 
 <style scoped lang="scss">
 a.router-link-active {
-  color: $chula;
+  color: $primary;
   background: $accent;
   cursor: default;
   &:hover {
-    color: $chula;
+    color: $primary;
   }
 }
 .h-40 { 

@@ -15,9 +15,6 @@ Vue.config.productionTip = false
 
 import 'bootstrap'  // Bootstrap js
 
-import '@/styles/bootstrap-override.scss'
-import '@/styles/styles.scss'
-
 Vue.use(VueScrollactive)
 Vue.use(VueScrollTo)
 

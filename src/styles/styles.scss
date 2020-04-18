@@ -1,36 +1,31 @@
 @font-face {
   font-family: 'CHULALONGKORN';
-  src: url('../assets/CHULALONGKORN-Regular.woff') format('woff');
+  src: url('./assets/CHULALONGKORN-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'CS ChatThai';
-  src: url('../assets/CSChatThai.woff') format('woff');
+  src: url('./assets/CSChatThai.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 ::selection {
-  background: rgba($chula,.99); /* WebKit/Blink Browsers */
-  color: $bg;
+  background: rgba($primary,.99); /* WebKit/Blink Browsers */
+  color: $body-bg;
 }
 ::-moz-selection {
-  background: rgba($chula,.99); /* Gecko Browsers */
-  color: $bg;
+  background: rgba($primary,.99); /* Gecko Browsers */
+  color: $body-bg;
 }
 
 html {
-  font-size: 17px;
-  @media only screen and (max-width: 768px) {
-    font-size: 16px;
+  font-size: 15px;
+  @include media-breakpoint-up(lg) {
+    font-size: 17px;
   }
-}
-
-body {
-  width: 100vw;
-  height: 100vh;
 }
 
 #app {
@@ -45,15 +40,15 @@ button.btn, a.btn {
   &:focus, &:active {
     box-shadow: none !important;
   }
-  &.btn-primary {
-    color: $bg;
-  }
-  &.btn-grey {
-    color: $text;
+  &.focusable:focus {
     background: $accent;
-    &:hover {
-      background: $accent-dark;
-    }
+    color: $primary
+  }
+  &.btn-primary {
+    color: $light; // needed for <a> buttons
+  }
+  &.btn-secondary:hover {
+    background: $accent-dark;
   }
   &.btn-transparent {
     &:hover {
@@ -65,7 +60,7 @@ button.btn, a.btn {
       transition: transform 200ms linear;
     }
     &:hover {
-      color: $chula;
+      color: $primary;
     }
   }
   &.btn-width-md {
@@ -79,7 +74,7 @@ button.btn, a.btn {
     height: 30px;
     i { font-size: 0.9rem; }
     &:hover {
-      color: $chula;
+      color: $primary;
       background: transparent;
     }
   }
@@ -109,51 +104,48 @@ textarea.form-control {
   padding: 0.5em
 }
 
-.vdp-datepicker {
-  .input-group {
-    input {
-      border-radius: 0.25rem !important;
-      background: $accent;
-      &[disabled="disabled"] {
-        background: $accent-light;
-        cursor: not-allowed;
-      }
+.vdp-datepicker .input-group {
+  input {
+    border-radius: 0.25rem !important;
+    background: $accent;
+    &[disabled="disabled"] {
+      background: $accent-light;
+      cursor: not-allowed;
     }
-    .append-icon {
-      position: absolute;
-      top: 12px;
-      right: 10px;
-      z-index: 100;
-      color: $muted;
-    }
+  }
+  .append-icon {
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    z-index: 10;
+    color: $muted;
   }
 }
 
 .vdp-datepicker__calendar {
-  background: $bg;
+  background: $light;
   border-radius: 5px;
   border: 0px solid transparent;
   font-weight: bold;
-  color: $text;
+  color: $default;
   top: 43px;
-  box-shadow: 2px 2px 6px 2px $text-light;
-  span {
-    &.cell {
-      border-radius: 3px;
-      font-size: 1.2rem;
-      border: 2px solid transparent;
-      &.day, &.month, &.year {
-        &.selected {
-          background: $chula;
-          color: $bg;
-        }
-        &:not(.blank):not(.disabled):hover {
-          border: 2px solid $chula;
-        }
+  box-shadow: 2px 2px 6px 2px $medium;
+  span.cell {
+    border-radius: 3px;
+    font-size: 1.2rem;
+    border: 2px solid transparent;
+    &.day, &.month, &.year {
+      &.selected {
+        background: $primary;
+        color: $light;
       }
-      &.day-header {
-        color: $muted;
+      &:not(.blank):not(.disabled):hover {
+        border: 2px solid $primary;
       }
+    }
+    &.day-header {
+      color: $muted;
+      font-size: 1rem;
     }
   }
   header span {
@@ -161,8 +153,7 @@ textarea.form-control {
       border-radius: 3px;
       font-size: 1.4rem;
       &:hover {
-        color: $bg;
-        background: $chula;
+        background: $accent !important;
       }
     } 
   }
@@ -182,12 +173,12 @@ input[type="number"] {
 .form-group {
   label {
     font-weight: bold;
-    font-size: 1.2em;
-    color: $text-light;
+    font-size: 1.25em;
+    color: $medium;
     line-height: 1.1em;
     i {
       font-size: 1px;
-      color: $chula;  
+      color: $primary;  
     }
     &.col-form-label {
       text-align: right;
@@ -206,25 +197,17 @@ input[type="number"] {
 .page {
   position: relative;
   width: 100%;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 85px; // for titlebar
+  padding-top: $titlebar-height;
+  padding-left: $outer-padding-sm;
+  padding-right: $outer-padding-sm;
+  @include media-breakpoint-up(lg) {
+    padding-left: $outer-padding;
+    padding-right: $outer-padding;
+  }
 }
 
 .font-chatthai {
   font-family: 'CS ChatThai';
-}
-.color-text {
-  color: $text;
-}
-.color-text-medium {
-  color: $text-medium;
-}
-.color-text-light {
-  color: $text-light;
-}
-.color-muted {
-  color: $muted;
 }
 .easy-to-read {
   line-height: 1.3em;
@@ -232,9 +215,12 @@ input[type="number"] {
 .nowrap {
   white-space: nowrap;
 }
+.rotate {
+  transform: rotate(180deg);
+}
 
 .border-bottom-pink {
-  border-bottom: 2px solid $chula;
+  border-bottom: 2px solid $primary;
 }
 .border-bottom-lighter {
   border-bottom: 1px solid $accent;
@@ -249,9 +235,6 @@ input[type="number"] {
   border-bottom: 2px solid $accent;
 }
 
-.rotate {
-  transform: rotate(180deg);
-}
 
 .max-width-800 {
   max-width: 800px;
@@ -312,12 +295,15 @@ input[type="number"] {
   right: 0.5em;
   top: 28px;
   cursor: pointer;
-  i { margin-top: 0.45em; }
+  i {
+    color: $medium;
+    margin-top: 0.45em;
+  }
   &:hover {
     .hint-container {
       transform: scale(1);
     }
-    i { color: $chula; }
+    i { color: $primary; }
   }
 }
 .hint-container {

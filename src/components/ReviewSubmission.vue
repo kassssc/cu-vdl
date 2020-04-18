@@ -231,9 +231,6 @@
 </template>
 
 <style lang="scss" scoped>
-.review-label {
-  color: $text-light;
-}
 .info-row {
   margin-bottom: 1em;
   padding-bottom: 0.2em;

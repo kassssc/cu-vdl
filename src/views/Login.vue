@@ -51,13 +51,10 @@
 
 <style lang="scss" scoped>
 .login-logo {
+  @include logo;
   width: 250px;
   height: 250px;
   margin-bottom: 2em;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  background-image: url('https://i.ibb.co/PWZBG5p/logo.png');
   transition: all 100ms ease-in-out;
 }
 .login-form {

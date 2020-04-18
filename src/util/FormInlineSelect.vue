@@ -6,7 +6,7 @@
   <div class="d-flex">
     <a  v-for="(option, idx) in options"
         :key="idx"
-        class="btn btn-grey btn-option no-wrap"
+        class="btn btn-secondary btn-option no-wrap"
         :class="{'selected': value === option.id}"
         @click="onOptionClick(option.id)">
       <i  v-show="value === option.id"
@@ -46,12 +46,12 @@
   width: 100%;
   padding-left: 0;
   padding-right: 0;
-  color: $text-medium;
+  color: $dark;
   &.selected {
-    @include color-chula-white;
+    @include color-primary-white;
     cursor: default;
     &:hover {
-      @include color-chula-white;
+      @include color-primary-white;
     }
   }
   &:not(:last-child) {

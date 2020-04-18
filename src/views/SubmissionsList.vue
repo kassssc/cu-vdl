@@ -19,7 +19,7 @@
         </h2>
       </div>
       <div class="col-4 d-flex align-items-center">
-        <i class="fas fa-search search-icon mr-2 large-icon color-muted" />
+        <i class="fas fa-search search-icon mr-2 large-icon text-muted" />
         <input type="text"
                class="form-control submission-search my-1"
                :placeholder="$t(`track.searchPlaceholder`)">
@@ -95,7 +95,7 @@ button.sort-btn {
   padding: 0.1em 0.4em;
   font-size: 1.3rem;
   &.selected {
-    color: $chula;
+    color: $primary;
     background: $accent;
   }
   &:hover i { opacity: 1; }
@@ -106,7 +106,7 @@ button.sort-btn {
   }
 }
 .table-container {
-  height: calc(100vh - 249px);
+  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 84px);
   overflow: scroll;
   position: relative;
   margin-bottom: 2em;
@@ -124,13 +124,13 @@ table {
       padding: 0.25em;
       top: 0px;
       height: 60px;
-      background: $bg;
+      background: $light;
       // Drop shadow effect
       &::after {  
         content: '';
         box-shadow: 0 2px 3px 0px $muted;
         height: 2px;
-        background: $chula;
+        background: $primary;
         width: 100%;
         position: absolute;
         bottom: 0; left: 0;
@@ -145,7 +145,7 @@ table {
         cursor: pointer;
       }
       td {
-        color: $text-medium;
+        color: $dark;
         padding: 0.3em 0.55em;
       }
     }
@@ -154,29 +154,29 @@ table {
 .order-tag {
   font-size: 1.3rem;
   border-radius: 3px;
-  color: $bg;
+  color: $light;
   text-align: center;
   height: 33px;
   width: 30px;
   margin-left: 0.3em;
   @include unselectable;
   &.blue {
-    background: #4F9AC3;
+    background: $blue
   }
   &.teal {
-    background: #78B4B4;
+    background: $cyan;
   }
   &.orange {
-    background: #E49658;
+    background: $orange;
   }
   &.green {
-    background: #82bb64;
+    background: $green;
   }
   &.red {
-    background: #E46F68;
+    background: $red;
   }
   &.grey {
-    background: $text-light;
+    background: $medium;
   }
 }
 </style>

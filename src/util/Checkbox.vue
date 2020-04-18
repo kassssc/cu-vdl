@@ -39,12 +39,12 @@
     transition: all 100ms ease-in-out;
     i {
       font-size: 0.8em;
-      color: $bg;
+      color: $light;
       opacity: 0;
       visibility: hidden;
     }
     &.checked {
-      background: $chula;
+      background: $primary;
       i {
         opacity: 1;
         visibility: visible;
@@ -59,7 +59,7 @@
     margin-top: 0.27em;
     margin-bottom: 0.2em;
     font-size: 1.15rem;
-    color: $text-medium ;
+    color: $dark;
     @include unselectable;
     &.disabled {
       color: $muted;
@@ -110,11 +110,6 @@ export default {
   },
   beforeMount () {
     this.internalValue = this.value
-  },
-  watch: {
-    value (val) {
-      this.internalValue = val
-    }
   }
 }
 </script>

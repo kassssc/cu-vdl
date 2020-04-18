@@ -10,9 +10,9 @@
 <style lang="scss" scoped>
 .footer {
   width: 100vw;
-  height: 60px;
-  background: $chula;
-  color: $bg;
+  height: $footer-height;
+  background: $primary;
+  color: $white;
   display: flex;
   align-items: center;
   padding-left: 2em;

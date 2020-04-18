@@ -1,22 +1,46 @@
-//$chula: #DE5C8E;
-$red: #D2767F ;
-$orange: #D28962;
-
-//*
-$chula:   #be5877;
-$bg:      #fefdfb;
-
-$text:       #555250;
-$text-medium:#5F5C5A;
-$text-light: #736F6C;
-$muted:      #9B9897;
-$placeholder:#b0adaa;
+// Colors
+$blue:    #4F9AC3;
+$indigo:  #6610f2;
+$purple:  #6f42c1;
+$pink:    #be5877;
+$red:     #E46F68;
+$orange:  #E49658;
+$yellow:  #ffc107;
+$green:   #82bb64;
+$teal:    #20c997;
+$cyan:    #78B4B4;
 
 $accent-dark:   #d6cfcc;
 $accent:        #eae5e2;
 $accent-light:  #f9f5f2;
-/*/
-$chula: #C0818C;
+
+// Theme Colors
+$primary:       $pink;
+$secondary:     $accent;
+$light:         #fefdfb;
+$medium:        #736F6C;
+$dark:          #605d5b;
+$default:       #555250;
+
+$muted:         #9B9897;
+$placeholder:   #b0adaa;
+
+// Add theme colors
+$theme-colors: (
+  "medium":   $medium,
+  "default":  $default
+);
+$theme-colors: map-remove($theme-colors,
+  "success", "info", "danger", "warning"
+);
+
+$body-bg:       $light;
+$body-color:    $default;
+
+//$chula: #DE5C8E;
+//$chula:   #be5877;
+
+/* $chula: #C0818C;
 $bg: #20201E;
 $text: #CFC7BF;
 $light-text: #B5B1AE;
@@ -24,8 +48,81 @@ $lighter-accent: #262623;
 $light-accent: #30302E;
 $medium-accent: #444444;
 $muted: #666666;
-$placeholder: #555555;
-//*/
+$placeholder: #555555; */
+
+// Headings
+$headings-font-weight:    bold;
+$headings-margin-bottom:  0;
+$h6-font-size:            1.1rem;
+
+// Borders
+$border-radius:     .25rem;
+$border-radius-lg:  .27rem;
+$border-radius-sm:  .15rem;
+
+$font-size-sm:  1.1rem;
+$text-muted:    $muted;
+
+// Input & Buttons
+$input-btn-border-width: 0;
+
+$input-btn-font-size: 1.2rem;
+$input-btn-padding-y: .25rem;
+$input-btn-padding-x: .6rem;
+
+// Buttons
+$btn-font-weight:       bold;
+$btn-transition:        none;
+$btn-white-space:       nowrap;
+$btn-border-radius-sm:  $border-radius;
+
+// Forms
+$label-margin-bottom:     .2rem;
+$input-font-weight:       bold;
+$input-font-size:         1.3rem;
+$input-bg:                $accent;
+$input-disabled-bg:       $accent-light;
+$input-color:             $default;
+$input-border-color:      transparent;
+$input-border-width:      0;
+$input-placeholder-color: $placeholder;
+$input-focus-box-shadow:  0 0 0 .2rem $primary;
+
+$input-font-size-sm:  1.2rem;
+$input-padding-y-sm:  0em;
+$input-padding-x-sm:  .4em;
+$input-height-sm:     30px;
+
+$input-padding-y-lg: .5em;
+$input-padding-x-lg: .8em;
+
+$input-placeholder-color: $placeholder;
+
+$form-grid-gutter-width:    1em;
+$form-group-margin-bottom:  1.3rem;
+
+// Modals
+$modal-transition: transform  100ms linear;
+$modal-content-border-width:  0;
+$modal-header-border-width:   0;
+$modal-footer-border-width:   0;
+
+// Dropdowns
+$dropdown-bg:           $accent;
+$dropdown-border-width: 0;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1300px
+);
+
+// Import Bootstrap variables for override
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/_variables.scss";
+@import "~bootstrap/scss/_mixins.scss";
 
 @mixin unselectable {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -36,7 +133,21 @@ $placeholder: #555555;
             user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
-@mixin color-chula-white {
-  background: $chula;
-  color: $bg;
+@mixin color-primary-white {
+  background: $primary;
+  color: $white;
 }
+
+@mixin logo {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-image: url('https://i.ibb.co/PWZBG5p/logo.png');
+}
+
+// Other Variables
+$titlebar-height: 80px;
+$titlebar-height-scrolled: 60px;
+$footer-height: 60px;
+$outer-padding: 30px;
+$outer-padding-sm: 15px;

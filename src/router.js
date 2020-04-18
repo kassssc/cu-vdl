@@ -74,7 +74,7 @@ const router = new Router({
 // Route Guard
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresLogin) &&
-      !store.state.loggedIn) {
+      !store.getters.loggedIn) {
     next({ name: 'login' })
   } else {
     next()

@@ -46,7 +46,7 @@
           </h3>
         </div>
         <div class="col-12 col-xl-10">
-          <h4 class="mb-1 color-text-medium">
+          <h4 class="mb-1 text-dark">
             ประเภทการตรวจ
           </h4>
           <div class="form-row mb-4">
@@ -191,7 +191,7 @@
           </h3>
         </div>
         <div class="col-xl-10 col-12">
-          <h4 class="d-inline color-text-medium">
+          <h4 class="d-inline text-dark">
             {{ $t(`general.notify`)}}
           </h4>
           <i class="fas fa-star-of-life text-primary small-icon d-inline" />
@@ -274,37 +274,38 @@
                     `กลุ่มการทดสอบ ${idxBatch+1}` : 'รายการทดสอบ'
                 }}
               </h3>
-              <h5 class="ml-3 color-light-text d-xl-block d-none">
+              <h5 class="ml-3 text-medium d-xl-block d-none">
                 {{ `งาน${testType(batch.testType).name}`}}
               </h5>
               <h5 v-if="batch.sampleCount"
-                  class="ml-3 color-light-text d-xl-block d-none">
+                  class="ml-3 text-medium d-xl-block d-none">
                 {{ `${batch.sampleCount} ตัวอย่าง` }}
               </h5>
             </div>
             <div class="col-xl-10 col-12">
-              <h4 class="mb-1 color-text-medium">
+              <h4 class="mb-1 text-dark">
                 เลือกประเภทงานทดสอบ
               </h4>
               <div class="form-row mb-4">
                 <div class="form-group col-8">
-                  <form-inline-select :options="tests(submission.type)"
-                                      v-model="batch.testType"
-                                      @change="updateBatchTestInfo(batch)" />
+                  <form-inline-select
+                    :options="tests(submission.type)"
+                    v-model="batch.testType"
+                    @change="updateBatchInfo(batch)" />
                 </div>
               </div>
               <div class="form-row">
                 <div class="form-group col-2">
-                  <h4 class="color-text-medium">จำนวนตัวอย่าง</h4>
+                  <h4 class="text-dark">จำนวนตัวอย่าง</h4>
                   <input  type="number"
                           class="form-control text-right"
-                          :value="batch.sampleCount"
+                          v-model.lazy.number="batch.sampleCount"
                           @focus="$event.target.select()"
-                          @blur="onSampleCountInputBlur($event.target.value, batch)" >
+                          @blur="updateGeneralBatchSampleCount($event.target.value, batch)" >
                 </div>
               </div>
               <div class="form-row no-gutters border-bottom-lighter pb-1">
-                <div class="col-2 color-text-medium">
+                <div class="col-2 text-dark">
                   <h4>
                     เลือกการทดสอบ
                   </h4>
@@ -313,14 +314,14 @@
                   <div class="form-row">
                     <div class="col-6"></div>
                     <div class="col-2 text-right">
-                      <h5 class="color-text-medium">
+                      <h5 class="text-dark">
                         ราคา/ตัวอย่าง
                       </h5>
                     </div>
                     <div class="col-1">
                     </div>
                     <div class="col-2">
-                      <h5 class="color-text-medium text-right">
+                      <h5 class="text-dark text-right">
                         ยอดค่าบริการ
                       </h5>
                     </div>
@@ -331,7 +332,7 @@
               <div  v-for="category in testType(batch.testType).testCategories"
                     :key="category.name"
                     class="row no-gutters test-row">
-                <div class="col-2 pr-2 color-text-medium">
+                <div class="col-2 pr-2 text-dark">
                   <h5>
                     {{ category.name }}
                   </h5>
@@ -347,16 +348,16 @@
                                   (test.max && batch.sampleCount > test.max)
                                 "
                                 :secondary-label="test.constraint"
-                                v-model="batch.tests[test.id].selected"
-                                @change="onTestCheckboxChange(batch, test.id)" />
+                                v-model="batch.tests[test.id]"
+                                @change="updateGeneralBatchTotalPrice(batch)" />
                     </div>
                     <div class="form-group text-right mb-0 col-2">
                       <h5>
                         {{ `${test.price}฿` }}
                       </h5>
                     </div>
-                    <div class="form-group col-1 mb-0 text-right color-muted">
-                      <div v-if="batch.tests[test.id].selected && batch.sampleCount"
+                    <div class="form-group col-1 mb-0 text-right text-muted">
+                      <div v-if="batch.tests[test.id] && batch.sampleCount"
                            class="nowrap">
                         <i class="fas fa-times small-icon d-inline"></i>
                         <h5 class="mx-1 d-inline">
@@ -366,7 +367,7 @@
                       </div>
                     </div>
                     <div class="form-group col-2 mb-0 text-right">
-                      <div v-if="batch.tests[test.id].selected && batch.sampleCount">
+                      <div v-if="batch.tests[test.id] && batch.sampleCount">
                         <h5>
                           {{ `${(test.price * batch.sampleCount).toLocaleString()}฿` }}
                         </h5>
@@ -379,7 +380,7 @@
               <div v-if="isBacteriaTest(batch)"
                    class="row no-gutters border-bottom-lighter">
                 <div class="col-2 pt-2 pr-2">
-                  <h5 class="color-text-medium">รายการอื่นๆ</h5>
+                  <h5 class="text-dark">รายการอื่นๆ</h5>
                 </div>
                 <div class="col-10">
                   <div class="form-row">
@@ -396,7 +397,7 @@
                       </div>
                       <a  class="btn btn-primary btn-sm my-2"
                           @click="batch.customTests.push('')">
-                        เพิ่มรายการ
+                        เพิ่มรายการแบคทีเรีย
                       </a>
                     </div>
                     <div class="col-1 py-1">
@@ -412,7 +413,7 @@
                     <div class="col-2 py-1 text-right pt-2">
                       <template v-if="batch.customTests.length > 0">
                         <h5>รอประเมินราคา</h5>
-                        <h6 class="color-muted">(ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h6>
+                        <h6 class="text-muted">(ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h6>
                       </template>
                     </div>
                   </div>
@@ -426,40 +427,40 @@
                     <div class="col-5"></div>
                     <div class="col-1 text-right">
                       <h2 class="text-primary">
-                        {{ batch.sampleCount? batch.sampleCount : 0 }}
+                        {{ batch.sampleCount? batch.sampleCount : 'N/A' }}
                       </h2>
-                      <h5 class="color-light-text">
+                      <h5 class="text-medium">
                         ตัวอย่าง
                       </h5>
                     </div>
                     <div class="col-2 text-right">
                       <h2 class="text-primary">
                         {{
-                            Object.values(batch.tests).reduce( (acc, t) => acc + (t.selected? 1:0), 0) +
+                            Object.values(batch.tests).reduce( (acc, test) => acc + (test? 1:0), 0) +
                               (batch.customTests? batch.customTests.length : 0)
                         }}
                       </h2>
-                      <h5 class="color-light-text">
+                      <h5 class="text-medium">
                         รายการทดสอบ
                       </h5>
                     </div>
                     <div class="col-1 text-right nowrap">
-                      <h5 class="color-light-text mt-2 ml-3">
+                      <h5 class="text-medium mt-2 ml-3">
                         รวมเป็น
                       </h5>
                     </div>
                     <div class="col-2 text-right">
                       <h2 class="text-primary">
                         {{
-                            Object.values(batch.tests).reduce( (acc, t) => acc + (t.selected? 1:0), 0) > 0 && batch.sampleCount?
+                            Object.values(batch.tests).reduce( (acc, test) => acc + (test? 1:0), 0) > 0 && batch.sampleCount?
                               `${batch.totalPrice.toLocaleString()}฿` : 'N/A'
                         }}
                       </h2>
-                      <h5 class="color-light-text">
+                      <h5 class="text-medium">
                         ค่าบริการ
                       </h5>
                       <h6 v-if="isBacteriaTest(batch)"
-                          class="color-muted">
+                          class="text-muted">
                         *ไม่รวมรายการอื่นๆ
                       </h6>
                     </div>
@@ -473,7 +474,7 @@
                   <h5 class="mb-2">
                     เลือกยาต้านจุลชีพเพื่อการทดสอบความไว
                   </h5>
-                  <h5 class="color-text-light">
+                  <h5 class="text-medium">
                     (เลือกได้ถึง 8 รายการ)
                   </h5>
                 </div>
@@ -555,7 +556,7 @@
                 การทดสอบ
               </h3>
               <h5 v-if="hasMultipleBatches"
-                  class="color-light-text">
+                  class="text-medium">
                 {{ batch.disinfectantName }}
               </h5>
             </div>
@@ -569,7 +570,7 @@
                   <form-inline-select
                     :options="tests(submission.type)"
                     v-model="batch.testType"
-                    @change="updateBatchTestInfo(batch)" />
+                    @change="updateBatchInfo(batch)" />
                 </div>
               </div>
   
@@ -604,27 +605,27 @@
               <h3 class="mt-3 mb-1">รายการทดสอบ</h3>
               <div class="form-row border-bottom-lighter px-3 pb-2 mb-1">
                 <div class="col-4">
-                  <h5 class="color-light-text">
+                  <h5 class="text-medium">
                     ชื่อ{{ isVirusBatch(batch)? 'ไวรัส' : isBacteriaBatch(batch)? 'แบคทีเรีย' : '' }}
                   </h5>
                 </div>
                 <div class="col-6">
                   <div class="form-row">
                     <div class="col-4">
-                      <h5 class="color-light-text">
+                      <h5 class="text-medium">
                         ความเข้มข้น
                       </h5>
                     </div>
                     <div class="col-8">
                       <div class="form-row">
                         <div class="col-6">
-                          <h5 class="color-light-text">
+                          <h5 class="text-medium">
                             ระยะสัมผัส
                           </h5>
                         </div>
                         <div  v-show="isBacteriaBatch(batch)"
                               class="col-6">
-                          <h5 class="color-light-text">
+                          <h5 class="text-medium">
                             ระยะหลังการเจือจาง
                           </h5>
                         </div>
@@ -697,14 +698,14 @@
                   <h5>
                     {{ `${info.price.toLocaleString()}฿` }}
                   </h5>
-                  <h6 class="color-muted squeeze-up">
+                  <h6 class="text-muted squeeze-up">
                     ต่อรายการ
                   </h6>
                   <h5 class="mt-1">
                     <i class="fas fa-times small-icon"></i>
                     {{ info.numTests }}
                   </h5>
-                  <h6 class="color-muted squeeze-up">
+                  <h6 class="text-muted squeeze-up">
                     รายการ
                   </h6>
                   <h4 class="mt-1 text-primary">
@@ -716,7 +717,7 @@
   
               <div v-show="Object.keys(batch.tests).length <= 0"
                    class="border-bottom-lighter">
-                <h4 class="color-muted my-3 ml-3">
+                <h4 class="text-muted my-3 ml-3">
                   ยังไม่มีรายการทดสอบ
                 </h4>
               </div>
@@ -730,7 +731,7 @@
                         <i class="fas fa-plus small-icon"></i>
                         {{ `${batch.dilutionCost.toLocaleString()}฿` }}
                       </h4>
-                      <h5 class="color-text-light">
+                      <h5 class="text-medium">
                         ค่า Dilution
                       </h5>
                       <div class="hint-container">
@@ -754,14 +755,14 @@
                         <i class="fas fa-plus small-icon"></i>
                         3,000฿
                       </h4>
-                      <h5 class="color-text-light">
+                      <h5 class="text-medium">
                         ค่าประเมินผล
                       </h5>
                     </div>
                   </template>
                 </div>
                 <div class="col-1 d-flex flex-column align-items-end justify-content-end">
-                  <h5 class="color-text-light mb-4">
+                  <h5 class="text-medium mb-4">
                     รวมเป็น
                   </h5>
                 </div>
@@ -772,7 +773,7 @@
                           `${batch.totalPrice.toLocaleString()}฿` : 'N/A'
                     }}
                   </h2>
-                  <h5 class="color-text-light">
+                  <h5 class="text-medium">
                     ค่าบริการ
                   </h5>
                 </div>
@@ -806,6 +807,21 @@
     v-else
     :submission="submission"
     @back="inReviewMode = false"/>
+
+  <div class="w-50 align-self-center font-chatthai">
+    <button class="btn btn-lg mb-4 btn-dark font-chatthai align-self-center"
+            @click="DEV_VIEW_JSON = !DEV_VIEW_JSON">
+      DEV: {{DEV_VIEW_JSON? 'Hide' : 'View'}} JSON Form Data
+    </button>
+    <div v-if="DEV_VIEW_JSON">
+      <h3>JSON Form Data</h3>
+      <pre class="w-50 align-self-center font-chatthai">
+        <h5 class="text-default">
+          {{ JSON.stringify(submission, null, '\t') }}
+        </h5>
+      </pre>
+    </div>
+  </div>
 
 </div>
 </template>
@@ -861,10 +877,10 @@ a.btn.btn-x {
 
 .submit-samples-nav {
   position: sticky;
-  top: 60px;
-  background: $bg;
+  top: $titlebar-height-scrolled;
+  background: $light;
   border-bottom: 1px solid $accent;
-  z-index: 999;
+  z-index: 99;
   box-shadow: 0 5px 5px -5px #333;
   a {
     &.button {
@@ -873,7 +889,7 @@ a.btn.btn-x {
     }
     &.active {
       background: $accent;
-      color: $chula;
+      color: $primary;
     }
   }
 }
@@ -936,7 +952,8 @@ export default {
         info: {},
         batches: [{}]
       },
-      inReviewMode: false
+      inReviewMode: false,
+      DEV_VIEW_JSON: false
     }
   },
   computed: {
@@ -944,7 +961,8 @@ export default {
       'reportTypes',
       'tests',
       'testType',
-      'testCategory'
+      'testCategory',
+      'sensitivityTestIds'
     ]),
     isGeneralSubmission () {
       return this.submission.type === 1
@@ -973,30 +991,20 @@ export default {
           submittorName: 'สมควร สมสกุล',
           submitDate: '04/04/20',
           orgId: null,
-          sampleTakenDate: '',
+          sampleTakenDate: null,
           sampleTypeId: null,
           animalTypeId: null,
-          animalSpecies: '',
-          animalAge: '',
+          animalSpecies: null,
+          animalAge: null,
           animalCount: null,
-          illness: '',
-          vaccinations: '',
+          illness: null,
+          vaccinations: null,
           notifyBy: {
             phone: null,
             fax: null,
             email: null
           }
         }
-        this.submission.batches = [
-          {
-            testType: 1,
-            sampleCount: null,
-            totalPrice: 0,
-            tests: {},
-            samples: [],
-            customTests: []
-          }
-        ]
       // Disinfectant Type
       } else if (this.isDisinfectantSubmission) {
         this.submission.info = {
@@ -1013,140 +1021,42 @@ export default {
             eng: false
           }
         }
-        this.submission.batches = [
-          {
-            testType: 5,
-            disinfectantName: '',
-            disinfectantNameEng: '',
-            sampleCount: null,
-            uniqueCells: 0,
-            dilutionCost: 0,
-            totalPrice: 0,
-            tests: {},
-            samples: []
-          }
-        ]
       }
-      this.updateBatchTestInfo(this.submission.batches[0])
+      this.submission.batches = []
+      this.submission.batches.push(this.generateNewBatch())
     },
 
-    updateBatchTestInfo (batch) {
-      batch.sampleCount = null
-      batch.totalPrice = 0
-      batch.samples = []
-      batch.sensitivityTests = ''
-      batch.tests = {}
-      batch.customTests = []
-      // Initialize test selection data
-      if (this.isGeneralSubmission) {
-        let newTests = {}
-        for (let test of this.testType(batch.testType).testInfo) {
-          newTests[test.id] = {
-            id: test.id,
-            selected: false,
-          }
-        }
-        batch.tests = Object.assign({}, batch.tests, newTests)
-      } else if (this.isDisinfectantSubmission) {
-        batch.disinfectantName = ''
-        batch.disinfectantNameEng = ''
-        batch.tests = {}
-      }
-    },
-
-    onSampleCountInputBlur (value, batch) {
-      // Floor to not allow decimals
-      let newCount = Math.floor(value)
-      // Set to null if left empty or negative
-      if (!newCount || newCount <= 0) {
-        newCount = null
-      // Set to 100 if larger than 100
-      } else if (newCount > 100) {
-        newCount = 100
-      }
-      batch.sampleCount = newCount
-
-      // Check for max/min sample counts
-      this.testType(batch.testType).testInfo
-        .filter( t => t.min || t.max )
-        .forEach( t => {
-          if ( (t.max && batch.sampleCount > t.max) ||
-               (t.min && batch.sampleCount < t.min) ) {
-            batch.tests[t.id].selected = false
-          }
-        })
-      this.onTestCheckboxChange(batch)
-    },
-
-    onTestCheckboxChange (batch) {
-      // Update Batch total price
-      batch.totalPrice = this.testType(batch.testType).testInfo
-        .filter( t => batch.tests[t.id].selected )
-        .reduce( (acc, t) => acc + (t.price * batch.sampleCount), 0 )
-
-      // Update batch samples list
-      const diff = Math.abs(batch.sampleCount - batch.samples.length)
-      if (batch.sampleCount > batch.samples.length) {
-        for (let i = batch.samples.length; i < batch.sampleCount; i++) {
-          batch.samples[i] = Object.assign(
-            {},
-            batch.samples[i],
-            { sampleId: null, extraInfo: null }
-          )
-        }
-      } else if (batch.sampleCount < batch.samples.length) {
-        batch.samples.splice(batch.samples.length - diff, diff)
-      }
-    },
-
-    includesSensitivityTest (batch) {
-      const sensitivityTestIds = this.testType(batch.testType).testInfo
-        .filter( test => test.category === 12)
-        .map( test => test.id )
-      const sensitivityTestActive = Object.values(batch.tests)
-        .filter( test => sensitivityTestIds.includes(test.id) )
-        .reduce( (acc, test) => acc || test.selected, false )
-      return sensitivityTestActive || (batch.customTests && batch.customTests.length > 0) 
-    },
-
-    updateSampleDetails(batch, payload) {
-      for (const range of payload.ranges) {
-        const start = range[0] - 1
-        const end = range.length > 1? range[1] : range[0]
-        for (let i = start; i < end; i++) {
-          batch.samples.splice(i, 1, { 
-            sampleId: payload.sampleId,
-            extraInfo: payload.extraInfo
-          })
-        }
-      }
-    },
-
-    addBatch () {
+    generateNewBatch () {
+      let newBatch
       // General type
       if (this.isGeneralSubmission) {
-        this.submission.batches.push({
+        newBatch = {
           testType: 1,
           sampleCount: null,
           totalPrice: 0,
           tests: {},
           samples: [],
-          customTests: []
-        })
+          customTests: [],
+          sensitivityTests: null
+        }
       // Disinfectant Type
       } else if (this.isDisinfectantSubmission) {
-        this.submission.batches.push({
+        newBatch = {
           testType: 5,
-          disinfectantName: '',
-          sampleCount: null,
+          disinfectantName: null,
+          disinfectantNameEng: null,
           totalPrice: 0,
-          uniqueCells: 0,
           dilutionCost: 0,
-          tests: {},
-          samples: []
-        })
+          uniqueCells: {},
+          tests: {}
+        }
       }
-      this.updateBatchTestInfo(this.submission.batches[this.submission.batches.length-1])
+      this.updateBatchInfo(newBatch)
+      return newBatch
+    },
+
+    addBatch () {
+      this.submission.batches.push(this.generateNewBatch())
       this.$nextTick( () => {
         setTimeout( () => {
           const batch = document.getElementById(`${this.submission.batches.length}`)
@@ -1160,31 +1070,6 @@ export default {
           }
         )
       })
-    },
-
-    addDisinfectantTest (payload, batch) {
-      batch.tests = Object.assign({}, batch.tests, payload)
-      this.updateDisinfectantBatchTotalPrice(batch)
-    },
-
-    deleteDisinfectantTest (batch, testKey) {
-      this.$delete(batch.tests, testKey)
-      this.updateDisinfectantBatchTotalPrice(batch)
-    },
-
-    updateDisinfectantBatchTotalPrice (batch) {
-      let totalPrice = Object.values(batch.tests).reduce( (acc, curr) => acc + curr.totalPrice, 0)
-      if (this.isVirusBatch(batch)) {
-        const cells = {}
-        Object.values(batch.tests).forEach( t => {
-          cells[t.cellName] = (t.cellName in cells)?
-            union(cells[t.cellName], t.dilutions) : [...t.dilutions]
-        })
-        batch.uniqueCells = cells
-        batch.dilutionCost = Object.values(batch.uniqueCells).reduce( (acc, curr) => acc + 3000 * curr.length, 0)
-        totalPrice += batch.dilutionCost
-      }
-      batch.totalPrice = 3000 + totalPrice
     },
 
     removeBatch (idx) {
@@ -1203,6 +1088,111 @@ export default {
           )
         })
       }
+    },
+
+    updateBatchInfo (batch) {
+      if (this.isGeneralSubmission) {
+        batch.totalPrice = 0
+        batch.customTests = []
+        batch.sensitivityTests = null
+        const newTests = {}
+        for (const test of this.testType(batch.testType).testInfo) {
+          newTests[test.id] = false
+        }
+        batch.tests = {...newTests}
+      } else if (this.isDisinfectantSubmission) {
+        batch.totalPrice = 0
+        batch.dilutionCost = 0
+        batch.uniqueCells = {}
+        batch.tests = {}
+      }
+    },
+
+    updateGeneralBatchTotalPrice (batch) {
+      batch.totalPrice = this.testType(batch.testType).testInfo
+        .filter( t => batch.tests[t.id] )
+        .reduce( (acc, t) => acc + (t.price * batch.sampleCount), 0 )
+    },
+
+    updateGeneralBatchSampleCount (value, batch) {
+      // Floor to not allow decimals
+      let newCount = Math.floor(value)
+      // Set to null if left empty or negative or 0
+      if (!newCount || newCount <= 0) {
+        newCount = null
+      // Set to 100 if larger than 100
+      } else if (newCount > 100) {
+        newCount = 100
+      }
+      batch.sampleCount = newCount
+
+      // Check for max/min sample counts
+      this.testType(batch.testType).testInfo
+        .filter( t => t.min || t.max )
+        .forEach( t => {
+          if ( (t.max && batch.sampleCount > t.max) ||
+               (t.min && batch.sampleCount < t.min) ) {
+            batch.tests[t.id] = false
+          }
+        })
+      
+      // Update batch samples list
+      const diff = Math.abs(batch.sampleCount - batch.samples.length)
+      if (batch.sampleCount > batch.samples.length) {
+        for (let i = batch.samples.length; i < batch.sampleCount; i++) {
+          batch.samples[i] = { sampleId: null, extraInfo: null }
+        }
+      } else if (batch.sampleCount < batch.samples.length) {
+        batch.samples.splice(batch.samples.length - diff, diff)
+      }
+
+      this.updateGeneralBatchTotalPrice(batch)
+    },
+
+    includesSensitivityTest (batch) {
+      const sensitivityTestActive = Object.keys(batch.tests)
+        .map( testId => parseInt(testId) )
+        .filter( testId => this.sensitivityTestIds().includes(testId) )
+        .reduce( (acc, testId) => acc || batch.tests[testId], false )
+      return sensitivityTestActive || batch.customTests.length > 0
+    },
+
+    updateSampleDetails(batch, payload) {
+      for (const range of payload.ranges) {
+        const start = range[0] - 1
+        const end = range.length > 1? range[1] : range[0]
+        for (let i = start; i < end; i++) {
+          batch.samples.splice(i, 1, { 
+            sampleId: payload.sampleId,
+            extraInfo: payload.extraInfo
+          })
+        }
+      }
+    },
+
+    updateDisinfectantBatchTotalPrice (batch) {
+      let totalPrice = Object.values(batch.tests).reduce( (acc, curr) => acc + curr.totalPrice, 0)
+      if (this.isVirusBatch(batch)) {
+        const cells = {}
+        Object.values(batch.tests).forEach( t => {
+          cells[t.cellName] = (t.cellName in cells)?
+            union(cells[t.cellName], t.dilutions) : [...t.dilutions]
+        })
+        batch.uniqueCells = cells
+        batch.dilutionCost = Object.values(batch.uniqueCells).reduce( (acc, curr) => acc + 3000 * curr.length, 0)
+        totalPrice += batch.dilutionCost
+      }
+      batch.totalPrice = 3000 + totalPrice
+    },
+
+    addDisinfectantTest (payload, batch) {
+      batch.tests = {...batch.tests, ...payload}
+      this.updateDisinfectantBatchTotalPrice(batch)
+    },
+
+    deleteDisinfectantTest (batch, testKey) {
+      this.$delete(batch.tests, testKey)
+      this.updateDisinfectantBatchTotalPrice(batch)
     },
 
     getBatchNavLabel (number) {

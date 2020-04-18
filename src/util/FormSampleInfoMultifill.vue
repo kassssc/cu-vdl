@@ -80,7 +80,7 @@
   &:hover {
     a.btn {
       background: $accent;
-      color: $chula;
+      color: $primary;
     }
   }
 }

@@ -5,7 +5,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    loggedIn: true,
+    auth: {
+      loggedIn: true,
+      isCU: false
+    },
     nav: [
       {
         path: '/',
@@ -354,7 +357,7 @@ export default new Vuex.Store({
       return state.data.downloads
     },
     loggedIn: state => {
-      return state.loggedIn
+      return state.auth.loggedIn
     },
     reportTypes: state => {
       return state.submission.reportTypes
@@ -369,11 +372,17 @@ export default new Vuex.Store({
       return state.submission.tests
         .find( t => t.id === testTypeId ).testInfo
         .filter( t => t.category === categoryId)
+    },
+    sensitivityTestIds: state => () => {
+      return state.submission.tests
+        .find( t => t.id === 4 ).testInfo
+        .filter( t => t.category === 12)
+        .map( t => t.id)
     }
   },
   mutations: {
     LOG_IN_OUT: (state, payload) => {
-      state.loggedIn = payload
+      state.auth.loggedIn = payload
     }
   },
   actions: {

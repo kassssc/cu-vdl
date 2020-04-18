@@ -1,5 +1,6 @@
 <template>
-<div id="titlebar" class="d-flex justify-content-between align-items-center">
+<div  id="titlebar"
+      class="d-flex justify-content-between align-items-center">
   <div class="d-flex align-items-center">
     <div id="logo-img" />
     <h4 class="text-primary d-none d-xl-block">
@@ -11,7 +12,9 @@
   </div>
   <div class="d-flex align-items-center">
     <navbar />
-    <!-- <div class="lang-selector d-flex align-items-center mr-3">
+
+    <!-- CHANGE WEBSITE LANG - PHASE 2
+    <div class="lang-selector d-flex align-items-center mr-3">
       <button v-for="lang in langs"
               :key="lang"
               class="btn btn-lang text-uppercase"
@@ -20,26 +23,34 @@
         {{ lang }}
       </button>
     </div> -->
+
     <router-link  v-if="!loggedIn"
                   :to="{name: 'login'}"
                   tag="button"
                   class="btn btn-primary btn-width-md ml-3">
       {{ $t(`general.login`) }}
     </router-link>
-    <div v-if="loggedIn"
+    <div  v-if="loggedIn"
           class="d-flex align-items-center">
-      <div class="position-relative ml-1 mr-3">
-        <button class="btn btn-transparent btn-icon">
+      
+      <!-- DROP DOWN NOTIFICATIONS - PHASE 2
+      <div class="dropdown ml-3 mr-3">
+        <button class="btn btn-transparent btn-icon focusable"
+                type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-bell"></i>
         </button>
         <div class="notifications-badge font-chatthai">
           <p>8</p>
         </div>
-      </div>
-      <h5 class="mx-1 d-none d-xl-block">
-        สมควร สมสกุล
-      </h5>
-      <h6 class="mx-1 d-xl-none d-block">
+        <div class="dropdown-menu dropdown-menu-right mt-2" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </div> -->
+
+      <h6 class="mx-1">
         สมควร สมสกุล
       </h6>
       <button class="btn btn-transparent btn-icon mx-1 d-none d-xl-block">
@@ -59,28 +70,32 @@
   z-index: 999;
   position: fixed;
   top: 0; left: 0;
-  padding: 0.5em 30px;
   width: 100%; 
-  height: 80px;
+  height: $titlebar-height;
   backdrop-filter: blur(20px);
   border-bottom: 1px solid transparent;
   transition: all 100ms ease-in-out;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-left: $outer-padding-sm;
+  padding-right: $outer-padding-sm;
+  @include media-breakpoint-up(lg) {
+    padding-left: $outer-padding;
+    padding-right: $outer-padding;
+  }
   &.scrolled {
     border-bottom: 1px solid $accent;
-    height: 60px;
+    height: $titlebar-height-scrolled;
     #logo-img {
       width: 40px;
       height: 40px;
     }
   }
   #logo-img {
+    @include logo;
     width: 60px;
     height: 60px;
     margin-right: 15px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    background-image: url('https://i.ibb.co/PWZBG5p/logo.png');
     transition: all 100ms ease-in-out;
   }
 }
@@ -94,7 +109,7 @@
   top: -4px;
   left: 26px;
   border-radius: 5px;
-  @include color-chula-white;
+  @include color-primary-white;
   p {
     margin-top: -3px;
     margin-bottom: 0px;
@@ -104,29 +119,29 @@
   height: 30px;
   width: 60px;
   border-radius: 5px;
-  border: 2px solid $chula;
+  border: 2px solid $primary;
   button.btn.btn-lang {
     height: 30px;
     width: 30px;
     font-size: 1rem;
-    color: $chula;
+    color: $primary;
     padding: 0.15em 0.3em;
     background: transparent;
     border-radius: 5px;
     &:hover {
-      color: $chula;
+      color: $primary;
     }
     &.selected {
-      color: $bg;
-      background: $chula;
+      color: $white;
+      background: $primary;
       cursor: default;
     }
   }
 } */
 // Firefox style fixes for no backdrop-filter support
-@-moz-document url-prefix(){
+@-moz-document url-prefix() {
   #titlebar {
-    background: $bg;
+    background: $body-bg;
   }
 }
 </style>

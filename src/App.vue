@@ -4,6 +4,11 @@
 </div>
 </template>
 
+<style lang="scss">
+@import '~bootstrap/scss/bootstrap.scss'; // Bootstrap
+@import '@/styles/styles.scss';           // App global styles
+</style>
+
 <script>
 
 export default {

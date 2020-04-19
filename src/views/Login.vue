@@ -41,8 +41,17 @@
       <div class="form-group col-12">
         <a class="btn btn-primary btn-lg btn-block"
            @click="login()">
-          {{ $t(`general.login`) }}
+          <i class="fas fa-sign-in-alt btn-inner-icon mr-1"></i> {{ $t(`general.login`) }}
         </a>
+      </div>
+    </div>
+    <div class="form-row w-100">
+      <div class="form-group col-12">
+        <router-link  :to="{name: 'signup'}"
+                      tag="a"
+                      class="btn btn-secondary btn-lg btn-block">
+          <i class="fas fa-user-plus btn-inner-icon mr-1"></i> สมัครสมาชิก
+        </router-link>
       </div>
     </div>
   </form>
@@ -55,7 +64,6 @@
   width: 250px;
   height: 250px;
   margin-bottom: 2em;
-  transition: all 100ms ease-in-out;
 }
 .login-form {
   width: 400px;

@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     auth: {
       loggedIn: true,
-      isCU: false
+      accountType: 1, // 0: CU employee, 1: employee submitter, 2: freelance
     },
     nav: [
       {
@@ -337,6 +337,14 @@ export default new Vuex.Store({
 
           ]
         }
+      ]
+    },
+    selectOptions: {
+      orgs: [
+        { id: 1,  name: 'ฟาร์มสมควร'},
+        { id: 2,  name: 'ฟาร์มสมหมาย'},
+        { id: 3,  name: 'ฟาร์มสมคิด'},
+        { id: 4,  name: 'ฟาร์มสมชาย'}
       ]
     }
   },

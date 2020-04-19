@@ -28,6 +28,10 @@ html {
   }
 }
 
+body {
+
+}
+
 #app {
   font-family: 'CHULALONGKORN', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -36,7 +40,10 @@ html {
 
 button.btn, a.btn {
   @include unselectable;
-  cursor: pointer;
+  &[disabled] {
+    cursor: default;
+    color: $muted;
+  }
   &:focus, &:active {
     box-shadow: none !important;
   }
@@ -47,8 +54,11 @@ button.btn, a.btn {
   &.btn-primary {
     color: $light; // needed for <a> buttons
   }
-  &.btn-secondary:hover {
-    background: $accent-dark;
+  &.btn-secondary {
+    color: $default;
+    &:hover:not([disabled]) {
+      background: $accent-dark;
+    }
   }
   &.btn-transparent {
     &:hover {
@@ -77,6 +87,11 @@ button.btn, a.btn {
       color: $primary;
       background: transparent;
     }
+  }
+  i.btn-inner-icon {
+    margin-top: 0.2em;
+    margin-right: 0.2em;
+    font-size: 0.8em;
   }
 }
 
@@ -177,7 +192,7 @@ input[type="number"] {
     color: $medium;
     line-height: 1.1em;
     i {
-      font-size: 1px;
+      font-size: 14px;
       color: $primary;  
     }
     &.col-form-label {
@@ -217,6 +232,9 @@ input[type="number"] {
 }
 .rotate {
   transform: rotate(180deg);
+}
+.pointer {
+  cursor: pointer;
 }
 
 .border-bottom-pink {
@@ -264,6 +282,7 @@ input[type="number"] {
   padding: 1em;
   border-radius: 5px;
   background: $accent-light;
+  //border: 1px solid $accent;
 }
 
 .sidebar {

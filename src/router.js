@@ -60,6 +60,11 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "group-login" */ '@/views/Login.vue'),
     },
     {
+      path: '/signup',
+      name: 'signup',
+      component: () => import(/* webpackChunkName: "group-login" */ '@/views/Signup.vue'),
+    },
+    {
       path: '*',
       redirect: '/'
     }

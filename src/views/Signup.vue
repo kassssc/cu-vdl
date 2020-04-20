@@ -1,17 +1,17 @@
 <template>
 <div class="fill-page pt-5 d-flex flex-column align-items-center">
   <div class="signup-box d-flex flex-column align-items-start">
-    <a  class="btn btn-transparent mb-3"
-        @click="$router.go(-1)">
+    <button class="btn btn-transparent mb-3"
+            @click="$router.go(-1)">
       <i class="fas fa-chevron-left mr-2" />
       {{ $t(`general.back`) }}
-    </a>
+    </button>
     <div class="signup-logo mb-2 align-self-center" />
     <h1 class="text-primary mb-4 align-self-center">
       สมัครสมาชิก
     </h1>
 
-    <form class="w-100 d-flex flex-column align-items-center font-chatthai">
+    <div class="w-100 d-flex flex-column align-items-center font-chatthai">
       
       <div  v-if="!creatingEmployeeAccount && !creatingFreelanceAccount"
             class="questionaire-form d-flex flex-column align-items-center">
@@ -61,7 +61,7 @@
             <h3 class="text-primary">
               ผู้รับผิดชอบที่มี Account อยู่แล้วจะสามารถสร้าง Account ใหม่ให้ท่านได้ จากภายในระบบ
             </h3>
-            <router-link  to="/"
+            <router-link  exact to="/"
                           tag="a"
                           class="btn btn-secondary btn-lg mt-3">
               <i class="fas fa-arrow-left btn-inner-icon"></i> กลับไปยังหน้าหลัก
@@ -75,10 +75,10 @@
             <h3>
               หากได้รับการอนุมัติ <span class="text-primary">ท่านจะได้รับข้อมูลการล็อคอินผ่านทางอีเมล</span> และองค์กรของท่านจะถูกบันทึกอยู่ในระบบ หลังจากนั้น  ท่านสามารถใช้ Account เพื่อส่งตัวอย่างในนามขององค์กรได้
             </h3>
-            <a  class="btn btn-primary btn-lg mt-3"
-                @click="creatingEmployeeAccount = true">
+            <button class="btn btn-primary btn-lg mt-3"
+                    @click="creatingEmployeeAccount = true">
               <i class="fas fa-arrow-right btn-inner-icon"></i> ไปยังแบบฟอร์มขอสมัครสมาชิก พนักงานประจำองค์กร
-            </a>
+            </button>
           </div>
         </template>
 
@@ -93,10 +93,10 @@
           <h3 class="text-dark">
             หากได้รับการอนุมัติ <span class="text-primary">ท่านจะได้รับข้อมูลการล็อคอินผ่านทางอีเมล</span> และจะมีสิทธิส่งตัวอย่างในนามขององค์กรที่อนุมัติท่านแล้ว
           </h3>
-          <a  class="btn btn-primary btn-lg mt-3"
-              @click="creatingFreelanceAccount = true">
+          <button class="btn btn-primary btn-lg mt-3"
+                  @click="creatingFreelanceAccount = true">
             <i class="fas fa-arrow-right btn-inner-icon"></i> ไปยังแบบฟอร์มขอสมัครสมาชิก Freelance
-          </a>
+          </button>
         </div>
        
 
@@ -110,7 +110,7 @@
           <div class="col-3"></div>
           <div class="col-9 mb-2 text-medium">
             <h4>
-              ท่านกำลังสร้าง Account พนักงานประจำ เพื่อส่งตัวอย่างในนามขององค์กรที่ยังไม่ได้อยู่ในระบบของ จุฬาฯ
+              ท่านกำลังสร้าง <span class="text-primary">Account พนักงานประจำ</span> เพื่อส่งตัวอย่างในนามขององค์กรที่ยังไม่ได้อยู่ในระบบของ จุฬาฯ
             </h4>
           </div>
         </div>
@@ -261,15 +261,15 @@
         <div class="row no-gutters">
           <div class="col-3"></div>
           <div class="col-5">
-            <a class="btn btn-primary btn-lg btn-block">
-              <i class="fas fa-paper-plane btn-inner-icon mr-1"></i> ส่งแบบฟอร์มขอสมัครสมาชิก
-            </a>
+            <button class="btn btn-primary btn-lg btn-block">
+              <i class="fas fa-paper-plane btn-inner-icon"></i> ส่งแบบฟอร์มขอสมัครสมาชิก
+            </button>
           </div>
           <div class="col-4 pl-3">
-            <a  class="btn btn-secondary btn-lg btn-block"
+            <button class="btn btn-secondary btn-lg btn-block"
                 @click="reset()">
-              <i class="fas fa-undo-alt btn-inner-icon mr-1"></i> เริ่มต้นใหม่
-            </a>
+              <i class="fas fa-undo-alt btn-inner-icon"></i> เริ่มต้นใหม่
+            </button>
           </div>
         </div>
       </div>
@@ -280,7 +280,7 @@
           <div class="col-3"></div>
           <div class="col-9 mb-2 text-medium">
             <h4>
-              ท่านกำลังสร้าง Account Freelance เพื่อส่งตัวอย่างในนามขององค์กรมากกว่าหนึ่งองค์กร
+              ท่านกำลังสร้าง <span class="text-primary">Account Freelance</span> เพื่อส่งตัวอย่างในนามขององค์กรมากกว่าหนึ่งองค์กร
             </h4>
           </div>
         </div>
@@ -337,11 +337,11 @@
                     :key="idx"
                     :id="`org${idx+1}`"
                     class="form-row org-row position-relative">
-                <a  v-show="freelanceSignupForm.orgs.length > 1"
-                    class="btn btn-x delete-org"
+                <button v-show="freelanceSignupForm.orgs.length > 1"
+                        class="btn btn-x delete-org"
                     @click="freelanceSignupForm.orgs.splice(idx, 1)">
                   <i class="fas fa-times" />
-                </a>
+                </button>
                 <div class="form-group col-12 mb-2 mt-3">
                   <label class="mb-0">
                     ชื่อองค์กร #{{ idx+1 }}
@@ -372,10 +372,10 @@
 
           <div class="col-3"></div>
           <div class="col-3 px-4">
-            <a  class="btn btn-primary btn-sm btn-block my-3"
-                @click="addOrg()">
+            <button class="btn btn-primary btn-sm btn-block my-3"
+                    @click="addOrg()">
               เพิ่มองค์กร
-            </a>
+            </button>
           </div>
 
         </div>
@@ -397,21 +397,21 @@
         <div class="row no-gutters">
           <div class="col-3"></div>
           <div class="col-5">
-            <a class="btn btn-primary btn-lg btn-block">
-              <i class="fas fa-paper-plane btn-inner-icon mr-1"></i> ส่งแบบฟอร์มขอสมัครสมาชิก
-            </a>
+            <button class="btn btn-primary btn-lg btn-block">
+              <i class="fas fa-paper-plane btn-inner-icon"></i> ส่งแบบฟอร์มขอสมัครสมาชิก
+            </button>
           </div>
           <div class="col-4 pl-3">
-            <a  class="btn btn-secondary btn-lg btn-block"
-                @click="reset()">
-              <i class="fas fa-undo-alt btn-inner-icon mr-1"></i> เริ่มต้นใหม่
-            </a>
+            <button class="btn btn-secondary btn-lg btn-block"
+                    @click="reset()">
+              <i class="fas fa-undo-alt btn-inner-icon"></i> เริ่มต้นใหม่
+            </button>
           </div>
         </div>
 
       </div>
 
-    </form>
+    </div>
   </div>
 </div>
 </template>
@@ -423,11 +423,8 @@
   height: 150px;
 }
 
-.org-row {
-  &:not(:last-child) {
-    border-bottom: 1px solid $accent;
-    //margin-bottom: 20px;
-  }
+.org-row:not(:last-child) {
+  border-bottom: 1px solid $accent;
 }
 
 .questionaire-form {

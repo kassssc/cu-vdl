@@ -1,5 +1,5 @@
 <template>
-<div  class="subcontainer p-3 mt-3"
+<div  class="subcontainer p-3"
       :class="{'folded': folded}">
   <div  class="fold-section w-100 d-flex justify-content-between align-items-center mb-3"
         @click="folded = !folded">
@@ -70,7 +70,7 @@
   transition: height 125ms linear;
   overflow: hidden;
   &.folded {
-    height: 75px;
+    height: 70px;
   }
   height: 310px;
 }

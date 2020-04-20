@@ -23,7 +23,7 @@
          :value="internalValue"
          v-model="internalValue"
          @change="onChange()"
-         class="hidden-input">
+         class="d-none">
 </div>
 </template>
 
@@ -65,9 +65,6 @@
       color: $muted;
     }
   }
-}
-.hidden-input {
-  display: none;
 }
 </style>
 

@@ -33,7 +33,7 @@
     <div  v-if="loggedIn"
           class="d-flex align-items-center">
       
-      <!-- DROP DOWN NOTIFICATIONS - PHASE 2
+    <!-- DROP DOWN NOTIFICATIONS - PHASE 2
       <div class="dropdown ml-3 mr-3">
         <button class="btn btn-transparent btn-icon focusable"
                 type="button" id="dropdownMenuButton"
@@ -48,14 +48,15 @@
           <a class="dropdown-item" href="#">Another action</a>
           <a class="dropdown-item" href="#">Something else here</a>
         </div>
-      </div> -->
+      </div>
+    -->
 
-      <h6 class="mx-1">
-        สมควร สมสกุล
-      </h6>
-      <button class="btn btn-transparent btn-icon mx-1 d-none d-xl-block">
-        <i class="fas fa-cog"></i>
-      </button>
+      <router-link  :to="{name: 'dashboard'}"
+                    tag="a"
+                    class="btn btn-transparent btn-icon mx-1 d-none d-xl-block">
+        {{ user.firstName + ' ' + user.lastName }}
+        <i class="fas fa-cog ml-1"></i>
+      </router-link>
       <button class="btn btn-transparent btn-icon ml-1 d-none d-xl-block"
               @click="logout()">
         <i class="fas fa-sign-out-alt" />
@@ -163,6 +164,7 @@ export default {
   computed: {
     ...mapGetters([
       'loggedIn',
+      'user'
     ])
   },
   methods: {

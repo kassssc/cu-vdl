@@ -1,10 +1,10 @@
 <template>
 <div class="fill-page d-flex flex-column justify-content-center align-items-center">
-  <form class="login-form">
-    <a  class="btn btn-transparent mb-3 align-self-start"
-        @click="$router.go(-1)">
+  <div class="login-form">
+    <button class="btn btn-transparent mb-3 align-self-start"
+            @click="$router.go(-1)">
       <i class="fas fa-chevron-left mr-2" />{{ $t(`general.back`) }}
-    </a>
+    </button>
     <div class="login-logo" />
     <div class="form-row w-100">
       <div class="form-group col-12">
@@ -31,18 +31,18 @@
         <checkbox v-model="loginForm.stayLoggedIn"
                   class="mt-1"
                   :label="$t(`general.remember`)" />
-        <a class="btn btn-transparent btn-sm color-text-light"
-           role="button">
+        <button class="btn btn-transparent btn-sm color-text-light"
+                role="button">
           {{ $t(`general.forgotPassword`) }}
-        </a>
+        </button>
       </div>
     </div>
     <div class="form-row w-100">
       <div class="form-group col-12">
-        <a class="btn btn-primary btn-lg btn-block"
-           @click="login()">
-          <i class="fas fa-sign-in-alt btn-inner-icon mr-1"></i> {{ $t(`general.login`) }}
-        </a>
+        <button class="btn btn-primary btn-lg btn-block"
+                @click="login()">
+          <i class="fas fa-sign-in-alt btn-inner-icon"></i> {{ $t(`general.login`) }}
+        </button>
       </div>
     </div>
     <div class="form-row w-100">
@@ -50,11 +50,11 @@
         <router-link  :to="{name: 'signup'}"
                       tag="a"
                       class="btn btn-secondary btn-lg btn-block">
-          <i class="fas fa-user-plus btn-inner-icon mr-1"></i> สมัครสมาชิก
+          <i class="fas fa-user-plus btn-inner-icon"></i> สมัครสมาชิก
         </router-link>
       </div>
     </div>
-  </form>
+  </div>
 </div>
 </template>
 

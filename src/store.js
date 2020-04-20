@@ -9,6 +9,44 @@ export default new Vuex.Store({
       loggedIn: true,
       accountType: 1, // 0: CU employee, 1: employee submitter, 2: freelance
     },
+    user: {
+      id: 1,
+      accountType: 1,
+      org: 1,
+      customerList: [],
+      firstName: 'สมควร',
+      lastName: 'สมสกุล',
+      email: 'mr.somkuan@gmail.com',
+      phone: '081-234-5678',
+      nationalId: null
+    },
+    org: {
+      id: 1,
+      mainContactPerson: {
+        id: 2,
+        accountType: 1,
+        org: 1,
+        firstName: 'สมหมาย',
+        lastName: 'สมสุทธิสกุล',
+        email: 'mr.sommhai@gmail.com',
+        phone: '088-888-8888',
+        nationalId: null
+      },
+      submitters: [],
+      name: 'ฟาร์มสมควร',
+      phone: '087-654-3210',
+      addr: {
+        line1: '123 ทองหล่อ ซ.12 ถนนสุขุมวิท',
+        line2: 'คลองตันเหนือ วัฒนา',
+        city: 'กรุงเทพ',
+        province: 'กรุงเทพ',
+        zip: '10110'
+      },
+      documents: {
+        ภพ44: null,
+        registration: null
+      }
+    },
     nav: [
       {
         path: '/',
@@ -386,6 +424,13 @@ export default new Vuex.Store({
         .find( t => t.id === 4 ).testInfo
         .filter( t => t.category === 12)
         .map( t => t.id)
+    },
+
+    user: state => {
+      return state.user
+    },
+    org: state => {
+      return state.org
     }
   },
   mutations: {

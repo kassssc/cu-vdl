@@ -36,32 +36,19 @@ html {
 
 button.btn, a.btn {
   @include unselectable;
-  cursor: pointer;
+  &[disabled] {
+    cursor: default;
+    pointer-events: none;
+    //color: $muted;
+  }
   &:focus, &:active {
     box-shadow: none !important;
   }
-  &.focusable:focus {
+  &.btn-transparent:hover {
     background: $accent;
-    color: $primary
   }
-  &.btn-primary {
-    color: $light; // needed for <a> buttons
-  }
-  &.btn-secondary:hover {
-    background: $accent-dark;
-  }
-  &.btn-transparent {
-    &:hover {
-      background: $accent;
-    }
-  }
-  &.btn-icon {
-    i {
-      transition: transform 200ms linear;
-    }
-    &:hover {
-      color: $primary;
-    }
+  &.btn-icon:hover {
+    color: $primary;
   }
   &.btn-width-md {
     min-width: 150px;
@@ -78,6 +65,33 @@ button.btn, a.btn {
       background: transparent;
     }
   }
+  i.btn-inner-icon {
+    margin-top: 0.2em;
+    margin-right: 0.2em;
+    font-size: 0.8em;
+  }
+  i.btn-inner-icon-lg {
+    font-size: 1em;
+    margin-right: 0.3em;
+    width: 30px;
+  }
+  &.scrollactive-active {
+    color: $primary;
+    background: $accent;
+  }
+/*   // Used for dropdown buttons
+  &.focusable:focus {
+    background: $accent;
+    color: $primary
+  }  
+ */
+}
+
+a.router-link-active {
+  cursor: default;
+  pointer-events: none;
+  color: $primary;
+  background: $accent;
 }
 
 input.form-control,
@@ -86,8 +100,26 @@ select.form-control,
 textarea.form-control,
 .vdp-datepicker input.form-control {
   transition: all 150ms ease-in-out;
-  &[disabled] {
+  /* &[disabled] {
     cursor: not-allowed;
+  } */
+}
+
+.search-input {
+  position: relative;
+  i {
+    position: absolute;
+    pointer-events: none;
+    width: 30px;
+    height: 25px;
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    left: 10px;
+  }
+  input.form-control {
+    padding-left: 45px;
   }
 }
 
@@ -105,9 +137,11 @@ textarea.form-control {
 }
 
 .vdp-datepicker .input-group {
+  position: relative;
   input {
     border-radius: 0.25rem !important;
     background: $accent;
+    cursor: pointer;
     &[disabled="disabled"] {
       background: $accent-light;
       cursor: not-allowed;
@@ -115,10 +149,16 @@ textarea.form-control {
   }
   .append-icon {
     position: absolute;
-    top: 11px;
-    right: 10px;
+    top: 0px;
+    bottom: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+    right: 5px;
+    width: 20px;
+    height: 20px;
     z-index: 10;
     color: $muted;
+    pointer-events: none;
   }
 }
 
@@ -177,7 +217,7 @@ input[type="number"] {
     color: $medium;
     line-height: 1.1em;
     i {
-      font-size: 1px;
+      font-size: 14px;
       color: $primary;  
     }
     &.col-form-label {
@@ -218,6 +258,13 @@ input[type="number"] {
 .rotate {
   transform: rotate(180deg);
 }
+.pointer {
+  cursor: pointer;
+}
+.sticky {
+  position: sticky;
+  top: $titlebar-height;
+}
 
 .border-bottom-pink {
   border-bottom: 2px solid $primary;
@@ -250,8 +297,11 @@ input[type="number"] {
   width: 100vw;
 }
 
-.small-icon {
-  font-size: 0.4em;
+.icon-sm {
+  font-size: 14px;
+}
+.icon-md {
+  font-size: 20px;
 }
 .large-icon {
   font-size: 1.3rem;
@@ -259,11 +309,15 @@ input[type="number"] {
 .squeeze-up {
   margin-top: -0.4em;
 }
+.no-pointer-events {
+  pointer-events: none;
+}
 
 .subcontainer {
   padding: 1em;
   border-radius: 5px;
   background: $accent-light;
+  //border: 1px solid $accent;
 }
 
 .sidebar {

@@ -3,7 +3,7 @@
 
   <template v-if="!inReviewMode">
     <div class="submit-samples-nav d-flex align-items-center p-2">
-      <scrollactive active-class="active"
+      <scrollactive active-class="scrollactive-active"
                     :offset="220"
                     :modifyUrl="false"
                     class="d-flex align-items-center">
@@ -37,9 +37,9 @@
       </button>
     </div>
   
-    <form class="font-chatthai d-flex flex-column px-3 py-0 pb-xl-5 mb-5 max-width-1250">    
+    <div class="font-chatthai d-flex flex-column align-items-center px-3 py-0 max-width-1250">    
       
-      <div id="info" class="row w-100 pt-4 pt-xl-5">
+      <div id="info" class="border-bottom-lighter row w-100 py-4 pt-xl-5">
         <div class="col-xl-2 col-12">
           <h3 class="mb-2">
             ข้อมูลเบื้องต้น
@@ -53,7 +53,7 @@
             <div class="form-group col-8 col-xl-6">
               <form-inline-select :options="reportTypes"
                                   v-model="submission.type"
-                                  :warnBeforeChange="false"
+                                  :warnBeforeChange="wholeFormHasInformation()"
                                   warningMsg="ข้อมูลที่ถูกกรอกไว้แล้วด้านล่างจะหายไปถ้าท่านเปลี่ยนตัวเลือกนี้"
                                   @change="onReportTypeChange()" />
             </div>
@@ -65,7 +65,7 @@
               </label>
               <input  type="text"
                       class="form-control"
-                      v-model="submission.info.submittorName"
+                      v-model="submission.fixedInfo.submitterName"
                       disabled >
             </div>
             <div class="form-group col-2">
@@ -73,7 +73,7 @@
                 วันที่ส่งตัวอย่าง
               </label>
               <datepicker format="dd/MM/yy"
-                          v-model="submission.info.submitDate"
+                          v-model="submission.fixedInfo.submitDate"
                           :disabled="true"
                           :bootstrap-styling="true">
                 <div slot="afterDateInput" class="append-icon">
@@ -99,7 +99,7 @@
             </div>
             <div v-if="isGeneralSubmission" class="form-group col-2">
               <label>
-                วันที่เก็บตัวอย่าง
+                วันที่เก็บตัวอย่าง <i class="fas fa-star-of-life" />
               </label>
               <datepicker format="dd/MM/yy"
                           v-model="submission.info.sampleTakenDate"
@@ -111,7 +111,7 @@
             </div>
             <div v-if="isGeneralSubmission" class="form-group col-4">
               <label>
-                ชนิดตัวอย่าง <i class="fas fa-star-of-life" />
+                ชนิดตัวอย่าง
               </label>
               <select class="form-control"
                       v-model="submission.info.sampleTypeId">
@@ -127,14 +127,24 @@
               <label>
                 ชนิดสัตว์
               </label>
-              <select class="form-control"
+              <input  type="text"
+                      list="animalType"
+                      class="form-control"
+                      v-model.lazy="submission.info.animalTypeId" />
+              <datalist id="animalType">
+                <option>สุกร</option>
+                <option>สุนัข</option>
+                <option>กระต่าย</option>
+                <option>ม้า</option>
+              </datalist>
+              <!-- <select class="form-control"
                       v-model="submission.info.animalTypeId">
                 <option>เลือก...</option>
                 <option>สุกร</option>
                 <option>สุนัข</option>
                 <option>กระต่าย</option>
                 <option>ม้า</option>
-              </select>
+              </select> -->
             </div>
             <div class="form-group col-3">
               <label>
@@ -194,7 +204,7 @@
           <h4 class="d-inline text-dark">
             {{ $t(`general.notify`)}}
           </h4>
-          <i class="fas fa-star-of-life text-primary small-icon d-inline" />
+          <i class="fas fa-star-of-life text-primary icon-sm d-inline" />
           
           <div class="form-row">
             <div class="form-group col-4">
@@ -203,7 +213,7 @@
               </label>
               <input  type="text"
                       class="form-control"
-                      v-model.trim="submission.info.notifyBy.email">
+                      v-model.trim="submission.report.email">
             </div>
             <div class="form-group col-4">
               <label>
@@ -211,7 +221,7 @@
               </label>
               <input  type="number"
                       class="form-control"
-                      v-model.trim="submission.info.notifyBy.phone">
+                      v-model.trim="submission.report.phone">
             </div>
             <div class="form-group col-4">
               <label>
@@ -219,7 +229,7 @@
               </label>
               <input  type="number"
                       class="form-control"
-                      v-model.trim="submission.info.notifyBy.fax">
+                      v-model.trim="submission.report.fax">
             </div>
           </div>
 
@@ -232,17 +242,17 @@
     
           <template v-if="isDisinfectantSubmission">
             <h4 class="d-inline">รายงานเป็นภาษา </h4>
-            <i class="fas fa-star-of-life text-primary small-icon d-inline" />
+            <i class="fas fa-star-of-life text-primary icon-sm d-inline" />
             <div class="form-row">  
               <div class="form-group d-flex col-4 mb-2">
                 <checkbox label="ไทย"
                           class="mr-4"
-                          v-model="submission.info.reportLang.thai" />
+                          v-model="submission.reportLang.thai" />
                 <checkbox label="English"
-                          v-model="submission.info.reportLang.eng" />
+                          v-model="submission.reportLang.eng" />
               </div>
             </div>
-            <div v-show="noLang">
+            <div v-show="noLang()">
               <i class="fas fa-exclamation-triangle mr-1 d-inline text-primary" />
               <h5 class="text-primary d-inline">
                 กรุณาเลือกภาษารายงานอย่างน้อย 1 ภาษา
@@ -257,7 +267,7 @@
       <div  v-for="(batch, idxBatch) in submission.batches"
             :key="idxBatch"
             :id="'batch' + (idxBatch+1)"
-            class="batch expand-in-batch submission-section position-relative border-bottom-medium py-5">
+            class="batch expand-in-batch submission-section w-100 position-relative border-bottom-medium py-5">
         <a  v-if="hasMultipleBatches"
             class="btn btn-x batch-section"
             @click="removeBatch(idxBatch)">
@@ -296,7 +306,9 @@
               </div>
               <div class="form-row">
                 <div class="form-group col-2">
-                  <h4 class="text-dark">จำนวนตัวอย่าง</h4>
+                  <h4 class="text-dark">
+                    จำนวนตัวอย่าง  <i class="fas fa-star-of-life text-primary icon-sm" />
+                  </h4>
                   <input  type="number"
                           class="form-control text-right"
                           v-model.lazy.number="batch.sampleCount"
@@ -359,11 +371,11 @@
                     <div class="form-group col-1 mb-0 text-right text-muted">
                       <div v-if="batch.tests[test.id] && batch.sampleCount"
                            class="nowrap">
-                        <i class="fas fa-times small-icon d-inline"></i>
+                        <i class="fas fa-times icon-sm d-inline"></i>
                         <h5 class="mx-1 d-inline">
                           {{ batch.sampleCount }}
                         </h5>
-                        <i class="fas fa-equals small-icon d-inline"></i>
+                        <i class="fas fa-equals icon-sm d-inline"></i>
                       </div>
                     </div>
                     <div class="form-group col-2 mb-0 text-right">
@@ -395,26 +407,35 @@
                                   v-model.lazy="batch.customTests[idx]">
                         </div>
                       </div>
-                      <a  class="btn btn-primary btn-sm my-2"
-                          @click="batch.customTests.push('')">
-                        เพิ่มรายการแบคทีเรีย
-                      </a>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <button class="btn btn-primary btn-sm my-2 pt-1"
+                                @click="addCustomTest(batch)">
+                          เพิ่มรายการแบคทีเรีย
+                        </button>
+                        <h5>รอประเมินราคา (ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h5>
+                      </div>
                     </div>
                     <div class="col-1 py-1">
                       <div  v-for="(customTest, idx) of batch.customTests"
                             :key="idx"
                             class="form-row py-1">
                         <a  class="btn btn-sm btn-x custom-test"
-                            @click="batch.customTests.splice(idx, 1)">
+                            @click="deleteCustomTest(batch, idx)">
                           <i class="fas fa-times" />
                         </a>
                       </div>
                     </div>
-                    <div class="col-2 py-1 text-right pt-2">
-                      <template v-if="batch.customTests.length > 0">
-                        <h5>รอประเมินราคา</h5>
-                        <h6 class="text-muted">(ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h6>
-                      </template>
+                    <div  v-if="batch.customTests.length > 0 && batch.sampleCount > 0"
+                          class="col-2 py-1 d-flex align-items-end justify-content-end pt-2">
+                      <!-- <h5>~500฿</h5>
+                      <h5><i class="fas fa-times icon-sm" /> {{ batch.sampleCount }}</h5>
+                      <h6 class="text-muted squeeze-up">ตัวอย่าง</h6>
+                      <h5><i class="fas fa-times icon-sm" /> {{ batch.customTests.length }}</h5>
+                      <h6 class="text-muted squeeze-up">รายการอื่นๆ</h6> -->
+                      <h4 class="mb-2">
+                        <!-- <i class="fas fa-equals icon-sm" /> -->
+                        {{`~${batch.sampleCount * batch.customTests.length * 500}฿`}}
+                      </h4>
                     </div>
                   </div>
                 </div>
@@ -435,10 +456,7 @@
                     </div>
                     <div class="col-2 text-right">
                       <h2 class="text-primary">
-                        {{
-                            Object.values(batch.tests).reduce( (acc, test) => acc + (test? 1:0), 0) +
-                              (batch.customTests? batch.customTests.length : 0)
-                        }}
+                        {{ activeTestCount(batch) + batch.customTests.length }}
                       </h2>
                       <h5 class="text-medium">
                         รายการทดสอบ
@@ -452,16 +470,16 @@
                     <div class="col-2 text-right">
                       <h2 class="text-primary">
                         {{
-                            Object.values(batch.tests).reduce( (acc, test) => acc + (test? 1:0), 0) > 0 && batch.sampleCount?
-                              `${batch.totalPrice.toLocaleString()}฿` : 'N/A'
+                            (activeTestCount(batch) > 0 || batch.customTests.length > 0) && batch.sampleCount?
+                              `${batch.customTests.length > 0? '~':''}${batch.totalPrice.toLocaleString()}฿` : 'N/A'
                         }}
                       </h2>
                       <h5 class="text-medium">
                         ค่าบริการ
                       </h5>
-                      <h6 v-if="isBacteriaTest(batch)"
+                      <h6 v-if="batch.customTests.length > 0"
                           class="text-muted">
-                        *ไม่รวมรายการอื่นๆ
+                        *เป็นราคาโดยประมานเท่านั้น
                       </h6>
                     </div>
                   </div>
@@ -503,6 +521,15 @@
             </div>
     
             <div v-show="batch.sampleCount > 0" class="col-xl-10 col-12">
+
+              <div class="form-row w-100 mb-3">
+                <div class="col-1 mr-3"></div>
+                <div class="col-10 p-0">
+                  <form-sample-info-multifill
+                    :max-samples="batch.sampleCount"
+                    @add="updateSampleDetails(batch, $event)" />
+                </div>
+              </div>
     
               <div class="form-row w-100">
                 <div class="form-group form-group-sm col-1 text-right mr-3">
@@ -535,14 +562,6 @@
                 </div>
               </div>
   
-              <div class="form-row w-100">
-                <div class="col-1 mr-3"></div>
-                <div class="col-10 p-0">
-                  <form-sample-info-multifill
-                    :max-samples="batch.sampleCount"
-                    @add="updateSampleDetails(batch, $event)" />
-                </div>
-              </div>
             </div>
           </div>
         </template>
@@ -576,7 +595,7 @@
   
               <h4 class="mt-3">ชื่อนํ้ายาฆ่าเชื้อ</h4>
               
-              <div v-show="noLang">
+              <div v-show="noLang()">
                 <i class="fas fa-exclamation-triangle mr-1 d-inline text-primary" />
                 <h5 class="text-primary d-inline">
                   กรุณาเลือกภาษารายงานอย่างน้อย 1 ภาษา
@@ -584,7 +603,7 @@
               </div>
               
               <div class="form-row">
-                <div  v-show="submission.info.reportLang.thai"
+                <div  v-show="submission.reportLang.thai"
                       class="form-group col-6 mb-2">
                   <label>ภาษาไทย</label>
                   <input type="text"
@@ -593,7 +612,7 @@
                 </div>
               </div>
               <div class="form-row">
-                <div  v-show="submission.info.reportLang.eng"
+                <div  v-show="submission.reportLang.eng"
                       class="form-group col-6">
                   <label>English</label>
                   <input type="text"
@@ -702,14 +721,14 @@
                     ต่อรายการ
                   </h6>
                   <h5 class="mt-1">
-                    <i class="fas fa-times small-icon"></i>
+                    <i class="fas fa-times icon-sm"></i>
                     {{ info.numTests }}
                   </h5>
                   <h6 class="text-muted squeeze-up">
                     รายการ
                   </h6>
                   <h4 class="mt-1 text-primary">
-                    <i class="fas fa-equals mr-1 small-icon"></i>
+                    <i class="fas fa-equals mr-1 icon-sm"></i>
                     {{ `${info.totalPrice.toLocaleString()}฿` }}
                   </h4>
                 </div>
@@ -728,7 +747,7 @@
                     <div  v-show="isVirusBatch(batch)"
                           class="text-right position-relative cost-container">
                       <h4 class="text-primary">
-                        <i class="fas fa-plus small-icon"></i>
+                        <i class="fas fa-plus icon-sm"></i>
                         {{ `${batch.dilutionCost.toLocaleString()}฿` }}
                       </h4>
                       <h5 class="text-medium">
@@ -742,9 +761,9 @@
                           <h5 class="text-primary">{{ cell }}</h5>
                           <h5 class="ml-2">
                             3,000฿
-                            <i class="fas fa-times small-icon" />
+                            <i class="fas fa-times icon-sm" />
                             {{ `${arr.length} ความเข้มข้น` }}
-                            <i class="fas fa-equals small-icon" />
+                            <i class="fas fa-equals icon-sm" />
                             <span class="text-primary ml-1">{{ `${(3000 * arr.length).toLocaleString()}฿` }}</span>
                           </h5>
                         </div>
@@ -752,7 +771,7 @@
                     </div>
                     <div class="text-right ml-4">
                       <h4 class="text-primary">
-                        <i class="fas fa-plus small-icon"></i>
+                        <i class="fas fa-plus icon-sm"></i>
                         3,000฿
                       </h4>
                       <h5 class="text-medium">
@@ -791,16 +810,23 @@
         <!-- END DISINFECTANT BATCH -->
       </div>
       <!-- END BATCH SECTION -->
-    
-      <a  class="btn btn-primary btn-width-md align-self-center my-4"
+    </div>
+
+    <button class="btn btn-secondary align-self-center mt-4 font-chatthai"
+          :disabled="!batchHasInformation(submission.batches[submission.batches.length-1])"
           @click="addBatch()">
-        {{ 
-            isGeneralSubmission?      'เพิ่มกลุ่มการทดสอบ' :
-            isDisinfectantSubmission? 'เพิ่มรายการนํ้ายาฆ่าเชื้อ' : ''
-        }}
-      </a> 
-  
-    </form>
+       <i class="fas fa-plus btn-inner-icon" />
+      {{ 
+        isGeneralSubmission?      'เพิ่มกลุ่มการทดสอบ' :
+        isDisinfectantSubmission? 'เพิ่มรายการนํ้ายาฆ่าเชื้อ' : ''
+      }}
+    </button>
+
+    <button class="btn btn-primary align-self-center px-5 my-5 btn-lg"
+            @click="inReviewMode = true">
+      <i class="fas fa-check btn-inner-icon" />
+      {{ $t(`submit.review`) }}
+    </button>
   </template>
 
   <review-submission
@@ -808,17 +834,17 @@
     :submission="submission"
     @back="inReviewMode = false"/>
 
-  <div class="w-50 align-self-center font-chatthai">
+  <div class="font-chatthai">
     <button class="btn btn-lg mb-4 btn-dark font-chatthai align-self-center"
             @click="DEV_VIEW_JSON = !DEV_VIEW_JSON">
       DEV: {{DEV_VIEW_JSON? 'Hide' : 'View'}} JSON Form Data
     </button>
     <div v-if="DEV_VIEW_JSON">
       <h3>JSON Form Data</h3>
-      <pre class="w-50 align-self-center font-chatthai">
-        <h5 class="text-default">
+      <pre class="font-chatthai">
+        <h4 class="text-default">
           {{ JSON.stringify(submission, null, '\t') }}
-        </h5>
+        </h4>
       </pre>
     </div>
   </div>
@@ -882,16 +908,6 @@ a.btn.btn-x {
   border-bottom: 1px solid $accent;
   z-index: 99;
   box-shadow: 0 5px 5px -5px #333;
-  a {
-    &.button {
-      font-size: 1.1rem;
-      padding: 0.1em 0.3em;
-    }
-    &.active {
-      background: $accent;
-      color: $primary;
-    }
-  }
 }
 
 .cost-container {
@@ -949,7 +965,13 @@ export default {
     return {
       submission: {
         type: 1,
+        fixedInfo: {
+          submitterName: 'สมควร สมสกุล',
+          submitDate: '04/04/20',
+        },
         info: {},
+        report: {},
+        reportLang: null,
         batches: [{}]
       },
       inReviewMode: false,
@@ -973,11 +995,8 @@ export default {
     hasMultipleBatches () {
       return this.submission.batches.length > 1
     },
-    noLang () {
-      return this.isDisinfectantSubmission && !this.submission.info.reportLang.thai && !this.submission.info.reportLang.eng
-    },
     noNotifications () {
-      return !Object.values(this.submission.info.notifyBy).reduce( (acc, i) => acc || i, false )
+      return !Object.values(this.submission.report).reduce( (acc, i) => acc || i, false )
     }
   },
   beforeMount () {
@@ -988,8 +1007,6 @@ export default {
       // General type
       if (this.isGeneralSubmission) {
         this.submission.info = {
-          submittorName: 'สมควร สมสกุล',
-          submitDate: '04/04/20',
           orgId: null,
           sampleTakenDate: null,
           sampleTypeId: null,
@@ -999,28 +1016,23 @@ export default {
           animalCount: null,
           illness: null,
           vaccinations: null,
-          notifyBy: {
-            phone: null,
-            fax: null,
-            email: null
-          }
         }
+        this.submission.reportLang = null
       // Disinfectant Type
       } else if (this.isDisinfectantSubmission) {
         this.submission.info = {
-          submittorName: 'สมควร สมสกุล',
-          submitDate: '04/04/20',
           orgId: null,
-          notifyBy: {
-            phone: null,
-            fax: null,
-            email: null
-          },
-          reportLang: {
-            thai: true,
-            eng: false
-          }
         }
+        this.submission.reportLang = {
+          thai: true,
+          eng: false
+        }
+      }
+
+      this.submission.report = {
+        phone: null,
+        fax: null,
+        email: null
       }
       this.submission.batches = []
       this.submission.batches.push(this.generateNewBatch())
@@ -1065,9 +1077,7 @@ export default {
         this.$scrollTo(
           `#batch${this.submission.batches.length}`,
           500,
-          {
-            offset: -200
-          }
+          { offset: -200 }
         )
       })
     },
@@ -1109,9 +1119,14 @@ export default {
     },
 
     updateGeneralBatchTotalPrice (batch) {
-      batch.totalPrice = this.testType(batch.testType).testInfo
+      let price = this.testType(batch.testType).testInfo
         .filter( t => batch.tests[t.id] )
         .reduce( (acc, t) => acc + (t.price * batch.sampleCount), 0 )
+      // Custom test prices
+      if (this.isBacteriaTest(batch)) {
+        price += batch.customTests.length * batch.sampleCount * 500
+      }
+      batch.totalPrice = price
     },
 
     updateGeneralBatchSampleCount (value, batch) {
@@ -1146,6 +1161,20 @@ export default {
         batch.samples.splice(batch.samples.length - diff, diff)
       }
 
+      this.updateGeneralBatchTotalPrice(batch)
+    },
+
+    activeTestCount(batch) {
+      return Object.values(batch.tests).reduce( (acc, test) => acc + (test? 1:0), 0)
+    },
+
+    addCustomTest(batch) {
+      batch.customTests.push('')
+      this.updateGeneralBatchTotalPrice(batch)
+    },
+
+    deleteCustomTest(batch, idx) {
+      batch.customTests.splice(idx, 1)
       this.updateGeneralBatchTotalPrice(batch)
     },
 
@@ -1209,7 +1238,20 @@ export default {
     },
     isBacteriaBatch(batch) {
       return batch.testType === 6
-    }
+    },
+    batchHasInformation (batch) {
+      if (batch) return batch.totalPrice !== 0
+      return false
+    },
+    wholeFormHasInformation () {
+      const infoSectionHasInfo = Object.values(this.submission.info).reduce( (acc, info) => acc || !!info, false)
+      const reportSectionHasInfo = Object.values(this.submission.report).reduce( (acc, n) => acc || !!n, false)
+      const batchesHaveInfo = this.submission.batches.reduce( (acc, b) => acc || this.batchHasInformation(b), false)
+      return infoSectionHasInfo || reportSectionHasInfo || batchesHaveInfo
+    },
+    noLang () {
+      return this.isDisinfectantSubmission && !this.submission.reportLang.thai && !this.submission.reportLang.eng
+    },
   }
 }
 </script>

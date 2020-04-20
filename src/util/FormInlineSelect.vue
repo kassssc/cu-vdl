@@ -4,36 +4,41 @@
     {{ label }}
   </label>
   <div class="d-flex">
-    <a  v-for="(option, idx) in options"
-        :key="idx"
-        class="btn btn-secondary btn-option no-wrap"
-        :class="{'selected': value === option.id}"
-        @click="onOptionClick(option.id)">
+    <button v-for="(option, idx) in options"
+            :key="idx"
+            class="btn btn-secondary btn-option no-wrap"
+            :class="{'btn-lg': size === 'lg'}"
+            :disabled="value === option.id"
+            @click="onOptionClick(option.id)">
       <i  v-show="value === option.id"
-          class="fas fa-check small-icon" />
+          class="fas fa-check btn-inner-icon" />
       {{ option.name }}
-    </a>
+    </button>
   </div>
 
   <div class="modal fade" id="warnModal" tabindex="-1" role="dialog" aria-labelledby="warnModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h3 class="modal-title text-primary " id="warnModalLabel">
-            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <i class="fas fa-exclamation-triangle icon-md mr-1" />
             คำเตือน
           </h3>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <span aria-hidden="true"><i class="fas fa-times icon-md" /></span>
           </button>
         </div>
         <div class="modal-body py-0">
-          <h4>{{ warningMsg }}</h4>
+          <h4 class="text-dark">{{ warningMsg }}</h4>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">ยกเลิก</button>
-          <button type="button" class="btn btn-primary"
-                  @click="selectOption(optionToBeSelected)">ยืนยันว่าจะเปลี่ยน</button>
+        <div class="modal-footer d-flex flex-nowrap">
+          <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
+            ยกเลิก
+          </button>
+          <button type="button" class="btn btn-primary w-100"
+                  @click="selectOption(optionToBeSelected)">
+            ยืนยันว่าจะเปลี่ยน
+          </button>
         </div>
       </div>
     </div>
@@ -46,13 +51,9 @@
   width: 100%;
   padding-left: 0;
   padding-right: 0;
-  color: $dark;
-  &.selected {
+  &[disabled] {
+    opacity: 100%;
     @include color-primary-white;
-    cursor: default;
-    &:hover {
-      @include color-primary-white;
-    }
   }
   &:not(:last-child) {
     margin-right: 17px;
@@ -70,7 +71,6 @@ export default {
       type: String
     },
     value: {
-      type: Number
     },
     options: {
       type: Array
@@ -82,6 +82,10 @@ export default {
     warningMsg: {
       type: String,
       default: 'ข้อมูลที่กรอกไว้บางส่วนอาจจะหายถ้าเปลี่ยนตัวเลือกนี้'
+    },
+    size: {
+      type: String,
+      default: null
     }
   },
   data () {

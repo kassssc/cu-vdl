@@ -10,6 +10,7 @@ import Datepicker from 'vuejs-datepicker'
 
 import Checkbox from '@/util/Checkbox.vue'
 import FormInlineSelect from '@/util/FormInlineSelect.vue'
+import FormFileUpload from '@/util/FormFileUpload.vue'
 
 Vue.config.productionTip = false
 
@@ -21,6 +22,7 @@ Vue.use(VueScrollTo)
 Vue.component('checkbox', Checkbox)
 Vue.component('datepicker', Datepicker)
 Vue.component('form-inline-select', FormInlineSelect)
+Vue.component('form-file-upload', FormFileUpload)
 
 /* Vue.mixin({
   methods: {

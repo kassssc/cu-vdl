@@ -18,14 +18,14 @@
           {{ $t(`track.title`) }}
         </h2>
       </div>
-      <div class="col-4 d-flex align-items-center">
+      <div class="col-4 search-input">
         <i class="fas fa-search search-icon mr-2 large-icon text-muted" />
         <input type="text"
                class="form-control submission-search my-1"
                :placeholder="$t(`track.searchPlaceholder`)">
       </div>
     </div>
-    <div class="table-container">
+    <div id="table-container">
       <table>
         <thead id="table-header">
           <tr>
@@ -35,7 +35,7 @@
                       :class="{'selected': sortField === idx}"
                       @click="setSortField(idx)">
                 {{ col }}
-                <i class="fas fa-chevron-down small-icon"
+                <i class="fas fa-chevron-down icon-sm"
                    :class="{
                       'rotate': sortDirection === 1 && sortField === idx,
                       'show': sortField === idx
@@ -105,11 +105,20 @@ button.sort-btn {
     &.show { opacity: 1; }
   }
 }
-.table-container {
+#table-container {
   height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 84px);
-  overflow: scroll;
+  overflow-y: scroll;
   position: relative;
   margin-bottom: 2em;
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+  }
 }
 table {
   font-size: 1.3rem;

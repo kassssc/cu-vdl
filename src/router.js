@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from './store.js'
+
 import MainContent from './views/MainContent.vue'
 import Home from './views/Home.vue'
-import store from './store.js'
+
 Vue.use(Router)
 
 const router = new Router({
@@ -51,6 +53,36 @@ const router = new Router({
             //   meta: { requiresLogin: true }
             // }
           ]
+        },
+        {
+          path: '/dashboard',
+          component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/Dashboard.vue'),
+          children: [
+            {
+              path: '',
+              name: 'dashboard',
+              component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/DashboardInfo.vue'),
+              meta: { requiresLogin: true }
+            },
+            {
+              path: 'edit',
+              name: 'dashboard-edit',
+              component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/DashboardEdit.vue'),
+              meta: { requiresLogin: true }
+            },
+            {
+              path: 'submitters',
+              name: 'dashboard-submitters',
+              component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/DashboardSubmitters.vue'),
+              meta: { requiresLogin: true }
+            },
+            {
+              path: 'add',
+              name: 'dashboard-add',
+              component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/DashboardAddSubmitter.vue'),
+              meta: { requiresLogin: true }
+            }
+          ]
         }
       ]
     },
@@ -58,6 +90,11 @@ const router = new Router({
       path: '/login',
       name: 'login',
       component: () => import(/* webpackChunkName: "group-login" */ '@/views/Login.vue'),
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: () => import(/* webpackChunkName: "group-login" */ '@/views/Signup.vue'),
     },
     {
       path: '*',

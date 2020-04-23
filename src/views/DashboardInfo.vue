@@ -2,7 +2,10 @@
 <div class="p-4">
   <div class="row">
     <div class="col-12">
-      <h3 class="mb-4">ข้อมูล Account</h3>
+      <h3 class="mb-4">
+        <i class="fas fa-address-card icon-lg mr-1"></i>
+        ข้อมูล Account
+      </h3>
     </div>
   </div>
 
@@ -151,7 +154,7 @@
           <div class="col-2"></div>
           <div class="form-group col-5">
             <label>
-              ภ.พ.44
+              ภ.พ.20
             </label>
             <button class="btn btn-secondary btn-block text-left">
               <i class="fas fa-address-card btn-inner-icon"></i>
@@ -211,14 +214,10 @@
       </div>
     </div>
   </div>
-  <div class="big-ass"></div>
 </div>
 </template>
 
 <style lang="scss" scoped>
-.big-ass {
-  height: 100vh;
-}
 </style>
 
 <script>

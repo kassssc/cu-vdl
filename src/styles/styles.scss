@@ -47,8 +47,12 @@ button.btn, a.btn {
   &.btn-transparent:hover {
     background: $accent;
   }
-  &.btn-icon:hover {
-    color: $primary;
+  &.btn-icon {
+    padding-top: 0.3em;
+    &:hover {
+      color: $primary;
+      background: $accent;
+    }
   }
   &.btn-width-md {
     min-width: 150px;
@@ -117,6 +121,7 @@ textarea.form-control,
     margin-top: auto;
     margin-bottom: auto;
     left: 10px;
+    font-size: 1.3rem;
   }
   input.form-control {
     padding-left: 45px;
@@ -144,7 +149,7 @@ textarea.form-control {
     cursor: pointer;
     &[disabled="disabled"] {
       background: $accent-light;
-      cursor: not-allowed;
+      cursor: default;
     }
   }
   .append-icon {
@@ -303,8 +308,9 @@ input[type="number"] {
 .icon-md {
   font-size: 20px;
 }
-.large-icon {
-  font-size: 1.3rem;
+.icon-lg {
+  font-size: 1.5rem;
+  width: 30px;
 }
 .squeeze-up {
   margin-top: -0.4em;
@@ -374,4 +380,35 @@ input[type="number"] {
 .row {
   margin-left: 0;
   margin-right: 0;
+}
+
+.order-tag {
+  &.sm {
+    font-size: 1.3rem;
+    width: 30px;
+    height: 33px;
+  }
+  font-weight: bold;
+  border-radius: 3px;
+  color: $light;
+  text-align: center;
+  @include unselectable;
+  &.blue {
+    background: $blue
+  }
+  &.teal {
+    background: $cyan;
+  }
+  &.orange {
+    background: $orange;
+  }
+  &.green {
+    background: $green;
+  }
+  &.red {
+    background: $red;
+  }
+  &.grey {
+    background: $medium;
+  }
 }

@@ -55,7 +55,7 @@
                     tag="a"
                     class="btn btn-transparent btn-icon mx-1 d-none d-xl-block">
         {{ user.firstName + ' ' + user.lastName }}
-        <i class="fas fa-cog ml-1"></i>
+        <i class="fas fa-cog btn-inner-icon ml-1"></i>
       </router-link>
       <button class="btn btn-transparent btn-icon ml-1 d-none d-xl-block"
               @click="logout()">

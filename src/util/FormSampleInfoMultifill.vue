@@ -6,10 +6,10 @@
     <h4 class="w-100">
       เติมข้อมูลทีละหลายช่อง
     </h4>
-    <a class="btn btn-icon">
+    <button class="btn btn-icon">
       <i  class="fas fa-chevron-up"
           :class="{'rotate': folded}"/>
-    </a>
+    </button>
   </div>
   <div class="form-row">
     <div class="form-group col-4 mb-2">
@@ -56,10 +56,10 @@
   </div>
   <div class="form-row">
     <div class="form-group mb-0 col-4">
-      <a  class="btn btn-primary btn-block"
-          @click="submit()">
+      <button class="btn btn-primary btn-block"
+              @click="submit()">
         เพิ่มข้อมูล
-      </a>
+      </button>
     </div>
   </div>
 </div>

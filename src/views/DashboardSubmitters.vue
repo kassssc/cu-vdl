@@ -1,9 +1,12 @@
 <template>
 <div class="d-flex align-items-start">
   <div id="submitters-list" class="p-4">
-    <h3 class="mb-4">รายชื่อ ตัวแทนส่งตัวอย่าง</h3>
+    <h3 class="mb-4">
+      <i class="fas fa-users icon-lg mr-1"></i>
+      รายชื่อ ตัวแทนส่งตัวอย่าง
+    </h3>
     <div class="search-input mb-3">
-      <i class="fas fa-search search-icon large-icon text-muted" />
+      <i class="fas fa-search text-muted" />
       <input  type="text"
               class="form-control"
               placeholder="ค้นหา...">
@@ -29,7 +32,10 @@
 
   <div id="submitter-info" class="row p-4 mt-5">
     <div class="col-12">
-      <h3 class="mb-4 mt-2">ข้อมูล ตัวแทนส่งตัวอย่าง</h3>
+      <h3 class="mb-4 mt-2">
+        <i class="fas fa-user icon-lg mr-1"></i>
+        ข้อมูล ตัวแทนส่งตัวอย่าง
+      </h3>
     </div>
 
     <div class="col-12 font-chatthai">

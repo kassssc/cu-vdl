@@ -19,7 +19,7 @@
         </h2>
       </div>
       <div class="col-4 search-input">
-        <i class="fas fa-search search-icon mr-2 large-icon text-muted" />
+        <i class="fas fa-search text-muted" />
         <input type="text"
                class="form-control submission-search my-1"
                :placeholder="$t(`track.searchPlaceholder`)">
@@ -45,19 +45,19 @@
           </tr>
         </thead>
         <tbody>
-          <router-link :to="{name: 'viewsubmission', params: { id: idx }}"
+          <router-link :to="{name: 'viewsubmission', params: { id: row.orderNum }}"
                         tag="tr"
                         v-for="(row, idx) in [...table.body, ...table.body, ...table.body, ...table.body, ...table.body]"
                         @click.native="scrollToTop()"
               :key="idx">
             <td>
-              <div  class="order-tag"
+              <div  class="order-tag sm"
                     :class="getTagCSS(row.status)">
                 {{ table.status[row.status] }}
               </div>
             </td>
             <td>
-              <div  class="order-tag"
+              <div  class="order-tag sm"
                     :class="getInvoiceTagCSS(row.invoiceStatus)">
                 {{ table.invoiceStatus[row.invoiceStatus] }}
               </div>
@@ -158,34 +158,6 @@ table {
         padding: 0.3em 0.55em;
       }
     }
-  }
-}
-.order-tag {
-  font-size: 1.3rem;
-  border-radius: 3px;
-  color: $light;
-  text-align: center;
-  height: 33px;
-  width: 30px;
-  margin-left: 0.3em;
-  @include unselectable;
-  &.blue {
-    background: $blue
-  }
-  &.teal {
-    background: $cyan;
-  }
-  &.orange {
-    background: $orange;
-  }
-  &.green {
-    background: $green;
-  }
-  &.red {
-    background: $red;
-  }
-  &.grey {
-    background: $medium;
   }
 }
 </style>

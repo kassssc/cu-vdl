@@ -30,16 +30,16 @@
 </template>
 
 <style lang="scss" scoped>
-$sidebar-width: 350px;
+$nav-width: 350px;
 #dashboard-nav {
-  width: $sidebar-width;
+  width: $nav-width;
   a {
     text-align: left;
     margin-bottom: .75em;
   }
 }
 #content {
-  width: calc(100% - #{$sidebar-width});
+  width: calc(100% - #{$nav-width});
   min-height: calc(100vh - #{$titlebar-height} - #{$footer-height});
   border-left: 1px solid $accent;
 }

@@ -2,7 +2,10 @@
 <div class="p-4">
   <div class="row">
     <div class="col-12">
-      <h3 class="mb-4">สร้าง Account ตัวแทนส่งตัวอย่าง</h3>
+      <h3 class="mb-4">
+        <i class="fas fa-user-plus icon-lg mr-1"></i>
+        สร้าง Account ตัวแทนส่งตัวอย่าง
+      </h3>
     </div>
   </div>
 

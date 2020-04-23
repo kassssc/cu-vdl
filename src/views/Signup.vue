@@ -1,7 +1,7 @@
 <template>
-<div class="fill-page pt-5 d-flex flex-column align-items-center">
+<div class="pt-5 d-flex flex-column align-items-center mb-4">
   <div class="signup-box d-flex flex-column align-items-start">
-    <button class="btn btn-transparent mb-3"
+    <button class="btn btn-transparent"
             @click="$router.go(-1)">
       <i class="fas fa-chevron-left mr-2" />
       {{ $t(`general.back`) }}
@@ -230,7 +230,7 @@
               </div>
               <div class="form-group col-4">
                 <label>
-                  ภ.พ.44 <i class="fas fa-star-of-life" />
+                  ภ.พ.20 <i class="fas fa-star-of-life" />
                 </label>
                 <form-file-upload />
               </div>

@@ -2,7 +2,10 @@
 <div class="p-4">
   <div class="row">
     <div class="col-12">
-      <h3 class="mb-4">แก้ไขข้อมูล Account</h3>
+      <h3 class="mb-4">
+        <i class="fas fa-edit icon-lg mr-1"></i>
+        แก้ไขข้อมูล Account
+      </h3>
     </div>
   </div>
 

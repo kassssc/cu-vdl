@@ -52,7 +52,7 @@
   padding-left: 0;
   padding-right: 0;
   &[disabled] {
-    opacity: 100%;
+    opacity: 1;
     @include color-primary-white;
   }
   &:not(:last-child) {

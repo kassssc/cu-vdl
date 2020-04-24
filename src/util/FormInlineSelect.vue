@@ -7,10 +7,10 @@
     <button v-for="(option, idx) in options"
             :key="idx"
             class="btn btn-secondary btn-option no-wrap"
-            :class="{'btn-lg': size === 'lg'}"
+            :class="btnClass"
             :disabled="value === option.id"
             @click="onOptionClick(option.id)">
-      <i  v-show="value === option.id"
+      <i  v-show="value === option.id && tick"
           class="fas fa-check btn-inner-icon" />
       {{ option.name }}
     </button>
@@ -83,9 +83,13 @@ export default {
       type: String,
       default: 'ข้อมูลที่กรอกไว้บางส่วนอาจจะหายถ้าเปลี่ยนตัวเลือกนี้'
     },
-    size: {
+    btnClass: {
       type: String,
       default: null
+    },
+    tick: {
+      type: Boolean,
+      default: true
     }
   },
   data () {

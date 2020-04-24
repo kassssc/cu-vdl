@@ -55,10 +55,31 @@
       </div>
     </div>
   </div>
+
+  <div class="d-flex flex-column position-absolute __dev-panel">
+    <h3 class="mb-3">DEV TOOLS</h3>
+    <button class="btn btn-dark btn-block"
+            @click="loginAs(0)">
+      Login as CU Admin
+    </button>
+    <button class="btn btn-dark btn-block"
+            @click="loginAs(1)">
+      Login as Employee Submitter
+    </button>
+    <button class="btn btn-dark btn-block"
+            @click="loginAs(2)">
+      Login as Freelance Submitter
+    </button>
+  </div>
 </div>
 </template>
 
 <style lang="scss" scoped>
+.__dev-panel {
+  bottom: 20px;
+  margin: auto;
+  width: 400px;
+}
 .login-logo {
   @include logo;
   width: 250px;
@@ -89,10 +110,15 @@ export default {
   },
   methods: {
     ...mapActions([
-      'loginout'
+      'loginout',
+      'loginAsType'
     ]),
     login () {
       this.loginout(true)
+      this.$router.push({name: 'submissionslist'})
+    },
+    loginAs (accType) {
+      this.loginAsType(accType)
       this.$router.push({name: 'submissionslist'})
     }
   }

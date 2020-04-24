@@ -1,8 +1,11 @@
 <template>
 <div class="max-width-1500 page">
-  <h2>
-    {{ $t(`submit.title`) }}
-  </h2>
+  <div class="mb-2">
+    <i class="fas fa-vial icon-lg"></i>
+    <h2 class="d-inline">
+      {{ $t(`submit.title`) }}
+    </h2>
+  </div>
   <router-view />
 </div>
 </template>

@@ -7,9 +7,11 @@
       <i class="fas fa-chevron-left"
          :class="{'rotate': sidebarFolded}"/>
     </button>
-    <h4>
-      *Filters go here*
-    </h4>
+    <div class="content">
+      <h4>
+        *Filters go here*
+      </h4>
+    </div>
   </div>
   <div class="d-flex flex-column w-100">
     <div class="row no-gutters w-100">
@@ -51,13 +53,13 @@
                         @click.native="scrollToTop()"
               :key="idx">
             <td>
-              <div  class="order-tag sm"
+              <div  class="color-tag sm"
                     :class="getTagCSS(row.status)">
                 {{ table.status[row.status] }}
               </div>
             </td>
             <td>
-              <div  class="order-tag sm"
+              <div  class="color-tag sm"
                     :class="getInvoiceTagCSS(row.invoiceStatus)">
                 {{ table.invoiceStatus[row.invoiceStatus] }}
               </div>
@@ -106,10 +108,11 @@ button.sort-btn {
   }
 }
 #table-container {
-  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 84px);
+  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 89px);
   overflow-y: scroll;
   position: relative;
   margin-bottom: 2em;
+  margin-top: .3em;
   &::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 7px;

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './App.vue'
+import App from './App'
 import router from './router'
 import store from './store'
 import i18n from './lang'
@@ -8,9 +8,9 @@ import VueScrollactive from 'vue-scrollactive'
 import VueScrollTo from 'vue-scrollto'
 import Datepicker from 'vuejs-datepicker'
 
-import Checkbox from '@/util/Checkbox.vue'
-import FormInlineSelect from '@/util/FormInlineSelect.vue'
-import FormFileUpload from '@/util/FormFileUpload.vue'
+import Checkbox from '@/util/Checkbox'
+import FormInlineSelect from '@/util/FormInlineSelect'
+import FormFileUpload from '@/util/FormFileUpload'
 
 Vue.config.productionTip = false
 

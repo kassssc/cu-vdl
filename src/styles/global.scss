@@ -3,12 +3,11 @@ $blue:    #4F9AC3;
 $indigo:  #6610f2;
 $purple:  #6f42c1;
 $pink:    #be5877;
-$red:     #E46F68;
+$red:     #E4656A;
 $orange:  #E49658;
 $yellow:  #ffc107;
-$green:   #82bb64;
-$teal:    #20c997;
-$cyan:    #78B4B4;
+$green:   #8BBB87;
+$teal:    #80CBC4;
 
 //*/
 $accent-dark:   #d6cfcc;
@@ -22,7 +21,7 @@ $light:         #fefdfb;
 $medium:        #736F6C;
 $dark:          #605d5b;
 $default:       #555250;
-$warning:       $orange;
+$orange:        $orange;
 
 $muted:         #9B9897;
 $placeholder:   #b0adaa;
@@ -158,6 +157,7 @@ $grid-breakpoints: (
 // Other Variables
 $titlebar-height: 80px;
 $titlebar-height-scrolled: 60px;
-$footer-height: 60px;
+$footer-height: 50px;
 $outer-padding: 30px;
 $outer-padding-sm: 15px;
+$content-height: calc(100vh - #{$titlebar-height} - #{$footer-height});

@@ -11,8 +11,53 @@
     </h4>
   </div>
   <div class="d-flex align-items-center">
-    <navbar />
+    
+    <router-link :to="{name: 'home'}"
+                tag="a"
+                class="btn btn-transparent mr-2"
+                exact>
+      <i class="fas fa-home btn-inner-icon"></i>
+      หน้าหลัก
+    </router-link>
 
+    <template v-if="userIsCU">
+      <router-link :to="{name: 'submissionslist'}"
+                  tag="a"
+                  class="btn btn-transparent mr-2">
+        <i class="fas fa-list btn-inner-icon"></i>
+        การส่งตัวอย่าง
+      </router-link>
+      <router-link :to="{name: 'admin-requests'}"
+                  tag="a"
+                  class="btn btn-transparent mr-2">
+        <i class="fas fa-scroll btn-inner-icon"></i>
+        ตอบรับคำขอ
+        <div class="notifications-badge">
+          <p>8</p>
+        </div>
+      </router-link>
+      <router-link  :to="{name: 'admin'}"
+                    tag="a"
+                    class="btn btn-transparent mr-2">
+        <i class="fas fa-tools btn-inner-icon"></i>
+        บริหารข้อมูล
+      </router-link>
+    </template>
+
+    <template v-else>
+      <router-link :to="{name: 'submissionslist'}"
+                  tag="a"
+                  class="btn btn-transparent mr-2">
+        <i class="fas fa-file-invoice btn-inner-icon"></i>
+        ติดตามผลและรายงาน
+      </router-link>
+      <router-link  :to="{name: 'submitsamples'}"
+                    tag="a"
+                    class="btn btn-transparent mr-2">
+        <i class="fas fa-vial btn-inner-icon"></i>
+        ส่งตัวอย่าง
+      </router-link>
+    </template>
     <!-- CHANGE WEBSITE LANG - PHASE 2
     <div class="lang-selector d-flex align-items-center mr-3">
       <button v-for="lang in langs"
@@ -24,12 +69,6 @@
       </button>
     </div> -->
 
-    <router-link  v-if="!loggedIn"
-                  :to="{name: 'login'}"
-                  tag="button"
-                  class="btn btn-primary btn-width-md ml-3">
-      {{ $t(`general.login`) }}
-    </router-link>
     <div  v-if="loggedIn"
           class="d-flex align-items-center">
       
@@ -62,6 +101,12 @@
         <i class="fas fa-sign-out-alt" />
       </button>
     </div>
+    <router-link  v-else
+                  :to="{name: 'login'}"
+                  tag="button"
+                  class="btn btn-primary btn-width-md ml-3">
+      {{ $t(`general.login`) }}
+    </router-link>
   </div>
 </div>
 </template>
@@ -101,6 +146,21 @@
   }
 }
 .notifications-badge {
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  padding: 0 0.25em;
+  border-radius: 5px;
+  height: 24px;
+  margin-left: .1em;
+  @include color-primary-white;
+  p {
+    font-size: 0.8em;
+    margin-bottom: 0px;
+  }
+}
+/*
+.notifications-badge {
   position: absolute;
   text-align: center;
   font-weight: bold;
@@ -116,7 +176,7 @@
     margin-bottom: 0px;
   }
 }
-/* .lang-selector {
+.lang-selector {
   height: 30px;
   width: 60px;
   border-radius: 5px;
@@ -149,13 +209,9 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import Navbar from '@/components/Navbar.vue'
 
 export default {
   name: 'title-bar',
-  components: {
-    Navbar
-  },
   data () {
     return {
       langs: ['th', 'en'] 
@@ -163,8 +219,10 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'nav',
       'loggedIn',
-      'user'
+      'user',
+      'userIsCU'
     ])
   },
   methods: {

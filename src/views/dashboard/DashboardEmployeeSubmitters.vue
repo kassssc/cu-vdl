@@ -1,6 +1,6 @@
 <template>
 <div class="d-flex align-items-start">
-  <div id="submitters-list" class="p-4">
+  <div class="w-50 border-right-lighter p-4">
     <h3 class="mb-4">
       <i class="fas fa-users icon-lg mr-1"></i>
       รายชื่อ ตัวแทนส่งตัวอย่าง
@@ -14,9 +14,10 @@
     <form-inline-select
       class="mb-3"
       :options="filterOptions"
-      v-model="filter" />
+      v-model="filter"
+      btnClass="btn-sm" />
     <div class="subcontainer pr-2">
-      <div class="scroll-container">
+      <div class="scroll-container submitters">
         <div  v-for="(i, idx) of [...list, ...list]"
               :key="idx"
               class="font-chatthai">
@@ -30,7 +31,7 @@
     </div>
   </div>
 
-  <div id="submitter-info" class="row p-4 mt-5">
+  <div class="row w-50 p-4 mt-5">
     <div class="col-12">
       <h3 class="mb-4 mt-2">
         <i class="fas fa-user icon-lg mr-1"></i>
@@ -101,47 +102,14 @@
 </template>
 
 <style lang="scss" scoped>
-$list-width: 50%;
-.scroll-container {
-  padding-right: 1em; 
+.scroll-container.submitters {
   height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 265px);
-  overflow-y: scroll;
-  &::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, .5);
-    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-  }
-}
-#submitters-list {
-  width: $list-width;
-  border-right: 1px solid $accent;
-}
-#submitter-info {
-  width: calc(100% - #{$list-width});
-}
-.btn-list {
-  text-align: left;
-  padding: .25em .75em;
-  font-size: 1.6rem;
-  border-bottom: 1px solid $accent;
-  &:hover {
-    background: $accent;
-  }
-  &.active {
-    background: $accent;
-    color: $primary;
-    cursor: default;
-  }
 }
 </style>
 
 <script>
 export default {
-  name: 'dashboard-submitters',
+  name: 'dashboard-employee-submitters',
   data () {
     return {
       selectedSubmitter: 0,

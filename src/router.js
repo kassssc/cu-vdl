@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from './store.js'
 
-import MainContent from './views/MainContent.vue'
-import Home from './views/Home.vue'
+import MainContent from './views/MainContent'
+import Home from './views/Home'
 
 Vue.use(Router)
 
@@ -18,83 +18,147 @@ const router = new Router({
           name: 'home',
           component: Home
         },
+
         {
           path: '/tracksubmissions',
-          component: () => import(/* webpackChunkName: "group-submissions" */ '@/views/Submissions.vue'),
+          component: () => import(/* webpackChunkName: "group-submissions" */
+            '@/views/Submissions'
+          ),
           children: [
             {
               path: '',
               name: 'submissionslist',
-              component: () => import(/* webpackChunkName: "group-submissions" */ '@/views/SubmissionsList.vue'),
+              component: () => import(/* webpackChunkName: "group-submissions" */
+                '@/views/SubmissionsList'
+              ),
               meta: { requiresLogin: true }
             },
             {
               path: 'view/:id',
               name: 'viewsubmission',
-              component: () => import(/* webpackChunkName: "group-submissions" */ '@/views/ViewSubmission.vue'),
+              component: () => import(/* webpackChunkName: "group-submissions" */
+                '@/views/ViewSubmission'
+              ),
               meta: { requiresLogin: true }
             }
           ]
         },
+
         {
           path: '/submitsamples',
-          component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/SubmitSamples.vue'),
+          component: () => import(/* webpackChunkName: "group-submitsamples" */
+            '@/views/SubmitSamples'
+          ),
           children: [
             {
               path: '',
               name: 'submitsamples',
-              component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/SampleInfo.vue'),
+              component: () => import(/* webpackChunkName: "group-submitsamples" */
+                '@/views/SampleInfo'
+              ),
               meta: { requiresLogin: true }
             }, 
             // {
             //   path: 'review',
             //   name: 'reviewsubmission',
-            //   component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/ReviewSubmission.vue'),
+            //   component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/ReviewSubmission'),
             //   meta: { requiresLogin: true }
             // }
           ]
         },
+
         {
           path: '/dashboard',
-          component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/Dashboard.vue'),
+          component: () => import(/* webpackChunkName: "group-dashboard" */
+            '@/views/dashboard/Dashboard'
+          ),
           children: [
             {
               path: '',
               name: 'dashboard',
-              component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/DashboardInfo.vue'),
-              meta: { requiresLogin: true }
+              component: () => import(/* webpackChunkName: "group-dashboard" */
+                '@/views/dashboard/DashboardInfo'
+              ),
+              meta: { requiresLogin: true },
             },
             {
               path: 'edit',
               name: 'dashboard-edit',
-              component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/DashboardEdit.vue'),
+              component: () => import(/* webpackChunkName: "group-dashboard" */
+                '@/views/dashboard/DashboardEdit'
+              ),
+              meta: { requiresLogin: true }
+            },
+
+            {
+              path: 'employee/submitters',
+              name: 'dashboard-employee-submitters',
+              component: () => import(/* webpackChunkName: "group-dashboard" */
+                '@/views/dashboard/DashboardEmployeeSubmitters'
+              ),
               meta: { requiresLogin: true }
             },
             {
-              path: 'submitters',
-              name: 'dashboard-submitters',
-              component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/DashboardSubmitters.vue'),
+              path: 'employee/addsubmitter',
+              name: 'dashboard-employee-addsubmitter',
+              component: () => import(/* webpackChunkName: "group-dashboard" */
+                '@/views/dashboard/DashboardEmployeeAddSubmitter'
+              ),
+              meta: { requiresLogin: true }
+            },
+
+            {
+              path: 'freelance/orgs',
+              name: 'dashboard-freelance-orgs',
+              component: () => import(/* webpackChunkName: "group-dashboard" */
+                '@/views/dashboard/DashboardFreelanceOrgs'
+              ),
               meta: { requiresLogin: true }
             },
             {
-              path: 'add',
-              name: 'dashboard-add',
-              component: () => import(/* webpackChunkName: "group-dashboard" */ '@/views/DashboardAddSubmitter.vue'),
+              path: 'freelance/addorg',
+              name: 'dashboard-freelance-addorg',
+              component: () => import(/* webpackChunkName: "group-dashboard" */
+                '@/views/dashboard/DashboardFreelanceAddOrg'
+              ),
               meta: { requiresLogin: true }
             }
           ]
+        },
+
+        {
+          path: '/admin',
+          name: 'admin',
+          component: () => import(/* webpackChunkName: "group-admin" */
+            '@/views/admin/AdminPanel'
+          ),
+          meta: { requiresLogin: true, requiresAdmin: true },
+          children: [
+          ]
+        },
+        {
+          path: '/adminrequests',
+          name: 'admin-requests',
+          component: () => import(/* webpackChunkName: "group-admin" */
+            '@/views/admin/AdminRequests'
+          ),
+          meta: { requiresLogin: true, requiresAdmin: true },
         }
       ]
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import(/* webpackChunkName: "group-login" */ '@/views/Login.vue'),
+      component: () => import(/* webpackChunkName: "group-login" */
+        '@/views/Login'
+      ),
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import(/* webpackChunkName: "group-login" */ '@/views/Signup.vue'),
+      component: () => import(/* webpackChunkName: "group-login" */
+        '@/views/Signup'
+      ),
     },
     {
       path: '*',
@@ -110,9 +174,16 @@ const router = new Router({
 
 // Route Guard
 router.beforeEach((to, from, next) => {
+  // Login check
   if (to.matched.some(record => record.meta.requiresLogin) &&
       !store.getters.loggedIn) {
     next({ name: 'login' })
+
+  // CU admin check
+  } else if (to.matched.some(record => record.meta.requiresAdmin) &&
+      !store.getters.userIsCU) {
+    next({ name: 'login' })
+
   } else {
     next()
   }

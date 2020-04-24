@@ -5,6 +5,60 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    DEV_usermocks: {
+      0: {
+        id: 0,
+        accountType: 0,
+        org: 0,
+        customerList: [],
+        firstName: 'สมฤทธิ์',
+        lastName: 'สมอิทฤทธิ์',
+        email: 'mr.somrit@gmail.com',
+        phone: '089-898-9898',
+        nationalId: null
+      },
+      1: {
+        id: 1,
+        accountType: 1,
+        org: 1,
+        customerList: [],
+        firstName: 'สมควร',
+        lastName: 'สมสกุล',
+        email: 'mr.somkuan@gmail.com',
+        phone: '081-234-5678',
+        nationalId: null
+      },
+      2: {
+        id: 2,
+        accountType: 2,
+        org: null,
+        customerList: [],
+        firstName: 'สมเดช',
+        lastName: 'สมวงศ์สกุล',
+        email: 'mr.somdej@gmail.com',
+        phone: '087-777-8888',
+        nationalId: null
+      }
+    },
+    types: {
+      accountTypes: {
+        0: 'Admin จุฬาฯ',
+        1: 'ผู้ส่งตัวอย่าง พนักงานประจำ',
+        2: 'ผู้ส่งตัวอย่าง Freelance'
+      },
+      requestTypes: [
+        { id: 1, key: 'S', name: 'คำขอแก้ไขการส่งตัวอย่าง' },
+        { id: 2, key: 'M', name: 'คำขอสมัครสมาชิก' },
+        { id: 3, key: 'A', name: 'คำขอเพิ่มตัวแทนส่งตัวอย่าง' },
+        { id: 4, key: 'O', name: 'คำขอเป็นตัวแทนองค์กร' },
+        { id: 5, key: 'X', name: 'คำขออื่นๆ' },
+      ],
+      requestStatuses: [
+        { id: 1, name: 'รอการตอบรับ'},
+        { id: 2, name: 'รับคำขอ'},
+        { id: 3, name: 'ปฏิเสธคำขอ'},
+      ]
+    },
     auth: {
       loggedIn: true,
       accountType: 1, // 0: CU employee, 1: employee submitter, 2: freelance
@@ -47,20 +101,6 @@ export default new Vuex.Store({
         registration: null
       }
     },
-    nav: [
-      {
-        path: '/',
-        name: 'about'
-      },
-      {
-        path: '/tracksubmissions',
-        name: 'trackSubmissions'
-      },
-      {
-        path: '/submitsamples',
-        name: 'submitSamples'
-      },
-    ],
     data: {
       org_chart: {
         left: {
@@ -431,16 +471,48 @@ export default new Vuex.Store({
     },
     org: state => {
       return state.org
+    },
+
+    userIsCU: state => {
+      return state.auth.accountType === 0
+    },
+    userIsEmployee: state => {
+      return state.auth.accountType === 1
+    },
+    userIsFreelance: state => {
+      return state.auth.accountType === 2
+    },
+
+    accountTypes: state => {
+      return state.types.accountTypes
+    },
+    requestTypes: state => {
+      return state.types.requestTypes
+    },
+    requestStatuses: state => {
+      return state.types.requestStatuses
     }
   },
   mutations: {
     LOG_IN_OUT: (state, payload) => {
       state.auth.loggedIn = payload
+    },
+    ACC_TYPE: (state, payload) => {
+      state.auth.accountType = payload
+    },
+    USER: (state, payload) => {
+      state.user = state.DEV_usermocks[payload]
     }
   },
   actions: {
     loginout: (context, loggedInState) => {
       context.commit('LOG_IN_OUT', loggedInState)
+      context.commit('ACC_TYPE', null)
+    },
+    loginAsType: (context, accType) => {
+      context.commit('LOG_IN_OUT', true)
+      context.commit('ACC_TYPE', accType)
+      context.commit('USER', accType)
     }
   }
 })

@@ -1,6 +1,6 @@
 <template>
 <div class="page max-width-1500 d-flex align-items-start">
-  <div id="view-submission-nav" class="sticky p-4">
+  <div id="view-submission-nav" class="sub-nav sticky p-4">
     <h3 class="mb-4 ml-2">ติดตามการส่งตัวอย่าง</h3>
     <router-link to="/tracksubmissions"
                  tag="button"
@@ -11,7 +11,7 @@
       </div>
     </router-link>
     <scrollactive active-class="scrollactive-active"
-                  :offset="275"
+                  :offset="225"
                   :modifyUrl="false">
       <a  href="#info"
           class="btn btn-transparent btn-block btn-lg scrollactive-item">
@@ -47,7 +47,7 @@
     </scrollactive>
   </div>
   <div  id="view-submission-content"
-        class="p-4">
+        class="p-4 border-left-lighter">
     <div id="info"
          class="section">
       <h2 class="mb-4">
@@ -62,7 +62,7 @@
         <div class="col-10 pt-1">
           <div class="form-row">
             <div class="form-group col-6">
-              <div class="order-tag red form-control form-control-lg">
+              <div class="color-tag red form-control form-control-lg">
                 X - Cancelled
               </div>
             </div>
@@ -188,7 +188,7 @@
         <div class="col-10 pt-1">
           <div class="form-row">
             <div class="form-group col-6">
-              <div class="order-tag grey form-control form-control-lg">
+              <div class="color-tag grey form-control form-control-lg">
                 N - Not Invoiced
               </div>
             </div>
@@ -267,7 +267,7 @@
           </div>
         </div>
 
-        <div v-for="(report, idx) in submission.reports"
+        <div  v-for="(report, idx) in submission.reports"
               :key="idx"
               class="row py-1 border-bottom-lighter">
           <div class="col-2 d-flex align-items-center">
@@ -471,17 +471,11 @@
 $nav-width: 300px;
 #view-submission-nav {
   width: $nav-width;
-  border-right: 1px solid $accent;
-  height: calc(100vh - #{$titlebar-height} - #{$footer-height});
   overflow-x: visible;
-  a {
-    text-align: left;
-    margin-bottom: .75em;
-  }
 }
 #view-submission-content {
   width: calc(100% - #{$nav-width});
-  min-height: calc(100vh - #{$titlebar-height} - #{$footer-height});
+  min-height: $content-height;
 }
 .section {
   font-family: 'CS ChatThai';
@@ -491,7 +485,7 @@ $nav-width: 300px;
     padding-top: 0;
   }
   &:last-child {
-    margin-bottom: 45vh;
+    margin-bottom: 55vh;
   }
 }
 .btn.back-btn {

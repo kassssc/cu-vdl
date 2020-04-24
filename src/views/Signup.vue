@@ -21,7 +21,7 @@
               ท่านต้องการสมัครสมาชิกประเภทไหน ?
             </h4>
             <form-inline-select
-              size="lg"
+              btnClass="btn-lg"
               :options="isFreelanceOptions"
               @change="orgExist = null"
               v-model="isFreelance" />
@@ -47,7 +47,7 @@
                 องค์กรของท่านมี Account อยู่ในระบบนี้อยู่แล้วหรือไม่ ?
               </h4>
               <form-inline-select
-                size="lg"
+                btnClass="btn-lg"
                 :options="orgExistOptions"
                 v-model="orgExist" />
             </div>

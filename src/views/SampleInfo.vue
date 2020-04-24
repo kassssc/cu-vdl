@@ -65,7 +65,7 @@
               </label>
               <input  type="text"
                       class="form-control"
-                      v-model="submission.fixedInfo.submitterName"
+                      :value="`${user.firstName} ${user.lastName}`"
                       disabled >
             </div>
             <div class="form-group col-2">
@@ -86,9 +86,10 @@
           <div class="form-row">
             <div class="form-group col-4">
               <label>
-                องค์กรเจ้าของตัวอย่าง <i class="fas fa-star-of-life" />
+                องค์กรเจ้าของตัวอย่าง <i v-if="userIsFreelance" class="fas fa-star-of-life" />
               </label>
-              <select class="form-control"
+              <select v-if="userIsFreelance"
+                      class="form-control"
                       v-model="submission.info.orgId">
                 <option>เลือก...</option>
                 <option>ฟาร์มสมควร</option>
@@ -96,6 +97,11 @@
                 <option>ฟาร์มสมคิด</option>
                 <option>ฟาร์มสมชาย</option>
               </select>
+              <input  v-else
+                      type="text"
+                      class="form-control"
+                      :value="org.name"
+                      disabled >
             </div>
             <div v-if="isGeneralSubmission" class="form-group col-2">
               <label>
@@ -980,6 +986,9 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'userIsFreelance',
+      'user',
+      'org',
       'reportTypes',
       'tests',
       'testType',

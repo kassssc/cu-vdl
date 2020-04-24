@@ -4,7 +4,7 @@
     <div class="col-12">
       <h3 class="mb-4">
         <i class="fas fa-user-plus icon-lg mr-1"></i>
-        สร้าง Account ตัวแทนส่งตัวอย่าง
+        ส่งคำขอเป็นตัวแทนองค์กร
       </h3>
     </div>
   </div>
@@ -14,65 +14,33 @@
     <div class="border-bottom-lighter row w-100 py-4">
       <div class="col-xl-3 col-12">
         <h4>
-          ประเภท Account
+          ข้อมูลองค์กร
         </h4>
       </div>
       <div class="col-xl-9 col-12">
         <div class="form-row">
-          <div class="form-group col-6">
-            <form-inline-select 
-              :options="userTypeOptions" 
-              v-model="form.userType" />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="border-bottom-lighter row w-100 py-4">
-      <div class="col-xl-3 col-12">
-        <h4>
-          ข้อมูลตัวแทนส่งตัวอย่าง
-        </h4>
-      </div>
-      <div class="col-xl-9 col-12">
-        <div class="form-row">
-          <div class="form-group col-6">
+          <div class="form-group col-8">
             <label>
-              ชื่อจริง
+              ชื่อองค์กร
             </label>
             <input  type="text"
                     class="form-control">
           </div>
           <div class="w-100"></div>
-          <div class="form-group col-6">
+          <div class="form-group col-8">
             <label>
-              นามสกุล
+              ชื่อ-นามสกุล ผู้ติดต่อ
             </label>
             <input  type="text"
                     class="form-control">
           </div>
           <div class="w-100"></div>
-          <div class="form-group col-6">
+          <div class="form-group col-8">
             <label>
-              อีเมล
+              เบอร์โทรศัพท์ / อีเมล ผู้ติดต่อ
             </label>
             <input  type="text"
                     class="form-control">
-          </div>
-          <div class="w-100"></div>
-          <div class="form-group col-6">
-            <label>
-              เบอร์โทรศัพท์
-            </label>
-            <input  type="text"
-                    class="form-control">
-          </div>
-          <div class="w-100"></div>
-          <div class="form-group col-6">
-            <label>
-              สำเนาบัตรประชาชน
-            </label>
-            <form-file-upload />
           </div>
         </div>
       </div>
@@ -86,7 +54,7 @@
       </div>
       <div class="col-xl-9 col-12">
         <div class="form-row">
-          <div class="form-group col-6">
+          <div class="form-group col-8">
             <textarea type="text" rows="4"
                       class="form-control" />
           </div>
@@ -99,10 +67,10 @@
       </div>
       <div class="col-xl-9 col-12">
         <div class="form-row">
-          <div class="form-group col-6">
+          <div class="form-group col-8">
             <button class="btn btn-primary btn-block">
               <i class="fas fa-paper-plane btn-inner-icon"></i>
-              ส่งแบบฟอร์มขอสร้าง Account
+              ส่งคำขอเป็นตัวแทนองค์กร
             </button>
           </div>
         </div>
@@ -121,7 +89,7 @@
 
 <script>
 export default {
-  name: 'dashboard-add',
+  name: 'dashboard-freelance-addorg',
   data () {
     return {
       form: {

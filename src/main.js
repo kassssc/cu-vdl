@@ -7,6 +7,7 @@ import i18n from './lang'
 import VueScrollactive from 'vue-scrollactive'
 import VueScrollTo from 'vue-scrollto'
 import Datepicker from 'vuejs-datepicker'
+import Multiselect from 'vue-multiselect'
 
 import Checkbox from '@/util/Checkbox'
 import FormInlineSelect from '@/util/FormInlineSelect'
@@ -16,8 +17,10 @@ Vue.config.productionTip = false
 
 import 'bootstrap'  // Bootstrap js
 
-Vue.use(VueScrollactive)
 Vue.use(VueScrollTo)
+Vue.use(VueScrollactive)
+
+Vue.component('form-select-input', Multiselect)
 
 Vue.component('checkbox', Checkbox)
 Vue.component('datepicker', Datepicker)

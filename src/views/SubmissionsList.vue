@@ -5,7 +5,7 @@
     <button class="btn btn-transparent fold-btn align-self-end"
             @click="toggleSidebar()">
       <i class="fas fa-chevron-left"
-         :class="{'rotate': sidebarFolded}"/>
+         :class="{'flip-x': sidebarFolded}"/>
     </button>
     <div class="content">
       <h4>

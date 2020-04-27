@@ -2,10 +2,9 @@
 <div class="page max-width-1500 d-flex align-items-start">
   <div id="admin-nav" class="sub-nav sticky p-4">
     <h2 class="mb-4 ml-3">บริหารระบบ</h2>
-    <router-link  :to="{name: 'admin-membership'}"
+    <router-link  :to="{name: 'admin-create-user'}"
                   class="btn btn-transparent btn-block btn-lg"
-                  exact
-                  disabled>
+                  exact>
       <i class="fas fa-user-plus btn-inner-icon-lg"></i> สร้าง Account
     </router-link>
     <router-link  :to="{name: 'dashboard-edit'}"

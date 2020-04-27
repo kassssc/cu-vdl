@@ -22,7 +22,10 @@
 }
 
 html {
-  font-size: 15px;
+  font-size: 14px;
+  @include media-breakpoint-up(lg) {
+    font-size: 15px;
+  }
   @include media-breakpoint-up(xl) {
     font-size: 17px;
   }
@@ -39,7 +42,6 @@ button.btn, a.btn {
   &[disabled] {
     cursor: default;
     pointer-events: none;
-    //color: $muted;
   }
   &:focus, &:active {
     box-shadow: none !important;
@@ -67,6 +69,22 @@ button.btn, a.btn {
     &:hover {
       color: $primary;
       background: transparent;
+    }
+  }
+  &.btn-gradient {
+    color: $light;
+    transition: all 150ms ease-in-out;
+    position: relative;
+    &::after {
+      border-radius: .25rem;
+      background-image: linear-gradient(to right, $primary, $placeholder);
+      content: '';
+      z-index: -1;
+      position: absolute;
+      top: 0; bottom: 0; left: 0; right: 0;
+    }
+    &:hover::after {
+      filter: brightness(85%);
     }
   }
   i.btn-inner-icon {
@@ -218,6 +236,93 @@ textarea.form-control {
   }
 }
 
+.multiselect.custom {
+  background: $accent;
+  border-radius: 0.25rem;
+  font-size: 1.3rem;
+  font-weight: bold;
+  min-height: calc(1.5em + 0.5rem);
+  line-height: 1.5;
+  &.multiselect--active {
+    box-shadow: 0 0 0 0.2rem $primary;
+  }
+  .dd-icon {
+    position: absolute;
+    color: $muted;
+    font-size: .9em;
+    right: .5em;
+    top: .6em;
+  }
+  span.multiselect__placeholder {
+    color: $placeholder;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+  }
+  span.multiselect__tag {
+    margin-right: .5em;
+    margin-top: .2em;
+    margin-bottom: .2em;
+    background: $primary;
+    color: $light;
+    i.multiselect__tag-icon {
+      padding-top: 5px;
+      margin-left: 5px;
+      &::after {
+        font-size: 1em;
+        color: $accent-dark;
+      }
+      &:hover {
+        background: $primary;
+        &::after {
+          color: $light;
+        }
+      }
+    }
+  }
+  .multiselect__tags-wrap {
+    display: flex;
+  }
+  .multiselect__tags {
+    padding-top: 0;
+    font-size: 1.3rem;
+    padding: 0.25rem 0.75rem;
+    min-height: calc(1.5em + 0.5rem);
+    background: transparent;
+    border-style: none;
+    input.multiselect__input {
+      line-height: 1.5;
+      display: inline-block;
+      font-size: 1.3rem;
+      color: $default;
+      font-weight: bold;
+      background: transparent;
+      margin: 0;
+      padding: 0;
+      &::placeholder {
+        color: $placeholder;
+      }
+      /* position: absolute;
+      top: 0; bottom: 0; left: 0; right: 30px; */
+    }
+  }
+  .multiselect__content-wrapper {
+    background: $accent;
+    margin-top: .2rem;
+    border-width: 0;
+    box-shadow: 0px 5px 10px 0 $default;
+    li.multiselect__element {
+      .multiselect__option {
+        color: $default;
+      }
+      .multiselect__option--highlight {
+        background: $accent-dark; 
+      }
+    }
+  }
+}
+
 // Get rid of number spinner
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -309,10 +414,19 @@ input[type="number"] {
 .border-left-lighter {
   border-left: 1px solid $accent;
 }
+.thick-border-bottom-gradient {
+  position: relative;
+  &::before {
+    content: '';
+    height: 3px;
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to right, $primary, $placeholder);
+  }
+}
 
-
-.max-width-800 {
-  max-width: 800px;
+.max-width-750 {
+  max-width: 750px;
 }
 .max-width-1250 {
   max-width: 1250px;
@@ -346,10 +460,56 @@ input[type="number"] {
 }
 
 .subcontainer {
-  padding: 1em;
   border-radius: 5px;
+  padding: 1em;
   background: $accent-light;
   //border: 1px solid $accent;
+}
+
+.scroll-outer-container {
+  border-radius: 5px;
+  padding: .3em .5em .3em 1em;
+  background: $accent-light;
+}
+.scroll-container {
+  padding-right: 1em;
+  overflow-y: scroll; 
+  overflow-x: hidden;
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, .5);
+    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+  }
+}
+
+
+.fade-gradient-top {
+  position: sticky;
+  top: 0; left: 0; right: 1em;
+  height: 30px;
+  background: linear-gradient(
+    to bottom,
+    rgba($accent-light, 1) 0%,
+    rgba($accent-light, 1) 5%,
+    rgba($accent-light, .9) 30%,
+    rgba($accent-light, .1) 100%
+  );
+}
+.fade-gradient-bottom {
+  position: sticky;
+  bottom: 0; left: 0; right: 1em;
+  height: 30px;
+  background: linear-gradient(
+    to top,
+    rgba($accent-light, 1) 0%,
+    rgba($accent-light, 1) 5%,
+    rgba($accent-light, .9) 30%,
+    rgba($accent-light, .1) 100%
+  );
 }
 
 .sidebar {
@@ -447,21 +607,6 @@ input[type="number"] {
   }
   &.grey {
     background: $medium;
-  }
-}
-
-.scroll-container {
-  padding-right: 1em;
-  overflow-y: scroll; 
-  overflow-x: hidden;
-  &::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, .5);
-    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
   }
 }
 

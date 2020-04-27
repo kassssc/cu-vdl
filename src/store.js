@@ -5,40 +5,92 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    DEV_usermocks: {
-      0: {
-        id: 0,
-        accountType: 0,
-        org: 0,
-        customerList: [],
-        firstName: 'สมฤทธิ์',
-        lastName: 'สมอิทฤทธิ์',
-        email: 'mr.somrit@gmail.com',
-        phone: '089-898-9898',
-        nationalId: null
+    DEV_mocks: {
+      users: {
+        0: {
+          id: 0,
+          accountType: 0,
+          org: 0,
+          customerList: [],
+          firstName: 'สมฤทธิ์',
+          lastName: 'สมอิทฤทธิ์',
+          email: 'mr.somrit@gmail.com',
+          phone: '089-898-9898',
+          nationalId: null
+        },
+        1: {
+          id: 1,
+          accountType: 1,
+          org: 1,
+          customerList: [],
+          firstName: 'สมควร',
+          lastName: 'สมสกุล',
+          email: 'mr.somkuan@gmail.com',
+          phone: '081-234-5678',
+          nationalId: null
+        },
+        2: {
+          id: 2,
+          accountType: 2,
+          org: null,
+          customerList: [],
+          firstName: 'สมเดช',
+          lastName: 'สมวงศ์สกุล',
+          email: 'mr.somdej@gmail.com',
+          phone: '087-777-8888',
+          nationalId: null
+        }
       },
-      1: {
-        id: 1,
-        accountType: 1,
-        org: 1,
-        customerList: [],
-        firstName: 'สมควร',
-        lastName: 'สมสกุล',
-        email: 'mr.somkuan@gmail.com',
-        phone: '081-234-5678',
-        nationalId: null
-      },
-      2: {
-        id: 2,
-        accountType: 2,
-        org: null,
-        customerList: [],
-        firstName: 'สมเดช',
-        lastName: 'สมวงศ์สกุล',
-        email: 'mr.somdej@gmail.com',
-        phone: '087-777-8888',
-        nationalId: null
-      }
+      requests: [
+        {
+          id: 1,
+          status: 1,
+          type: 1,
+          createdDate: '04/05/2020'
+        },
+        {
+          id: 2,
+          status: 1,
+          type: 1,
+          createdDate: '04/05/2020'
+        },
+        {
+          id: 3,
+          status: 1,
+          type: 2,
+          createdDate: '02/05/2020'
+        },
+        {
+          id: 4,
+          status: 1,
+          type: 3,
+          createdDate: '01/05/2020'
+        },
+        {
+          id: 5,
+          status: 2,
+          type: 5,
+          createdDate: '29/04/2020'
+        },
+        {
+          id: 6,
+          status: 3,
+          type: 2,
+          createdDate: '28/04/2020'
+        },
+        {
+          id: 7,
+          status: 3,
+          type: 4,
+          createdDate: '25/04/2020'
+        },
+        {
+          id: 8,
+          status: 2,
+          type: 2,
+          createdDate: '05/04/2020'
+        },
+      ]
     },
     types: {
       accountTypes: {
@@ -55,17 +107,18 @@ export default new Vuex.Store({
       ],
       requestStatuses: [
         { id: 1, name: 'รอการตอบรับ'},
-        { id: 2, name: 'รับคำขอ'},
-        { id: 3, name: 'ปฏิเสธคำขอ'},
+        { id: 2, name: 'รับคำขอแล้ว'},
+        { id: 3, name: 'ปฏิเสธคำขอแล้ว'},
       ]
     },
+
     auth: {
       loggedIn: true,
       accountType: 1, // 0: CU employee, 1: employee submitter, 2: freelance
     },
     user: {
       id: 1,
-      accountType: 1,
+      accountType: 0,
       org: 1,
       customerList: [],
       firstName: 'สมควร',
@@ -445,6 +498,7 @@ export default new Vuex.Store({
     loggedIn: state => {
       return state.auth.loggedIn
     },
+
     reportTypes: state => {
       return state.submission.reportTypes
     },
@@ -491,6 +545,12 @@ export default new Vuex.Store({
     },
     requestStatuses: state => {
       return state.types.requestStatuses
+    },
+    requests: state => {
+      return state.DEV_mocks.requests
+    },
+    orgOptions: state => {
+      return state.selectOptions.orgs
     }
   },
   mutations: {
@@ -501,7 +561,7 @@ export default new Vuex.Store({
       state.auth.accountType = payload
     },
     USER: (state, payload) => {
-      state.user = state.DEV_usermocks[payload]
+      state.user = state.DEV_mocks.users[payload]
     }
   },
   actions: {

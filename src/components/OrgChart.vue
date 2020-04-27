@@ -1,10 +1,10 @@
 <template>
-  <div class="font-chatthai no-wrap mb-5">
-    <h2 class="mb-3 pb-1 border-bottom-pink">
+  <div id="orgchart" class="no-wrap mb-5">
+    <h1 class="mb-5 pb-2 text-primary thick-border-bottom-gradient">
       {{ $t(`org.title`) }}
-    </h2>
+    </h1>
 
-    <div class="grid-main">
+    <div class="grid-main font-chatthai">
       <div class="d-flex flex-column align-items-center">
         <div class="label-tag">
           {{ $t(`org.left.boss.title`) }}

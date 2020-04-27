@@ -16,9 +16,10 @@
     "v-suggest": "^2.2.0",
     "vue": "^2.6.11",
     "vue-i18n": "^8.15.4",
+    "vue-multiselect": "^2.1.6",
     "vue-router": "^3.1.5",
     "vue-scrollactive": "^0.8.0",
-    "vue-scrollto": "^2.17.1",
+    "vue-scrollto": "^2.18.1",
     "vuejs-datepicker": "^1.6.2",
     "vuex": "^3.1.2"
   },

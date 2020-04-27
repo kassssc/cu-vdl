@@ -78,34 +78,36 @@
           <h5>วันที่</h5>
         </div>
         <div class="col-4">
-          <h5>ชื่อผู้ส่ง</h5>
+          <h5>หมายเลขคำขอ</h5>
         </div>
       </div>
       <div class="subcontainer font-chatthai pr-2">
         <div id="requests-list" class="scroll-container requests orgs">
-          <div  v-for="(i, idx) of [...list]"
-                :key="idx"
+          <div  v-for="request of requests"
+                :key="request.id"
                 class="pointer row no-gutters list-item"
-                :class="{'active': selectedRequest === idx}"
-                @click="selectedRequest = idx">
+                :class="{'active': selectedRequest === request.id}"
+                @click="selectedRequest = request.id">
             <div class="col-2 pl-3">
-              <h5>
-                X
-              </h5>
+              <div  class="color-tag sm mr-2"
+                    :class="requestStatusCSS[request.status]">
+                <i class="fas" :class="requestStatusIcon[request.status]"></i>
+              </div>
             </div>
             <div class="col-2 pl-3">
-              <h5>
-                0
-              </h5>
+              <div  class="color-tag sm"
+                    :class="requestTypeCSS[request.type]">
+                {{ requestTypes.find(r => r.id === request.type).key }}
+              </div>
             </div>
             <div class="col-3">
               <h5>
-                04/04/20
+                {{ request.createdDate }}
               </h5>
             </div>
             <div class="col-4">
               <h5>
-                {{ user.firstName }}
+                {{ request.id }}
               </h5>
             </div>
             <div class="col-1">
@@ -202,13 +204,14 @@ export default {
     ...mapGetters([
       'user',
       'requestTypes',
-      'requestStatuses'
+      'requestStatuses',
+      'requests'
     ])
   },
   data () {
     return {
+      activeStatusFilter: 1,
       activeTypeFilter: 0,
-      activeStatusFilter: 0,
       selectedRequest: 0,
       sidebarFolded: false,
       requestTypeCSS: {

@@ -128,12 +128,19 @@ const router = new Router({
 
         {
           path: '/admin',
-          name: 'admin',
           component: () => import(/* webpackChunkName: "group-admin" */
             '@/views/admin/AdminPanel'
           ),
           meta: { requiresLogin: true, requiresAdmin: true },
           children: [
+            {
+              path: '',
+              name: 'admin-create-user',
+              component: () => import(/* webpackChunkName: "group-admin" */
+                '@/views/admin/AdminCreateUser'
+              ),
+              meta: { requiresLogin: true, requiresAdmin: true },
+            }    
           ]
         },
         {

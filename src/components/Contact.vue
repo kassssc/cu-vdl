@@ -1,7 +1,7 @@
 <template>
-  <div class="mb-5 font-chatthai" >
+  <div id="contact" class="mb-5 font-chatthai" >
     <div class="row">
-      <div class="col mr-5">
+      <div class="col-8">
         <form>
           <div class="form-group row">
             <div class="col-sm-2 col-form-label" />
@@ -77,7 +77,7 @@
           </div>
         </form>
       </div>
-      <div class="col">
+      <div class="col-4">
         <h2 class="mb-2">
           {{ $t(`contact.addr.title`)}}
         </h2>

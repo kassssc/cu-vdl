@@ -16,8 +16,9 @@
       :options="filterOptions"
       v-model="filter"
       btnClass="btn-sm" />
-    <div class="subcontainer pr-2">
+    <div class="scroll-outer-container">
       <div class="scroll-container submitters">
+        <div class="fade-gradient-top"></div>
         <div  v-for="(i, idx) of [...list, ...list]"
               :key="idx"
               class="font-chatthai">
@@ -27,6 +28,7 @@
             {{ `${user.firstName} ${user.lastName}` }}
           </button>
         </div>
+        <div class="fade-gradient-bottom"></div>
       </div>
     </div>
   </div>

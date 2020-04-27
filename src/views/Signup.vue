@@ -331,8 +331,8 @@
           <div class="col-3 pt-2">
             <h4>รายการองค์กร</h4>
           </div>
-          <div class="col-9 subcontainer py-2 pl-3">
-            <div id="orgs-container" class="pr-4 pl-2">
+          <div class="col-9 subcontainer scroll-fade py-2 pl-3">
+            <div id="orgs-container" class="scroll-container pr-4 pl-2">
               <div  v-for="(org, idx) in freelanceSignupForm.orgs"
                     :key="idx"
                     :id="`org${idx+1}`"
@@ -435,17 +435,6 @@
 }
 #orgs-container {
   max-height: 450px;
-  overflow-y: scroll;
-  &::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, .5);
-    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-  }
 }
 .btn.btn-x.delete-org {
   position: absolute;

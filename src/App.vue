@@ -9,6 +9,8 @@
 @import '@/styles/styles.scss';           // App global styles
 </style>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
 <script>
 
 export default {

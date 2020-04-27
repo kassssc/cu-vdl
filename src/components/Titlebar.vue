@@ -36,7 +36,7 @@
           <p>8</p>
         </div>
       </router-link>
-      <router-link  :to="{name: 'admin'}"
+      <router-link  :to="{name: 'admin-create-user'}"
                     tag="a"
                     class="btn btn-transparent mr-2">
         <i class="fas fa-tools btn-inner-icon"></i>

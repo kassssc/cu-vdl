@@ -110,16 +110,15 @@ export default {
   },
   methods: {
     ...mapActions([
-      'loginout',
       'loginAsType'
     ]),
     login () {
-      this.loginout(true)
-      this.$router.push({name: 'submissionslist'})
+      this.loginAsType(1)
+      this.$router.push({ name: 'submissionslist' })
     },
     loginAs (accType) {
       this.loginAsType(accType)
-      this.$router.push({name: 'submissionslist'})
+      this.$router.push({ name: 'submissionslist' })
     }
   }
 }

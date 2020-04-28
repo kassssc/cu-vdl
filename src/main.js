@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import App from './App'
-import router from './router'
-import store from './store'
-import i18n from './lang'
+import App from '@/App'
+import router from '@/router'
+import store from '@/store/store'
+import i18n from '@/lang'
 
 import VueScrollactive from 'vue-scrollactive'
 import VueScrollTo from 'vue-scrollto'
@@ -35,6 +35,7 @@ Vue.component('form-file-upload', FormFileUpload)
   }
 })
  */
+
 Vue.directive('focus-on-create', {
   inserted: el => el.focus()
 })

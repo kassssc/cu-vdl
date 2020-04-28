@@ -85,9 +85,6 @@
 </template>
 
 <style lang="scss" scoped>
-.big-ass {
-  height: 100vh;
-}
 </style>
 
 <script>
@@ -101,10 +98,5 @@ export default {
       'org'
     ])
   },
-  data () {
-    return {
-      editingUser: false,
-    }
-  }
 }
 </script>

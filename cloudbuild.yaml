@@ -8,5 +8,5 @@ steps:
   args: ['run', 'build']
 
 # Deploy
-- name: 'gcr.io/cuvetlab/firebase'
+- name: 'gcr.io/cu-vdl/firebase'
   args: ['deploy', '--only=hosting']

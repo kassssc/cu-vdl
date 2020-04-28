@@ -97,7 +97,7 @@
         <i class="fas fa-cog btn-inner-icon ml-1"></i>
       </router-link>
       <button class="btn btn-transparent btn-icon ml-1 d-none d-xl-block"
-              @click="logout()">
+              @click="logoutAndNavigateToHome()">
         <i class="fas fa-sign-out-alt" />
       </button>
     </div>
@@ -227,11 +227,13 @@ export default {
   },
   methods: {
     ...mapActions([
-			'loginout',
+			'logout',
     ]),
-    logout () {
-      this.loginout(false)
-      this.$router.push('/')
+    logoutAndNavigateToHome () {
+      this.logout()
+      if (this.$route.path !== '/') {
+        this.$router.push('/')
+      }
     }
   }
 }

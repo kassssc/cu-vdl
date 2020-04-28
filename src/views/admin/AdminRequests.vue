@@ -83,7 +83,7 @@
           <div  v-for="(requestGroup, idx) of requests"
                 :key="idx"
                 class="mt-4">
-            <h4 class="pb-2 border-bottom-lighter">{{ requestGroup.name }}</h4>
+            <h4 class="pb-2 border-bottom-lighter text-medium">{{ requestGroup.name }}</h4>
             <div  v-for="request of requestGroup.list"
                   :key="request.id"
                   class="pointer row list-item"

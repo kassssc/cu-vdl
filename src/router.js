@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from './store.js'
+import store from '@/store/store.js'
 
-import MainContent from './views/MainContent'
-import Home from './views/Home'
+import MainContent from '@/views/MainContent'
+import Home from '@/views/Home'
 
 Vue.use(Router)
 

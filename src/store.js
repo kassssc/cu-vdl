@@ -41,56 +41,6 @@ export default new Vuex.Store({
           nationalId: null
         }
       },
-      requests: [
-        {
-          id: 1,
-          status: 1,
-          type: 1,
-          createdDate: '04/05/2020'
-        },
-        {
-          id: 2,
-          status: 1,
-          type: 1,
-          createdDate: '04/05/2020'
-        },
-        {
-          id: 3,
-          status: 1,
-          type: 2,
-          createdDate: '02/05/2020'
-        },
-        {
-          id: 4,
-          status: 1,
-          type: 3,
-          createdDate: '01/05/2020'
-        },
-        {
-          id: 5,
-          status: 2,
-          type: 5,
-          createdDate: '29/04/2020'
-        },
-        {
-          id: 6,
-          status: 3,
-          type: 2,
-          createdDate: '28/04/2020'
-        },
-        {
-          id: 7,
-          status: 3,
-          type: 4,
-          createdDate: '25/04/2020'
-        },
-        {
-          id: 8,
-          status: 2,
-          type: 2,
-          createdDate: '05/04/2020'
-        },
-      ]
     },
     types: {
       accountTypes: {
@@ -545,9 +495,6 @@ export default new Vuex.Store({
     },
     requestStatuses: state => {
       return state.types.requestStatuses
-    },
-    requests: state => {
-      return state.DEV_mocks.requests
     },
     orgOptions: state => {
       return state.selectOptions.orgs

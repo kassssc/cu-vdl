@@ -1,16 +1,16 @@
 <template>
-<div class="checkbox"
-     @click="updateValue()">
+<div class="checkbox position-relative">
   <div class="box d-flex justify-content-center align-items-center my-1"
        :class="{
-         'checked': internalValue,
+         'checked': value,
          'disabled': disabled
        }">
     <i class="fas fa-check" />
   </div>
-  <div class="w-100 d-flex justify-content-between">
+  <div  v-if="label"
+        class="w-100 d-flex justify-content-between">
     <label class="ml-2"
-           :class="{'disabled': disabled}">
+           :class="[labelSize, {'disabled': disabled}]">
       {{ label }}
     </label>
     <label class="ml-2"
@@ -19,15 +19,21 @@
     </label>
   </div>
   <input type="checkbox"
-         ref="hiddenInput"
-         :value="internalValue"
-         v-model="internalValue"
-         @change="onChange()"
-         class="d-none">
+         :checked="value"
+         @input="onChange($event.target.checked)"
+         class="hidden-input"
+         :disabled="disabled" >
 </div>
 </template>
 
 <style lang="scss" scoped>
+.hidden-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
 .checkbox {
   display: flex;
   cursor: pointer;
@@ -60,6 +66,10 @@
     margin-bottom: 0.2em;
     font-size: 1.15rem;
     color: $dark;
+    &.lg {
+      font-size: 1.3rem;
+      margin-top: .2em;
+    }
     @include unselectable;
     &.disabled {
       color: $muted;
@@ -76,6 +86,10 @@ export default {
       default: '',
       type: String
     },
+    labelSize: {
+      default: undefined,
+      type: String
+    },
     secondaryLabel: {
       default: undefined,
       type: String
@@ -89,24 +103,11 @@ export default {
       type: Boolean
     }
   },
-  data () {
-    return {
-      internalValue: false
-    }
-  },
   methods: {
-    updateValue () {
-      if (!this.disabled) {
-        this.$refs.hiddenInput.click()
-      }
-    },
-    onChange () {
-      this.$emit('input', this.internalValue)
+    onChange (newVal) {
+      this.$emit('input', newVal)
       this.$emit('change')
     }
-  },
-  beforeMount () {
-    this.internalValue = this.value
   }
 }
 </script>

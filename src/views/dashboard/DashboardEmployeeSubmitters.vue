@@ -1,6 +1,6 @@
 <template>
 <div class="d-flex align-items-start">
-  <div class="w-50 border-right-lighter p-4">
+  <div class="w-50 content-height border-right-lighter p-4">
     <h3 class="mb-4">
       <i class="fas fa-users icon-lg mr-1"></i>
       รายชื่อ ตัวแทนส่งตัวอย่าง
@@ -105,7 +105,7 @@
 
 <style lang="scss" scoped>
 .scroll-container.submitters {
-  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 265px);
+  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 230px);
 }
 </style>
 

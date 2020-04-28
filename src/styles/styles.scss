@@ -89,7 +89,8 @@ button.btn, a.btn {
   }
   i.btn-inner-icon {
     margin-top: 0.2em;
-    margin-right: 0.2em;
+    width: 1.3em;
+    text-align: center;
     font-size: 0.8em;
   }
   i.btn-inner-icon-lg {
@@ -468,7 +469,7 @@ input[type="number"] {
 
 .scroll-outer-container {
   border-radius: 5px;
-  padding: .3em .5em .3em 1em;
+  padding: .5em .5em .5em 1em;
   background: $accent-light;
 }
 .scroll-container {
@@ -491,6 +492,7 @@ input[type="number"] {
   position: sticky;
   top: 0; left: 0; right: 1em;
   height: 30px;
+  margin-bottom: -10px;
   background: linear-gradient(
     to bottom,
     rgba($accent-light, 1) 0%,

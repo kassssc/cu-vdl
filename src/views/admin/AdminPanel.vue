@@ -21,8 +21,7 @@
     </router-link>
     <router-link  :to="{name: 'submitsamples'}"
                   class="btn btn-transparent btn-block btn-lg"
-                  exact
-                  disabled>
+                  exact>
       <i class="fas fa-vial  btn-inner-icon-lg"></i> สร้างการส่งตัวอย่าง
     </router-link>
 

@@ -77,14 +77,14 @@
           </div>
         </form>
       </div>
-      <div class="col-4">
-        <h2 class="mb-2">
+      <div class="col-4 pl-5">
+        <h2 class="mb-3">
           {{ $t(`contact.addr.title`)}}
         </h2>
         <h4 class="mb-4">
           {{ $t(`contact.addr.addr`) }}
         </h4>
-        <h4>
+        <h4 class="mb-2">
           <i class="fas fa-phone mr-3"></i>
           {{ $t(`contact.addr.tel`) }}
         </h4>

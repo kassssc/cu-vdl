@@ -1,6 +1,6 @@
 <template>
 <div class="page d-flex max-width-1650">
-  <div  class="sidebar content-height"
+  <div  class="sidebar pt-2 content-height"
         :class="{'folded': sidebarFolded}">
     <button class="btn btn-transparent fold-btn align-self-end"
             @click="sidebarFolded = !sidebarFolded">
@@ -15,11 +15,12 @@
               class="form-control submission-search"
               placeholder=" ใส่หมายเลขคำขอ...">
       </div>
-      <h5 class="mb-2 text-medium">กรองโดยสถานะ</h5>
+      <!-- <h5 class="mb-2 text-medium">กรองโดยสถานะ</h5>
       <div class="d-flex flex-column mb-4">
         <button class="filter-btn btn btn-sm btn-block text-left pink"
                 :class="{'active': activeStatusFilter === 0}"
                 @click="activeStatusFilter = 0">
+          <i class="fas fa-star-of-life btn-inner-icon" />
           ทั้งหมด
         </button>
         <button v-for="filter of requestStatuses"
@@ -30,18 +31,16 @@
                   {'active': activeStatusFilter === filter.id}
                 ]"
                 @click="activeStatusFilter = filter.id">
-          <div  class="color-tag d-inline-block mr-2"
-                :class="requestStatusCSS[filter.id]">
-            <i class="fas" :class="requestStatusIcon[filter.id]"></i>
-          </div>
+          <i class="fas btn-inner-icon" :class="requestStatusIcon[filter.id]"></i>
           {{ filter.name }}
         </button>
-      </div>
+      </div> -->
       <h5 class="mb-2 text-medium">กรองโดยประเภทคำขอ</h5>
       <div class="d-flex flex-column">
         <button class="filter-btn btn btn-sm btn-block text-left pink"
                 :class="{'active': activeTypeFilter === 0}"
                 @click="activeTypeFilter = 0">
+          <div class="small-square mr-1"></div>
           ทั้งหมด
         </button>
         <button v-for="filter of requestTypes"
@@ -52,22 +51,19 @@
                   {'active': activeTypeFilter === filter.id}
                 ]"
                 @click="activeTypeFilter = filter.id">
-          <div  class="color-tag d-inline-block mr-2"
-                :class="requestTypeCSS[filter.id]">
-            {{ filter.key }}
-          </div>
+          <div class="small-square mr-1" :class="requestTypeCSS[filter.id]"></div>
           {{ filter.name }}
         </button>
       </div>
     </div>
   </div>
-  <div class="row no-gutters requests content-height">
-    <div class="col-6 col-lg-5 border-right-lighter pr-4">
+  <div class="row no-gutters requests content-height border-left-lighter pt-2">
+    <div class="col-6 col-lg-5 border-right-lighter px-4">
       <h3 class="mb-2">
         <i class="fas fa-scroll icon-lg mr-1"></i>
         รายการคำขอ
       </h3>
-      <div class="row mb-2 text-medium font-chatthai mr-5 mt-3 pt-2">
+      <!-- <div class="row mb-2 text-medium font-chatthai mr-5 mt-3 pt-2">
         <div class="col-2">
           <h5>สถานะ</h5>
         </div>
@@ -80,55 +76,59 @@
         <div class="col-4">
           <h5>หมายเลขคำขอ</h5>
         </div>
-      </div>
-      <div class="subcontainer font-chatthai pr-2">
-        <div id="requests-list" class="scroll-container requests orgs">
-          <div  v-for="request of requests"
-                :key="request.id"
-                class="pointer row no-gutters list-item"
-                :class="{'active': selectedRequest === request.id}"
-                @click="selectedRequest = request.id">
-            <div class="col-2 pl-3">
-              <div  class="color-tag sm mr-2"
-                    :class="requestStatusCSS[request.status]">
-                <i class="fas" :class="requestStatusIcon[request.status]"></i>
+      </div> -->
+      
+      <div class="font-chatthai pr-2">
+        <div class="requests">
+          <div  v-for="(requestGroup, idx) of requests"
+                :key="idx"
+                class="mt-4">
+            <h4 class="pb-2 border-bottom-lighter">{{ requestGroup.name }}</h4>
+            <div  v-for="request of requestGroup.list"
+                  :key="request.id"
+                  class="pointer row list-item"
+                  :class="[
+                    requestStatusCSS[request.status],
+                    {'active': selectedRequest === request}
+                  ]"
+                  @click="selectedRequest = request">
+              <div class="col-2 d-flex align-items-center pl-3">
+                <i class="fas" :class="[requestStatusCSS[request.status],requestStatusIcon[request.status]]"></i>
               </div>
-            </div>
-            <div class="col-2 pl-3">
-              <div  class="color-tag sm"
-                    :class="requestTypeCSS[request.type]">
-                {{ requestTypes.find(r => r.id === request.type).key }}
+              <div class="col-3">
+                <h5>
+                  {{ request.createdDate }}
+                </h5>
               </div>
-            </div>
-            <div class="col-3">
-              <h5>
-                {{ request.createdDate }}
-              </h5>
-            </div>
-            <div class="col-4">
-              <h5>
-                {{ request.id }}
-              </h5>
-            </div>
-            <div class="col-1">
-              <i class="fas fa-chevron-right icon-md mr-1 hide-icon"></i>
+              <div class="col-4">
+                <h5>
+                  {{ request.id }}
+                </h5>
+              </div>
+              <div class="col-2 d-flex align-items-center">
+                <div  class="small-square"
+                      :class="requestTypeCSS[request.type]" />
+              </div>
+              <div class="col-1 d-flex align-items-center">
+                <i class="fas fa-chevron-right icon-md mr-1 text-primary hide-icon"></i>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-6 col-lg-7 pt-5 pl-4">
-      <h3 class="mb-2">
-        <i class="fas fa-file-contract icon-lg mr-1"></i>
-        รายละเอียดคำขอ
-      </h3>
+    <div class="col-6 col-lg-7 pl-4">
+      <view-request :request="selectedRequest" />
     </div>
   </div>
 </div>
 </template>
 
 <style lang="scss" scoped>
+i.orange { color: $orange; }
+i.green { color: $green; }
+i.red { color: $red; }
 .requests {
   flex-grow: 2;
 }
@@ -138,36 +138,57 @@
 .scroll-container.requests {
   height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 145px);
 }
+.small-square {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  border-radius: 3px;
+  &.pink { background: $primary; }
+  &.orange { background: $orange; }
+  &.green { background: $green; }
+  &.teal { background: $teal; }
+  &.blue { background: $blue; }
+  &.grey { background: $medium; }
+  &.red { background: $red; }
+}
 .list-item {
   padding-top: .75em;
   padding-bottom: .75em;
+  //margin-bottom: 2px;
   border-bottom: 1px solid $accent;
-  border-radius: 5px;
   &.active {
-    color: $primary;
-    background: $accent-dark;
+    background: $accent;
     cursor: default;
     i.hide-icon {
       display: block;
     }
   }
   &:not(.active):hover {
-    background: $accent;
+    background: $accent-light;
   }
   i.hide-icon {
     display: none;    
   }
-  &.unread {
-
+  &.orange {
+    border-left: 4px solid $orange;
+    //background: rgba($orange, 0.15);
+  }
+  &.green {
+    border-left: 4px solid $green;
+    //background: rgba($green, 0.15);
+    }
+  &.red {
+    border-left: 4px solid $red;
+    //background: rgba($red, 0.15);
   }
 }
 .filter-btn {
   color: $default;
   background: $secondary;
-  padding-left: 2em;
   position: relative;
   padding-top: .3em;
   padding-bottom: .3em;
+  vertical-align: center; 
   &:not(.active):hover {
     background: $accent-dark;
   }
@@ -182,15 +203,10 @@
     &.grey { background: $medium; }
     &.red { background: $red; }
   }
-  .color-tag {
-    position: absolute;
-    left: .4em;
-    top: 0;
-    bottom: 0;
-    margin-top: auto;
-    margin-bottom: auto;
-    width: 25px;
-    height: 1.4em;
+  .filter-btn-filler {
+    width: 1.3em;
+    font-size: 0.8em;
+    display: inline-block;
   }
 }
 </style>
@@ -198,21 +214,28 @@
 <script>
 import { mapGetters } from 'vuex'
 
+import ViewRequest from '@/components/ViewRequest'
+
 export default {
   name: 'admin-membership',
+  components: {
+    ViewRequest
+  },
   computed: {
     ...mapGetters([
       'user',
       'requestTypes',
       'requestStatuses',
-      'requests'
     ])
+  },
+  created () {
+    this.selectedRequest = this.requests[0].list[0]
   },
   data () {
     return {
       activeStatusFilter: 1,
       activeTypeFilter: 0,
-      selectedRequest: 0,
+      selectedRequest: null,
       sidebarFolded: false,
       requestTypeCSS: {
         1: 'orange',
@@ -231,7 +254,66 @@ export default {
         2: 'fa-check',
         3: 'fa-times'
       },
-      list: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
+      requests: [
+        {
+          name: 'รอการตอบรับ',
+          list: [
+            {
+              id: 1,
+              status: 1,
+              type: 1,
+              createdDate: '04/05/2020'
+            },
+            {
+              id: 2,
+              status: 1,
+              type: 1,
+              createdDate: '04/05/2020'
+            },
+            {
+              id: 3,
+              status: 1,
+              type: 2,
+              createdDate: '02/05/2020'
+            },
+            {
+              id: 4,
+              status: 1,
+              type: 3,
+              createdDate: '01/05/2020'
+            },
+          ]
+        },
+        {
+          name: 'เสร็จเรียบร้อย',
+          list: [
+            {
+              id: 5,
+              status: 2,
+              type: 5,
+              createdDate: '29/04/2020'
+            },
+            {
+              id: 6,
+              status: 3,
+              type: 2,
+              createdDate: '28/04/2020'
+            },
+            {
+              id: 7,
+              status: 3,
+              type: 4,
+              createdDate: '25/04/2020'
+            },
+            {
+              id: 8,
+              status: 2,
+              type: 2,
+              createdDate: '05/04/2020'
+            },
+          ]
+        }
+      ]
     }
   }
 }

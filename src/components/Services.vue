@@ -3,7 +3,7 @@
     <h1 class="mb-4 pb-2 text-primary thick-border-bottom-gradient">
       <span class="text-primary">฿</span> รายการค่าบริการ
     </h1>
-    <div v-for="i in [0,1,2,3,4]" :key="i" class="border-bottom-lighter mb-4">
+    <div v-for="i in [0,1,2,3,4]" :key="i" class="border-bottom-lighter mb-4 pb-3">
       <div class="d-flex justify-content-between align-items-center mb-1">
         <h3 class="m-none font-weight-bold">
           {{ (i + 1) + '. ' + $t(`services.list[${i}]`) }}

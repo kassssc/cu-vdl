@@ -1,5 +1,5 @@
 <template>
-<div class="page max-width-1500 d-flex align-items-start">
+<div class="page max-width-1500 d-flex">
   <div id="dashboard-nav" class="sub-nav sticky p-4">
     <h2 class="mb-4 ml-3">Account</h2>
     <router-link  :to="{name: 'dashboard'}"

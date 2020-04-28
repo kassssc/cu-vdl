@@ -17,7 +17,7 @@
     </div>
   </div>
   <div class="font-chatthai max-width-1300 px-3 py-4">
-    <div class="row">
+    <div class="row border-bottom-lighter">
       <div class="col-2">
         <h3>
           ข้อมูลเบื้องต้น
@@ -171,7 +171,7 @@
       </div>
     </div>
 
-    <div class="row mt-4">
+    <div class="row mt-4 border-bottom-lighter">
       <div class="col-2">
         <h3>
           รายงาน
@@ -185,7 +185,8 @@
             </h4>
           </div>
           <div class="col-9 pl-0">
-            <div class="row info-row">
+            <div  v-if="submission.notifications.email"
+                  class="row info-row">
               <div class="col-3">
                 <h5 class="review-label">
                   อีเมล
@@ -193,11 +194,12 @@
               </div>
               <div class="col-9">
                 <h4>
-                  {{ submission.info.notifyBy.email }}
+                  {{ user.email }}
                 </h4>
               </div>
             </div>
-            <div class="row info-row">
+            <div  v-if="submission.notifications.phone"
+                  class="row info-row">
               <div class="col-3">
                 <h5 class="review-label">
                   โทรศัพท์
@@ -205,19 +207,7 @@
               </div>
               <div class="col-9">
                 <h4>
-                  {{ submission.info.notifyBy.phone }}
-                </h4>
-              </div>
-            </div>
-            <div class="row info-row">
-              <div class="col-3">
-                <h5 class="review-label">
-                  โทรสาร
-                </h5>
-              </div>
-              <div class="col-9">
-                <h4>
-                  {{ submission.info.notifyBy.fax }}
+                  {{ user.phone }}
                 </h4>
               </div>
             </div>
@@ -231,16 +221,34 @@
 </template>
 
 <style lang="scss" scoped>
+.review-label {
+  color: $medium;
+}
 .info-row {
-  margin-bottom: 1em;
-  padding-bottom: 0.2em;
-  border-bottom: 1px solid $accent;
+  padding: .5em 0;
+  &:not(:last-child) {
+    border-bottom: 1px solid $accent;
+  }
 }
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
+//import jsPDF from 'jspdf'
+
 export default {
   name: 'review-submission',
-  props: ['submission']
+  props: ['submission'],
+  computed: {
+    ...mapGetters(['user'])
+  },
+  methods: {
+    /* createPDF () {
+      const fileName = 'test'
+      const doc = new jsPDF()
+      doc.text("Hello World", 10, 10);
+      doc.save(fileName + '.pdf');
+    } */
+  }
 }
 </script>

@@ -11,11 +11,12 @@
 .footer {
   width: 100vw;
   height: $footer-height;
-  background: $primary;
+  //background: $primary;
   color: $white;
   display: flex;
   align-items: center;
   padding-left: 2em;
+  background: linear-gradient(to right, $primary, $placeholder);
 }
 </style>
 

@@ -21,20 +21,18 @@
         <div class="form-row">
           <div class="form-group col-6">
             <label>
-              อีเมล
-            </label>
-            <input  type="text"
-                    class="form-control"
-                    :value="user.email" >
-          </div>
-          <div class="w-100"></div>
-          <div class="form-group col-6">
-            <label>
               เบอร์โทรศัพท์
             </label>
             <input  type="text"
                     class="form-control"
                     :value="user.phone" >
+          </div>
+          <div class="w-100"></div>
+          <div class="form-group col-6">
+            <button class="btn btn-primary btn-block mt-2">
+              <i class="fas fa-phone btn-inner-icon" />
+              เปลี่ยนข้อมูลการติดต่อ
+            </button>
           </div>
         </div>
       </div>

@@ -207,54 +207,48 @@
           </h3>
         </div>
         <div class="col-xl-10 col-12">
-          <h4 class="d-inline text-dark">
-            {{ $t(`general.notify`)}}
+          <h4 class="text-dark">
+            ช่องทางการแจ้งเตือน
           </h4>
-          <i class="fas fa-star-of-life text-primary icon-sm d-inline" />
           
-          <div class="form-row">
+          <div class="form-row mb-3 mt-1">
             <div class="form-group col-4">
-              <label>
-                {{ $t(`general.email`)}}
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      v-model.trim="submission.report.email">
+              <checkbox label="อีเมล"
+                        labelSize="lg"
+                        v-model="submission.notifications.email" />
+                <div class="d-flex">
+                  <input  type="text"
+                          class="form-control"
+                          :class="{'text-muted': !submission.notifications.email}"
+                          :value="user.email"
+                          disabled>
+              </div>
             </div>
             <div class="form-group col-4">
-              <label>
-                {{ $t(`general.phone`)}}
-              </label>
-              <input  type="number"
-                      class="form-control"
-                      v-model.trim="submission.report.phone">
-            </div>
-            <div class="form-group col-4">
-              <label>
-                {{ $t(`general.fax`)}}
-              </label>
-              <input  type="number"
-                      class="form-control"
-                      v-model.trim="submission.report.fax">
+              <checkbox label="โทรศัพท์"
+                        labelSize="lg"
+                        v-model="submission.notifications.phone" />
+                <div class="d-flex">
+                  <input  type="text"
+                          class="form-control"
+                          :class="{'text-muted': !submission.notifications.phone}"
+                          :value="user.phone"
+                          disabled>
+              </div>
             </div>
           </div>
 
-          <div v-show="noNotifications" class="mb-3">
-            <i class="fas fa-exclamation-triangle mr-1 text-primary d-inline" />
-            <h5 class="text-primary mb-3 d-inline">
-              กรุณาใส่ช่องทางการแจ้งผลอย่างน้อย 1 ช่องทาง
-            </h5>
-          </div>
-    
           <template v-if="isDisinfectantSubmission">
             <h4 class="d-inline">รายงานเป็นภาษา </h4>
             <i class="fas fa-star-of-life text-primary icon-sm d-inline" />
-            <div class="form-row">  
+            <div class="form-row mt-1">  
               <div class="form-group d-flex col-4 mb-2">
                 <checkbox label="ไทย"
                           class="mr-4"
+                          labelSize="lg"
                           v-model="submission.reportLang.thai" />
                 <checkbox label="English"
+                          labelSize="lg"
                           v-model="submission.reportLang.eng" />
               </div>
             </div>
@@ -302,7 +296,7 @@
               <h4 class="mb-1 text-dark">
                 เลือกประเภทงานทดสอบ
               </h4>
-              <div class="form-row mb-4">
+              <div class="form-row mb-3">
                 <div class="form-group col-8">
                   <form-inline-select
                     :options="tests(submission.type)"
@@ -310,7 +304,7 @@
                     @change="updateBatchInfo(batch)" />
                 </div>
               </div>
-              <div class="form-row">
+              <div class="form-row mb-3">
                 <div class="form-group col-2">
                   <h4 class="text-dark">
                     จำนวนตัวอย่าง  <i class="fas fa-star-of-life text-primary icon-sm" />
@@ -322,6 +316,7 @@
                           @blur="updateGeneralBatchSampleCount($event.target.value, batch)" >
                 </div>
               </div>
+
               <div class="form-row no-gutters border-bottom-lighter pb-1">
                 <div class="col-2 text-dark">
                   <h4>
@@ -332,14 +327,14 @@
                   <div class="form-row">
                     <div class="col-6"></div>
                     <div class="col-2 text-right">
-                      <h5 class="text-dark">
+                      <h5 class="text-muted">
                         ราคา/ตัวอย่าง
                       </h5>
                     </div>
                     <div class="col-1">
                     </div>
                     <div class="col-2">
-                      <h5 class="text-dark text-right">
+                      <h5 class="text-muted text-right">
                         ยอดค่าบริการ
                       </h5>
                     </div>
@@ -537,7 +532,7 @@
                 </div>
               </div>
     
-              <div class="form-row w-100">
+              <div class="form-row w-100 text-medium">
                 <div class="form-group form-group-sm col-1 text-right mr-3">
                   <h5>หมายเลข</h5>
                 </div>
@@ -554,7 +549,7 @@
                     :id="`batch${idxBatch+1}-set${idxSample+1}`"
                     class="form-row w-100">
                 <div class="form-group form-group-sm col-1 text-right mr-3">
-                  <h5>{{ idxSample+1 }}</h5>
+                  <h5 class="text-medium">{{ idxSample+1 }}</h5>
                 </div>
                 <div class="form-group form-group-sm col-5">
                   <input  type="text"
@@ -819,8 +814,8 @@
     </div>
 
     <button class="btn btn-secondary align-self-center mt-4 font-chatthai"
-          :disabled="!batchHasInformation(submission.batches[submission.batches.length-1])"
-          @click="addBatch()">
+            :disabled="!batchHasInformation(submission.batches[submission.batches.length-1])"
+            @click="addBatch()">
        <i class="fas fa-plus btn-inner-icon" />
       {{ 
         isGeneralSubmission?      'เพิ่มกลุ่มการทดสอบ' :
@@ -976,7 +971,7 @@ export default {
           submitDate: '04/04/20',
         },
         info: {},
-        report: {},
+        notifications: {},
         reportLang: null,
         batches: [{}]
       },
@@ -1004,9 +999,6 @@ export default {
     hasMultipleBatches () {
       return this.submission.batches.length > 1
     },
-    noNotifications () {
-      return !Object.values(this.submission.report).reduce( (acc, i) => acc || i, false )
-    }
   },
   beforeMount () {
     this.onReportTypeChange()
@@ -1038,10 +1030,9 @@ export default {
         }
       }
 
-      this.submission.report = {
-        phone: null,
-        fax: null,
-        email: null
+      this.submission.notifications = {
+        email: true,
+        phone: false
       }
       this.submission.batches = []
       this.submission.batches.push(this.generateNewBatch())
@@ -1195,21 +1186,22 @@ export default {
       return sensitivityTestActive || batch.customTests.length > 0
     },
 
-    updateSampleDetails(batch, payload) {
-      for (const range of payload.ranges) {
+    updateSampleDetails(batch, {ranges, sampleId, extraInfo}) {
+      for (const range of ranges) {
         const start = range[0] - 1
         const end = range.length > 1? range[1] : range[0]
         for (let i = start; i < end; i++) {
-          batch.samples.splice(i, 1, { 
-            sampleId: payload.sampleId,
-            extraInfo: payload.extraInfo
+          batch.samples.splice(i, 1, {
+            sampleId: sampleId? sampleId : batch.samples[i].sampleId,
+            extraInfo: extraInfo? extraInfo : batch.samples[i].extraInfo
           })
         }
       }
     },
 
     updateDisinfectantBatchTotalPrice (batch) {
-      let totalPrice = Object.values(batch.tests).reduce( (acc, curr) => acc + curr.totalPrice, 0)
+      let totalPrice = Object.values(batch.tests)
+        .reduce( (acc, curr) => acc + curr.totalPrice, 0)
       if (this.isVirusBatch(batch)) {
         const cells = {}
         Object.values(batch.tests).forEach( t => {
@@ -1217,7 +1209,8 @@ export default {
             union(cells[t.cellName], t.dilutions) : [...t.dilutions]
         })
         batch.uniqueCells = cells
-        batch.dilutionCost = Object.values(batch.uniqueCells).reduce( (acc, curr) => acc + 3000 * curr.length, 0)
+        batch.dilutionCost = Object.values(batch.uniqueCells)
+          .reduce( (acc, curr) => acc + 3000 * curr.length, 0)
         totalPrice += batch.dilutionCost
       }
       batch.totalPrice = 3000 + totalPrice
@@ -1253,10 +1246,11 @@ export default {
       return false
     },
     wholeFormHasInformation () {
-      const infoSectionHasInfo = Object.values(this.submission.info).reduce( (acc, info) => acc || !!info, false)
-      const reportSectionHasInfo = Object.values(this.submission.report).reduce( (acc, n) => acc || !!n, false)
-      const batchesHaveInfo = this.submission.batches.reduce( (acc, b) => acc || this.batchHasInformation(b), false)
-      return infoSectionHasInfo || reportSectionHasInfo || batchesHaveInfo
+      const infoSectionHasInfo = Object.values(this.submission.info)
+        .reduce( (acc, info) => acc || !!info, false)
+      const batchesHaveInfo = this.submission.batches
+        .reduce( (acc, b) => acc || this.batchHasInformation(b), false)
+      return infoSectionHasInfo || batchesHaveInfo
     },
     noLang () {
       return this.isDisinfectantSubmission && !this.submission.reportLang.thai && !this.submission.reportLang.eng

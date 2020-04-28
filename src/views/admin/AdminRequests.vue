@@ -102,12 +102,15 @@
               </div>
               <div class="col-4">
                 <h5>
-                  {{ request.id }}
+                  {{ request.requestNum }}
                 </h5>
               </div>
               <div class="col-2 d-flex align-items-center">
                 <div  class="small-square"
                       :class="requestTypeCSS[request.type]" />
+                <!-- <h6 class="text-muted">
+                  {{ requestTypes.find(r => r.id === request.type).name }}
+                </h6> -->
               </div>
               <div class="col-1 d-flex align-items-center">
                 <i class="fas fa-chevron-right icon-md mr-1 text-primary hide-icon"></i>
@@ -260,24 +263,28 @@ export default {
           list: [
             {
               id: 1,
+              requestNum: 'S000002',
               status: 1,
               type: 1,
               createdDate: '04/05/2020'
             },
             {
               id: 2,
+              requestNum: 'S000001',
               status: 1,
               type: 1,
               createdDate: '04/05/2020'
             },
             {
               id: 3,
+              requestNum: 'M000003',
               status: 1,
               type: 2,
               createdDate: '02/05/2020'
             },
             {
               id: 4,
+              requestNum: 'A000001',
               status: 1,
               type: 3,
               createdDate: '01/05/2020'
@@ -289,24 +296,28 @@ export default {
           list: [
             {
               id: 5,
+              requestNum: 'X000001',
               status: 2,
               type: 5,
               createdDate: '29/04/2020'
             },
             {
               id: 6,
+              requestNum: 'M000002',
               status: 3,
               type: 2,
               createdDate: '28/04/2020'
             },
             {
               id: 7,
+              requestNum: 'F000001',
               status: 3,
               type: 4,
               createdDate: '25/04/2020'
             },
             {
               id: 8,
+              requestNum: 'M000001',
               status: 2,
               type: 2,
               createdDate: '05/04/2020'

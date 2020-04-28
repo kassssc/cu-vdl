@@ -2,7 +2,7 @@
   <div>
     <h3 class="mb-2">
       <i class="fas fa-file-contract icon-lg mr-1"></i>
-      {{ `รายละเอียดคำขอ ${request.id}` }}
+      {{ `รายละเอียดคำขอ ${request.requestNum}` }}
     </h3>
     <!-- <div class="form-row font-chatthai">
       <div class="form-group col-6">

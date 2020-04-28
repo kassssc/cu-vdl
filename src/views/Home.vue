@@ -17,7 +17,7 @@
         </h4>
         <button class="btn btn-gradient mt-3 home-section-btn"
                 v-scroll-to="{el: '#contact', duration: 1000, offset: -100}">
-          <i class="fas fa-info btn-inner-icon mr-2"></i> ติดต่อสอบถาม
+          <i class="fas fa-info btn-inner-icon"></i> ติดต่อสอบถาม
         </button>
       </div>
     </div>
@@ -79,18 +79,18 @@
                     :to="{name: 'submitsamples'}"
                     tag="button"
                     class="btn btn-primary mt-3 home-section-btn">
-        <i class="fas fa-vial btn-inner-icon mr-2"></i> ส่งตัวอย่าง
+        <i class="fas fa-vial btn-inner-icon"></i> ส่งตัวอย่าง
       </router-link>
       <template v-else>
         <router-link  :to="{name: 'signup'}"
                       tag="button"
                       class="btn btn-primary mt-3 home-section-btn mr-4">
-          <i class="fas fa-user-plus btn-inner-icon mr-2"></i> สมัครสมาชิก
+          <i class="fas fa-user-plus btn-inner-icon"></i> สมัครสมาชิก
         </router-link>
         <router-link  :to="{name: 'login'}"
                       tag="button"
                       class="btn btn-secondary home-section-btn mt-3">
-          <i class="fas fa-sign-in-alt btn-inner-icon mr-2"></i> เข้าสู่ระบบ
+          <i class="fas fa-sign-in-alt btn-inner-icon"></i> เข้าสู่ระบบ
         </router-link>
       </template>
     </div>
@@ -118,7 +118,7 @@
         <h4 class="text-dark font-chatthai">มีการพัฒนาความสามารถในการตรวจวินิจฉัยโรคให้หลากหลายและทันสมัยอยู่เสมอ</h4>
         <button class="btn btn-sm btn-gradient mt-3 px-5 py-1"
                 v-scroll-to="{el: '#orgchart', duration: 1500, offset: -200}">
-          <i class="fas fa-user-graduate btn-inner-icon mr-2"></i>
+          <i class="fas fa-user-graduate btn-inner-icon"></i>
           รู้จักกับบุคลกรของเรา
         </button>
       </div>

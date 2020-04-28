@@ -3,7 +3,7 @@ const auth = {
     loggedIn: true,
     user: {
       id: 1,
-      accountType: 0, // 0: CU employee, 1: employee submitter, 2: freelance
+      accountType: 1, // 0: CU employee, 1: employee submitter, 2: freelance
       org: 1,
       customerList: [],
       firstName: 'สมควร',

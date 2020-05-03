@@ -1,70 +1,83 @@
 <template>
-  <div id="orgchart" class="no-wrap mb-5">
+  <div id="orgchart" class="no-wrap">
     <h1 class="mb-5 pb-2 text-primary thick-border-bottom-gradient">
-      {{ $t(`org.title`) }}
+      บุคลากร
     </h1>
 
     <div class="grid-main font-chatthai">
       <div class="d-flex flex-column align-items-center">
-        <div class="label-tag">
-          {{ $t(`org.left.boss.title`) }}
+        <div class="label-tag gradient-bg">
+          {{ orgChart.left.boss.title }}
         </div>
         <person-card
-          :name="$t(`org.left.boss.name`)"
-          :img="org_chart.left.boss.img"
+          :name="orgChart.left.boss.name"
+          :img="orgChart.left.boss.img"
         />
         <div class="label-tag mt-3">
-          {{ $t(`org.left.vets.title`) }}
+          {{ orgChart.left.vets.title }}
         </div>
         <person-card
-          v-for="(vet, i) in org_chart.left.vets.people"
-          :key="i"
-          :name="$t(`org.left.vets.people[${i}].name`)"
-          :img="vet.img"
-        />
+          v-for="vet of orgChart.left.vets.people"
+          :key="vet.name"
+          :name="vet.name"
+          :img="vet.img" />
       </div>
 
       <div class="d-flex flex-column align-items-center">
         <div class="label-tag">
-          {{ $t(`org.middle.title`) }}
+          {{ orgChart.middle.title }}
         </div>
 
         <div class="grid-2">
-          <div v-for="i in [0,1,2,3]" :key="i" class="d-flex flex-column justify-content-evenly">
+          <div  v-for="person of orgChart.middle.top"
+                :key="person.name"
+                class="d-flex flex-column justify-content-evenly">
             <div class="label-tag outline">
-              {{ $t(`org.middle.people[${i}].title`) }}
+              {{ person.title }}
             </div>
             <person-card
-              :name="$t(`org.middle.people[${i}].name`)"
-              :img="org_chart.middle.people[i].img"
-            />
+              :name="person.name"
+              :img="person.img" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div  v-for="person of orgChart.middle.middle"
+                :key="person.name"
+                class="d-flex flex-column justify-content-evenly">
+            <div class="label-tag outline">
+              {{ person.title }}
+            </div>
+            <person-card
+              :name="person.name"
+              :img="person.img" />
           </div>
         </div>
 
         <div class="grid-3">
-          <div v-for="i in [4,5,6]" :key="i" class="d-flex flex-column justify-content-evenly">
+          <div  v-for="person of orgChart.middle.bottom"
+                :key="person.name"
+                class="d-flex flex-column justify-content-evenly">
             <div class="label-tag outline">
-              {{ $t(`org.middle.people[${i}].title`) }}
+              {{ person.title }}
             </div>
             <person-card
-              :name="$t(`org.middle.people[${i}].name`)"
-              :img="org_chart.middle.people[i].img"
-            />
+              :name="person.name"
+              :img="person.img" />
           </div>
         </div>
 
       </div>
 
       <div class="d-flex flex-column align-items-center">
-        <div v-for="(person, i) in org_chart.right.people" :key="i" 
-             class="d-flex flex-column justify-content-evenly align-items-center mx-2 mb-3">
+        <div  v-for="person of orgChart.right.people"
+              :key="person.name" 
+              class="d-flex flex-column justify-content-evenly align-items-center mx-2 mb-3">
           <div class="label-tag">
-            {{ $t(`org.right.people[${i}].title`) }}
+            {{ person.title }}
           </div>
           <person-card
-              :name="$t(`org.right.people[${i}].name`)"
-              :img="org_chart.right.people[i].img"
-            />
+            :name="person.name"
+            :img="person.img" />
         </div>
       </div>
 
@@ -93,14 +106,17 @@
 }
 .label-tag {
   background: $primary;
-  color: $white;
-  border-radius: 5px;
-  border: 2px solid transparent;
-  padding: 0em 0.3em;
+  color: $light;
+  border-radius: $border-radius;
+  padding: .1em 0.4em;
   font-weight: bold;
   font-size: 1.3rem;
   text-align: center;
   min-width: 125px;
+  &.gradient-bg {
+    background: linear-gradient(to right, $primary, $placeholder);
+    border-width: 0;
+  }
   &::selection {
     color: $primary; /* WebKit/Blink Browsers */
     background: rgba($white, 0.99);
@@ -110,7 +126,7 @@
     background: rgba($white, 0.99);
   }
   &.outline {
-    border: 2px solid $primary;
+    box-shadow:0px 0px 0px 2px $primary inset;
     color: $primary;
     background: transparent;
     &::selection {
@@ -136,13 +152,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'lang',
-      'org_chart',
+      'orgChart',
     ])
-  },
-  data: () => {
-    return {
-    }
-  },
+  }
 }
 </script>

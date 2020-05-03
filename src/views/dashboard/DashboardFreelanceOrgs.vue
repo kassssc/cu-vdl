@@ -36,85 +36,47 @@
 
     <div class="col-12 font-chatthai">
       <div class="form-row">
-        <div class="form-group col-12">
-          <label>
-            ชื่อองค์กร
-          </label>
-          <input  type="text"
-                  class="form-control"
-                  :value="org.name"
-                  disabled >
-        </div>
-        <div class="form-group col-12 mb-1 mt-4">
-          <h4>ที่อยู่</h4>
-        </div>
-        <div class="form-group col-12 mb-2">
-          <label>
-            เลขที่ ซอย ถนน
-          </label>
-          <input  type="text"
-                  class="form-control"
-                  :value="org.addr.line1"
-                  disabled >
-        </div>
-        <div class="form-group col-12 mb-2">
-          <label>
-            แขวง เขต / ตำบล อำเภอ
-          </label>
-          <input  type="text"
-                  class="form-control"
-                  :value="org.addr.line2"
-                  disabled >
-        </div>
-        <div class="form-group col-4">
-          <label>
-            เมือง
-          </label>
-          <input  type="text"
-                  class="form-control"
-                  :value="org.addr.city"
-                  disabled >
-        </div>
-        <div class="form-group col-4">
-          <label>
-            จังหวัด
-          </label>
-          <input  type="text"
-                  class="form-control"
-                  :value="org.addr.province"
-                  disabled >
-        </div>
-        <div class="form-group col-4">
-          <label>
-            รหัสไปรษณีย์
-          </label>
-          <input  type="number"
-                  class="form-control"
-                  :value="org.addr.zip"
-                  disabled >
-        </div>
+        <FormInput
+          class="col-12"
+          label="ชื่อองค์กร"
+          disabled
+          :value="org.name" />
 
-        <div class="form-group col-12 mb-1 mt-4">
-          <h4>ผู้ติดต่อ</h4>
-        </div>
-        <div class="form-group col-12">
-          <label>
-            ชื่อ-นามสกุล
-          </label>
-          <input  type="text"
-                  class="form-control"
-                  :value="`${org.mainContactPerson.firstName} ${org.mainContactPerson.lastName}`"
-                  disabled >
-        </div>
-        <div class="form-group col-12">
-          <label>
-            เบอร์โทรศัพท์ / อีเมล
-          </label>
-          <input  type="text"
-                  class="form-control"
-                  :value="org.mainContactPerson.phone"
-                  disabled >
-        </div>
+        <FormInput
+          class="col-12 mt-4"
+          label="ที่อยู่"
+          disabled
+          :value="org.addr.line1" />
+        <FormInput
+          class="col-12"
+          disabled
+          :value="org.addr.line2" />
+        <FormInput
+          class="col-4"
+          label="เมือง"
+          disabled
+          :value="org.addr.city" />
+        <FormInput
+          class="col-4"
+          label="จังหวัด"
+          disabled
+          :value="org.addr.province" />
+        <FormInput
+          class="col-4"
+          label="รหัสไปรษณีย์"
+          disabled
+          :value="org.addr.zip" />
+
+        <FormInput
+          class="col-12 mt-4"
+          label="ผู้ติดต่อ"
+          disabled
+          :value="`${org.mainContactPerson.firstName} ${org.mainContactPerson.lastName}`" />
+        <FormInput
+          class="col-12"
+          label="เบอร์โทรศัพท์ / อีเมล"
+          disabled
+          :value="org.mainContactPerson.phone" />
       </div>
 
       <div class="form-row mt-4">

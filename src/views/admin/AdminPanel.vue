@@ -1,5 +1,5 @@
 <template>
-<div class="page max-width-1500 d-flex align-items-start">
+<div class="page max-width-1650 d-flex align-items-start">
   <div id="admin-nav" class="sub-nav sticky p-4">
     <h2 class="mb-4 ml-3">บริหารระบบ</h2>
     <router-link  :to="{name: 'admin-create-user'}"
@@ -7,16 +7,14 @@
                   exact>
       <i class="fas fa-user-plus btn-inner-icon-lg"></i> สร้าง Account
     </router-link>
-    <router-link  :to="{name: 'dashboard-edit'}"
+    <router-link  :to="{name: 'admin-users-list'}"
                   class="btn btn-transparent btn-block btn-lg"
-                  exact
-                  disabled>
+                  exact>
       <i class="fas fa-users btn-inner-icon-lg"></i> รายการ Account
     </router-link>
-    <router-link  :to="{name: 'dashboard'}"
+    <router-link  :to="{name: 'admin-orgs-list'}"
                   class="btn btn-transparent btn-block btn-lg"
-                  exact
-                  disabled>
+                  exact>
       <i class="fas fa-sitemap btn-inner-icon-lg"></i> รายการ องค์กร
     </router-link>
     <router-link  :to="{name: 'submitsamples'}"
@@ -67,7 +65,7 @@ export default {
   name: 'admin-panel',
   computed: {
     ...mapGetters([
-      'userIsCU',
+      'userIsAdmin',
       'userIsEmployee',
       'userIsFreelance',
     ])

@@ -1,12 +1,14 @@
 <template>
-<div class="flex-column">
-  <label v-if="label" class="form-label mb-0">
+<div class="form-group">
+  <label  v-if="label"
+          class="form-label"
+          :class="labelSize">
     {{ label }}
   </label>
   <div class="d-flex">
     <button v-for="(option, idx) in options"
             :key="idx"
-            class="btn btn-secondary btn-option no-wrap"
+            class="btn btn-secondary btn-option no-wrap d-flex align-items-center justify-content-center"
             :class="btnClass"
             :disabled="value === option.id"
             @click="onOptionClick(option.id)">
@@ -68,9 +70,15 @@ export default {
   name: 'form-inline-select',
   props: {
     label: {
-      type: String
+      type: String,
+      default: null
+    },
+    labelSize: {
+      type: String,
+      default: ''
     },
     value: {
+      required: true
     },
     options: {
       type: Array

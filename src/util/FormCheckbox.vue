@@ -80,7 +80,7 @@
 
 <script>
 export default {
-  name: 'checkbox',
+  name: 'form-checkbox',
   props: {
     label: {
       default: '',

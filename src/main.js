@@ -2,30 +2,38 @@ import Vue from 'vue'
 import App from '@/App'
 import router from '@/router'
 import store from '@/store/store'
-import i18n from '@/lang'
+//import i18n from '@/lang'
 
 import VueScrollactive from 'vue-scrollactive'
 import VueScrollTo from 'vue-scrollto'
-import Datepicker from 'vuejs-datepicker'
-import Multiselect from 'vue-multiselect'
 
-import Checkbox from '@/util/Checkbox'
+import FormCheckbox from '@/util/FormCheckbox'
+import FormInput from '@/util/FormInput'
+import FormSuggestInput from '@/util/FormSuggestInput'
+import FormSelect from '@/util/FormSelect'
+import FormTextarea from '@/util/FormTextarea'
 import FormInlineSelect from '@/util/FormInlineSelect'
 import FormFileUpload from '@/util/FormFileUpload'
+import FormDateInput from '@/util/FormDateInput'
+import FileView from '@/util/FileView'
 
 Vue.config.productionTip = false
 
 import 'bootstrap'  // Bootstrap js
+import 'vue-select/dist/vue-select.css' // vSelect styles
 
 Vue.use(VueScrollTo)
 Vue.use(VueScrollactive)
 
-Vue.component('form-select-input', Multiselect)
-
-Vue.component('checkbox', Checkbox)
-Vue.component('datepicker', Datepicker)
-Vue.component('form-inline-select', FormInlineSelect)
-Vue.component('form-file-upload', FormFileUpload)
+Vue.component('checkbox', FormCheckbox)
+Vue.component('FormInput', FormInput)
+Vue.component('FormSuggestInput', FormSuggestInput)
+Vue.component('FormSelect', FormSelect)
+Vue.component('FormTextarea', FormTextarea)
+Vue.component('FormInlineSelect', FormInlineSelect)
+Vue.component('FormFileUpload', FormFileUpload)
+Vue.component('FormDateInput', FormDateInput)
+Vue.component('FileView', FileView)
 
 /* Vue.mixin({
   methods: {
@@ -43,6 +51,6 @@ Vue.directive('focus-on-create', {
 new Vue({
   router,
   store,
-  i18n,
+  //i18n,
   render: h => h(App)
 }).$mount('#app')

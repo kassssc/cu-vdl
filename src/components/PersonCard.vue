@@ -50,9 +50,5 @@ export default {
       'lang'
     ])
   },
-  data: () => {
-    return {
-    }
-  },
 }
 </script>

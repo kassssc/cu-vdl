@@ -40,19 +40,15 @@
     </div>
   </div>
   <div class="form-row">
-    <div class="form-group col-6">
-      <label>ID ตัวอย่าง</label>
-      <input  type="text"
-              class="form-control"
-              v-model.lazy="sampleId">
-    </div>
-    <div class="form-group col-6">
-      <label>ข้อมูลเพิ่มเติม</label>
-      <input  type="text"
-              class="form-control"
-              v-model.lazy="extraInfo"
-              @keyup.enter="submit()">
-    </div>
+    <FormInput
+      class="col-6"
+      label="ID ตัวอย่าง"
+      v-model="sampleId" />
+    <FormInput
+      class="col-6"
+      label="ข้อมูลเพิ่มเติม"
+      @keyup.enter="submit()"
+      v-model="extraInfo" />
   </div>
   <div class="form-row">
     <div class="form-group mb-0 col-4">

@@ -4,32 +4,32 @@
   <div class="d-flex align-items-center">
     <div id="logo-img" />
     <h4 class="text-primary d-none d-xl-block">
-      {{ $t(`title`) }}
+      หน่วยชันสูตรโรคสัตว์กลาง จุฬาลงกรณ์มหาวิทยาลัย
     </h4>
     <h4 class="text-primary d-xl-none">
       หน่วยชันสูตรโรคสัตว์กลาง จุฬาฯ
     </h4>
   </div>
-  <div class="d-flex align-items-center">
-    
-    <router-link :to="{name: 'home'}"
-                tag="a"
-                class="btn btn-transparent mr-2"
-                exact>
+  <div  v-if="loggedIn"
+        class="d-flex align-items-center">
+    <router-link  :to="{name: 'home'}"
+                  tag="a"
+                  class="btn btn-transparent mr-2"
+                  exact>
       <i class="fas fa-home btn-inner-icon"></i>
       หน้าหลัก
     </router-link>
 
-    <template v-if="userIsCU">
-      <router-link :to="{name: 'submissionslist'}"
-                  tag="a"
-                  class="btn btn-transparent mr-2">
+    <template v-if="userIsAdmin">
+      <router-link  :to="{name: 'submissionslist'}"
+                    tag="a"
+                    class="btn btn-transparent mr-2">
         <i class="fas fa-list btn-inner-icon"></i>
         การส่งตัวอย่าง
       </router-link>
-      <router-link :to="{name: 'admin-requests'}"
-                  tag="a"
-                  class="btn btn-transparent mr-2">
+      <router-link  :to="{name: 'admin-requests'}"
+                    tag="a"
+                    class="btn btn-transparent mr-2">
         <i class="fas fa-scroll btn-inner-icon"></i>
         ตอบรับคำขอ
         <div class="notifications-badge">
@@ -69,8 +69,7 @@
       </button>
     </div> -->
 
-    <div  v-if="loggedIn"
-          class="d-flex align-items-center">
+    <div class="d-flex">
       
     <!-- DROP DOWN NOTIFICATIONS - PHASE 2
       <div class="dropdown ml-3 mr-3">
@@ -94,20 +93,51 @@
                     tag="a"
                     class="btn btn-transparent mx-1 d-none d-xl-block">
         {{ user.firstName + ' ' + user.lastName }}
-        <i class="fas fa-cog btn-inner-icon ml-1"></i>
+        <i class="fas fa-cog btn-inner-icon ml-1 mr-0"></i>
       </router-link>
-      <button class="btn btn-transparent btn-icon ml-1 d-none d-xl-block"
+      <button class="btn btn-transparent btn-icon ml-1 d-none d-xl-flex"
               @click="logoutAndNavigateToHome()">
         <i class="fas fa-sign-out-alt" />
       </button>
     </div>
-    <router-link  v-else
-                  :to="{name: 'login'}"
+    
+  </div>
+
+  <div  v-else
+        class="d-flex align-items-center">
+    <scrollactive active-class="scrollactive-active"
+                  :offset="80"
+                  :modifyUrl="false"
+                  class="d-flex align-items-center">
+      <a  href="#home"
+          class="btn btn-transparent scrollactive-item mr-2">
+        <i class="fas fa-home btn-inner-icon"></i>
+        หน้าหลัก
+      </a>
+      <a  href="#services"
+          class="btn btn-transparent scrollactive-item mr-2">
+        <i class="fas fa-microscope btn-inner-icon"></i>
+        การบริการของเรา
+      </a>
+      <a  href="#orgchart"
+          class="btn btn-transparent scrollactive-item mr-2">
+        <i class="fas fa-user-graduate btn-inner-icon"></i>
+        บุคลากร
+      </a>
+      <a  href="#contact"
+          class="btn btn-transparent scrollactive-item mr-2">
+        <i class="fas fa-phone btn-inner-icon"></i>
+        ติดต่อสอบถาม
+      </a>
+    </scrollactive>
+    <router-link  :to="{name: 'login'}"
                   tag="button"
                   class="btn btn-primary btn-width-md ml-3">
-      {{ $t(`general.login`) }}
+      <i class="fas fa-sign-in-alt btn-inner-icon" />
+      เข้าสู่ระบบ
     </router-link>
   </div>
+
 </div>
 </template>
 
@@ -212,17 +242,12 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'title-bar',
-  data () {
-    return {
-      //langs: ['th', 'en'] 
-    }
-  },
   computed: {
     ...mapGetters([
       'nav',
       'loggedIn',
       'user',
-      'userIsCU'
+      'userIsAdmin'
     ])
   },
   methods: {

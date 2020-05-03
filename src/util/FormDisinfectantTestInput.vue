@@ -3,29 +3,23 @@
   <div class="col-12">
     <h4 class="mb-1">เพิ่มรายการทดสอบ</h4>
   </div>
-  <div  v-if="testType === 5"
-        class="form-group col-4 mb-0">
-    <label>
-      เลือกไวรัส
-    </label>
-    <select class="form-control"
-            v-model="virusName">
-      <option v-for="test in tests"
-              :key="test.id"
-              :value="test.name">
-        {{ test.name }}
-      </option>
-    </select>
-  </div>
-  <div  v-else-if="testType === 6"
-        class="form-group col-6">
-    <label>
-      ชื่อแบคทีเรีย
-    </label>
-    <input  type="text"
-            class="form-control"
-            v-model.lazy.trim="bacteriaName">
-  </div>
+
+  <FormSelect
+    v-if="testType === 5"
+    class="mb-0 col-4"
+    label="name"
+    form-label="เลือกไวรัส"
+    placeholder="เลือก..."
+    :clearable="false"
+    :searchable="false"
+    :options="tests"
+    v-model="virus" />
+  <FormInput
+    v-else-if="testType === 6"
+    class="col-6"
+    label="ชื่อแบคทีเรีย"
+    type="text"
+    v-model.trim="bacteriaName" />
   
   <div v-if="testType === 6" class="col-6"></div>
   <div class="form-group col-4 mb-0">
@@ -137,7 +131,7 @@ export default {
   ],
   watch: {
     testType () {
-      this.virusName = ''
+      this.virus = ''
       this.bacteriaName = ''
       this.dilutions = ''
       this.contactTimes = ''
@@ -146,7 +140,7 @@ export default {
   },
   data () {
     return {
-      virusName: '',
+      virus: '',
       bacteriaName: '',
       dilutions: '',
       contactTimes: '',
@@ -201,19 +195,19 @@ export default {
       if (!this.validFormVirus()) return
 
       const numTests = this.dilutionArr.length * this.contactTimeArr.length
-      const price = this.tests.find( t => t.name === this.virusName).price
+      const price = this.virus.price
       const totalPrice = price * numTests
 
       const parsedOutput = {}
-      parsedOutput[this.virusName] = {
+      parsedOutput[this.virus.name] = {
         dilutions: this.dilutionArr,
         contactTimes: this.contactTimeArr,
-        cellName: this.tests.find( t => t.name === this.virusName).cellName,
+        cellName: this.virus.cellName,
         price: price,
         totalPrice: totalPrice,
         numTests: numTests
       }
-      this.virusName = ''
+      this.virus = null
       this.$emit('add', parsedOutput)
     },
 
@@ -239,7 +233,7 @@ export default {
 
     validFormVirus () {
       return (
-        this.virusName &&
+        this.virus &&
         this.dilutions &&
         this.contactTimes &&
         this.dilutionArr.length > 0 &&

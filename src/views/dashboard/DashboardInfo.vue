@@ -10,172 +10,110 @@
   </div>
 
   <div class="font-chatthai">
-    <div class="row w-100 py-3">
+    <div class="border-bottom-lighter row w-100 py-3 mb-3">
       <div class="col-xl-2 col-12">
-        <h4>
-          ข้อมูลผู้ใช้
-        </h4>
+        <h4>ข้อมูลผู้ใช้</h4>
       </div>
       <div class="col-xl-10 col-12">
         <div class="form-row">
-          <div class="form-group col-5 mb-4">
-            <label>
-              ประเภท Account
-            </label>
-            <input  type="text"
-                    class="form-control form-control-lg text-primary"
-                    :value="accountTypes[user.accountType]"
-                    disabled >
-          </div>
-          <div class="col-8"></div>
-          <div class="form-group col-5">
-            <label>
-              ชื่อจริง
-            </label>
-            <input  type="text"
-                    class="form-control"
-                    :value="user.firstName"
-                    disabled >
-          </div>
-          <div class="form-group col-5">
-            <label>
-              นามสกุล
-            </label>
-            <input  type="text"
-                    class="form-control"
-                    :value="user.lastName"
-                    disabled >
-          </div>
+          <FormInput
+            class="col-5"
+            input-class="form-control-lg text-primary"
+            label="ประเภท Account"
+            :value="accountTypes[user.accountType]"
+            disabled />
           <div class="w-100"></div>
-          <div class="form-group col-5">
-            <label>
-              สำเนาบัตรประชาชน
-            </label>
-            <button class="btn btn-secondary btn-block text-left">
-              <i class="fas fa-address-card btn-inner-icon"></i>
-              somkuan_id.pdf
-            </button>
-          </div>
+          <FormInput
+            class="col-5"
+            label="ชื่อจริง"
+            :value="`${user.title}${user.firstName}`"
+            disabled />
+          <FormInput
+            class="col-5"
+            label="นามสกุล"
+            :value="user.lastName"
+            disabled />
+          <div class="w-100"></div>
+          <FileView
+            class="col-5"
+            label="สำเนาบัตรประชาชน"
+            file-name="somkuan_id.pdf"
+            icon-class="fa-address-card" />
         </div>
       </div>
     </div>
   
     <div class="border-bottom-lighter row w-100 py-3 mb-3">
       <div class="col-xl-2 col-12">
-        <h4>
-          ข้อมูลการติดต่อ
-        </h4>
+        <h4>ข้อมูลการติดต่อ</h4>
       </div>
       <div class="col-xl-10 col-12">
         <div class="form-row">
-          <div class="form-group col-5">
-            <label>
-              อีเมล
-            </label>
-            <input  type="text"
-                    class="form-control"
-                    :value="user.email"
-                    disabled >
-          </div>
-          <div class="form-group col-5">
-            <label>
-              เบอร์โทรศัพท์
-            </label>
-            <input  type="text"
-                    class="form-control"
-                    :value="user.phone"
-                    disabled >
-          </div>
+          <FormInput
+            class="col-5"
+            label="อีเมล"
+            disabled
+            :value="user.email" />
+          <FormInput
+            class="col-5"
+            label="หมายเลขโทรศัพท์"
+            disabled
+            :value="user.phone" />
         </div>
       </div>
     </div>
   
     <template v-if="userIsEmployee">
-      <div class="row w-100 py-3 mb-3">
+      <div class="row border-bottom-lighter w-100 py-3 mb-3">
         <div class="col-xl-2 col-12">
-          <h4>
-            ข้อมูลองค์กร
-          </h4>
+          <h4>ข้อมูลองค์กร</h4>
         </div>
         <div class="col-xl-10 col-12">
           <div class="form-row">
-            <div class="form-group col-10">
-              <label>
-                ชื่อองค์กร
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="org.name"
-                      disabled >
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-10">
-              <label>
-                ที่อยู่
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="org.addr.line1"
-                      disabled >
-            </div>
-            <div class="form-group col-10">
-              <input  type="text"
-                      class="form-control"
-                      :value="org.addr.line2"
-                      disabled >
-            </div>
-            <div class="form-group col-4">
-              <label>
-                เมือง
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="org.addr.city"
-                      disabled >
-            </div>
-            <div class="form-group col-4">
-              <label>
-                จังหวัด
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="org.addr.province"
-                      disabled >
-            </div>
-            <div class="form-group col-2">
-              <label>
-                รหัสไปรษณีย์
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="org.addr.zip"
-                      disabled >
-            </div>
-            <div class="col-2"></div>
-            <div class="form-group col-5">
-              <label>
-                ภ.พ.20
-              </label>
-              <button class="btn btn-secondary btn-block text-left">
-                <i class="fas fa-address-card btn-inner-icon"></i>
-                ภพ44_somkuan_farm.pdf
-              </button>
-            </div>
-            <div class="form-group col-5">
-              <label>
-                ใบจดทะเบียนบริษัท
-              </label>
-              <button class="btn btn-secondary btn-block text-left">
-                <i class="fas fa-address-card btn-inner-icon"></i>
-                registration_somkuan_farm.pdf
-              </button>
-            </div>
+            <FormInput
+              class="col-10"
+              label="ชื่อองค์กร"
+              :value="org.name"
+              disabled />
+            <FormInput
+              class="col-10"
+              label="ที่อยู่"
+              :value="org.addr.line1"
+              disabled />
+            <FormInput
+              class="col-10"
+              :value="org.addr.line2"
+              disabled />
+            <FormInput
+              class="col-4"
+              label="เมือง"
+              :value="org.addr.city"
+              disabled />
+            <FormInput
+              class="col-4"
+              label="จังหวัด"
+              :value="org.addr.province"
+              disabled />
+            <FormInput
+              class="col-2"
+              label="รหัสไปรษณีย์"
+              :value="org.addr.zip"
+              disabled />
+            <FileView
+              class="col-5"
+              label="ภ.พ.20"
+              file-name="ภพ20_somkuan_farm.pdf"
+              icon-class="fa-file-alt" />
+            <FileView
+              class="col-5"
+              label="ใบจดทะเบียนบริษัท"
+              file-name="registration_somkuan_farm.pdf"
+              icon-class="fa-file-alt" />
           </div>
         </div>
       </div>
     
-      <div class="border-bottom-lighter row w-100 py-3 mb-3">
+      <!-- <div class="border-bottom-lighter row w-100 py-3 mb-3">
         <div class="col-xl-2 col-12">
           <h4>
             ผู้ติดต่อหลัก
@@ -183,37 +121,25 @@
         </div>
         <div class="col-xl-10 col-12">
           <div class="form-row">
-            <div class="form-group col-5">
-              <label>
-                ชื่อ นามสกุล
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="`${org.mainContactPerson.firstName} ${org.mainContactPerson.lastName}`"
-                      disabled >
-            </div>
+            <FormInput
+              class="col-5"
+              label="ชื่อ นามสกุล"
+              :value="`${org.mainContactPerson.firstName} ${org.mainContactPerson.lastName}`"
+              disabled />
             <div class="w-100"></div>
-            <div class="form-group col-5">
-              <label>
-                อีเมล
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="org.mainContactPerson.email"
-                      disabled >
-            </div>
-            <div class="form-group col-5">
-              <label>
-                เบอร์โทรศัพท์
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="org.mainContactPerson.phone"
-                      disabled >
-            </div>
+            <FormInput
+              class="col-5"
+              label="อีเมล"
+              :value="org.mainContactPerson.email"
+              disabled />
+            <FormInput
+              class="col-5"
+              label="หมายเลขโทรศัพท์"
+              :value="org.mainContactPerson.phone"
+              disabled />
           </div>
         </div>
-      </div>
+      </div> -->
     </template>
   </div>
 </div>
@@ -235,9 +161,5 @@ export default {
       'userIsEmployee'
     ])
   },
-  data () {
-    return {
-    }
-  }
 }
 </script>

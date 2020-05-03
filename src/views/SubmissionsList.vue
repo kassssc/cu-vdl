@@ -1,6 +1,6 @@
 <template>                                                            
 <div class="page d-flex align-items-start">
-  <div class="sidebar"
+  <div class="sidebar content-height"
        :class="{'folded': sidebarFolded}">
     <button class="btn btn-transparent fold-btn align-self-end"
             @click="toggleSidebar()">
@@ -8,26 +8,91 @@
          :class="{'flip-x': sidebarFolded}"/>
     </button>
     <div class="content">
-      <h4>
-        *Filters go here*
-      </h4>
+      <h6 class="mb-2 text-medium">สถานะการส่งตัวอย่าง</h6>
+      <div class="d-flex flex-column">
+        <button class="filter-btn btn btn-sm btn-block text-left primary"
+                :class="{'active': activeStatusFilter === 0}"
+                @click="activeStatusFilter = 0">
+          <i  v-if="activeStatusFilter === 0"
+              class="fas fa-check btn-inner-icon" />
+          <div v-else class="small-square mr-1" />
+          ทั้งหมด
+        </button>
+        <button v-for="filter of submissionStatuses"
+                :key="filter.id"
+                class="filter-btn btn btn-sm btn-block text-left"
+                :class="[
+                  submissionStatusCSS[filter.id],
+                  {'active': activeStatusFilter === filter.id}
+                ]"
+                @click="activeStatusFilter = filter.id">
+          <i  v-if="activeStatusFilter === filter.id"
+              class="fas fa-check btn-inner-icon" />
+          <div  v-else
+                class="small-square mr-1"
+                :class="submissionStatusCSS[filter.id]" />
+          {{ filter.name }}
+        </button>
+      </div>
+      <h6 class="mb-2 mt-4 text-medium">สถานะการชำระค่าใช่จ่าย</h6>
+      <div class="d-flex flex-column">
+        <button class="filter-btn btn btn-sm btn-block text-left primary"
+                :class="{'active': activeInvoiceStatusFilter === 0}"
+                @click="activeInvoiceStatusFilter = 0">
+          <i  v-if="activeInvoiceStatusFilter === 0"
+              class="fas fa-check btn-inner-icon" />
+          <div v-else class="small-square mr-1" />
+          ทั้งหมด
+        </button>
+        <button v-for="filter of submissionInvoiceStatuses"
+                :key="filter.id"
+                class="filter-btn btn btn-sm btn-block text-left"
+                :class="[
+                  submissionInvoiceStatusCSS[filter.id],
+                  {'active': activeInvoiceStatusFilter === filter.id}
+                ]"
+                @click="activeInvoiceStatusFilter = filter.id">
+          <i  v-if="activeInvoiceStatusFilter === filter.id"
+            class="fas fa-check btn-inner-icon" />
+          <div  v-else
+                class="small-square mr-1"
+                :class="submissionInvoiceStatusCSS[filter.id]" />
+          {{ filter.name }}
+        </button>
+      </div>
+      <template v-if="!userIsFreelance">
+        <h6 class="mb-2 mt-4 text-medium">กรองโดยผู้ส่ง</h6>
+        <FormSelect
+          v-model="activeSubmitterFilter"
+          label="name"
+          placeholder="ค้นหาผู้ส่ง..."
+          :reduce="option => option.id "
+          :options="submitterOptions" />
+      </template>
+      <template v-if="!userIsEmployee">
+        <h6 class="mb-2 mt-4 text-medium">กรองโดยองค์กรเจ้าของ</h6>
+        <FormSelect
+          label="name"
+          placeholder="ค้นหาผู้ส่ง..."
+          :reduce="option => option.id "
+          :options="orgOptions"
+          v-model="activeOrgFilter" />
+      </template>
     </div>
   </div>
-  <div class="d-flex flex-column w-100">
+  <div class="d-flex pl-4 pt-1 border-left-lighter flex-column w-100">
     <div class="row no-gutters w-100">
       <div class="col-8">
-        <h2>
-          {{ $t(`track.title`) }}
-        </h2>
+        <h2>ติดตามผลและรายงาน</h2>
       </div>
       <div class="col-4 search-input">
         <i class="fas fa-search text-muted" />
         <input type="text"
-               class="form-control submission-search my-1"
-               :placeholder="$t(`track.searchPlaceholder`)">
+               class="form-control submission-search"
+               placeholder="ค้นหาด้วยหมายเลขการส่ง...">
       </div>
     </div>
-    <div id="table-container">
+    <div id="table-container" class="scroll-container">
       <table>
         <thead id="table-header">
           <tr>
@@ -47,21 +112,21 @@
           </tr>
         </thead>
         <tbody>
-          <router-link :to="{name: 'viewsubmission', params: { id: row.orderNum }}"
+          <router-link  :to="{name: 'viewsubmission', params: { id: row.orderNum }}"
                         tag="tr"
                         v-for="(row, idx) in [...table.body, ...table.body, ...table.body, ...table.body, ...table.body]"
                         @click.native="scrollToTop()"
-              :key="idx">
+                        :key="idx">
             <td>
               <div  class="color-tag sm"
-                    :class="getTagCSS(row.status)">
-                {{ table.status[row.status] }}
+                    :class="submissionStatusCSS[row.status]">
+                {{ row.statusKey }}
               </div>
             </td>
             <td>
               <div  class="color-tag sm"
-                    :class="getInvoiceTagCSS(row.invoiceStatus)">
-                {{ table.invoiceStatus[row.invoiceStatus] }}
+                    :class="submissionInvoiceStatusCSS[row.invoiceStatus]">
+                {{ row.invoiceStatusKey }}
               </div>
             </td>
             <td>{{ row.orderNum }}</td>
@@ -70,7 +135,6 @@
             <td>{{ row.receivedDate }}</td>
             <td>{{ row.person }}</td>
             <td>{{ row.organization }}</td>
-            <td>{{ row.sampleQuantity }}</td>
             <td>{{ '฿' + row.price }}</td>
             <td>
               <button class="btn btn-transparent btn-icon"
@@ -109,19 +173,8 @@ button.sort-btn {
 }
 #table-container {
   height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 89px);
-  overflow-y: scroll;
   position: relative;
-  margin-bottom: 2em;
   margin-top: .3em;
-  &::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(0, 0, 0, .5);
-    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
-  }
 }
 table {
   font-size: 1.3rem;
@@ -133,9 +186,9 @@ table {
   thead {
     th {
       position: sticky;
-      padding: 0.25em;
+      padding: 0.2em;
       top: 0px;
-      height: 60px;
+      height: 50px;
       background: $light;
       // Drop shadow effect
       &::after {  
@@ -166,12 +219,28 @@ table {
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'submissions-list',
+  computed: {
+    ...mapGetters([
+      'userIsAdmin',
+      'userIsEmployee',
+      'userIsFreelance',
+      'orgOptions',
+      'submissionStatuses',
+      'submissionInvoiceStatuses'
+    ])
+  },
   data () {
     return {
       sortField: 2,
       sortDirection: 0,
+      activeStatusFilter: 0,
+      activeInvoiceStatusFilter: 0,
+      activeSubmitterFilter: null,
+      activeOrgFilter: null,
       sidebarFolded: false,
       table: {
         head: [
@@ -183,15 +252,15 @@ export default {
           'วันที่รับ',
           'ผู้จัดส่ง',
           'องค์กร',
-          'จำนวนตัวอย่าง',
           'ราคา',
           'ใบส่งตัวอย่าง',
-          /* 'รายงาน' */
         ],
         body: [
           {
-            status: 0,
-            invoiceStatus: 0,
+            status: 1,
+            statusKey: 'S',
+            invoiceStatus: 1,
+            invoiceStatusKey: 'N',
             orderNum: 123456,
             submittedDate: '05/05/2020',
             receiptNum: 654321,
@@ -204,8 +273,10 @@ export default {
             report: 'https://backend/path-to-report'
           },
           {
-            status: 1,
-            invoiceStatus: 0,
+            status: 2,
+            statusKey: 'R',
+            invoiceStatus: 2,
+            invoiceStatusKey: 'I',
             orderNum: 223344,
             submittedDate: '05/05/2020',
             receiptNum: 654321,
@@ -218,8 +289,10 @@ export default {
             report: 'https://backend/path-to-report'
           },
           {
-            status: 2,
-            invoiceStatus: 1,
+            status: 3,
+            statusKey: 'C',
+            invoiceStatus: 3,
+            invoiceStatusKey: 'P',
             orderNum: 787878,
             submittedDate: '05/05/2020',
             receiptNum: 654321,
@@ -232,8 +305,10 @@ export default {
             report: 'https://backend/path-to-report'
           },
           {
-            status: 3,
-            invoiceStatus: 2,
+            status: 4,
+            statusKey: 'X',
+            invoiceStatus: 1,
+            invoiceStatusKey: 'N',
             orderNum: 555555,
             submittedDate: '05/05/2020',
             receiptNum: 654321,
@@ -246,38 +321,28 @@ export default {
             report: 'https://backend/path-to-report'
           },
         ],
-        status: [
-          'S',
-          'R',
-          'C',
-          'X',
-        ],
-        invoiceStatus: [
-          'N',
-          'I',
-          'P'
-        ]
       },
-      tagCSS: [
-        'grey',
-        'orange',
-        'green',
-        'red',
+      submissionStatusCSS: {
+        1: 'grey',
+        2: 'orange',
+        3: 'green',
+        4: 'red'
+      },
+      submissionInvoiceStatusCSS: {
+        1: 'grey',
+        2: 'orange',
+        3: 'green',
+      },
+      submitterOptions: [
+        { id: 1, name: 'สมควร สมสกุล' },
+        { id: 2, name: 'สมเดช สมวงศ์สกุล' },
+        { id: 3, name: 'สมศักดิ์ สมเดชา' },
+        { id: 4, name: 'สมเกียรติ สมบุญชู' },
+        { id: 5, name: 'สมชาย สมสุขสกุล' },
       ],
-      tagInvoiceCSS: [
-        'grey',
-        'orange',
-        'green',
-      ]
     }
   },
   methods: {
-    getTagCSS (statusId) {
-      return this.tagCSS[statusId]
-    },
-    getInvoiceTagCSS (id) {
-      return this.tagInvoiceCSS[id]
-    },
     scrollToTop () {
       window.scrollTo(0,0)
     },

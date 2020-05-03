@@ -7,7 +7,7 @@
                  class="btn back-btn btn-transparent d-flex align-items-center align-self-end">
       <i class="fas fa-chevron-left mr-2" />
       <div class="text">
-        {{ $t(`general.back`) }}
+        กลับไป
       </div>
     </router-link>
     <scrollactive active-class="scrollactive-active"
@@ -34,25 +34,38 @@
         ข้อมูลการติดต่อ
       </a>
       <div class="w-100 border-bottom-lighter mb-3"></div>
-      <a  href="#actions"
-          class="btn btn-transparent btn-block btn-lg scrollactive-item">
-        <i class="fas fa-edit btn-inner-icon-lg" />
-        ส่งคำขอแก้ไข
-      </a>
-      <a  href="#cancel"
-          class="btn btn-transparent btn-block btn-lg scrollactive-item">
-        <i class="fas fa-window-close btn-inner-icon-lg" />
-        ยกเลิก
-      </a>
+      <template v-if="userIsAdmin">
+        <h3 class="mb-3">Admin</h3>
+        <a class="btn btn-transparent btn-block btn-lg">
+          <i class="fas fa-edit btn-inner-icon-lg" />
+          แก้ไขการส่งตัวอย่าง
+        </a>
+        <a class="btn btn-transparent btn-block btn-lg">
+          <i class="fas fa-window-close btn-inner-icon-lg" />
+          ยกเลิก
+        </a>
+      </template>
+      <template v-else>
+        <a  href="#actions"
+            class="btn btn-transparent btn-block btn-lg scrollactive-item">
+          <i class="fas fa-edit btn-inner-icon-lg" />
+          ส่งคำขอแก้ไข
+        </a>
+        <a  class="btn btn-transparent btn-block btn-lg">
+          <i class="fas fa-window-close btn-inner-icon-lg" />
+          ขอยกเลิก
+        </a>
+      </template>
     </scrollactive>
   </div>
   <div  id="view-submission-content"
         class="p-4 border-left-lighter">
+
     <div id="info"
          class="section">
       <h2 class="mb-4">
         <i class="fas fa-file-alt icon-lg" />
-        การส่งตัวอย่างหมายเลข <span class="text-primary">{{ ` ${$route.params.id}` }}</span>
+        การส่งตัวอย่างหมายเลข <span class="text-primary">{{ `${$route.params.id}` }}</span>
       </h2>
 
       <div class="row ">
@@ -76,11 +89,11 @@
         </div>
         <div class="col-10 pt-1">
           <div class="form-row">
-            <div class="form-group col-6">
-              <button class="btn btn-secondary btn-lg btn-block">
-                <i class="fas fa-file-alt btn-inner-icon mr-2" />ใบส่งตัวอย่าง.pdf
-              </button>
-            </div>
+            <FileView
+              class="col-6"
+              btn-class="btn-secondary btn-lg"
+              :file-name="`${$route.params.id}_submission_form.pdf`"
+              icon-class="fa-file-alt" />
           </div>
         </div>
       </div>
@@ -91,87 +104,52 @@
         </div>
         <div class="col-10 pt-1">
           <div class="form-row">
-            <div class="form-group col-8">
-              <label>
-                ประเภทการทดสอบ
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      disabled >
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-4">
-              <label>
-                หมายเลขการส่งตัวอย่าง
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.id"
-                      disabled >
-            </div>
-            <div class="form-group col-4">
-              <label>
-                หมายเลขรับตัวอย่าง
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.receptionNum"
-                      disabled >
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-4">
-              <label>
-                วันที่ส่งตัวอย่าง
-              </label>
-              <datepicker format="dd/MM/yy"
-                          :value="submission.submitDate"
-                          :disabled="true"
-                          :bootstrap-styling="true">
-                <div slot="afterDateInput" class="append-icon">
-                  <i class="far fa-calendar-alt" />
-                </div>
-              </datepicker>
-            </div>
-            <div class="form-group col-4">
-              <label>
-                วันที่รับตัวอย่าง
-              </label>
-              <datepicker format="dd/MM/yy"
-                          :value="submission.receivedDate"
-                          :disabled="true"
-                          :bootstrap-styling="true">
-                <div slot="afterDateInput" class="append-icon">
-                  <i class="far fa-calendar-alt" />
-                </div>
-              </datepicker>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-8">
-              <label>
-                ชื่อผู้ส่ง
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.submitter.firstName"
-                      disabled >
-            </div>
-            <div class="form-group col-8">
-              <label>
-                องค์กรเจ้าของตัวอย่าง
-              </label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.org.name"
-                      disabled >
-            </div>
-          </div>
+            <FormInput
+              class="col-8"
+              label="ประเภทการทดสอบ"
+              disabled />
 
+            <div class="w-100"></div>
+
+            <FormInput
+              class="col-4"
+              label="หมายเลขการส่งตัวอย่าง"
+              :value="submission.id"
+              disabled />
+            <FormInput
+              class="col-4"
+              label="หมายเลขรับตัวอย่าง"
+              :value="submission.receptionNum"
+              disabled />
+
+            <div class="w-100"></div>
+
+            <FormDateInput
+              class="col-4"
+              label="วันที่ส่งตัวอย่าง"
+              format="dd/MM/yy"
+              disabled
+              :value="submission.submitDate" />
+            <FormDateInput  
+              class="col-4"
+              label="วันที่รับตัวอย่าง"
+              format="dd/MM/yy"
+              disabled
+              :value="submission.receivedDate" />
+
+            <FormInput
+              class="col-8"
+              label="ชื่อผู้ส่ง"
+              disabled
+              :value="submission.submitter.firstName" />
+            <FormInput
+              class="col-8"
+              label="องค์กรเจ้าของตัวอย่าง"
+              disabled
+              :value="submission.org.name" />
+          </div>
         </div>
       </div>
-
     </div>
 
     <div id="payment"
@@ -202,11 +180,11 @@
         </div>
         <div class="col-10 pt-1">
           <div class="form-row">
-            <div class="form-group col-6">
-              <button class="btn btn-secondary btn-lg btn-block">
-                <i class="fas fa-file-invoice-dollar btn-inner-icon mr-2" />Invoice.pdf
-              </button>
-            </div>
+            <FileView
+              class="col-6"
+              btn-class="btn-secondary btn-lg"
+              :file-name="`${$route.params.id}_invoice.pdf`"
+              icon-class="fa-file-invoice-dollar" />
           </div>
         </div>
       </div>
@@ -218,7 +196,9 @@
         <div class="col-10 pt-1">
           <div class="form-row">
             <div class="form-group col-3 text-right">
-              <h1 class="text-primary">{{`${submission.finalPrice.toLocaleString()}฿`}}</h1>
+              <h1 class="text-primary">
+                {{`${submission.finalPrice.toLocaleString()}฿`}}
+              </h1>
               <h4 class="text-medium">*ค่าบริการโดยประมาน</h4>
             </div>
           </div>
@@ -236,34 +216,22 @@
       <div class="download-reports mb-2 p-3 flex-grow-1">
         <div class="row color-dark-grey border-bottom-lighter py-2">
           <div class="col-2">
-            <h4 class="mb-0">
-              เลขที่รายงาน
-            </h4>
+            <h4 class="mb-0">เลขที่รายงาน</h4>
           </div>
           <div class="col-1">
-            <h4 class="mb-0">
-              สถานะ
-            </h4>
+            <h4 class="mb-0">สถานะ</h4>
           </div>
           <div class="col-2">
-            <h4 class="mb-0">
-              วันที่
-            </h4>
+            <h4 class="mb-0">วันที่</h4>
           </div>
           <div class="col-4">
-            <h4 class="mb-0">
-              รายละเอียด
-            </h4>
+            <h4 class="mb-0">รายละเอียด</h4>
           </div>
           <div class="col-1">
-            <h4 class="mb-0">
-              ดูไฟล์
-            </h4>
+            <h4 class="mb-0">ดูไฟล์</h4>
           </div>
           <div class="col-2">
-            <h4 class="mb-0">
-              ดาวน์โหลด
-            </h4>
+            <h4 class="mb-0">ดาวน์โหลด</h4>
           </div>
         </div>
 
@@ -271,24 +239,16 @@
               :key="idx"
               class="row py-1 border-bottom-lighter">
           <div class="col-2 d-flex align-items-center">
-            <h5 class="mb-0">
-              {{ report.id }}
-            </h5>
+            <h5 class="mb-0">{{ report.id }}</h5>
           </div>
           <div class="col-1 d-flex align-items-center">
-            <h5 class="mb-0">
-              {{ report.status }}
-            </h5>
+            <h5 class="mb-0">{{ report.status }}</h5>
           </div>
           <div class="col-2 d-flex align-items-center">
-            <h5 class="mb-0">
-              {{ report.date }}
-            </h5>
+            <h5 class="mb-0">{{ report.date }}</h5>
           </div>
           <div class="col-4 d-flex align-items-center">
-            <h5 class="mb-0">
-              {{ report.details }}
-            </h5>
+            <h5 class="mb-0">{{ report.details }}</h5>
           </div>
           <div class="col-1">
             <button class="btn btn-icon">
@@ -318,20 +278,16 @@
         </div>
         <div class="col-10">
           <div class="form-row">
-            <div class="form-group col-4">
-              <label>อีเมล</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.submitter.email"
-                      disabled >
-            </div>
-            <div class="form-group col-4">
-              <label>เบอร์โทรศัพท์</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.submitter.phone"
-                      disabled >
-            </div>
+            <FormInput
+              class="col-4"
+              label="อีเมล"
+              disabled
+              :value="submission.submitter.email" />
+            <FormInput
+              class="col-4"
+              label="หมายเลขโทรศัพท์"
+              disabled
+              :value="submission.submitter.phone" />
           </div>
         </div>
       </div>
@@ -348,29 +304,22 @@
         </div>
         <div class="col-10 pt-1">
           <div class="form-row">
-            <div class="form-group col-8">
-              <label>ชื่อ-นามสกุล</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.submitter.firstName"
-                      disabled >
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-4">
-              <label>อีเมล</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.submitter.email"
-                      disabled >
-            </div>
-            <div class="form-group col-4">
-              <label>เบอร์โทรศัพท์</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.submitter.phone"
-                      disabled >
-            </div>
+            <FormInput
+              class="col-8"
+              label="ชื่อ-นามสกุล"
+              disabled
+              :value="submission.submitter.firstName" />
+            <div class="w-100"></div>
+            <FormInput
+              class="col-4"
+              label="อีเมล"
+              disabled
+              :value="submission.submitter.email" />
+            <FormInput
+              class="col-4"
+              label="หมายเลขโทรศัพท์"
+              disabled
+              :value="submission.submitter.phone" />
           </div>
         </div>
       </div>
@@ -378,64 +327,53 @@
         <div class="col-2">
           <h4>ติดต่อองค์กร</h4>
         </div>
-        <div class="col-10 pt-1">
+        <div class="col-10">
           <div class="form-row">
-            <div class="form-group col-8">
-              <label>ชื่อองค์กร</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.org.name"
-                      disabled >
-            </div>
-            <div class="form-group col-8">
-              <label>เบอร์โทรศัพท์</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.org.phone"
-                      disabled >
-            </div>
-            <div class="form-group col-8">
-              <label>ที่อยู่</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.org.addr.line1"
-                      disabled >
-            </div>
-            <div class="form-group col-8">
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.org.addr.line2"
-                      disabled >
-            </div>
+            <FormInput
+              class="col-8"
+              label="ชื่อองค์กร"
+              disabled
+              :value="submission.org.name" />
+            <FormInput
+              class="col-8"
+              label="หมายเลขโทรศัพท์"
+              disabled
+              :value="submission.org.phone" />
+            <FormInput
+              class="col-8"
+              label="ที่อยู่"
+              disabled
+              :value="submission.org.addr.line1" />
+            <FormInput
+              class="col-8"
+              disabled
+              :value="submission.org.addr.line2" />
+
             <div class="w-100"></div>
-            <div class="form-group col-3">
-              <label>เมือง</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.org.addr.city"
-                      disabled >
-            </div>
-            <div class="form-group col-3">
-              <label>จังหวัด</label>
-              <input  type="text"
-                      class="form-control"
-                      :value="submission.org.addr.province"
-                      disabled >
-            </div>
-            <div class="form-group col-2">
-              <label>รหัสไปรษณีย์</label>
-              <input  type="number"
-                      class="form-control"
-                      :value="submission.org.addr.zip"
-                      disabled >
-            </div>
+
+            <FormInput
+              class="col-3"
+              label="เมือง"
+              disabled
+              :value="submission.org.addr.city" />
+            <FormInput
+              class="col-3"
+              label="จังหวัด"
+              disabled
+              :value="submission.org.addr.province" />
+            <FormInput
+              class="col-2"
+              label="รหัสไปรษณีย์"
+              disabled
+              :value="submission.org.addr.zip" />
           </div>
         </div>
       </div>
     </div>
 
-    <div id="actions"
-         class="section">
+    <div  v-if="!userIsAdmin"
+          id="actions"
+          class="section">
       <h2 class="mb-4">
         <i class="fas fa-edit icon-lg" />
           ส่งคำขอแก้ไข
@@ -446,12 +384,10 @@
         </div>
         <div class="col-10 pt-1">
           <div class="form-row">
-            <div class="form-group col-8">
-              <textarea rows="6"
-                        class="form-control" />
-            </div>
-          </div>
-          <div class="form-row">
+            <FormTextarea
+              class="col-8"
+              rows="6" />
+            <div class="w-100"></div>
             <div class="form-group col-4">
               <button class="btn btn-primary btn-block">
                 <i class="fas fa-paper-plane btn-inner-icon"></i>
@@ -509,8 +445,13 @@ $nav-width: 300px;
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'view-submission',
+  computed: {
+    ...mapGetters(['userIsAdmin'])
+  },
   data () {
     return {
       submission: {
@@ -521,7 +462,7 @@ export default {
           phone: '087-654-3210',
           addr: {
             line1: '123 ทองหล่อ ซ.12 ถนนสุขุมวิท',
-            line2: 'คลองตันเหนือ วัฒนา',
+            line2: 'แขวงคลองตันเหนือ เขตวัฒนา',
             city: 'กรุงเทพ',
             province: 'กรุงเทพ',
             zip: '10110'
@@ -576,7 +517,7 @@ export default {
             status: 0,
             link: 'https://backend/report-link-pdf'
           },
-
+  
         ]
       }
     }

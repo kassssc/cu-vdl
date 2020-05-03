@@ -37,6 +37,16 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+// Get rid of number spinner
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
 button.btn, a.btn {
   @include unselectable;
   &[disabled] {
@@ -86,16 +96,16 @@ button.btn, a.btn {
       filter: brightness(85%);
     }
   }
-  i.btn-inner-icon {
-    margin-top: 0.2em;
-    width: 1.3em;
-    text-align: center;
-    font-size: 0.8em;
-  }
-  i.btn-inner-icon-lg {
-    font-size: 1em;
-    margin-right: 0.3em;
-    width: 30px;
+  i {
+    &.btn-inner-icon {
+      margin-right: .3em;
+      font-size: .8em;
+    }
+    &.btn-inner-icon-lg {
+      font-size: .9em;
+      margin-right: .3em;
+      width: 30px;
+    }
   }
   &.scrollactive-active {
     color: $primary;
@@ -103,8 +113,8 @@ button.btn, a.btn {
   }
   &.btn-list {
     text-align: left;
-    padding: .25em .75em;
-    font-size: 1.6rem;
+    padding: .25em .5em;
+    font-size: 1.5rem;
     border-bottom: 1px solid $accent;
     &:hover {
       background: $accent;
@@ -115,12 +125,6 @@ button.btn, a.btn {
       cursor: default;
     }
   }
-/*   // Used for dropdown buttons
-  &.focusable:focus {
-    background: $accent;
-    color: $primary
-  }  
- */
 }
 
 a.router-link-active {
@@ -128,17 +132,6 @@ a.router-link-active {
   pointer-events: none;
   color: $primary;
   background: $accent;
-}
-
-input.form-control,
-input.custom,
-select.form-control,
-textarea.form-control,
-.vdp-datepicker input.form-control {
-  transition: all 150ms ease-in-out;
-  /* &[disabled] {
-    cursor: not-allowed;
-  } */
 }
 
 .search-input {
@@ -160,201 +153,22 @@ textarea.form-control,
   }
 }
 
-select.form-control {
-  border: 4px solid $accent;
-  cursor: pointer;
-  &:focus, &:active {
-    border: 4px solid $accent;
-  }
-}
-
-textarea.form-control {
-  line-height: 1.2em;
-  padding: 0.5em
-}
-
-.vdp-datepicker .input-group {
-  position: relative;
-  input {
-    border-radius: 0.25rem !important;
-    background: $accent;
-    cursor: pointer;
-    &[disabled="disabled"] {
-      background: $accent-light;
-      cursor: default;
-    }
-  }
-  .append-icon {
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    margin-top: auto;
-    margin-bottom: auto;
-    right: 5px;
-    width: 20px;
-    height: 20px;
-    z-index: 10;
-    color: $muted;
-    pointer-events: none;
-  }
-}
-
-.vdp-datepicker__calendar {
-  background: $light;
-  border-radius: 5px;
-  border: 0px solid transparent;
+.form-group label {
   font-weight: bold;
-  color: $default;
-  top: 43px;
-  box-shadow: 2px 2px 6px 2px $medium;
-  span.cell {
-    border-radius: 3px;
-    font-size: 1.2rem;
-    border: 2px solid transparent;
-    &.day, &.month, &.year {
-      &.selected {
-        background: $primary;
-        color: $light;
-      }
-      &:not(.blank):not(.disabled):hover {
-        border: 2px solid $primary;
-      }
-    }
-    &.day-header {
-      color: $muted;
-      font-size: 1rem;
-    }
+  font-size: 1.25em;
+  color: $medium;
+  line-height: 1.1em;
+  i {
+    font-size: 14px;
+    color: $primary;  
   }
-  header span {
-    &.prev, &.next, &.day__month_btn, &.month__year_btn {
-      border-radius: 3px;
-      font-size: 1.4rem;
-      &:hover {
-        background: $accent !important;
-      }
-    } 
-  }
-}
-
-.multiselect.custom {
-  background: $accent;
-  border-radius: 0.25rem;
-  font-size: 1.3rem;
-  font-weight: bold;
-  min-height: calc(1.5em + 0.5rem);
-  line-height: 1.5;
-  &.multiselect--active {
-    box-shadow: 0 0 0 0.2rem $primary;
-  }
-  .dd-icon {
-    position: absolute;
-    color: $muted;
-    font-size: .9em;
-    right: .5em;
-    top: .6em;
-  }
-  span.multiselect__placeholder {
-    color: $placeholder;
+  &.col-form-label {
+    text-align: right;
     font-size: 1.3rem;
-    font-weight: bold;
-    margin: 0;
-    padding: 0;
   }
-  span.multiselect__tag {
-    margin-right: .5em;
-    margin-top: .2em;
-    margin-bottom: .2em;
-    background: $primary;
-    color: $light;
-    i.multiselect__tag-icon {
-      padding-top: 5px;
-      margin-left: 5px;
-      &::after {
-        font-size: 1em;
-        color: $accent-dark;
-      }
-      &:hover {
-        background: $primary;
-        &::after {
-          color: $light;
-        }
-      }
-    }
-  }
-  .multiselect__tags-wrap {
-    display: flex;
-  }
-  .multiselect__tags {
-    padding-top: 0;
-    font-size: 1.3rem;
-    padding: 0.25rem 0.75rem;
-    min-height: calc(1.5em + 0.5rem);
-    background: transparent;
-    border-style: none;
-    input.multiselect__input {
-      line-height: 1.5;
-      display: inline-block;
-      font-size: 1.3rem;
-      color: $default;
-      font-weight: bold;
-      background: transparent;
-      margin: 0;
-      padding: 0;
-      &::placeholder {
-        color: $placeholder;
-      }
-      /* position: absolute;
-      top: 0; bottom: 0; left: 0; right: 30px; */
-    }
-  }
-  .multiselect__content-wrapper {
-    background: $accent;
-    margin-top: .2rem;
-    border-width: 0;
-    box-shadow: 0px 5px 10px 0 $default;
-    li.multiselect__element {
-      .multiselect__option {
-        color: $default;
-      }
-      .multiselect__option--highlight {
-        background: $accent-dark; 
-      }
-    }
-  }
-}
-
-// Get rid of number spinner
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  /* display: none; <- Crashes Chrome on hover */
-  -webkit-appearance: none;
-  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
-input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
-}
-
-.form-group {
-  label {
-    font-weight: bold;
-    font-size: 1.25em;
-    color: $medium;
-    line-height: 1.1em;
-    i {
-      font-size: 14px;
-      color: $primary;  
-    }
-    &.col-form-label {
-      text-align: right;
-      font-size: 1.3rem;
-    }
-  }
-  &.form-group-sm {
-    margin-bottom: 10px;
-    &[class*="col-"] {
-      padding-right: 5px;
-      padding-left: 5px;
-    }
+  &.lg {
+    font-size: 1.5rem;
+    color: $dark;
   }
 }
 
@@ -463,7 +277,6 @@ input[type="number"] {
   border-radius: 5px;
   padding: 1em;
   background: $accent-light;
-  //border: 1px solid $accent;
 }
 
 .scroll-outer-container {
@@ -502,7 +315,7 @@ input[type="number"] {
 }
 .fade-gradient-bottom {
   position: sticky;
-  bottom: 0; left: 0; right: 1em;
+  bottom: -2px; left: 0; right: 1em;
   height: 30px;
   background: linear-gradient(
     to top,
@@ -514,7 +327,7 @@ input[type="number"] {
 }
 
 .sidebar {
-  width: 275px;
+  min-width: 275px;
   position: sticky;
   display: flex;
   flex-direction: column;
@@ -570,6 +383,7 @@ input[type="number"] {
   transform: scale(0);
   background: $accent;
   border-radius: 5px;
+  box-shadow: $drop-shadow;
 }
 
 .row {
@@ -610,6 +424,54 @@ input[type="number"] {
     background: $medium;
   }
 }
+
+.filter-btn {
+  color: $default;
+  background: $secondary;
+  position: relative;
+  padding-top: .2em;
+  padding-bottom: .2em;
+  vertical-align: center; 
+  &:not(.active):hover {
+    background: $accent-dark;
+  }
+  &.active {
+    color: $light;
+    cursor: default;
+    &.primary { background: $primary; }
+    &.pink { background: $pink; }
+    &.orange { background: $orange; }
+    &.green { background: $green; }
+    &.teal { background: $teal; }
+    &.purple { background: $purple; }
+    &.grey { background: $medium; }
+    &.red { background: $red; }
+  }
+  .filter-btn-filler {
+    width: 1.3em;
+    font-size: 0.8em;
+    display: inline-block;
+  }
+}
+
+.small-square {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  border-radius: 3px;
+  &.primary { background: $primary; }
+  &.pink { background: $pink; }
+  &.orange { background: $orange; }
+  &.green { background: $green; }
+  &.teal { background: $teal; }
+  &.purple { background: $purple; }
+  &.grey { background: $medium; }
+  &.red { background: $red; }
+}
+
+i.yellow { color: $yellow; }
+i.green { color: $green; }
+i.red { color: $red; }
 
 .sub-nav {
   height: $content-height;

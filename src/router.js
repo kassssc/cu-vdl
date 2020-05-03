@@ -140,6 +140,22 @@ const router = new Router({
                 '@/views/admin/AdminCreateUser'
               ),
               meta: { requiresLogin: true, requiresAdmin: true },
+            },
+            {
+              path: 'users',
+              name: 'admin-users-list',
+              component: () => import(/* webpackChunkName: "group-admin" */
+                '@/views/admin/AdminUsersList'
+              ),
+              meta: { requiresLogin: true, requiresAdmin: true },
+            },    
+            {
+              path: 'orgs',
+              name: 'admin-orgs-list',
+              component: () => import(/* webpackChunkName: "group-admin" */
+                '@/views/admin/AdminOrgsList'
+              ),
+              meta: { requiresLogin: true, requiresAdmin: true },
             }    
           ]
         },
@@ -188,7 +204,7 @@ router.beforeEach((to, from, next) => {
 
   // CU admin check
   } else if (to.matched.some(record => record.meta.requiresAdmin) &&
-      !store.getters.userIsCU) {
+      !store.getters.userIsAdmin) {
     next({ name: 'login' })
 
   } else {

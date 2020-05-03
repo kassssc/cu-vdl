@@ -68,7 +68,7 @@ export default {
   name: 'dashboard',
   computed: {
     ...mapGetters([
-      'userIsCU',
+      'userIsAdmin',
       'userIsEmployee',
       'userIsFreelance',
     ])

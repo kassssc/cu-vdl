@@ -1,11 +1,11 @@
 // Colors
 $blue:    #4F9AC3;
 $indigo:  #6610f2;
-$purple:  #6f42c1;
+$purple:  #8978C1;
 $pink:    #be5877;
 $red:     #E4656A;
 $orange:  #E49658;
-$yellow:  #ffc107;
+$yellow:  #FFBD6D;
 $green:   #8BBB87;
 $teal:    #80CBC4;
 
@@ -15,7 +15,7 @@ $accent:        #ebe7e4;
 $accent-light:  #f8f6f3;
 
 // Theme Colors
-$primary:       $pink;
+$primary:       #5A9BAD;
 $secondary:     $accent;
 $light:         #fefdfc;
 $medium:        #75716E;
@@ -132,6 +132,15 @@ $grid-breakpoints: (
 @import "~bootstrap/scss/_variables.scss";
 @import "~bootstrap/scss/_mixins.scss";
 
+// Other Variables
+$titlebar-height: 80px;
+$titlebar-height-scrolled: 60px;
+$footer-height: 50px;
+$outer-padding: 30px;
+$outer-padding-sm: 15px;
+$content-height: calc(100vh - #{$titlebar-height} - #{$footer-height});
+$drop-shadow: 0px 4px 8px 0 $medium;
+
 @mixin unselectable {
   -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
@@ -146,17 +155,34 @@ $grid-breakpoints: (
   color: $white;
 }
 
+@mixin dropdown-menu {
+  position: absolute;
+  font-weight: bold;
+  left: 0;
+  top: calc(100% + .2rem);
+  border-radius: $border-radius;
+  background: $accent-light;
+  min-width: 100%;
+  border-width: 0;
+  border-style: none;
+  box-shadow: $drop-shadow;
+  z-index: 40;
+  margin: 0;
+  padding: 0;
+  max-height: 500px;
+}
+
+@mixin dropdown-option {
+  cursor: pointer;
+  padding: 0.25rem 0.75rem;
+  font-weight: bold;
+  color: $default;
+  font-size: $input-btn-font-size;
+}
+
 @mixin logo {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
   background-image: url('https://i.ibb.co/PWZBG5p/logo.png');
 }
-
-// Other Variables
-$titlebar-height: 80px;
-$titlebar-height-scrolled: 60px;
-$footer-height: 50px;
-$outer-padding: 30px;
-$outer-padding-sm: 15px;
-$content-height: calc(100vh - #{$titlebar-height} - #{$footer-height});

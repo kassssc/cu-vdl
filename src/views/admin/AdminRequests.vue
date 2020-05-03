@@ -37,10 +37,13 @@
       </div> -->
       <h5 class="mb-2 text-medium">กรองโดยประเภทคำขอ</h5>
       <div class="d-flex flex-column">
-        <button class="filter-btn btn btn-sm btn-block text-left pink"
+        <button class="filter-btn btn btn-sm btn-block text-left primary"
                 :class="{'active': activeTypeFilter === 0}"
                 @click="activeTypeFilter = 0">
-          <div class="small-square mr-1"></div>
+          <i  v-if="activeTypeFilter === 0"
+              class="fas fa-check btn-inner-icon" />
+          <div  v-else
+                class="small-square mr-1" />
           ทั้งหมด
         </button>
         <button v-for="filter of requestTypes"
@@ -51,7 +54,11 @@
                   {'active': activeTypeFilter === filter.id}
                 ]"
                 @click="activeTypeFilter = filter.id">
-          <div class="small-square mr-1" :class="requestTypeCSS[filter.id]"></div>
+          <i  v-if="activeTypeFilter === filter.id"
+              class="fas fa-check btn-inner-icon" />
+          <div  v-else
+                class="small-square mr-1"
+                :class="requestTypeCSS[filter.id]" />
           {{ filter.name }}
         </button>
       </div>
@@ -96,14 +103,10 @@
                 <i class="fas" :class="[requestStatusCSS[request.status],requestStatusIcon[request.status]]"></i>
               </div>
               <div class="col-3">
-                <h5>
-                  {{ request.createdDate }}
-                </h5>
+                <h5>{{ request.createdDate }}</h5>
               </div>
               <div class="col-4">
-                <h5>
-                  {{ request.requestNum }}
-                </h5>
+                <h5>{{ request.requestNum }}</h5>
               </div>
               <div class="col-2 d-flex align-items-center">
                 <div  class="small-square"
@@ -129,9 +132,6 @@
 </template>
 
 <style lang="scss" scoped>
-i.orange { color: $orange; }
-i.green { color: $green; }
-i.red { color: $red; }
 .requests {
   flex-grow: 2;
 }
@@ -141,19 +141,7 @@ i.red { color: $red; }
 .scroll-container.requests {
   height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 145px);
 }
-.small-square {
-  width: 15px;
-  height: 15px;
-  display: inline-block;
-  border-radius: 3px;
-  &.pink { background: $primary; }
-  &.orange { background: $orange; }
-  &.green { background: $green; }
-  &.teal { background: $teal; }
-  &.blue { background: $blue; }
-  &.grey { background: $medium; }
-  &.red { background: $red; }
-}
+
 .list-item {
   padding-top: .75em;
   padding-bottom: .75em;
@@ -172,8 +160,8 @@ i.red { color: $red; }
   i.hide-icon {
     display: none;    
   }
-  &.orange {
-    border-left: 4px solid $orange;
+  &.yellow {
+    border-left: 4px solid $yellow;
     //background: rgba($orange, 0.15);
   }
   &.green {
@@ -183,33 +171,6 @@ i.red { color: $red; }
   &.red {
     border-left: 4px solid $red;
     //background: rgba($red, 0.15);
-  }
-}
-.filter-btn {
-  color: $default;
-  background: $secondary;
-  position: relative;
-  padding-top: .3em;
-  padding-bottom: .3em;
-  vertical-align: center; 
-  &:not(.active):hover {
-    background: $accent-dark;
-  }
-  &.active {
-    color: $light;
-    cursor: default;
-    &.pink { background: $primary; }
-    &.orange { background: $orange; }
-    &.green { background: $green; }
-    &.teal { background: $teal; }
-    &.blue { background: $blue; }
-    &.grey { background: $medium; }
-    &.red { background: $red; }
-  }
-  .filter-btn-filler {
-    width: 1.3em;
-    font-size: 0.8em;
-    display: inline-block;
   }
 }
 </style>
@@ -229,6 +190,7 @@ export default {
       'user',
       'requestTypes',
       'requestStatuses',
+      'requests'
     ])
   },
   created () {
@@ -242,13 +204,13 @@ export default {
       sidebarFolded: false,
       requestTypeCSS: {
         1: 'orange',
-        2: 'green',
-        3: 'teal',
-        4: 'blue',
+        2: 'teal',
+        3: 'purple',
+        4: 'pink',
         5: 'grey'
       },
       requestStatusCSS: {
-        1: 'orange',
+        1: 'yellow',
         2: 'green',
         3: 'red'
       },
@@ -257,74 +219,6 @@ export default {
         2: 'fa-check',
         3: 'fa-times'
       },
-      requests: [
-        {
-          name: 'รอการตอบรับ',
-          list: [
-            {
-              id: 1,
-              requestNum: 'S000002',
-              status: 1,
-              type: 1,
-              createdDate: '04/05/2020'
-            },
-            {
-              id: 2,
-              requestNum: 'S000001',
-              status: 1,
-              type: 1,
-              createdDate: '04/05/2020'
-            },
-            {
-              id: 3,
-              requestNum: 'M000003',
-              status: 1,
-              type: 2,
-              createdDate: '02/05/2020'
-            },
-            {
-              id: 4,
-              requestNum: 'A000001',
-              status: 1,
-              type: 3,
-              createdDate: '01/05/2020'
-            },
-          ]
-        },
-        {
-          name: 'เสร็จเรียบร้อย',
-          list: [
-            {
-              id: 5,
-              requestNum: 'X000001',
-              status: 2,
-              type: 5,
-              createdDate: '29/04/2020'
-            },
-            {
-              id: 6,
-              requestNum: 'M000002',
-              status: 3,
-              type: 2,
-              createdDate: '28/04/2020'
-            },
-            {
-              id: 7,
-              requestNum: 'F000001',
-              status: 3,
-              type: 4,
-              createdDate: '25/04/2020'
-            },
-            {
-              id: 8,
-              requestNum: 'M000001',
-              status: 2,
-              type: 2,
-              createdDate: '05/04/2020'
-            },
-          ]
-        }
-      ]
     }
   }
 }

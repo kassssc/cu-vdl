@@ -19,45 +19,32 @@
       </div>
       <div class="col-xl-9 col-12">
         <div class="form-row">
-          <div class="form-group col-8">
-            <label>
-              ชื่อองค์กร
-            </label>
-            <input  type="text"
-                    class="form-control">
-          </div>
-          <div class="w-100"></div>
-          <div class="form-group col-8">
-            <label>
-              ชื่อ-นามสกุล ผู้ติดต่อ
-            </label>
-            <input  type="text"
-                    class="form-control">
-          </div>
-          <div class="w-100"></div>
-          <div class="form-group col-8">
-            <label>
-              เบอร์โทรศัพท์ / อีเมล ผู้ติดต่อ
-            </label>
-            <input  type="text"
-                    class="form-control">
-          </div>
+          <FormInput
+            class="col-7"
+            label="ชื่อองค์กร"
+            type="text" />
+          <FormInput
+            class="col-7"
+            label="ชื่อ-นามสกุล ผู้ติดต่อ"
+            type="text" />
+          <FormInput
+            class="col-7"
+            label="เบอร์โทรศัพท์ / อีเมล ผู้ติดต่อ"
+            type="text" />
         </div>
       </div>
     </div>
 
     <div class="border-bottom-lighter row w-100 py-4">
       <div class="col-xl-3 col-12">
-        <h4>
-          หมายเหตุอื่นๆ
-        </h4>
+        <h4>หมายเหตุอื่นๆ</h4>
       </div>
       <div class="col-xl-9 col-12">
         <div class="form-row">
-          <div class="form-group col-8">
-            <textarea type="text" rows="4"
-                      class="form-control" />
-          </div>
+          <FormTextarea
+            class="col-7"
+            type="text"
+            rows="4" />
         </div>
       </div>
     </div>
@@ -67,7 +54,7 @@
       </div>
       <div class="col-xl-9 col-12">
         <div class="form-row">
-          <div class="form-group col-8">
+          <div class="form-group col-7">
             <button class="btn btn-primary btn-block">
               <i class="fas fa-paper-plane btn-inner-icon"></i>
               ส่งคำขอเป็นตัวแทนองค์กร

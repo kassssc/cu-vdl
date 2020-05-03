@@ -11,7 +11,7 @@
               class="form-control"
               placeholder="ค้นหา...">
     </div>
-    <form-inline-select
+    <FormInlineSelect
       class="mb-3"
       :options="filterOptions"
       v-model="filter"
@@ -43,54 +43,39 @@
 
     <div class="col-12 font-chatthai">
       <div class="form-row">
-        <div class="form-group col-12 mb-4">
-          <label>
-            ประเภท Account
-          </label>
-          <input  type="text"
-                  class="form-control form-control-lg text-primary"
-                  value="พนักงานประจำ"
-                  disabled >
-        </div>
-        <div class="form-group col-12">
-          <label>
-            ชื่อจริง
-          </label>
-          <input  type="text"
-                  class="form-control form-control-lg"
-                  :value="user.firstName"
-                  disabled >
-        </div>
-        <div class="form-group col-12">
-          <label>
-            นามสกุล
-          </label>
-          <input  type="text"
-                  class="form-control form-control-lg"
-                  :value="user.lastName"
-                  disabled >
-        </div>
-        <div class="form-group col-12">
-          <label>
-            อีเมล
-          </label>
-          <input  type="text"
-                  class="form-control form-control-lg"
-                  :value="user.email"
-                  disabled >
-        </div>
-        <div class="form-group col-12">
-          <label>
-            เบอร์โทรศัพท์
-          </label>
-          <input  type="text"
-                  class="form-control form-control-lg"
-                  :value="user.phone"
-                  disabled >
-        </div>
+        <FormInput
+          class="col-12 mb-4"
+          input-class="form-control-lg text-primary"
+          label="ประเภท Account"
+          value="พนักงานประจำ"
+          disabled />
+        <FormInput
+          class="col-12"
+          input-class="form-control-lg"
+          label="ชื่อจริง"
+          :value="`${user.title}${user.firstName}`"
+          disabled />
+        <FormInput
+          class="col-12"
+          input-class="form-control-lg"
+          label="นามสกุล"
+          :value="user.lastName"
+          disabled />
+        <FormInput
+          class="col-12"
+          input-class="form-control-lg"
+          label="อีเมล"
+          :value="user.email"
+          disabled />
+        <FormInput
+          class="col-12"
+          input-class="form-control-lg"
+          label="หมายเลขโทรศัพท์"
+          :value="user.phone"
+          disabled />
       </div>
 
-      <div class="form-row mt-5">
+      <div class="form-row mt-4">
         <div class="form-group col-12">
           <button class="btn btn-primary btn-lg btn-block ">
             <i class="fas fa-user-slash btn-inner-icon"></i>
@@ -110,8 +95,13 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'dashboard-employee-submitters',
+  computed: {
+    ...mapGetters(['user'])
+  },
   data () {
     return {
       selectedSubmitter: 0,
@@ -121,16 +111,6 @@ export default {
         { id: 1, name: 'พนักงานประจำ'},
         { id: 2, name: 'Freelance'}
       ],
-      user: {
-        id: 1,
-        accountType: 1,
-        org: 1,
-        firstName: 'สมควร',
-        lastName: 'สมสกุล',
-        email: 'mr.somkuan@gmail.com',
-        phone: '081-234-5678',
-        nationalId: null
-      },
       list: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     }
   }

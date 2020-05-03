@@ -4,7 +4,7 @@
     <button class="btn btn-transparent"
             @click="$router.go(-1)">
       <i class="fas fa-chevron-left mr-2" />
-      {{ $t(`general.back`) }}
+      กลับไป
     </button>
     <div class="signup-logo mb-2 align-self-center" />
     <h1 class="text-primary mb-4 align-self-center">
@@ -20,7 +20,7 @@
             <h4 class="mb-2">
               ท่านต้องการสมัครสมาชิกประเภทไหน ?
             </h4>
-            <form-inline-select
+            <FormInlineSelect
               btnClass="btn-lg"
               :options="isFreelanceOptions"
               @change="orgExist = null"
@@ -46,7 +46,7 @@
               <h4 class="mb-2">
                 องค์กรของท่านมี Account อยู่ในระบบนี้อยู่แล้วหรือไม่ ?
               </h4>
-              <form-inline-select
+              <FormInlineSelect
                 btnClass="btn-lg"
                 :options="orgExistOptions"
                 v-model="orgExist" />
@@ -115,160 +115,134 @@
           </div>
         </div>
 
-        <div class="row no-gutters mb-2">
+        <div class="row no-gutters mb-4">
           <div class="col-3 pt-2">
             <h4>ข้อมูลของท่าน</h4>
           </div>
           <div class="col-9">
             <div class="form-row">
-              <div class="form-group col-6 mb-2">
-                <label>
-                  ชื่อจริง <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.lazy="employeeSignupForm.userInfo.firstName">
-              </div>
-              <div class="form-group col-6 mb-2">
-                <label>
-                  นามสกุล <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.number="employeeSignupForm.userInfo.lastName">
-              </div>
-              <div class="form-group col-6">
-                <label>
-                  อีเมล <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.number="employeeSignupForm.userInfo.email">
-              </div>
-              <div class="form-group col-6">
-                <label>
-                  เบอร์โทรศัพท์ <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="number"
-                        class="form-control"
-                        v-model.number="employeeSignupForm.userInfo.phone">
-              </div>
-              
+              <FormSelect
+                class="col-2 mb-2 d-flex align-items-end"
+                :clearable="false"
+                :searchable="false"
+                :options="nameTitles" />
+              <FormInput
+                class="col-4 mb-2"
+                type="text"
+                label="ชื่อจริง"
+                required
+                v-model="employeeSignupForm.userInfo.firstName" />
+              <FormInput
+                class="col-6 mb-2"
+                type="text"
+                label="นามสกุล"
+                required
+                v-model="employeeSignupForm.userInfo.lastName" />
+              <FormInput
+                class="col-6 mb-2"
+                type="text"
+                label="อีเมล"
+                required
+                v-model="employeeSignupForm.userInfo.email" />
+              <FormInput
+                class="col-6 mb-2"
+                type="number"
+                label="หมายเลขโทรศัพท์"
+                required
+                v-model="employeeSignupForm.userInfo.phone" />
             </div>    
           </div>
         </div>
 
-        <div class="row no-gutters mb-2">
+        <div class="row no-gutters mb-4">
           <div class="col-3 pt-2">
             <h4>ข้อมูลที่อยู่องค์กร</h4>
           </div>
           <div class="col-9">
             <div class="form-row">
-              <div class="form-group col-12 mb-2">
-                <label>
-                  ชื่อองค์กร <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.number="employeeSignupForm.orgInfo.name">
-              </div>
-              <div class="form-group col-12 mb-2">
-                <label>
-                  เลขที่ ซอย ถนน <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.number="employeeSignupForm.orgInfo.addr1">
-              </div>
-              <div class="form-group col-12 mb-2">
-                <label>
-                  แขวง เขต / ตำบล อำเภอ
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.number="employeeSignupForm.orgInfo.addr2">
-              </div>
-              <div class="form-group col-4">
-                <label>
-                  เมือง <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.number="employeeSignupForm.orgInfo.city">
-              </div>
-              <div class="form-group col-4">
-                <label>
-                  จังหวัด <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.number="employeeSignupForm.orgInfo.province">
-              </div>
-              <div class="form-group col-4">
-                <label>
-                  รหัสไปรษณีย์ <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="number"
-                        class="form-control"
-                        v-model.number="employeeSignupForm.orgInfo.zip">
-              </div>
+              <FormInput
+                class="col-12 mb-2"
+                type="text"
+                label="ชื่อองค์กร"
+                required
+                v-model="employeeSignupForm.userInfo.name" />
+              <FormInput
+                class="col-12 mb-2"
+                type="text"
+                label="เลขที่ ซอย ถนน"
+                required
+                v-model="employeeSignupForm.userInfo.addr1" />
+              <FormInput
+                class="col-12 mb-2"
+                type="text"
+                label="แขวง เขต / ตำบล อำเภอ"
+                required
+                v-model="employeeSignupForm.userInfo.addr2" />
+              <FormInput
+                class="col-4 mb-2"
+                type="text"
+                label="เมือง"
+                required
+                v-model="employeeSignupForm.userInfo.city" />
+              <FormInput
+                class="col-4 mb-2"
+                type="text"
+                label="จังหวัด"
+                required
+                v-model="employeeSignupForm.userInfo.province" />
+              <FormInput
+                class="col-4 mb-2"
+                type="number"
+                label="รหัสไปรษณีย์"
+                required
+                v-model="employeeSignupForm.userInfo.zip" />
             </div>
           </div>
         </div>
 
-        <div class="row no-gutters mb-2">
+        <div class="row no-gutters mb-4">
           <div class="col-3 pt-2">
             <h4>อัพโหลดเอกสาร</h4>
           </div>
           <div class="col-9">
             <div class="form-row">
-              <div class="form-group col-4">
-                <label>
-                  สำเนาบัตรประชาชน <i class="fas fa-star-of-life" />
-                </label>
-                <form-file-upload />
-              </div>
-              <div class="form-group col-4">
-                <label>
-                  ภ.พ.20 <i class="fas fa-star-of-life" />
-                </label>
-                <form-file-upload />
-              </div>
-              <div class="form-group col-4">
-                <label>
-                  ใบจดทะเบียนบริษัท <i class="fas fa-star-of-life" />
-                </label>
-                <form-file-upload />
-              </div>
+              <FormFileUpload
+                class="col-4"
+                label="สำเนาบัตรประชาชน"
+                required />
+              <FormFileUpload
+                class="col-4"
+                label="ภ.พ.20"
+                required />
+              <FormFileUpload
+                class="col-4"
+                label="ใบจดทะเบียนบริษัท"
+                required />
             </div>
           </div>
         </div>
 
         <div class="row no-gutters mb-2">
           <div class="col-3 pt-2">
-            <h4>อื่นๆ</h4>
+            <h4>หมายเหตุอื่นๆ</h4>
           </div>
-          <div class="form-group col-9">
-            <label>
-              หมายเหตุอื่นๆ
-            </label>
-            <textarea rows="3"
-                      class="form-control"
-                      v-model.number="employeeSignupForm.notes" />
-          </div>
+          <FormTextarea
+            class="col-9"
+            rows="3"
+            v-model="employeeSignupForm.notes" />
         </div>
 
         <div class="row no-gutters">
           <div class="col-3"></div>
           <div class="col-5">
             <button class="btn btn-primary btn-lg btn-block">
-              <i class="fas fa-paper-plane btn-inner-icon"></i> ส่งแบบฟอร์มขอสมัครสมาชิก
+              <i class="fas fa-paper-plane btn-inner-icon" /> ส่งแบบฟอร์มขอสมัครสมาชิก
             </button>
           </div>
           <div class="col-4 pl-3">
             <button class="btn btn-secondary btn-lg btn-block"
-                @click="reset()">
-              <i class="fas fa-undo-alt btn-inner-icon"></i> เริ่มต้นใหม่
+                    @click="reset()">
+              <i class="fas fa-undo-alt btn-inner-icon" /> เริ่มต้นใหม่
             </button>
           </div>
         </div>
@@ -291,38 +265,35 @@
           </div>
           <div class="col-9">
             <div class="form-row">
-              <div class="form-group col-6 mb-2">
-                <label>
-                  ชื่อจริง <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.lazy="freelanceSignupForm.firstName">
-              </div>
-              <div class="form-group col-6 mb-2">
-                <label>
-                  นามสกุล <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.number="freelanceSignupForm.lastName">
-              </div>
-              <div class="form-group col-6">
-                <label>
-                  อีเมล <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="text"
-                        class="form-control"
-                        v-model.number="freelanceSignupForm.email">
-              </div>
-              <div class="form-group col-6">
-                <label>
-                  เบอร์โทรศัพท์ <i class="fas fa-star-of-life" />
-                </label>
-                <input  type="number"
-                        class="form-control"
-                        v-model.number="freelanceSignupForm.phone">
-              </div>
+              <FormSelect
+                class="col-2 mb-2 d-flex align-items-end"
+                :clearable="false"
+                :searchable="false"
+                :options="nameTitles" />
+              <FormInput
+                class="col-4 mb-2"
+                type="text"
+                label="ชื่อจริง"
+                required
+                v-model="freelanceSignupForm.userInfo.firstName" />
+              <FormInput
+                class="col-6 mb-2"
+                type="text"
+                label="นามสกุล"
+                required
+                v-model="freelanceSignupForm.userInfo.lastName" />
+              <FormInput
+                class="col-6 mb-2"
+                type="text"
+                label="อีเมล"
+                required
+                v-model="freelanceSignupForm.userInfo.email" />
+              <FormInput
+                class="col-6 mb-2"
+                type="number"
+                label="หมายเลขโทรศัพท์"
+                required
+                v-model="freelanceSignupForm.userInfo.phone" />
             </div>    
           </div>
         </div>
@@ -342,30 +313,24 @@
                     @click="freelanceSignupForm.orgs.splice(idx, 1)">
                   <i class="fas fa-times" />
                 </button>
-                <div class="form-group col-12 mb-2 mt-3">
-                  <label class="mb-0">
-                    ชื่อองค์กร #{{ idx+1 }}
-                  </label>
-                  <input  type="text"
-                          class="form-control form-control-sm"
-                          v-model.lazy="freelanceSignupForm.orgs[idx].orgName">
-                </div>
-                <div class="form-group col-6 mb-2">
-                  <label class="mb-0">
-                    ชื่อ-นามสกุล ผู้ติดต่อ
-                  </label>
-                  <input  type="text"
-                          class="form-control form-control-sm"
-                          v-model.lazy="freelanceSignupForm.orgs[idx].contactName">
-                </div>
-                <div class="form-group col-6 mb-3">
-                  <label class="mb-0">
-                    เบอร์โทรศัพท์ / อีเมล ผู้ติดต่อ
-                  </label>
-                  <input  type="text"
-                          class="form-control form-control-sm"
-                          v-model.number="freelanceSignupForm.orgs[idx].contactInfo">
-                </div>
+                <FormInput
+                  class="col-12 mb-2 mt-3"
+                  :label="`ชื่อองค์กร #${idx+1}`"
+                  type="text"
+                  input-class="form-control-sm"
+                  v-model="freelanceSignupForm.orgs[idx].orgName" />
+                <FormInput
+                  class="col-6 mb-3"
+                  label="ชื่อ-นามสกุล ผู้ติดต่อ"
+                  type="text"
+                  input-class="form-control-sm"
+                  v-model="freelanceSignupForm.orgs[idx].contactName" />
+                <FormInput
+                  class="col-6 mb-3"
+                  label="เบอร์โทรศัพท์ / อีเมล ผู้ติดต่อ"
+                  type="number"
+                  input-class="form-control-sm"
+                  v-model="freelanceSignupForm.orgs[idx].contactInfo" />
               </div>
             </div>
           </div>
@@ -382,16 +347,13 @@
 
         <div class="row no-gutters mb-2">
           <div class="col-3 pt-2">
-            <h4>อื่นๆ</h4>
+            <h4>หมายเหตุอื่นๆ</h4>
           </div>
-          <div class="form-group col-9">
-            <label>
-              หมายเหตุอื่นๆ
-            </label>
-            <textarea rows="2"
-                      class="form-control"
-                      v-model.number="freelanceSignupForm.notes" />
-          </div>
+          <FormTextarea
+            class="col-9"
+            rows="3"
+            type="text"
+            v-model="freelanceSignupForm.notes" />
         </div>
 
         <div class="row no-gutters">
@@ -431,7 +393,7 @@
   width: 700px;
 }
 .info-form {
-  width: 800px;
+  width: 850px;
 }
 #orgs-container {
   max-height: 450px;
@@ -444,8 +406,13 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'signup',
+  computed: {
+    ...mapGetters(['nameTitles'])
+  },
   data () {
     return {
       creatingEmployeeAccount: false,
@@ -470,18 +437,20 @@ export default {
         notes: null
       },
       freelanceSignupForm: {
-        firstName: null,
-        lastName: null,
-        email: null,
-        phone: null,
-        notes: null,
+        userInfo: {
+          firstName: null,
+          lastName: null,
+          email: null,
+          phone: null,
+        },
         orgs: [
           {
             orgName: null,
             contactName: null,
             contactInfo: null,
           }
-        ]
+        ],
+        notes: null,
       },
       isFreelanceOptions: [
         { id: false, name: 'พนักงานประจำองค์กร' },
@@ -504,6 +473,7 @@ export default {
       this.orgExist = null
       this.employeeSignupForm = {
         userInfo: {
+          title: null,
           firstName: null,
           lastName: null,
           email: null,
@@ -520,18 +490,20 @@ export default {
         notes: null
       }
       this.freelanceSignupForm = {
-        firstName: null,
-        lastName: null,
-        email: null,
-        phone: null,
-        notes: null,
+        userInfo: {
+          firstName: null,
+          lastName: null,
+          email: null,
+          phone: null,
+        },
         orgs: [
           {
             orgName: null,
             contactName: null,
             contactInfo: null,
           }
-        ]
+        ],
+        notes: null,
       }
     },
     addOrg () {

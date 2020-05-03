@@ -3,13 +3,13 @@
   <div class="login-form">
     <button class="btn btn-transparent mb-3 align-self-start"
             @click="$router.go(-1)">
-      <i class="fas fa-chevron-left mr-2" />{{ $t(`general.back`) }}
+      <i class="fas fa-chevron-left mr-2" />กลับไป
     </button>
     <div class="login-logo" />
     <div class="form-row w-100">
       <div class="form-group col-12">
         <label class="mb-2">
-          {{ $t(`general.email`) }}
+          อีเมล
         </label>
         <input type="email"
                class="form-control form-control-lg"
@@ -19,7 +19,7 @@
     <div class="form-row w-100">
       <div class="form-group col-12">
         <label class="mb-2">
-          {{ $t(`general.password`) }}
+          รหัสผ่าน
         </label>
         <input type="password"
                class="form-control form-control-lg"
@@ -30,10 +30,10 @@
       <div class="form-group col-12 d-flex justify-content-between">
         <checkbox v-model="loginForm.stayLoggedIn"
                   class="mt-1"
-                  :label="$t(`general.remember`)" />
-        <button class="btn btn-transparent btn-sm color-text-light"
+                  label="จำไว้ในระบบ" />
+        <button class="btn btn-transparent btn-sm text-muted"
                 role="button">
-          {{ $t(`general.forgotPassword`) }}
+          ลืมรหัสผ่าน
         </button>
       </div>
     </div>
@@ -41,7 +41,7 @@
       <div class="form-group col-12">
         <button class="btn btn-primary btn-lg btn-block"
                 @click="login()">
-          <i class="fas fa-sign-in-alt btn-inner-icon"></i> {{ $t(`general.login`) }}
+          <i class="fas fa-sign-in-alt btn-inner-icon"></i> เข้าสู่ระบบ
         </button>
       </div>
     </div>
@@ -60,7 +60,7 @@
     <h3 class="mb-3">DEV TOOLS</h3>
     <button class="btn btn-dark btn-block"
             @click="loginAs(0)">
-      Login as CU Admin
+      Login as VDL Admin
     </button>
     <button class="btn btn-dark btn-block"
             @click="loginAs(1)">

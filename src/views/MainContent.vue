@@ -1,8 +1,8 @@
 <template>
 <div class="d-flex flex-column align-items-center full-width">
-  <titlebar />
+  <Titlebar/>
   <router-view />
-  <footer-section />
+  <FooterSection />
 </div>
 </template>
 
@@ -13,8 +13,8 @@ import FooterSection from '@/components/FooterSection.vue'
 export default {
   name: 'main-content',
   components: {
-    'titlebar': Titlebar,
-    'footer-section': FooterSection
+    'Titlebar': Titlebar,
+    'FooterSection': FooterSection
   }
 }
 </script>

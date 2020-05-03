@@ -19,11 +19,10 @@
       </div>
       <div class="col-xl-9 col-12">
         <div class="form-row">
-          <div class="form-group col-7">
-            <form-inline-select 
-              :options="userTypeOptions" 
-              v-model="form.userType" />
-          </div>
+          <FormInlineSelect
+            class="col-7"
+            :options="userTypeOptions" 
+            v-model="form.userType" />
         </div>
       </div>
     </div>
@@ -36,60 +35,45 @@
       </div>
       <div class="col-xl-9 col-12">
         <div class="form-row">
-          <div class="form-group col-7">
-            <label>
-              ชื่อจริง
-            </label>
-            <input  type="text"
-                    class="form-control">
-          </div>
+          <FormSelect
+              class="col-2 d-flex align-items-end"
+              :clearable="false"
+              :searchable="false"
+              :options="nameTitles" />
+          <FormInput
+            class="col-5"
+            type="text"
+            label="ชื่อจริง" />
           <div class="w-100"></div>
-          <div class="form-group col-7">
-            <label>
-              นามสกุล
-            </label>
-            <input  type="text"
-                    class="form-control">
-          </div>
-          <div class="w-100"></div>
-          <div class="form-group col-7">
-            <label>
-              อีเมล
-            </label>
-            <input  type="text"
-                    class="form-control">
-          </div>
-          <div class="w-100"></div>
-          <div class="form-group col-7">
-            <label>
-              เบอร์โทรศัพท์
-            </label>
-            <input  type="text"
-                    class="form-control">
-          </div>
-          <div class="w-100"></div>
-          <div class="form-group col-7">
-            <label>
-              สำเนาบัตรประชาชน
-            </label>
-            <form-file-upload />
-          </div>
+          <FormInput
+            class="col-7"
+            type="text"
+            label="นามสกุล" />
+          <FormInput
+            class="col-7"
+            type="text"
+            label="อีเมล" />
+          <FormInput
+            class="col-7"
+            type="number"
+            label="หมายเลขโทรศัพท์" />
+          <FormFileUpload
+            class="col-7"
+            label="สำเนาบัตรประชาชน" />
         </div>
       </div>
     </div>
 
     <div class="border-bottom-lighter row w-100 py-4">
       <div class="col-xl-3 col-12">
-        <h4>
-          หมายเหตุอื่นๆ
-        </h4>
+        <h4>หมายเหตุอื่นๆ</h4>
       </div>
       <div class="col-xl-9 col-12">
         <div class="form-row">
-          <div class="form-group col-7">
-            <textarea type="text" rows="4"
-                      class="form-control" />
-          </div>
+          <FormTextarea
+            class="col-7"
+            type="text"
+            rows="4" />
         </div>
       </div>
     </div>
@@ -120,8 +104,13 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'dashboard-employee-addsubmitter',
+  computed: {
+    ...mapGetters(['nameTitles'])
+  },
   data () {
     return {
       form: {

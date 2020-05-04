@@ -1,5 +1,11 @@
 <template>
 <div class="d-flex flex-column">
+  <div v-if="!inReviewMode" class="mb-2">
+    <i class="fas fa-vial icon-lg"></i>
+    <h2 class="d-inline">
+      ส่งตัวอย่าง
+    </h2>
+  </div>
 
   <template v-if="!inReviewMode">
     <div class="submit-samples-nav d-flex align-items-center p-2">
@@ -1017,7 +1023,6 @@ export default {
 
       // Check for max/min sample counts
       this.testType(batch.testType).testInfo
-        .filter( t => t.min || t.max )
         .forEach( t => {
           if ( (t.max && batch.sampleCount > t.max) ||
                (t.min && batch.sampleCount < t.min) ) {

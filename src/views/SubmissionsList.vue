@@ -80,7 +80,8 @@
       </template>
     </div>
   </div>
-  <div class="d-flex pl-4 pt-1 border-left-lighter flex-column w-100">
+
+  <div class="submission-list pl-4 pt-1 border-left-lighter">
     <div class="row no-gutters w-100">
       <div class="col-8">
         <h2>ติดตามผลและรายงาน</h2>
@@ -157,6 +158,9 @@
 </template>
 
 <style lang="scss" scoped>
+.submission-list {
+  flex-grow: 100;
+}
 button.sort-btn {
   padding: 0.1em 0.4em;
   font-size: 1.3rem;

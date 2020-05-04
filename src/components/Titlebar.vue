@@ -33,7 +33,7 @@
         <i class="fas fa-scroll btn-inner-icon"></i>
         ตอบรับคำขอ
         <div class="notifications-badge">
-          <p>8</p>
+          <p>4</p>
         </div>
       </router-link>
       <router-link  :to="{name: 'admin-create-user'}"
@@ -256,7 +256,7 @@ export default {
     ]),
     logoutAndNavigateToHome () {
       this.logout()
-      if (this.$route.path !== '/') {
+      if (this.$route.name !== 'home') {
         this.$router.push('/')
       }
     }

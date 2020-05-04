@@ -99,9 +99,12 @@
           :value="`${user.title}${user.firstName} ${user.lastName}`" />
           
         <div class="col-2">
-          <button class="btn btn-secondary btn-block">
+          <router-link  :to="{name: 'admin-users-list'}"
+                        tag="button"
+                        class="btn btn-secondary btn-block">
+            <i class="fa fa-arrow-right btn-inner-icon"></i>
             ดูข้อมูล
-          </button>
+          </router-link>
         </div>
       </div>
     </div>

@@ -1,94 +1,118 @@
 <template>
-
-<div class="d-flex flex-column w-100 align-items-center">
-
-  <button class="back-to-form btn back-btn btn-transparent d-flex align-items-center align-self-end"
+<div class="preview-bg">
+  <button class="back-to-form btn back-btn btn-transparent"
           @click="$emit('back')">
-    <i class="fas fa-chevron-left mr-2" />
-    <div class="text">
-      กลับไปแก้ไข
-    </div>
+    <i class="fas fa-chevron-left mr-2" />กลับไปแก้ไข
   </button>
-  
-  <div class="A4-page-wrapper">
-    <div class="A4-page">
-      <div class="page-header page-item">
-        <div class="logo mr-3"></div>
-        <div class="d-flex flex-column justify-content-between">
-          <h2>ใบรับตัวอย่างงานตรวจทั่วไป</h2>
-          <h5>หน่วยชันสูตรโรคสัตว์กลาง คณะสัตวแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h5>
-          <h6>ถนนอังรีดูนังต์ แขวงวังใหม่ เขตพญาไท กทม. 10330 โทร.02-218-9606-6 email: cuvdl.thailand@gmail.com</h6>
-        </div>
-      </div>
-      <div class="page-item box row no-gutters">
-        <div class="col-6 border-r">
-          <div class="row no-gutters border-b">
-            <h5 class="col-3">ชื่อผู้ส่ง</h5>
-            <h5 class="col-9 ink">{{ `${user.title}${user.firstName} ${user.lastName}` }}</h5>
-          </div>
-          <div class="row no-gutters border-b">
-            <h5 class="col-3">โทรศัพท์</h5>
-            <h5 class="col-9 ink">{{ user.phone }}</h5>
-          </div>
-          <div class="row no-gutters">
-            <h5 class="col-3">อีเมล</h5>
-            <h5 class="col-9 ink">{{ user.email }}</h5>
+  <button class="submit btn btn-success">
+    <i class="fas fa-paper-plane btn-inner-icon" />
+    ยืนยันและส่งตัวอย่าง
+  </button>
+  <div class="d-flex flex-column w-100 align-items-center pt-3 scroll-container">
+
+    <div class="A4-page-wrapper">
+      <div class="A4-page">
+        <div class="page-header page-item">
+          <div class="logo mr-3"></div>
+          <div class="d-flex flex-column justify-content-between">
+            <h2>{{ `ใบรับตัวอย่าง${submission.type === 1? 'งานตรวจทั่วไป' : 'ส่งตรวจน๋่ายาฆ่าเชื้อ'}` }}</h2>
+            <h5>หน่วยชันสูตรโรคสัตว์กลาง คณะสัตวแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h5>
+            <h6>ถนนอังรีดูนังต์ แขวงวังใหม่ เขตพญาไท กทม. 10330 โทร.02-218-9606-6 email: cuvdl.thailand@gmail.com</h6>
           </div>
         </div>
-        <div class="col-6">
-          <div class="row no-gutters border-b">
-            <h5 class="col-12 text-center">สำหรับเจ้าหน้าที่</h5>
+        <div class="page-item box row no-gutters">
+          <div class="col-6 border-r">
+            <div class="row no-gutters border-b">
+              <h5 class="col-3">ชื่อผู้ส่ง</h5>
+              <h5 class="col-9 ink">{{ `${user.title}${user.firstName} ${user.lastName}` }}</h5>
+            </div>
+            <div class="row no-gutters border-b">
+              <h5 class="col-3">โทรศัพท์</h5>
+              <h5 class="col-9 ink">{{ user.phone }}</h5>
+            </div>
+            <div class="row no-gutters">
+              <h5 class="col-3">อีเมล</h5>
+              <h5 class="col-9 ink">{{ user.email }}</h5>
+            </div>
           </div>
-          <div class="row no-gutters border-b">
-            <h5 class="col-6 border-r">เลขที่รับ</h5>
-            <h5 class="col-6">วันที่รับ</h5>
-          </div>
-          <div class="row no-gutters">
-            <h5 class="col-6 border-r">ผู้รับ</h5>
-            <h5 class="col-6">เวลา</h5>
-          </div>
-        </div>
-      </div>
-      <div class="page-item box row no-gutters">
-        <div class="col-6 border-r">
-          <div class="row no-gutters border-b">
-            <h5 class="col-3">องค์กรเจ้าของ</h5>
-            <h5 class="col-9 ink">{{ org.name }}</h5>
-          </div>
-          <div class="row no-gutters no-border-b">
-            <h5 class="col-3">ที่อยู่</h5>
-            <h5 class="col-9 ink">{{ org.addr.line1 }}</h5>
-          </div>
-          <div class="row no-gutters no-border-b">
-            <h5 class="col-3"></h5>
-            <h5 class="col-9 ink">{{ org.addr.line2 }}</h5>
-          </div>
-          <div class="row no-gutters border-b">
-            <h5 class="col-3"></h5>
-            <h5 class="col-9 ink">{{ `${org.addr.city} ${org.addr.province} ${org.addr.zip}`}}</h5>
-          </div>
-          <div class="row no-gutters">
-            
+          <div class="col-6">
+            <div class="row no-gutters border-b">
+              <h5 class="col-12 text-center">สำหรับเจ้าหน้าที่</h5>
+            </div>
+            <div class="row no-gutters border-b">
+              <h5 class="col-6 border-r">เลขที่รับ</h5>
+              <h5 class="col-6">วันที่รับ</h5>
+            </div>
+            <div class="row no-gutters">
+              <h5 class="col-6 border-r">ผู้รับ</h5>
+              <h5 class="col-6">เวลา</h5>
+            </div>
           </div>
         </div>
-        <div class="col-6">
-          <div class="row no-gutters border-b">
-            <h5 class="col-6 border-r">วันที่เก็บตัวอย่าง</h5>
-            <h5 class="col-6">จำนวนตัวอย่าง</h5>
+        <div class="page-item box row no-gutters">
+          <div class="col-6 border-r">
+            <div class="row no-gutters border-b">
+              <h5 class="col-3">องค์กรเจ้าของ</h5>
+              <h5 class="col-9 ink">{{ org.name }}</h5>
+            </div>
+            <div class="row no-gutters no-border-b">
+              <h5 class="col-3">ที่อยู่</h5>
+              <h5 class="col-9 ink">{{ org.addr.line1 }}</h5>
+            </div>
+            <div class="row no-gutters no-border-b">
+              <h5 class="col-3"></h5>
+              <h5 class="col-9 ink">{{ org.addr.line2 }}</h5>
+            </div>
+            <div class="row no-gutters border-b">
+              <h5 class="col-3"></h5>
+              <h5 class="col-9 ink">{{ `${org.addr.city} ${org.addr.province} ${org.addr.zip}`}}</h5>
+            </div>
+            <div class="row no-gutters">
+              
+            </div>
           </div>
-          <div class="row no-gutters border-b">
-            <h5 class="col-6 border-r">ชนิดตัวอย่าง</h5>
-            <h5 class="col-6">ชนิดสัตว์</h5>
-          </div>
-          <div class="row no-gutters border-b">
-            <h5 class="col-6 border-r">พันธุ์</h5>
-            <h5 class="col-6">อายุ</h5>
-          </div>
-          <div class="row no-gutters border-b">
-            <h5 class="col-12">ประวัติการป่วย</h5>
-          </div>
-          <div class="row no-gutters">
-            <h5 class="col-12">ประวัติการทำวัคซีน</h5>
+          <div v-if="submission.type === 1" class="col-6">
+            <div class="row no-gutters border-b">
+              <h5 class="col-6 border-r">
+                วันที่เก็บตัวอย่าง
+                <span class="ink ml-1">
+                  {{ moment(submission.sampleInfo.sampleTakenDate).format("DD/MM/YY") }}
+                </span>
+              </h5>
+              <h5 class="col-6">จำนวนตัวอย่าง</h5>
+            </div>
+            <div class="row no-gutters border-b">
+              <h5 class="col-6 border-r">
+                ชนิดตัวอย่าง
+                <span class="ink ml-1">{{ submission.sampleInfo.sampleType }}</span>
+              </h5>
+              <h5 class="col-6">
+                ชนิดสัตว์
+                <span class="ink ml-1">{{ submission.sampleInfo.animalType }}</span>
+              </h5>
+            </div>
+            <div class="row no-gutters border-b">
+              <h5 class="col-6 border-r">
+                พันธุ์
+                <span class="ink ml-1">{{ submission.sampleInfo.animalSpecies }}</span>
+              </h5>
+              <h5 class="col-6">
+                อายุ
+                <span class="ink ml-1">{{ submission.sampleInfo.animalAge }}</span>
+              </h5>
+            </div>
+            <div class="row no-gutters border-b">
+              <h5 class="col-12">
+                ประวัติการป่วย
+                <span class="ink ml-1">{{ submission.sampleInfo.illness }}</span>
+              </h5>
+            </div>
+            <div class="row no-gutters">
+              <h5 class="col-12">
+                ประวัติการทำวัคซีน
+                <span class="ink ml-1">{{ submission.sampleInfo.vaccinations }}</span>
+              </h5>
+            </div>
           </div>
         </div>
       </div>
@@ -98,9 +122,26 @@
 </template>
 
 <style lang="scss" scoped>
+.preview-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  background: rgba($black, .65);
+  z-index: 1000;
+  backdrop-filter: blur(15px);
+}
 .back-to-form {
   position: fixed;
-  left: 50px;
+  left: 90px;
+  top: 90px;
+  color: $light;
+  &:hover {
+    color: $default;
+  }
+}
+.submit {
+  position: fixed;
+  right: 90px;
   top: 90px;
 }
 $ink: #455280;
@@ -108,10 +149,10 @@ $ink: #455280;
   color: $ink;
 }
 .border-b {
-  border-bottom: 1px solid $default;
+  border-bottom: 1px solid $medium;
 }
 .border-r {
-  border-right: 1px solid $default;
+  border-right: 1px solid $medium;
 }
 .no-border-b {
   border-bottom: 1px solid transparent;
@@ -127,12 +168,14 @@ $ink: #455280;
 }
 .A4-page-wrapper {
   border: 1px solid $medium;
+  margin-bottom: 1.5em;
 }
 .A4-page {
   // actual width/height of A4
   // width: 595px;
   // height: 842px;
   // scale by 1.5 for readability
+  background: $white;
   font-size: 1rem;
   width: 893px;
   height: 1263px;

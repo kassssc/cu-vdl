@@ -3,8 +3,7 @@
   <div class="signup-box d-flex flex-column align-items-start">
     <button class="btn btn-transparent"
             @click="$router.go(-1)">
-      <i class="fas fa-chevron-left mr-2" />
-      กลับไป
+      <i class="fas fa-chevron-left mr-2" />กลับไป
     </button>
     <div class="signup-logo mb-2 align-self-center" />
     <h1 class="text-primary mb-4 align-self-center">

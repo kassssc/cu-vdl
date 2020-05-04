@@ -4,11 +4,8 @@
     <h3 class="mb-4 ml-2">ติดตามการส่งตัวอย่าง</h3>
     <router-link to="/tracksubmissions"
                  tag="button"
-                 class="btn back-btn btn-transparent d-flex align-items-center align-self-end">
-      <i class="fas fa-chevron-left mr-2" />
-      <div class="text">
-        กลับไป
-      </div>
+                 class="btn back-btn btn-transparent align-self-end">
+      <i class="fas fa-chevron-left mr-2" />กลับไป
     </router-link>
     <scrollactive active-class="scrollactive-active"
                   :offset="225"
@@ -428,9 +425,6 @@ $nav-width: 300px;
   position: absolute;
   top: 25px;
   left: -100px;
-  .text {
-    display: block;
-  }
 }
 @media screen and (max-width: 1400px) {
   .sidebar {

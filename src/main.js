@@ -35,6 +35,9 @@ Vue.component('FormFileUpload', FormFileUpload)
 Vue.component('FormDateInput', FormDateInput)
 Vue.component('FileView', FileView)
 
+import moment from 'moment'
+Vue.prototype.moment = moment
+
 /* Vue.mixin({
   methods: {
     gen_URL: function (url) {

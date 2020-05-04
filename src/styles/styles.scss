@@ -286,8 +286,9 @@ a.router-link-active {
 }
 .scroll-container {
   padding-right: 1em;
-  overflow-y: scroll; 
-  overflow-x: hidden;
+  //overflow-y: scroll; 
+  //overflow-x: hidden;
+  overflow: auto;
   &::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 7px;
@@ -381,7 +382,7 @@ a.router-link-active {
   position: absolute;
   transition: transform 100ms ease-in-out;
   transform: scale(0);
-  background: $accent;
+  background: $accent-light;
   border-radius: 5px;
   box-shadow: $drop-shadow;
 }

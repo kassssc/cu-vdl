@@ -1,7 +1,9 @@
 <template>
 <div class="page max-width-1250 d-flex flex-column align-items-center">
   
-  <div id="home" class="w-100 d-flex flex-column align-items-center pb-5">
+  <div  v-once
+        id="home"
+        class="w-100 d-flex flex-column align-items-center pb-5">
     <div class="home-section d-flex justify-content-between align-items-center">
       <div class="intro">
         <h4 class="mb-2 text-muted">
@@ -88,12 +90,12 @@
         <template v-else>
           <router-link  :to="{name: 'signup'}"
                         tag="button"
-                        class="btn btn-primary mt-3 home-section-btn mr-4">
+                        class="btn btn-secondary mt-3 home-section-btn mr-4">
             <i class="fas fa-user-plus btn-inner-icon"></i> สมัครสมาชิก
           </router-link>
           <router-link  :to="{name: 'login'}"
                         tag="button"
-                        class="btn btn-secondary home-section-btn mt-3">
+                        class="btn btn-primary home-section-btn mt-3">
             <i class="fas fa-sign-in-alt btn-inner-icon"></i> เข้าสู่ระบบ
           </router-link>
         </template>
@@ -135,9 +137,9 @@
     </div>
   </div>
 
-  <services class="w-100 py-5" />
-  <org-chart class="w-100 py-5" />
-  <contact class="w-100 py-5" />
+  <Services v-once class="w-100 py-5" />
+  <OrgChart v-once class="w-100 py-5" />
+  <Contact class="w-100 py-5" />
 </div>  
 </template>
 

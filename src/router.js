@@ -46,25 +46,11 @@ const router = new Router({
 
         {
           path: '/submitsamples',
+          name: 'submitsamples',
           component: () => import(/* webpackChunkName: "group-submitsamples" */
             '@/views/SubmitSamples'
           ),
-          children: [
-            {
-              path: '',
-              name: 'submitsamples',
-              component: () => import(/* webpackChunkName: "group-submitsamples" */
-                '@/views/SampleInfo'
-              ),
-              meta: { requiresLogin: true }
-            }, 
-            // {
-            //   path: 'review',
-            //   name: 'reviewsubmission',
-            //   component: () => import(/* webpackChunkName: "group-submitsamples" */ '@/views/ReviewSubmission'),
-            //   meta: { requiresLogin: true }
-            // }
-          ]
+          meta: { requiresLogin: true }
         },
 
         {
@@ -93,7 +79,7 @@ const router = new Router({
             {
               path: 'employee/submitters',
               name: 'dashboard-employee-submitters',
-              component: () => import(/* webpackChunkName: "group-dashboard" */
+              component: () => import(/* webpackChunkName: "group-employee" */
                 '@/views/dashboard/DashboardEmployeeSubmitters'
               ),
               meta: { requiresLogin: true }
@@ -101,7 +87,7 @@ const router = new Router({
             {
               path: 'employee/addsubmitter',
               name: 'dashboard-employee-addsubmitter',
-              component: () => import(/* webpackChunkName: "group-dashboard" */
+              component: () => import(/* webpackChunkName: "group-employee" */
                 '@/views/dashboard/DashboardEmployeeAddSubmitter'
               ),
               meta: { requiresLogin: true }
@@ -110,7 +96,7 @@ const router = new Router({
             {
               path: 'freelance/orgs',
               name: 'dashboard-freelance-orgs',
-              component: () => import(/* webpackChunkName: "group-dashboard" */
+              component: () => import(/* webpackChunkName: "group-freelance" */
                 '@/views/dashboard/DashboardFreelanceOrgs'
               ),
               meta: { requiresLogin: true }
@@ -118,7 +104,7 @@ const router = new Router({
             {
               path: 'freelance/addorg',
               name: 'dashboard-freelance-addorg',
-              component: () => import(/* webpackChunkName: "group-dashboard" */
+              component: () => import(/* webpackChunkName: "group-freelance" */
                 '@/views/dashboard/DashboardFreelanceAddOrg'
               ),
               meta: { requiresLogin: true }
@@ -148,7 +134,7 @@ const router = new Router({
                 '@/views/admin/AdminUsersList'
               ),
               meta: { requiresLogin: true, requiresAdmin: true },
-            },    
+            },
             {
               path: 'orgs',
               name: 'admin-orgs-list',

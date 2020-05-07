@@ -52,9 +52,9 @@
     </div>
   </div>
 
-  <div class="col-7 p-4 mt-5">
+  <div class="col-7 p-4">
     <div class="col-12">
-      <h3 class="mb-4 mt-2">
+      <h3 class="mb-4">
         <i class="fas fa-user icon-lg mr-1"></i>
         ข้อมูล Account
       </h3>
@@ -91,6 +91,11 @@
           label="หมายเลขโทรศัพท์"
           disabled
           :value="user.phone" />
+        <FileView
+          class="col-6"
+          label="สำเนาบัตรประชาชน"
+          file-name="somkuan_id.pdf"
+          icon-class="fa-address-card" />
       </div>
 
       <div class="form-row py-3">

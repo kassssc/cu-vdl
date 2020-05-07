@@ -50,11 +50,11 @@
 </style>
 
 <script>
-import VueSimpleSuggest from 'vue-simple-suggest'
-
 export default {
   name: 'form-suggest-input',
-  components: { VueSimpleSuggest },
+  components: {
+    VueSimpleSuggest: () => import(/* webpackChunkName: "group-form" */ 'vue-simple-suggest')
+  },
   inheritAttrs: false,
   props: {
     label: {

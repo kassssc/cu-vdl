@@ -1,3 +1,6 @@
+//const Webpack = require('webpack')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
 module.exports = {
   chainWebpack: config => {
     config
@@ -7,7 +10,11 @@ module.exports = {
       return args
     })
   },
-  configureWebpack:{
+  configureWebpack: {
+    plugins: [
+      //new Webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new BundleAnalyzerPlugin(),
+    ],
     optimization: {
       splitChunks: {
         minSize: 10000,

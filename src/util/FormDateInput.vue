@@ -10,10 +10,11 @@
               :language="th"
               :disabled="disabled"
               :highlighted="{ dates: [new Date()] }"
-              :bootstrap-styling="true">
-    <div slot="afterDateInput" class="append-icon">
-      <i class="far fa-calendar-alt" />
-    </div>
+              :bootstrap-styling="true"
+              calendar-class="calendar">
+    <template #afterDateInput>
+      <i class="far fa-calendar-alt append-icon" />
+    </template>
   </datepicker>
 </div>
 </template>
@@ -22,7 +23,7 @@
 .vdp-datepicker .input-group {
   position: relative;
   input {
-    border-radius: 0.25rem !important;
+    border-radius: $border-radius !important;
     background: $accent;
     cursor: pointer;
     &[disabled="disabled"] {
@@ -36,8 +37,7 @@
     bottom: 0px;
     margin-top: auto;
     margin-bottom: auto;
-    right: 5px;
-    width: 20px;
+    right: .8em;
     height: 20px;
     z-index: 10;
     color: $muted;
@@ -45,7 +45,7 @@
   }
 }
 
-.vdp-datepicker__calendar {
+.calendar {
   @include dropdown-menu;
   * {
     border-width: 0 !important;
@@ -83,12 +83,13 @@
 </style>
 
 <script>
-import Datepicker from 'vuejs-datepicker'
 import { th } from 'vuejs-datepicker/dist/locale'
 
 export default {
   name: 'form-date-input',
-  components: { Datepicker },
+  components: {
+    Datepicker: () => import (/* webpackChunkName: "group-form" */ 'vuejs-datepicker')
+  },
   inheritAttrs: false,
   props: {
     label: {

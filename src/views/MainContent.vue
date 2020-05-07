@@ -1,7 +1,9 @@
 <template>
 <div class="d-flex flex-column align-items-center full-width">
   <Titlebar/>
-  <router-view />
+  <transition name="fade">
+    <router-view />
+  </transition>
   <FooterSection />
 </div>
 </template>

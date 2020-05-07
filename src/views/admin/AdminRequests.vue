@@ -178,12 +178,10 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import ViewRequest from '@/components/ViewRequest'
-
 export default {
   name: 'admin-membership',
   components: {
-    ViewRequest
+    ViewRequest: () => import('@/components/ViewRequest')
   },
   computed: {
     ...mapGetters([

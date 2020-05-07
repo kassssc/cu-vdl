@@ -8,8 +8,9 @@
       <i class="fas fa-chevron-left mr-2" />กลับไป
     </router-link>
     <scrollactive active-class="scrollactive-active"
-                  :offset="225"
-                  :modifyUrl="false">
+                  :offset="200"
+                  :modify-url="false"
+                  highlight-first-item >
       <a  href="#info"
           class="btn btn-transparent btn-block btn-lg scrollactive-item">
         <i class="fas fa-file-alt btn-inner-icon-lg" />

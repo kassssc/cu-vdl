@@ -16,9 +16,7 @@
             class="questionaire-form d-flex flex-column align-items-center">
         <div class="form-row w-100">
           <div class="form-group col-12 mb-2">
-            <h4 class="mb-2">
-              ท่านต้องการสมัครสมาชิกประเภทไหน ?
-            </h4>
+            <h4 class="mb-2">ท่านต้องการสมัครสมาชิกประเภทไหน ?</h4>
             <FormInlineSelect
               btnClass="btn-lg"
               :options="isFreelanceOptions"

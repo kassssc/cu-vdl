@@ -1,11 +1,11 @@
 <template>
 <div class="preview-bg">
-  <button class="back-to-form btn back-btn btn-transparent"
+  <button class="back-to-form btn btn-lg back-btn btn-transparent"
           @click="$emit('back')">
-    <i class="fas fa-chevron-left mr-2" />กลับไปแก้ไข
+    <i class="fas fa-chevron-left btn-inner-icon-lg text-left mr-0" />กลับไปแก้ไข
   </button>
-  <button class="submit btn btn-success">
-    <i class="fas fa-paper-plane btn-inner-icon" />
+  <button class="submit btn btn-lg btn-success">
+    <i class="fas fa-paper-plane btn-inner-icon-lg text-left mr-0" />
     ยืนยันและส่งตัวอย่าง
   </button>
   <div class="d-flex flex-column w-100 align-items-center pt-3 scroll-container">
@@ -15,7 +15,7 @@
         <div class="page-header page-item">
           <div class="logo mr-3"></div>
           <div class="d-flex flex-column justify-content-between">
-            <h2>{{ `ใบรับตัวอย่าง${submission.type === 1? 'งานตรวจทั่วไป' : 'ส่งตรวจน๋่ายาฆ่าเชื้อ'}` }}</h2>
+            <h2>{{ `ใบรับตัวอย่าง${submission.type === 1? 'งานตรวจทั่วไป' : 'ส่งตรวจน้ำยาฆ่าเชื้อ'}` }}</h2>
             <h5>หน่วยชันสูตรโรคสัตว์กลาง คณะสัตวแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h5>
             <h6>ถนนอังรีดูนังต์ แขวงวังใหม่ เขตพญาไท กทม. 10330 โทร.02-218-9606-6 email: cuvdl.thailand@gmail.com</h6>
           </div>
@@ -76,7 +76,7 @@
               <h5 class="col-6 border-r">
                 วันที่เก็บตัวอย่าง
                 <span class="ink ml-1">
-                  {{ moment(submission.sampleInfo.sampleTakenDate).format("DD/MM/YY") }}
+                  {{ getDate(submission.sampleInfo.sampleTakenDate) }}
                 </span>
               </h5>
               <h5 class="col-6">จำนวนตัวอย่าง</h5>
@@ -207,6 +207,7 @@ $ink: #455280;
 
 <script>
 import { mapGetters } from 'vuex'
+import moment from 'moment/src/moment'
 //import jsPDF from 'jspdf'
 
 export default {
@@ -216,6 +217,9 @@ export default {
     ...mapGetters(['user', 'org'])
   },
   methods: {
+    getDate(iso) {
+      return moment(iso).format("DD/MM/YY")
+    }
     /* createPDF () {
       const fileName = 'test'
       const doc = new jsPDF()

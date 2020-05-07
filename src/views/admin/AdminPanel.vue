@@ -25,7 +25,9 @@
 
   </div>
   <div id="admin-content" class="border-left-lighter">
-    <router-view />
+    <transition name="fade">
+      <router-view />
+    </transition>
   </div>
 </div>
 </template>

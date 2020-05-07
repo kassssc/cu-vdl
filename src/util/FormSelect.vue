@@ -10,7 +10,7 @@
     v-bind="$attrs"
     v-on="listeners"
     :disabled="disabled">
-    <template #no-options="{}">
+    <template #no-options>
       <div class="py-1 text-muted">
         ไม่มีรายการที่จะแสดง...
       </div>
@@ -112,11 +112,11 @@
 </style>
 
 <script>
-import vSelect from 'vue-select'
-
 export default {
   name: 'form-select',
-  components: { vSelect },
+  components: {
+    vSelect: () => import(/* webpackChunkName: "group-form-select" */ 'vue-select')
+  },
   inheritAttrs: false,
   props: {
     formLabel: {

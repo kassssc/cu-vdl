@@ -107,7 +107,8 @@
         class="d-flex align-items-center">
     <scrollactive active-class="scrollactive-active"
                   :offset="80"
-                  :modifyUrl="false"
+                  :modify-url="false"
+                  highlight-first-item
                   class="d-flex align-items-center">
       <a  href="#home"
           class="btn btn-transparent scrollactive-item mr-2">

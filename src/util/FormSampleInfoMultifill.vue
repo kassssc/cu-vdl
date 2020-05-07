@@ -89,7 +89,7 @@
 </style>
 
 <script>
-import { uniq } from 'lodash'
+import uniq from 'lodash/uniq'
 
 export default {
   name: 'form-sample-info-multifill',

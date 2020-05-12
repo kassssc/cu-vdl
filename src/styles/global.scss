@@ -119,6 +119,11 @@ $modal-footer-border-width:   0;
 $dropdown-bg:           $accent;
 $dropdown-border-width: 0;
 
+// Modals
+$modal-footer-margin-between: 0;
+$modal-sm:                    350px;
+$modal-md:                    550px;
+
 $grid-breakpoints: (
   xs: 0,
   sm: 576px,

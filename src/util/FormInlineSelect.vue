@@ -2,7 +2,7 @@
 <div class="form-group">
   <label  v-if="label"
           class="form-label"
-          :class="labelSize">
+          :class="labelClass">
     {{ label }}
   </label>
   <div class="d-flex">
@@ -18,33 +18,30 @@
     </button>
   </div>
 
-  <div class="modal fade" id="warnModal" tabindex="-1" role="dialog" aria-labelledby="warnModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 class="modal-title text-primary " id="warnModalLabel">
-            <i class="fas fa-exclamation-triangle icon-md mr-1" />
-            คำเตือน
-          </h3>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true"><i class="fas fa-times icon-md" /></span>
-          </button>
-        </div>
-        <div class="modal-body py-0">
-          <h4 class="text-dark">{{ warningMsg }}</h4>
-        </div>
-        <div class="modal-footer d-flex flex-nowrap">
-          <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
-            ยกเลิก
-          </button>
-          <button type="button" class="btn btn-primary w-100"
-                  @click="selectOption(optionToBeSelected)">
-            ยืนยันว่าจะเปลี่ยน
-          </button>
-        </div>
+  <Modal  modal-id="warnModal"
+          modal-dialog-class="modal-sm modal-dialog-centered"
+          x-close>
+    <template #modal-header>
+      <h3 class="font-chatthai text-primary">
+        <i class="fas fa-exclamation-triangle icon-md mr-1" />
+        คำเตือน
+      </h3>
+    </template>
+    <template #modal-body>
+      <h4 class="text-dark">{{ warningMsg }}</h4>
+    </template>
+    <template #modal-footer>
+      <div class="w-100 d-flex flex-nowrap">
+        <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
+          ยกเลิก
+        </button>
+        <button type="button" class="btn btn-primary ml-2 w-100"
+                @click="selectOption(optionToBeSelected)">
+          ยืนยันว่าจะเปลี่ยน
+        </button>
       </div>
-    </div>
-  </div>
+    </template>
+  </Modal>
 </div>
 </template>
 
@@ -73,7 +70,7 @@ export default {
       type: String,
       default: null
     },
-    labelSize: {
+    labelClass: {
       type: String,
       default: ''
     },

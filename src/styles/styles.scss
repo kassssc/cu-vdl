@@ -56,13 +56,15 @@ html {
 }
 
 // Get rid of number spinner
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
+input {
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  &[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+  }
 }
 
 button.btn, a.btn {
@@ -77,14 +79,9 @@ button.btn, a.btn {
   &.btn-transparent:hover {
     background: $accent;
   }
-  &.btn-icon {
-    &:hover {
-      color: $primary;
-      background: $accent;
-    }
-  }
-  &.btn-width-md {
-    min-width: 150px;
+  &.btn-icon:hover {
+    color: $primary;
+    background: $accent;
   }
   &.btn-x {
     z-index: 2;
@@ -125,9 +122,12 @@ button.btn, a.btn {
       width: 30px;
     }
   }
-  &.scrollactive-active {
+  &.scrollactive-active,
+  &.router-link-active {
+    cursor: default;
+    pointer-events: none;
     color: $primary;
-    background: $accent;
+    background: $accent;  
   }
   &.btn-list {
     text-align: left;
@@ -145,32 +145,6 @@ button.btn, a.btn {
   }
 }
 
-a.router-link-active {
-  cursor: default;
-  pointer-events: none;
-  color: $primary;
-  background: $accent;
-}
-
-.search-input {
-  position: relative;
-  i {
-    position: absolute;
-    pointer-events: none;
-    width: 30px;
-    height: 25px;
-    top: 0;
-    bottom: 0;
-    margin-top: auto;
-    margin-bottom: auto;
-    left: 10px;
-    font-size: 1.3rem;
-  }
-  input.form-control {
-    padding-left: 45px;
-  }
-}
-
 .form-group label {
   font-weight: bold;
   font-size: 1.25em;
@@ -184,7 +158,7 @@ a.router-link-active {
     text-align: right;
     font-size: 1.3rem;
   }
-  &.lg {
+  &.label-lg {
     font-size: 1.5rem;
     color: $dark;
   }
@@ -204,9 +178,6 @@ a.router-link-active {
 
 .font-chatthai {
   font-family: 'CS ChatThai';
-}
-.easy-to-read {
-  line-height: 1.3em;
 }
 .nowrap {
   white-space: nowrap;
@@ -500,6 +471,16 @@ i.red { color: $red; }
   }
 }
 
+.test-row {
+  &:not(:last-child) {
+    border-bottom: 1px solid $accent;
+    padding-bottom: 5px;
+  }
+  &:not(:first-child) {
+    padding-top: 5px;
+  }
+}
+
 .content-height {
   height: $content-height;
 }
@@ -512,4 +493,17 @@ i.red { color: $red; }
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
+}
+
+.fade-no-delay-enter-active, .fade-no-delay-leave-active {
+  transition: opacity 150ms linear;
+}
+.fade-no-delay-enter, .fade-no-delay-leave-to {
+  opacity: 0;
+}
+
+.modal {
+  //background: rgba($black, .55);
+  @include unselectable;
+  backdrop-filter: blur(20px);
 }

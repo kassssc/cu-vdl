@@ -4,7 +4,8 @@
           @click="$emit('back')">
     <i class="fas fa-chevron-left btn-inner-icon-lg text-left mr-0" />กลับไปแก้ไข
   </button>
-  <button class="submit btn btn-lg btn-success">
+  <button class="submit btn btn-lg btn-success"
+          @click="$emit('submit')">
     <i class="fas fa-paper-plane btn-inner-icon-lg text-left mr-0" />
     ยืนยันและส่งตัวอย่าง
   </button>
@@ -126,9 +127,9 @@
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   overflow: hidden;
-  background: rgba($black, .65);
+  background: rgba($black, .55);
+  backdrop-filter: blur(20px);
   z-index: 1000;
-  backdrop-filter: blur(15px);
 }
 .back-to-form {
   position: fixed;

@@ -133,7 +133,7 @@
     </scrollactive>
     <router-link  :to="{name: 'login'}"
                   tag="button"
-                  class="btn btn-primary btn-width-md ml-3">
+                  class="btn btn-primary ml-3 px-4">
       <i class="fas fa-sign-in-alt btn-inner-icon" />
       เข้าสู่ระบบ
     </router-link>

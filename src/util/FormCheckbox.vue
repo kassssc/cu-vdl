@@ -13,8 +13,9 @@
            :class="[labelSize, {'disabled': disabled}]">
       {{ label }}
     </label>
-    <label class="ml-2"
-           :class="{'disabled': disabled}">
+    <label  v-if="secondaryLabel"
+            class="ml-2"
+            :class="{'disabled': disabled}">
       {{ secondaryLabel }}
     </label>
   </div>

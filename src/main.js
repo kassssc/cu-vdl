@@ -42,6 +42,10 @@ const FormDateInput = () => import(/* webpackChunkName: "group-form" */
 const FileView = () => import(/* webpackChunkName: "group-form" */
   '@/util/FileView'
 )
+const SearchInput = () => import(/* webpackChunkName: "group-form" */
+  '@/util/SearchInput'
+)
+const Modal = () => import('@/util/Modal')
 
 Vue.component('checkbox', FormCheckbox)
 Vue.component('FormInput', FormInput)
@@ -52,6 +56,8 @@ Vue.component('FormInlineSelect', FormInlineSelect)
 Vue.component('FormFileUpload', FormFileUpload)
 Vue.component('FormDateInput', FormDateInput)
 Vue.component('FileView', FileView)
+Vue.component('SearchInput', SearchInput)
+Vue.component('Modal', Modal)
 
 /* Vue.mixin({
   methods: {

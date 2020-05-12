@@ -5,12 +5,7 @@
       <i class="fas fa-users icon-lg mr-1"></i>
       รายการ User Account
     </h3>
-    <div class="search-input mb-3">
-      <i class="fas fa-search text-muted" />
-      <input  type="text"
-              class="form-control"
-              placeholder="ค้นหา...">
-    </div>
+    <SearchInput class="mb-3" />
     <div class="d-flex mb-3">
       <button class="filter-btn btn btn-sm primary w-100"
               :class="{'active': activeFilter === 0}"

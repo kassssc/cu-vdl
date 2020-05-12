@@ -93,7 +93,7 @@
     svg { fill: $placeholder; }
     &:focus, &:hover {
       outline: none;
-      svg { fill: $primary; }
+      svg { fill: $pink; }
     }
   }
   .vs__dropdown-menu {

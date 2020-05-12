@@ -5,12 +5,7 @@
       <i class="fas fa-users icon-lg mr-1"></i>
       รายชื่อ องค์กรที่เป็นตัวแทน
     </h3>
-    <div class="search-input mb-3">
-      <i class="fas fa-search text-muted" />
-      <input  type="text"
-              class="form-control"
-              placeholder="ค้นหา...">
-    </div>
+    <SearchInput class="mb-3" />
     <div class="subcontainer pr-2">
       <div class="scroll-container orgs">
         <div  v-for="(i, idx) of [...list]"

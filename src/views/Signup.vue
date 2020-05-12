@@ -122,7 +122,8 @@
                 class="col-2 mb-2 d-flex align-items-end"
                 :clearable="false"
                 :searchable="false"
-                :options="nameTitles" />
+                :options="nameTitles"
+                v-model="employeeSignupForm.userInfo.title" />
               <FormInput
                 class="col-4 mb-2"
                 type="text"
@@ -232,7 +233,8 @@
         <div class="row no-gutters">
           <div class="col-3"></div>
           <div class="col-5">
-            <button class="btn btn-primary btn-lg btn-block">
+            <button class="btn btn-primary btn-lg btn-block"
+                    @click="submitEmployeeForm()">
               <i class="fas fa-paper-plane btn-inner-icon" /> ส่งแบบฟอร์มขอสมัครสมาชิก
             </button>
           </div>
@@ -266,7 +268,8 @@
                 class="col-2 mb-2 d-flex align-items-end"
                 :clearable="false"
                 :searchable="false"
-                :options="nameTitles" />
+                :options="nameTitles"
+                v-model="freelanceSignupForm.userInfo.title" />
               <FormInput
                 class="col-4 mb-2"
                 type="text"
@@ -356,7 +359,8 @@
         <div class="row no-gutters">
           <div class="col-3"></div>
           <div class="col-5">
-            <button class="btn btn-primary btn-lg btn-block">
+            <button class="btn btn-primary btn-lg btn-block"
+                    @click="submitFreelanceForm()">
               <i class="fas fa-paper-plane btn-inner-icon"></i> ส่งแบบฟอร์มขอสมัครสมาชิก
             </button>
           </div>
@@ -418,6 +422,7 @@ export default {
       orgExist: null,
       employeeSignupForm: {
         userInfo: {
+          title: null,
           firstName: null,
           lastName: null,
           email: null,
@@ -435,6 +440,7 @@ export default {
       },
       freelanceSignupForm: {
         userInfo: {
+          title: null,
           firstName: null,
           lastName: null,
           email: null,
@@ -460,7 +466,10 @@ export default {
     }
   },
   methods: {
-    submit () {
+    submitEmployeeForm () {
+
+    },
+    submitFreelanceForm () {
 
     },
     reset () {
@@ -488,6 +497,7 @@ export default {
       }
       this.freelanceSignupForm = {
         userInfo: {
+          title: null,
           firstName: null,
           lastName: null,
           email: null,

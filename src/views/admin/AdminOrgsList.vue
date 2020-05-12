@@ -5,12 +5,7 @@
       <i class="fas fa-sitemap icon-lg mr-1"></i>
       รายการ องค์กร
     </h3>
-    <div class="search-input mb-3">
-      <i class="fas fa-search text-muted" />
-      <input  type="text"
-              class="form-control"
-              placeholder="ค้นหา...">
-    </div>
+    <SearchInput class="mb-3" />
     <div class="scroll-outer-container">
       <div class="scroll-container submitters">
         <div class="fade-gradient-top"></div>

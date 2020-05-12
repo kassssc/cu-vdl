@@ -1,12 +1,13 @@
 <template>
 <div class="page max-width-1500 d-flex align-items-start">
   <div id="view-submission-nav" class="sub-nav sticky p-4">
-    <h3 class="mb-4 ml-2">ติดตามการส่งตัวอย่าง</h3>
-    <router-link to="/tracksubmissions"
-                 tag="button"
-                 class="btn back-btn btn-transparent align-self-end">
+    <router-link  :to="{name: 'submissionslist'}"
+                  tag="button"
+                  exact
+                  class="btn btn-transparent back-btn mb-3">
       <i class="fas fa-chevron-left mr-2" />กลับไป
     </router-link>
+    <h3 class="mb-4 ml-2">ติดตามการส่งตัวอย่าง</h3>
     <scrollactive active-class="scrollactive-active"
                   :offset="200"
                   :modify-url="false"
@@ -38,7 +39,8 @@
           <i class="fas fa-edit btn-inner-icon-lg" />
           แก้ไขการส่งตัวอย่าง
         </a>
-        <a class="btn btn-transparent btn-block btn-lg">
+        <a  class="btn btn-transparent btn-block btn-lg"
+            @click="adminCancelSubmission()">
           <i class="fas fa-window-close btn-inner-icon-lg" />
           ยกเลิก
         </a>
@@ -49,7 +51,8 @@
           <i class="fas fa-edit btn-inner-icon-lg" />
           ส่งคำขอแก้ไข
         </a>
-        <a  class="btn btn-transparent btn-block btn-lg">
+        <a  class="btn btn-transparent btn-block btn-lg"
+            @click="userCancelSubmission()">
           <i class="fas fa-window-close btn-inner-icon-lg" />
           ขอยกเลิก
         </a>
@@ -139,7 +142,7 @@
               class="col-8"
               label="ชื่อผู้ส่ง"
               disabled
-              :value="submission.submitter.firstName" />
+              :value="`${submission.submitter.title}${submission.submitter.firstName} ${submission.submitter.lastName}`" />
             <FormInput
               class="col-8"
               label="องค์กรเจ้าของตัวอย่าง"
@@ -195,7 +198,7 @@
           <div class="form-row">
             <div class="form-group col-3 text-right">
               <h1 class="text-primary">
-                {{`${submission.finalPrice.toLocaleString()}฿`}}
+                {{ `${submission.finalPrice.toLocaleString()}฿` }}
               </h1>
               <h4 class="text-medium">*ค่าบริการโดยประมาน</h4>
             </div>
@@ -262,7 +265,8 @@
         
         <div class="row mt-3">
           <div class="col-12 d-flex justify-content-end">
-            <button class="btn btn-primary">
+            <button class="btn btn-primary"
+                    @click="downloadAllReports()">
               <i class="fas fa-download btn-inner-icon" />
               ดาวน์โหลดทั้งหมด (เป็น zip)
             </button>
@@ -306,7 +310,7 @@
               class="col-8"
               label="ชื่อ-นามสกุล"
               disabled
-              :value="submission.submitter.firstName" />
+              :value="`${submission.submitter.title}${submission.submitter.firstName} ${submission.submitter.lastName}`" />
             <div class="w-100"></div>
             <FormInput
               class="col-4"
@@ -374,7 +378,7 @@
           class="section">
       <h2 class="mb-4">
         <i class="fas fa-edit icon-lg" />
-          ส่งคำขอแก้ไข
+        ส่งคำขอแก้ไข
       </h2>
       <div class="row">
         <div class="col-2">
@@ -384,10 +388,12 @@
           <div class="form-row">
             <FormTextarea
               class="col-8"
-              rows="6" />
+              rows="6"
+              v-model="modificationRequestMsg" />
             <div class="w-100"></div>
             <div class="form-group col-4">
-              <button class="btn btn-primary btn-block">
+              <button class="btn btn-primary btn-block"
+                      @click="submitModificationRequest()">
                 <i class="fas fa-paper-plane btn-inner-icon"></i>
                 ส่งคำขอแก้ไข
               </button>
@@ -423,18 +429,10 @@ $nav-width: 300px;
   }
 }
 .btn.back-btn {
-  position: absolute;
-  top: 25px;
-  left: -100px;
-}
-@media screen and (max-width: 1400px) {
-  .sidebar {
-    width: 40px;
-  }
-  .back-btn {
-    .text {
-      display: none;
-    }
+  @include media-breakpoint-up(xl) {
+    position: absolute;
+    top: 25px;
+    left: -100px;
   }
 }
 </style>
@@ -468,6 +466,7 @@ export default {
           accountType: 1,
           org: 1,
           customerList: [],
+          title: 'นาย',
           firstName: 'สมควร',
           lastName: 'สมสกุล',
           email: 'mr.somkuan@gmail.com',
@@ -514,7 +513,19 @@ export default {
           },
   
         ]
-      }
+      },
+      modificationRequestMsg: null
+    }
+  },
+  methods: {
+    submitModificationRequest () {
+      this.modificationRequestMsg = null
+    },
+    downloadAllReports () {
+    },
+    userCancelSubmission () {
+    },
+    adminCancelSubmission () {
     }
   }
 }

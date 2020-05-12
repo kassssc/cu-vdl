@@ -12,7 +12,7 @@
       <div class="d-flex flex-column">
         <button class="filter-btn btn btn-sm btn-block text-left primary"
                 :class="{'active': activeStatusFilter === 0}"
-                @click="activeStatusFilter = 0">
+                @click="filterByStatus(0)">
           <i  v-if="activeStatusFilter === 0"
               class="fas fa-check btn-inner-icon" />
           <div v-else class="small-square mr-1" />
@@ -25,7 +25,7 @@
                   submissionStatusCSS[filter.id],
                   {'active': activeStatusFilter === filter.id}
                 ]"
-                @click="activeStatusFilter = filter.id">
+                @click="filterByStatus(filter.id)">
           <i  v-if="activeStatusFilter === filter.id"
               class="fas fa-check btn-inner-icon" />
           <div  v-else
@@ -38,7 +38,7 @@
       <div class="d-flex flex-column">
         <button class="filter-btn btn btn-sm btn-block text-left primary"
                 :class="{'active': activeInvoiceStatusFilter === 0}"
-                @click="activeInvoiceStatusFilter = 0">
+                @click="filterByInvoiceStatus(0)">
           <i  v-if="activeInvoiceStatusFilter === 0"
               class="fas fa-check btn-inner-icon" />
           <div v-else class="small-square mr-1" />
@@ -51,7 +51,7 @@
                   submissionInvoiceStatusCSS[filter.id],
                   {'active': activeInvoiceStatusFilter === filter.id}
                 ]"
-                @click="activeInvoiceStatusFilter = filter.id">
+                @click="filterByInvoiceStatus(filter.id)">
           <i  v-if="activeInvoiceStatusFilter === filter.id"
             class="fas fa-check btn-inner-icon" />
           <div  v-else
@@ -67,16 +67,18 @@
           label="name"
           placeholder="ค้นหาผู้ส่ง..."
           :reduce="option => option.id "
-          :options="submitterOptions" />
+          :options="submitterOptions"
+          @input="filterBySubmitter($event)" />
       </template>
       <template v-if="!userIsEmployee">
         <h6 class="mb-2 mt-4 text-medium">กรองโดยองค์กรเจ้าของ</h6>
         <FormSelect
           label="name"
-          placeholder="ค้นหาผู้ส่ง..."
+          placeholder="ค้นหาองค์กร..."
           :reduce="option => option.id "
           :options="orgOptions"
-          v-model="activeOrgFilter" />
+          v-model="activeOrgFilter"
+          @input="filterByOrg($event)" />
       </template>
     </div>
   </div>
@@ -86,12 +88,10 @@
       <div class="col-8">
         <h2>ติดตามผลและรายงาน</h2>
       </div>
-      <div class="col-4 search-input">
-        <i class="fas fa-search text-muted" />
-        <input type="text"
-               class="form-control submission-search"
-               placeholder="ค้นหาด้วยหมายเลขการส่ง...">
-      </div>
+      <SearchInput
+        class="col-4"
+        placeholder="ค้นหาด้วยหมายเลขการส่ง..."
+        @debounced-search="search($event)" />
     </div>
     <div id="table-container" class="scroll-container">
       <table>
@@ -109,6 +109,7 @@
                       'show': sortField === idx
                    }"/>
               </button>
+              <div class="shadow-th"></div>
             </th>
           </tr>
         </thead>
@@ -116,7 +117,6 @@
           <router-link  :to="{name: 'viewsubmission', params: { id: row.orderNum }}"
                         tag="tr"
                         v-for="(row, idx) in [...table.body, ...table.body, ...table.body, ...table.body, ...table.body]"
-                        @click.native="scrollToTop()"
                         :key="idx">
             <td>
               <div  class="color-tag sm"
@@ -156,71 +156,6 @@
   </div>
 </div>  
 </template>
-
-<style lang="scss" scoped>
-.submission-list {
-  flex-grow: 100;
-}
-button.sort-btn {
-  padding: 0.1em 0.4em;
-  font-size: 1.3rem;
-  &.selected {
-    color: $primary;
-    background: $accent;
-  }
-  &:hover i { opacity: 1; }
-  i {
-    opacity: 0; 
-    transition: transform 100ms ease-in-out;
-    &.show { opacity: 1; }
-  }
-}
-#table-container {
-  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 89px);
-  position: relative;
-  margin-top: .3em;
-}
-table {
-  font-size: 1.3rem;
-  letter-spacing: 0.03em;
-  margin-bottom: 10em;
-  font-family: 'CS ChatThai';
-  font-weight: bold;
-  width: 100%;
-  thead {
-    th {
-      position: sticky;
-      padding: 0.2em;
-      top: 0px;
-      height: 50px;
-      background: $light;
-      // Drop shadow effect
-      &::after {  
-        content: '';
-        box-shadow: 0 2px 3px 0px $muted;
-        height: 2px;
-        background: $primary;
-        width: 100%;
-        position: absolute;
-        bottom: 0; left: 0;
-      }
-    }
-  }
-  tbody {
-    tr {
-      border-bottom: 1px solid $accent;
-      &:hover {
-        background: $accent;
-        cursor: pointer;
-      }
-      td {
-        color: $dark;
-        padding: 0.3em 0.55em;
-      }
-    }
-  }
-}
-</style>
 
 <script>
 import { mapGetters } from 'vuex'
@@ -347,9 +282,6 @@ export default {
     }
   },
   methods: {
-    scrollToTop () {
-      window.scrollTo(0,0)
-    },
     setSortField (idx) {
       if (idx === this.sortField) {
         this.sortDirection = this.sortDirection === 0? 1 : 0
@@ -358,9 +290,86 @@ export default {
         this.sortDirection = 0
       }
     },
+    filterByStatus (filterId) {
+      this.activeStatusFilter = filterId
+    },
+    filterByInvoiceStatus (filterId) {
+      this.activeInvoiceStatusFilter = filterId
+    },
+    filterBySubmitter (filterId) {
+    },
+    filterByOrg (filterId) {
+    },
+    search (query) {
+    },
     toggleSidebar () {
       this.sidebarFolded = !this.sidebarFolded
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.submission-list {
+  flex-grow: 100;
+}
+button.sort-btn {
+  padding: .1em .4em 0 .4em;
+  font-size: 1.3rem;
+  &.selected {
+    color: $primary;
+    background: $accent;
+  }
+  &:hover i { opacity: 1; }
+  i {
+    opacity: 0; 
+    transition: transform 100ms ease-in-out;
+    &.show { opacity: 1; }
+  }
+}
+#table-container {
+  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 75px);
+  position: relative;
+  margin-top: .5em;
+}
+table {
+  font-size: 1.3rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 10em;
+  font-family: 'CS ChatThai';
+  font-weight: bold;
+  width: 100%;
+  thead {
+    th {
+      position: sticky;
+      top: 0px;
+      height: 50px;
+      background: $light;
+      .shadow-th {
+        position: absolute;
+        bottom: 2px;
+        left: -5px;
+        right: -5px;
+        height: 15px;
+        box-shadow: 0 6px 5px -5px $default;
+      }
+    }
+  }
+  tbody {
+    tr {
+      border-bottom: 1px solid $accent;
+      &:hover {
+        background: $accent;
+        cursor: pointer;
+      }
+      &:first-child td {
+        padding-top: .5em;
+      }
+      td {
+        color: $dark;
+        padding: 0.3em 0.55em;
+      }
+    }
+  }
+}
+</style>

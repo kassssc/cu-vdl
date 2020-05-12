@@ -7,24 +7,18 @@
     </button>
     <div class="login-logo" />
     <div class="form-row w-100">
-      <div class="form-group col-12">
-        <label class="mb-2">
-          อีเมล
-        </label>
-        <input type="email"
-               class="form-control form-control-lg"
-               v-model="loginForm.email">
-      </div>
-    </div>
-    <div class="form-row w-100">
-      <div class="form-group col-12">
-        <label class="mb-2">
-          รหัสผ่าน
-        </label>
-        <input type="password"
-               class="form-control form-control-lg"
-               v-model="loginForm.password">
-      </div>
+      <FormInput
+        class="col-12"
+        input-class="form-control-lg"
+        type="text"
+        label="อีเมล"
+        v-model="loginForm.email"/>
+      <FormInput
+        class="col-12"
+        input-class="form-control-lg"
+        type="password"
+        label="รหัสผ่าน"
+        v-model="loginForm.password"/>
     </div>
     <div class="form-row w-100">
       <div class="form-group col-12 d-flex justify-content-between">
@@ -32,7 +26,7 @@
                   class="mt-1"
                   label="จำไว้ในระบบ" />
         <button class="btn btn-transparent btn-sm text-muted"
-                role="button">
+                @click="forgotPassword()">
           ลืมรหัสผ่าน
         </button>
       </div>
@@ -44,8 +38,6 @@
           <i class="fas fa-sign-in-alt btn-inner-icon"></i> เข้าสู่ระบบ
         </button>
       </div>
-    </div>
-    <div class="form-row w-100">
       <div class="form-group col-12">
         <router-link  :to="{name: 'signup'}"
                       tag="a"
@@ -119,6 +111,9 @@ export default {
     loginAs (accType) {
       this.loginAsType(accType)
       this.$router.push({ name: 'submissionslist' })
+    },
+    forgotPassword () {
+
     }
   }
 }

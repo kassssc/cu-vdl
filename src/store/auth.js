@@ -1,5 +1,5 @@
 const state = {
-  loggedIn: false,
+  loggedIn: true,
   user: {
     id: 1,
     accountType: 1, // 0: CU employee, 1: employee submitter, 2: freelance

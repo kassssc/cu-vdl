@@ -9,12 +9,9 @@
     </button>
     <div class="content pt-3">
       <h5 class="mb-2 mt-1 text-medium">ค้นหาด้วยหมายเลขคำขอ</h5>
-      <div class="search-input mb-4">
-        <i class="fas fa-search text-muted" />
-        <input type="text"
-              class="form-control submission-search"
-              placeholder=" ใส่หมายเลขคำขอ...">
-      </div>
+      <SearchInput
+        class="mb-4"
+        placeholder="ใส่หมายเลขคำขอ..." />
       <!-- <h5 class="mb-2 text-medium">กรองโดยสถานะ</h5>
       <div class="d-flex flex-column mb-4">
         <button class="filter-btn btn btn-sm btn-block text-left pink"

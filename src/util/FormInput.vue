@@ -1,7 +1,7 @@
 <template>
 <div class="form-group">
   <label  v-if="label"
-          :class="labelSize">
+          :class="labelClass">
     {{ label }}
     <i  v-if="required && !disabled"
         class="fas fa-star-of-life text-primary icon-sm" />
@@ -22,7 +22,7 @@ export default {
       type: String,
       default: null
     },
-    labelSize: {
+    labelClass: {
       type: String,
       default: ''
     },

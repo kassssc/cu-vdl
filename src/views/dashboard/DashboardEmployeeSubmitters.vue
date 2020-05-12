@@ -5,12 +5,7 @@
       <i class="fas fa-users icon-lg mr-1"></i>
       รายชื่อ ตัวแทนส่งตัวอย่าง
     </h3>
-    <div class="search-input mb-3">
-      <i class="fas fa-search text-muted" />
-      <input  type="text"
-              class="form-control"
-              placeholder="ค้นหา...">
-    </div>
+    <SearchInput class="mb-3" />
     <FormInlineSelect
       class="mb-3"
       :options="filterOptions"

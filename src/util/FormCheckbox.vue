@@ -10,7 +10,7 @@
   <div  v-if="label"
         class="w-100 d-flex justify-content-between">
     <label class="ml-2"
-           :class="[labelSize, {'disabled': disabled}]">
+           :class="[labelClass, {'disabled': disabled}]">
       {{ label }}
     </label>
     <label  v-if="secondaryLabel"
@@ -67,7 +67,7 @@
     margin-bottom: 0.2em;
     font-size: 1.15rem;
     color: $dark;
-    &.lg {
+    &.label-lg {
       font-size: 1.3rem;
       margin-top: .2em;
     }
@@ -87,7 +87,7 @@ export default {
       default: '',
       type: String
     },
-    labelSize: {
+    labelClass: {
       default: undefined,
       type: String
     },

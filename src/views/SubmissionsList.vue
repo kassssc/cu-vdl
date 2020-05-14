@@ -8,7 +8,34 @@
          :class="{'flip-x': sidebarFolded}"/>
     </button>
     <div class="content">
-      <h6 class="mb-2 text-medium">สถานะการส่งตัวอย่าง</h6>
+      <h6 class="mb-1 text-medium">ค้นหาด้วยหมายเลขการส่ง</h6>
+      <SearchInput
+        class="d-block"
+        placeholder="ใส่หมายเลขการส่ง..."
+        @debounced-search="search($event)" />
+      <template v-if="!userIsFreelance">
+        <h6 class="mb-1 mt-3 text-medium">กรองโดยผู้ส่ง</h6>
+        <FormSelect
+          class="mb-2"
+          v-model="activeSubmitterFilter"
+          label="name"
+          placeholder="ค้นหาผู้ส่ง..."
+          :reduce="option => option.id "
+          :options="submitterOptions"
+          @input="filterBySubmitter($event)" />
+      </template>
+      <template v-if="!userIsEmployee">
+        <h6 class="mb-1 mt-3 text-medium">กรองโดยองค์กรเจ้าของ</h6>
+        <FormSelect
+          class="mb-2"
+          label="name"
+          placeholder="ค้นหาองค์กร..."
+          :reduce="option => option.id "
+          :options="orgOptions"
+          v-model="activeOrgFilter"
+          @input="filterByOrg($event)" />
+      </template>
+      <h6 class="mb-1 mt-4 text-medium">สถานะการส่งตัวอย่าง</h6>
       <div class="d-flex flex-column">
         <button class="filter-btn btn btn-sm btn-block text-left primary"
                 :class="{'active': activeStatusFilter === 0}"
@@ -34,7 +61,7 @@
           {{ filter.name }}
         </button>
       </div>
-      <h6 class="mb-2 mt-4 text-medium">สถานะการชำระค่าใช่จ่าย</h6>
+      <h6 class="mb-1 mt-4 text-medium">สถานะการชำระค่าใช่จ่าย</h6>
       <div class="d-flex flex-column">
         <button class="filter-btn btn btn-sm btn-block text-left primary"
                 :class="{'active': activeInvoiceStatusFilter === 0}"
@@ -60,31 +87,11 @@
           {{ filter.name }}
         </button>
       </div>
-      <template v-if="!userIsFreelance">
-        <h6 class="mb-2 mt-4 text-medium">กรองโดยผู้ส่ง</h6>
-        <FormSelect
-          v-model="activeSubmitterFilter"
-          label="name"
-          placeholder="ค้นหาผู้ส่ง..."
-          :reduce="option => option.id "
-          :options="submitterOptions"
-          @input="filterBySubmitter($event)" />
-      </template>
-      <template v-if="!userIsEmployee">
-        <h6 class="mb-2 mt-4 text-medium">กรองโดยองค์กรเจ้าของ</h6>
-        <FormSelect
-          label="name"
-          placeholder="ค้นหาองค์กร..."
-          :reduce="option => option.id "
-          :options="orgOptions"
-          v-model="activeOrgFilter"
-          @input="filterByOrg($event)" />
-      </template>
     </div>
   </div>
 
-  <div class="submission-list pl-4 pt-1 border-left-lighter">
-    <div class="row no-gutters w-100">
+  <div class="submission-list pl-4 border-left-lighter">
+    <!-- <div class="row no-gutters w-100">
       <div class="col-8">
         <h2>ติดตามผลและรายงาน</h2>
       </div>
@@ -92,7 +99,7 @@
         class="col-4"
         placeholder="ค้นหาด้วยหมายเลขการส่ง..."
         @debounced-search="search($event)" />
-    </div>
+    </div> -->
     <div id="table-container" class="scroll-container">
       <table>
         <thead id="table-header">
@@ -328,9 +335,8 @@ button.sort-btn {
   }
 }
 #table-container {
-  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 75px);
+  height: calc(100vh - #{$titlebar-height} - #{$footer-height});
   position: relative;
-  margin-top: .5em;
 }
 table {
   font-size: 1.3rem;

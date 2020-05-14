@@ -6,7 +6,7 @@
     <h4 class="text-primary d-none d-xl-block">
       หน่วยชันสูตรโรคสัตว์กลาง จุฬาลงกรณ์มหาวิทยาลัย
     </h4>
-    <h4 class="text-primary d-xl-none">
+    <h4 class="text-primary d-none d-lg-block d-xl-none">
       หน่วยชันสูตรโรคสัตว์กลาง จุฬาฯ
     </h4>
   </div>
@@ -91,11 +91,12 @@
 
       <router-link  :to="{name: 'dashboard'}"
                     tag="a"
-                    class="btn btn-transparent mx-1 d-none d-xl-block">
-        {{ user.firstName + ' ' + user.lastName }}
+                    class="btn btn-transparent mx-1">
+        <span class="mr-2">{{ user.firstName }}</span>
+        <span class="d-xl-inline d-none">{{ user.lastName }}</span>
         <i class="fas fa-cog btn-inner-icon ml-1 mr-0"></i>
       </router-link>
-      <button class="btn btn-transparent btn-icon ml-1 d-none d-xl-flex"
+      <button class="btn btn-transparent btn-icon ml-1 d-flex"
               @click="logoutAndNavigateToHome()">
         <i class="fas fa-sign-out-alt" />
       </button>

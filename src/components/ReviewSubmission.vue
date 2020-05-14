@@ -9,7 +9,7 @@
     <i class="fas fa-paper-plane btn-inner-icon-lg text-left mr-0" />
     ยืนยันและส่งตัวอย่าง
   </button>
-  <div class="d-flex flex-column w-100 align-items-center pt-3 scroll-container">
+  <div class="d-flex flex-column w-100 align-items-center pt-3 full-height scroll-container">
 
     <div class="A4-page-wrapper">
       <div class="A4-page">

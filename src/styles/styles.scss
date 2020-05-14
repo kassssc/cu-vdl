@@ -40,7 +40,7 @@ html {
     font-size: 15px;
   }
   @include media-breakpoint-up(xl) {
-    font-size: 17px;
+    font-size: 16px;
   }
 }
 
@@ -483,6 +483,12 @@ i.red { color: $red; }
 
 .content-height {
   height: $content-height;
+}
+.fill-height {
+  min-height: 100vh;
+}
+.full-height {
+  height: 100vh;
 }
 
 .fade-enter-active, .fade-leave-active {

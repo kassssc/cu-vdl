@@ -174,10 +174,10 @@
             <div class="form-group d-flex col-4">
               <checkbox label="ไทย"
                         class="mr-4"
-                        labelSize="lg"
+                        label-class="label-lg"
                         v-model="submission.reportLang.thai" />
               <checkbox label="English"
-                        labelSize="lg"
+                        label-class="label-lg"
                         v-model="submission.reportLang.eng" />
             </div>
             <div  v-if="noLang"
@@ -203,7 +203,7 @@
         :batch="batch"
         @delete-batch="deleteBatch(idxBatch)" />
     </template>
-    <template v-else-if="!noLang">
+    <template v-else-if="!isGeneralSubmission && !noLang">
       <DisinfectantBatch
         v-for="(batch, idxBatch) of submission.batches"
         :key="idxBatch"

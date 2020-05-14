@@ -28,7 +28,7 @@
 }
 .fade-gradient-footer {
   width: 100vw;
-  height: $footer-height;
+  height: 35px;
   background: linear-gradient(
     to top,
     rgba($accent-light, 1) 0%,

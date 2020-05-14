@@ -68,7 +68,7 @@
 
 <style lang="scss" scoped>
 .__dev-panel {
-  bottom: 20px;
+  right: 20px;
   margin: auto;
   width: 400px;
 }

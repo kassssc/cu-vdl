@@ -21,7 +21,7 @@
     position: absolute;
     pointer-events: none;
     width: 30px;
-    height: 25px;
+    height: 22px;
     top: 0;
     bottom: 0;
     margin-top: auto;

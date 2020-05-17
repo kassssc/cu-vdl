@@ -11,7 +11,7 @@
     </h4>
   </div>
   <div  v-if="loggedIn"
-        class="d-flex align-items-center">
+        class="d-flex align-items-stretch">
     <router-link  :to="{name: 'home'}"
                   tag="a"
                   class="btn btn-transparent mr-2"
@@ -68,9 +68,6 @@
         {{ lang }}
       </button>
     </div> -->
-
-    <div class="d-flex">
-      
     <!-- DROP DOWN NOTIFICATIONS - PHASE 2
       <div class="dropdown ml-3 mr-3">
         <button class="btn btn-transparent btn-icon focusable"
@@ -89,18 +86,17 @@
       </div>
     -->
 
-      <router-link  :to="{name: 'dashboard'}"
-                    tag="a"
-                    class="btn btn-transparent mx-1">
-        <span class="mr-2">{{ user.firstName }}</span>
-        <span class="d-xl-inline d-none">{{ user.lastName }}</span>
-        <i class="fas fa-cog btn-inner-icon ml-1 mr-0"></i>
-      </router-link>
-      <button class="btn btn-transparent btn-icon ml-1 d-flex"
-              @click="logoutAndNavigateToHome()">
-        <i class="fas fa-sign-out-alt" />
-      </button>
-    </div>
+    <router-link  :to="{name: 'dashboard'}"
+                  tag="a"
+                  class="btn btn-transparent mr-2">
+      <span class="mr-2">{{ user.firstName }}</span>
+      <span class="d-xl-inline d-none mr-2">{{ user.lastName }}</span>
+      <i class="fas fa-cog btn-inner-icon mr-0"></i>
+    </router-link>
+    <button class="btn btn-transparent btn-icon d-flex"
+            @click="logoutAndNavigateToHome()">
+      <i class="fas fa-sign-out-alt" />
+    </button>
     
   </div>
 

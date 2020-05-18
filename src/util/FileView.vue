@@ -5,14 +5,14 @@
     {{ label }}
   </label>
   <div class="d-flex">
-    <button class="btn btn-block text-left d-flex align-items-center"
+    <button class="btn btn-block text-left"
             :class="btnClass">
       <i  v-if="iconClass"
           class="fas btn-inner-icon mr-2"
           :class="iconClass" />
       {{ fileName }}
     </button>
-    <button class="btn btn-download d-flex"
+    <button class="btn btn-download"
             :class="btnClass">
       <i class="fa fa-file-download" />
     </button>

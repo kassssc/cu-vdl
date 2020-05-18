@@ -69,6 +69,7 @@ input {
 
 button.btn, a.btn {
   @include unselectable;
+  * { vertical-align: middle; }
   &[disabled] {
     cursor: default;
     pointer-events: none;
@@ -164,6 +165,47 @@ button.btn, a.btn {
   }
 }
 
+table {
+  font-size: 1.4rem;
+  font-family: 'CS ChatThai';
+  font-weight: bold;
+  width: 100%;
+  thead {
+    th {
+      position: sticky;
+      top: 0px;
+      height: 50px;
+      background: $light;
+      padding-left: 0.4em;
+      padding-right: 0.4em;
+      .shadow-th {
+        position: absolute;
+        bottom: 2px;
+        left: -5px;
+        right: -5px;
+        height: 15px;
+        box-shadow: 0 6px 5px -5px $default;
+      }
+    }
+  }
+  tbody {
+    tr {
+      border-bottom: 1px solid $accent;
+      &.clickable:hover {
+        background: $accent;
+        cursor: pointer;
+      }
+      &:first-child td {
+        padding-top: .5em;
+      }
+      td {
+        color: $dark;
+        padding: 0.3em 0.55em;
+      }
+    }
+  }
+}
+
 .page {
   position: relative;
   width: 100%;
@@ -178,6 +220,9 @@ button.btn, a.btn {
 
 .font-chatthai {
   font-family: 'CS ChatThai';
+}
+.vertical-align-top {
+  vertical-align: top;
 }
 .nowrap {
   white-space: nowrap;
@@ -194,6 +239,15 @@ button.btn, a.btn {
 .sticky {
   position: sticky;
   top: $titlebar-height;
+}
+.squeeze-line {
+  line-height: 1.2em;
+}
+.pre-line {
+  white-space: pre-line;
+}
+.pre {
+  white-space: pre;
 }
 
 .border-bottom-pink {
@@ -413,6 +467,21 @@ button.btn, a.btn {
   &.grey {
     background: $medium;
   }
+}
+
+.light-tag {
+  border-radius: .25em;
+  padding: 0 .4em;
+  display: inline-block;
+  font-size: .9em;
+  * { vertical-align: middle; }
+  &.pink { background: rgba($pink, .2); }
+  &.purple { background: rgba($purple, .2); }
+  &.grey { background: rgba($medium, .2); }
+  &.red { background: rgba($red, .2); }
+  &.green { background: rgba($green, .2); }
+  &.blue { background: rgba($blue, .2); }
+  &.orange { background: rgba($orange, .2); }
 }
 
 .filter-btn {

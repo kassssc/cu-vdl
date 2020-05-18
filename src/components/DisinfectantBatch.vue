@@ -204,38 +204,6 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-.cost-container {
-  cursor: pointer;
-  &:hover .hint-container {
-    transform: scale(1);
-  }
-  .hint-container {
-    width: 300px;
-    bottom: 60px;
-    right: -10px;
-    transform-origin: 90% 100%;
-  }
-}
-a.btn.btn-x {
-  &.batch-section {
-    position: absolute;
-    height: 35px;
-    width: 35px;
-    right: 15px;
-    top: 20px;
-    i { font-size: 1.25rem; }
-  }
-  &.disinfectant-test {
-    position: absolute;
-    height: 25px;
-    width: 25px;
-    top: 6px;
-    right: 10px;
-  }
-}
-</style>
-
 <script>
 import { mapGetters } from 'vuex'
 import union from 'lodash/union'
@@ -263,6 +231,10 @@ export default {
     reportLang: {
       type: Object,
       default: () => {}
+    },
+    isEditMode: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -329,3 +301,35 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.cost-container {
+  cursor: pointer;
+  &:hover .hint-container {
+    transform: scale(1);
+  }
+  .hint-container {
+    width: 300px;
+    bottom: 60px;
+    right: -10px;
+    transform-origin: 90% 100%;
+  }
+}
+a.btn.btn-x {
+  &.batch-section {
+    position: absolute;
+    height: 35px;
+    width: 35px;
+    right: 15px;
+    top: 20px;
+    i { font-size: 1.25rem; }
+  }
+  &.disinfectant-test {
+    position: absolute;
+    height: 25px;
+    width: 25px;
+    top: 6px;
+    right: 10px;
+  }
+}
+</style>

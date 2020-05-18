@@ -12,37 +12,18 @@
                   exact>
       <i class="fas fa-edit btn-inner-icon-lg"></i> แก้ไขข้อมูล Account
     </router-link>
-
-    <template v-if="userIsEmployee">
-      <div class="mb-4 w-100 border-bottom-lighter"></div>
-      <h2 class="mb-3 ml-3">องค์กร</h2>
-      <router-link  :to="{name: 'dashboard-employee-submitters'}"
-                    class="btn btn-transparent btn-block btn-lg"
-                    exact>
-        <i class="fas fa-users btn-inner-icon-lg"></i> รายชื่อตัวแทนส่งตัวอย่าง
-      </router-link>
-      <router-link  :to="{name: 'dashboard-employee-addsubmitter'}"
-                    class="btn btn-transparent btn-block btn-lg"
-                    exact>
-        <i class="fas fa-user-plus btn-inner-icon-lg"></i> เพิ่มตัวแทนส่งตัวอย่าง
-      </router-link>
-    </template>
-
-    <template v-else-if="userIsFreelance">
-      <div class="mb-4 w-100 border-bottom-lighter"></div>
-      <h2 class="mb-3 ml-3">การส่งตัวอย่าง</h2>
-      <router-link  :to="{name: 'dashboard-freelance-orgs'}"
-                    class="btn btn-transparent btn-block btn-lg"
-                    exact>
-        <i class="fas fa-users btn-inner-icon-lg"></i> รายชื่อองค์กรที่เป็นตัวแทน
-      </router-link>
-      <router-link  :to="{name: 'dashboard-freelance-addorg'}"
-                    class="btn btn-transparent btn-block btn-lg"
-                    exact>
-        <i class="fas fa-user-plus btn-inner-icon-lg"></i> ขอเป็นตัวแทนองค์กร
-      </router-link>
-    </template>
-    
+    <router-link  v-if="userIsEmployee"
+                  :to="{name: 'dashboard-employee-org'}"
+                  class="btn btn-transparent btn-block btn-lg"
+                  exact>
+      <i class="fas fa-sitemap btn-inner-icon-lg"></i> ข้อมูลองค์กร
+    </router-link>
+    <router-link  v-if="userIsFreelance"
+                  :to="{name: 'dashboard-freelance-orgs'}"
+                  class="btn btn-transparent btn-block btn-lg"
+                  exact>
+      <i class="fas fa-sitemap btn-inner-icon-lg"></i> องค์กรที่เป็นตัวแทน
+    </router-link>
   </div>
   <div id="dashboard-content" class="border-left-lighter">
     <transition name="fade">

@@ -1,7 +1,6 @@
 <template>
 
 <div :class="{'fixed-footer': $route.name !== 'home' && $route.name !== 'submitsamples'}">
-  <div class="fade-gradient-footer"></div>
   <div class="footer">
     <h6>
       <i class="far fa-copyright mr-1" />
@@ -25,17 +24,6 @@
 .fixed-footer {
   position: fixed;
   bottom: 0;
-}
-.fade-gradient-footer {
-  width: 100vw;
-  height: 35px;
-  background: linear-gradient(
-    to top,
-    rgba($accent-light, 1) 0%,
-    rgba($accent-light, 1) 5%,
-    rgba($accent-light, .9) 30%,
-    rgba($accent-light, .1) 100%
-  );
 }
 </style>
 

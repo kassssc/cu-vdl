@@ -32,29 +32,19 @@
         <i class="fas fa-address-book btn-inner-icon-lg" />
         ข้อมูลการติดต่อ
       </a>
-      <div class="w-100 border-bottom-lighter mb-3"></div>
       <template v-if="userIsAdmin">
+        <div class="w-100 border-bottom-lighter mb-3"></div>
         <h3 class="mb-3">Admin</h3>
-        <a class="btn btn-transparent btn-block btn-lg">
+        <router-link  :to="{ name: 'editsubmission', params: { id: 123456 } }"
+                      tag="a"
+                      class="btn btn-transparent btn-block btn-lg">
           <i class="fas fa-edit btn-inner-icon-lg" />
-          แก้ไขการส่งตัวอย่าง
-        </a>
+          แก้ไขการส่งตัวอย่าง          
+        </router-link>
         <a  class="btn btn-transparent btn-block btn-lg"
-            @click="adminCancelSubmission()">
+            @click="showCancelSubmissionModal()">
           <i class="fas fa-window-close btn-inner-icon-lg" />
           ยกเลิก
-        </a>
-      </template>
-      <template v-else>
-        <a  href="#actions"
-            class="btn btn-transparent btn-block btn-lg scrollactive-item">
-          <i class="fas fa-edit btn-inner-icon-lg" />
-          ส่งคำขอแก้ไข
-        </a>
-        <a  class="btn btn-transparent btn-block btn-lg"
-            @click="userCancelSubmission()">
-          <i class="fas fa-window-close btn-inner-icon-lg" />
-          ขอยกเลิก
         </a>
       </template>
     </scrollactive>
@@ -336,73 +326,37 @@
               label="ชื่อองค์กร"
               disabled
               :value="submission.org.name" />
-            <FormInput
-              class="col-8"
-              label="หมายเลขโทรศัพท์"
-              disabled
-              :value="submission.org.phone" />
-            <FormInput
-              class="col-8"
-              label="ที่อยู่"
-              disabled
-              :value="submission.org.addr.line1" />
-            <FormInput
-              class="col-8"
-              disabled
-              :value="submission.org.addr.line2" />
-
-            <div class="w-100"></div>
-
-            <FormInput
-              class="col-3"
-              label="เมือง"
-              disabled
-              :value="submission.org.addr.city" />
-            <FormInput
-              class="col-3"
-              label="จังหวัด"
-              disabled
-              :value="submission.org.addr.province" />
-            <FormInput
-              class="col-2"
-              label="รหัสไปรษณีย์"
-              disabled
-              :value="submission.org.addr.zip" />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div  v-if="!userIsAdmin"
-          id="actions"
-          class="section">
-      <h2 class="mb-4">
-        <i class="fas fa-edit icon-lg" />
-        ส่งคำขอแก้ไข
-      </h2>
-      <div class="row">
-        <div class="col-2">
-          <h4>ข้อความ</h4>
-        </div>
-        <div class="col-10 pt-1">
-          <div class="form-row">
             <FormTextarea
               class="col-8"
-              rows="6"
-              v-model="modificationRequestMsg" />
-            <div class="w-100"></div>
-            <div class="form-group col-4">
-              <button class="btn btn-primary btn-block"
-                      @click="submitModificationRequest()">
-                <i class="fas fa-paper-plane btn-inner-icon"></i>
-                ส่งคำขอแก้ไข
-              </button>
-            </div>
+              label="ที่อยู่"
+              rows="3"
+              disabled
+              :value="submission.org.addr" />
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <Modal  modal-id="cancelSubmissionModal"
+          x-close>
+    <template #modal-header>
+      <h3 class="text-danger">
+        <i class="fas fa-exclamation-triangle icon-lg mr-2" />ท่านกำลังจะยกเลิกการส่งตัวอย่าง
+      </h3>
+    </template>
+    <template #modal-footer>
+      <div class="d-flex flex-nowrap w-100">
+        <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
+          กลับไป
+        </button>
+        <button type="button" class="btn btn-danger ml-2 w-100"
+                @click="adminCancelSubmission()">
+          ยืนยันว่าจะยกเลิก
+        </button>
+      </div>
+    </template>
+  </Modal>
 
 </div>
 </template>
@@ -439,6 +393,7 @@ $nav-width: 300px;
 
 <script>
 import { mapGetters } from 'vuex'
+import $ from 'jquery'
 
 export default {
   name: 'view-submission',
@@ -453,13 +408,7 @@ export default {
           id: 1,
           name: 'ฟาร์มสมควร',
           phone: '087-654-3210',
-          addr: {
-            line1: '123 ทองหล่อ ซ.12 ถนนสุขุมวิท',
-            line2: 'แขวงคลองตันเหนือ เขตวัฒนา',
-            city: 'กรุงเทพ',
-            province: 'กรุงเทพ',
-            zip: '10110'
-          },
+          addr: '123 ทองหล่อ ซ.12 ถนนสุขุมวิท\nแขวงคลองตันเหนือ เขตวัฒนา\nกรุงเทพฯ 10110',
         },
         submitter: {
           id: 1,
@@ -523,9 +472,11 @@ export default {
     },
     downloadAllReports () {
     },
-    userCancelSubmission () {
-    },
     adminCancelSubmission () {
+      $('#cancelSubmissionModal').modal('hide')
+    },
+    showCancelSubmissionModal () {
+      $('#cancelSubmissionModal').modal('show')
     }
   }
 }

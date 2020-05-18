@@ -114,7 +114,7 @@
         <div class="form-group col-6">
           <button class="btn btn-danger btn-block ">
             <i class="fas fa-user-slash btn-inner-icon"></i>
-            ลบ Account
+            ระงับการใช้งาน Account
           </button>
         </div>
       </div>

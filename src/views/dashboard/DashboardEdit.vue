@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <div class="border-bottom-lighter row w-100 py-3">
+    <div class="border-bottom-lighter row w-100 py-3 mb-3">
       <div class="col-xl-3 col-12">
         <h4>เปลี่ยนรหัสผ่าน</h4>
       </div>
@@ -63,7 +63,48 @@
       </div>
     </div>
 
+    <div  v-if="!userIsAdmin"
+          class="border-bottom-lighter row w-100 py-3">
+      <div class="col-xl-3 col-12">
+        <h4>ระงับการใช้งาน Account</h4>
+      </div>
+      <div class="col-xl-9 col-12">
+        <div class="form-row">
+          <div class="form-group col-6">
+            <button class="btn btn-block btn-danger"
+                    @click="showDeactivateAccountModal()">
+              <i class="fas fa-user-slash btn-inner-icon" />
+              ระงับการใช้งาน Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+
+  <Modal  modal-id="deactivateAccountModal"
+          x-close>
+    <template #modal-header>
+      <h3 class="text-danger">
+        <i class="fas fa-exclamation-triangle icon-lg mr-2" />ท่านกำลังจะระงับการใช้งาน Account
+      </h3>
+    </template>
+    <template #modal-body>
+      <h4 class="my-2">หากท่านต้องการกลับมาใช้ Account นี้ ท่านจะต้องติดต่อ หน่วยชันสูตรโรคสัตว์กลาง โดยตรงเพื่อนำ Account กลับมา</h4>
+    </template>
+    <template #modal-footer>
+      <div class="d-flex flex-nowrap w-100">
+        <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
+          ยกเลิก
+        </button>
+        <button type="button" class="btn btn-danger ml-2 w-100"
+                @click="deactivateAccount()">
+          ยืนยันว่าจะระงับการใช้งาน Account
+        </button>
+      </div>
+    </template>
+  </Modal>
 </div>
 </template>
 
@@ -71,15 +112,31 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import $ from 'jquery'
 
 export default {
   name: 'dashboard-edit',
   computed: {
     ...mapGetters([
       'user',
-      'org'
+      'org',
+      'userIsAdmin'
     ])
   },
+  methods: {
+    ...mapActions(['logout']),
+    deactivateAccount () {
+      $('#deactivateAccountModal').modal('hide')
+      // deactivate account
+      // then logout
+      // navigate to home
+      this.logout()
+      this.$router.push({ name: 'home' })
+    },
+    showDeactivateAccountModal () {
+      $('#deactivateAccountModal').modal('show')
+    }
+  }
 }
 </script>

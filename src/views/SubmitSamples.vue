@@ -1,15 +1,20 @@
 <template>
-<div class="page max-width-1500 d-flex flex-column">
-  <div class="mb-2">
+<div class="page max-width-1500 d-flex flex-column pb-5 mb-5">
+  <div class="mb-2 position-relative">
+    <button v-if="isEditMode"
+            class="btn back-btn btn-transparent"
+            @click="$router.go(-1)">
+      <i class="fas fa-chevron-left mr-2" />กลับไป
+    </button>
     <i class="fas fa-vial icon-lg"></i>
     <h2 class="d-inline">
-      ส่งตัวอย่าง
+      {{ isEditMode? `แก้ไขการส่งตัวอย่าง #${$route.params.id}` : 'ส่งตัวอย่าง'}}
     </h2>
   </div>
 
   <div class="submit-samples-nav d-flex align-items-center p-2">
     <scrollactive active-class="scrollactive-active"
-                  :offset="200"
+                  :offset="250"
                   :modify-url="false"
                   highlight-first-item
                   class="d-flex align-items-center">
@@ -35,7 +40,7 @@
     </scrollactive>
     <button class="btn btn-transparent btn-sm"
             @click="inReviewMode = true">
-      สรุปและส่ง
+      {{ `สรุปและ${isEditMode? 'บันทึก' : 'ส่ง'}` }}
     </button>
   </div>
 
@@ -52,7 +57,7 @@
             class="col-4"
             label="ชื่อผู้ส่ง"
             disabled  
-            :value="`${user.title}${user.firstName} ${user.lastName}`" />
+            :value="isEditMode? submission.submitterName : `${user.title}${user.firstName} ${user.lastName}`" />
           <FormDateInput
             class="col-2"
             label="วันที่ส่งตัวอย่าง"
@@ -201,6 +206,7 @@
         :idx="idxBatch"
         :has-multiple-batches="hasMultipleBatches"
         :batch="batch"
+        :is-edit-mode="isEditMode"
         @delete-batch="deleteBatch(idxBatch)" />
     </template>
     <template v-else-if="!isGeneralSubmission && !noLang">
@@ -212,6 +218,7 @@
         :has-multiple-batches="hasMultipleBatches"
         :batch="batch"
         :report-lang="submission.reportLang"
+        :is-edit-mode="isEditMode"
         @delete-batch="deleteBatch(idxBatch)" />
     </template>
   </div>
@@ -229,13 +236,14 @@
   <button class="btn btn-primary align-self-center px-5 my-5 btn-lg"
           @click="inReviewMode = true">
     <i class="fas fa-check btn-inner-icon" />
-    สรุปและส่ง
+    {{ `สรุปและ${isEditMode? 'บันทึก' : 'ส่ง'}` }}
   </button>
 
   <transition name="fade">
     <ReviewSubmission
       v-if="inReviewMode"
       :submission="submission"
+      :is-edit-mode="isEditMode"
       @back="inReviewMode = false"
       @submit="submit()" />
   </transition>
@@ -244,7 +252,8 @@
           data-backdrop="static">
     <template #modal-header>
       <h3 class="text-primary">
-        <i class="fas fa-check icon-lg mr-2" />การส่งแบบฟอร์มสำเร็จเรียบร้อย
+        <i class="fas fa-check icon-lg mr-2" />
+        {{ isEditMode? 'การแก้ไขถูกบันทึกเรียบร้อยแล้ว' : 'การส่งแบบฟอร์มสำเร็จเรียบร้อย' }}
       </h3>
     </template>
     <template #modal-footer>
@@ -268,11 +277,9 @@
     </button>
     <div v-if="DEV_VIEW_JSON">
       <h3>JSON Form Data</h3>
-      <pre class="font-chatthai">
-        <h4 class="text-default">
+        <h4 class="text-default pre font-chatthai">
           {{ JSON.stringify(submission, null, '\t') }}
         </h4>
-      </pre>
     </div>
   </div>
 
@@ -325,7 +332,8 @@ export default {
       'tests',
       'testType',
       'testCategory',
-      'sensitivityTestIds'
+      'sensitivityTestIds',
+      'mockSubmission'
     ]),
     isGeneralSubmission () {
       return this.submission.type === 1
@@ -339,6 +347,9 @@ export default {
     noLang () {
       return this.isDisinfectantSubmission && !this.submission.reportLang.thai && !this.submission.reportLang.eng
     },
+    isEditMode () {
+      return !!this.$route.params.id
+    }
   },
   watch: {
     inReviewMode () {
@@ -350,12 +361,16 @@ export default {
     }
   },
   beforeMount () {
-    this.submission.submitterId = this.user.id
-    this.submission.submitDate = new Date().toISOString()
-    this.submission.orgId = this.userIsEmployee? this.org.id : null
-    this.onReportTypeChange()
+    if (this.isEditMode) {
+      this.submission = this.mockSubmission
+    } else {
+      this.submission.submitterId = this.user.id
+      this.submission.submitDate = new Date().toISOString()
+      this.submission.orgId = this.userIsEmployee? this.org.id : null
+      this.onReportTypeChange()
+    }
   },
-  mounted(){
+  mounted () {
     //this.$smoothReflow({el: '#info'})
     //this.$smoothReflow({el: '#report'})
   },
@@ -493,6 +508,12 @@ export default {
   max-height: 0;
   opacity: 0;
   animation: shrink-out-batch 700ms cubic-bezier(0.1, 1, 0.2, 1) forwards;
+}
+
+.back-btn {
+  position: absolute;
+  top: 0;
+  left: -120px;
 }
 
 .submit-samples-nav {

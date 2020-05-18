@@ -114,12 +114,12 @@
                   class="col-10 mb-2"
                   label="แขวง เขต / ตำบล อำเภอ"
                   type="text"
+                  required
                   v-model="userFormData.org.addr2" />
                 <FormInput
                   class="col-4 mb-2"
                   label="เมือง"
                   type="text"
-                  required
                   v-model="userFormData.org.city" />
                 <FormInput
                   class="col-4 mb-2"

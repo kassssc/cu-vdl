@@ -6,7 +6,11 @@
     <i  v-if="required && !disabled"
         class="fas fa-star-of-life text-primary icon-sm" />
   </label>
-  <textarea :class="['form-control', inputClass]"
+  <textarea :class="[
+              'form-control',
+              inputClass,
+              { 'resize': resizable }
+            ]"
             v-bind="$attrs"
             v-on="listeners" />
 </div>
@@ -15,13 +19,17 @@
 <style lang="scss">
 textarea.form-control {
   line-height: 1.2em;
-  padding: 0.5em
+  padding: 0.5em;
+  resize: none;
+  &.resize {
+    resize: vertical;
+  }
 }
 </style>
 
 <script>
 export default {
-  name: 'form-input',
+  name: 'form-textarea',
   inheritAttrs: false,
   props: {
     label: {
@@ -37,6 +45,10 @@ export default {
       default: ''
     },
     required: {
+      type: Boolean,
+      default: false
+    },
+    resizable: {
       type: Boolean,
       default: false
     }

@@ -105,7 +105,8 @@
         <thead id="table-header">
           <tr>
             <th v-for="(col, idx) in table.head"
-                :key="idx">
+                :key="idx"
+                class="p-0">
               <button class="btn btn-transparent sort-btn"
                       :class="{'selected': sortField === idx}"
                       @click="setSortField(idx)">
@@ -123,18 +124,23 @@
         <tbody>
           <router-link  :to="{name: 'viewsubmission', params: { id: row.orderNum }}"
                         tag="tr"
+                        class="clickable"
                         v-for="(row, idx) in [...table.body, ...table.body, ...table.body, ...table.body, ...table.body]"
                         :key="idx">
             <td>
-              <div  class="color-tag sm"
+              <div  class="light-tag"
                     :class="submissionStatusCSS[row.status]">
-                {{ row.statusKey }}
+                <div  class="small-square mr-1"
+                      :class="submissionStatusCSS[row.status]" />
+                {{ row.statusDisplay }}
               </div>
             </td>
             <td>
-              <div  class="color-tag sm"
+              <div  class="light-tag"
                     :class="submissionInvoiceStatusCSS[row.invoiceStatus]">
-                {{ row.invoiceStatusKey }}
+                <div  class="small-square mr-1"
+                      :class="submissionInvoiceStatusCSS[row.invoiceStatus]" />
+                {{ row.invoiceStatusDisplay }}
               </div>
             </td>
             <td>{{ row.orderNum }}</td>
@@ -143,7 +149,6 @@
             <td>{{ row.receivedDate }}</td>
             <td>{{ row.person }}</td>
             <td>{{ row.organization }}</td>
-            <td>{{ '฿' + row.price }}</td>
             <td>
               <button class="btn btn-transparent btn-icon"
                       @click="e => e.stopPropagation()">
@@ -198,15 +203,14 @@ export default {
           'วันที่รับ',
           'ผู้จัดส่ง',
           'องค์กร',
-          'ราคา',
           'ใบส่งตัวอย่าง',
         ],
         body: [
           {
             status: 1,
-            statusKey: 'S',
+            statusDisplay: 'ส่งแล้ว',
             invoiceStatus: 1,
-            invoiceStatusKey: 'N',
+            invoiceStatusDisplay: 'ยังไม่ออก Invoice',
             orderNum: 123456,
             submittedDate: '05/05/2020',
             receiptNum: 654321,
@@ -220,9 +224,9 @@ export default {
           },
           {
             status: 2,
-            statusKey: 'R',
+            statusDisplay: 'ได้รับแล้ว',
             invoiceStatus: 2,
-            invoiceStatusKey: 'I',
+            invoiceStatusDisplay: 'ออก Invoice แล้ว',
             orderNum: 223344,
             submittedDate: '05/05/2020',
             receiptNum: 654321,
@@ -236,9 +240,9 @@ export default {
           },
           {
             status: 3,
-            statusKey: 'C',
+            statusDisplay: 'เสร็จสิ้น',
             invoiceStatus: 3,
-            invoiceStatusKey: 'P',
+            invoiceStatusDisplay: 'ชำระค่าบริการแล้ว',
             orderNum: 787878,
             submittedDate: '05/05/2020',
             receiptNum: 654321,
@@ -252,9 +256,9 @@ export default {
           },
           {
             status: 4,
-            statusKey: 'X',
+            statusDisplay: 'ยกเลิก',
             invoiceStatus: 1,
-            invoiceStatusKey: 'N',
+            invoiceStatusDisplay: 'ยังไม่ออก Invoice',
             orderNum: 555555,
             submittedDate: '05/05/2020',
             receiptNum: 654321,
@@ -322,7 +326,7 @@ export default {
 }
 button.sort-btn {
   padding: .1em .4em 0 .4em;
-  font-size: 1.3rem;
+  font-size: 1em;
   &.selected {
     color: $primary;
     background: $accent;
@@ -337,45 +341,5 @@ button.sort-btn {
 #table-container {
   height: calc(100vh - #{$titlebar-height} - #{$footer-height});
   position: relative;
-}
-table {
-  font-size: 1.3rem;
-  letter-spacing: 0.03em;
-  margin-bottom: 10em;
-  font-family: 'CS ChatThai';
-  font-weight: bold;
-  width: 100%;
-  thead {
-    th {
-      position: sticky;
-      top: 0px;
-      height: 50px;
-      background: $light;
-      .shadow-th {
-        position: absolute;
-        bottom: 2px;
-        left: -5px;
-        right: -5px;
-        height: 15px;
-        box-shadow: 0 6px 5px -5px $default;
-      }
-    }
-  }
-  tbody {
-    tr {
-      border-bottom: 1px solid $accent;
-      &:hover {
-        background: $accent;
-        cursor: pointer;
-      }
-      &:first-child td {
-        padding-top: .5em;
-      }
-      td {
-        color: $dark;
-        padding: 0.3em 0.55em;
-      }
-    }
-  }
 }
 </style>

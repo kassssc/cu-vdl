@@ -7,7 +7,7 @@
   <button class="submit btn btn-lg btn-success"
           @click="$emit('submit')">
     <i class="fas fa-paper-plane btn-inner-icon-lg text-left mr-0" />
-    ยืนยันและส่งตัวอย่าง
+    {{ isEditMode? 'ยืนยันและบันทึก' : 'ยืนยันและส่งตัวอย่าง' }}
   </button>
   <div class="d-flex flex-column w-100 align-items-center pt-3 full-height scroll-container">
 
@@ -58,15 +58,7 @@
             </div>
             <div class="row no-gutters no-border-b">
               <h5 class="col-3">ที่อยู่</h5>
-              <h5 class="col-9 ink">{{ org.addr.line1 }}</h5>
-            </div>
-            <div class="row no-gutters no-border-b">
-              <h5 class="col-3"></h5>
-              <h5 class="col-9 ink">{{ org.addr.line2 }}</h5>
-            </div>
-            <div class="row no-gutters border-b">
-              <h5 class="col-3"></h5>
-              <h5 class="col-9 ink">{{ `${org.addr.city} ${org.addr.province} ${org.addr.zip}`}}</h5>
+              <h5 class="col-9 ink pre-line">{{ org.addr }}</h5>
             </div>
             <div class="row no-gutters">
               
@@ -121,6 +113,40 @@
   </div>
 </div>
 </template>
+
+<script>
+import { mapGetters } from 'vuex'
+import moment from 'moment/src/moment'
+//import jsPDF from 'jspdf'
+
+export default {
+  name: 'review-submission',
+  props: {
+    submission: {
+      type: Object,
+      required: true
+    },
+    isEditMode: {
+      type: Boolean,
+      required: true
+    }
+  },
+  computed: {
+    ...mapGetters(['user', 'org'])
+  },
+  methods: {
+    getDate(iso) {
+      return moment(iso).format("DD/MM/YY")
+    }
+    /* createPDF () {
+      const fileName = 'test'
+      const doc = new jsPDF()
+      doc.text("Hello World", 10, 10);
+      doc.save(fileName + '.pdf');
+    } */
+  }
+}
+</script>
 
 <style lang="scss" scoped>
 .preview-bg {
@@ -205,28 +231,3 @@ $ink: #455280;
   }
 }
 </style>
-
-<script>
-import { mapGetters } from 'vuex'
-import moment from 'moment/src/moment'
-//import jsPDF from 'jspdf'
-
-export default {
-  name: 'review-submission',
-  props: ['submission'],
-  computed: {
-    ...mapGetters(['user', 'org'])
-  },
-  methods: {
-    getDate(iso) {
-      return moment(iso).format("DD/MM/YY")
-    }
-    /* createPDF () {
-      const fileName = 'test'
-      const doc = new jsPDF()
-      doc.text("Hello World", 10, 10);
-      doc.save(fileName + '.pdf');
-    } */
-  }
-}
-</script>

@@ -229,7 +229,8 @@
           <h5>หมายเลข</h5>
         </div>
         <div class="form-group mb-2 px-1 col-5">
-          <h5>ID ตัวอย่าง</h5>
+          <h5 class="d-inline">ID ตัวอย่าง</h5>
+          <i class="fas fa-star-of-life text-primary icon-sm ml-1" />
         </div>
         <div class="form-group mb-2 px-1 col-5">
           <h5>ข้อมูลเพิ่มเติม</h5>
@@ -260,25 +261,6 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-a.btn.btn-x {
-  &.batch-section {
-    position: absolute;
-    height: 35px;
-    width: 35px;
-    right: 15px;
-    top: 20px;
-    i { font-size: 1.25rem; }
-  }
-  &.custom-test {
-    height: 30px;
-    width: 25px;
-    padding-top: 0.1em;
-    margin-left: -5px;
-  }
-}
-</style>
-
 <script>
 import { mapGetters } from 'vuex'
 
@@ -304,6 +286,10 @@ export default {
     idx: {
       type: Number,
       default: 0
+    },
+    isEditMode: {
+      type: Boolean,
+      required: true
     }
   },
   computed: {
@@ -422,7 +408,26 @@ export default {
     },
   },
   beforeMount () {
-    this.onBatchTestTypeChange()
+    if (!this.isEditMode) this.onBatchTestTypeChange()
   }
 }
 </script>
+
+<style lang="scss" scoped>
+a.btn.btn-x {
+  &.batch-section {
+    position: absolute;
+    height: 35px;
+    width: 35px;
+    right: 15px;
+    top: 20px;
+    i { font-size: 1.25rem; }
+  }
+  &.custom-test {
+    height: 30px;
+    width: 25px;
+    padding-top: 0.1em;
+    margin-left: -5px;
+  }
+}
+</style>

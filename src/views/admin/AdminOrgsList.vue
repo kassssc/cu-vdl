@@ -39,33 +39,12 @@
           label="ชื่อองค์กร"
           disabled
           :value="org.name" />
-        <FormInput
+        <FormTextarea
           class="col-10"
           label="ที่อยู่"
+          rows="3"
           disabled
-          :value="org.addr.line1" />
-        <FormInput
-          class="col-10"
-          disabled
-          :value="org.addr.line2" />
-
-        <div class="w-100"></div>
-
-        <FormInput
-          class="col-4"
-          label="เมือง"
-          disabled
-          :value="org.addr.city" />
-        <FormInput
-          class="col-4"
-          label="จังหวัด"
-          disabled
-          :value="org.addr.province" />
-        <FormInput
-          class="col-2"
-          label="รหัสไปรษณีย์"
-          disabled
-          :value="org.addr.zip" />
+          :value="org.addr" />
       </div>
 
       <div class="form-row border-bottom-lighter py-3">

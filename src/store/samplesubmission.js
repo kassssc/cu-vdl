@@ -239,7 +239,81 @@ const state = {
       reportType: 2,
       testInfo: [ ]
     }
-  ]
+  ],
+  mockSubmission: {
+    id: 123456,
+    type: 1,
+    submitterId: 1,
+    submitterName: 'นายสมควร สมสกุล',
+    submitDate: '05/05/2020',
+    orgId: 1,
+    notifications: {
+      email: false,
+      phone: true
+    },
+    sampleInfo: {
+      sampleTakenDate: '01/05/2020',
+      sampleType: 'เลือด',
+      animalType: 'กระต่าย',
+      animalSpecies: null,
+      animalAge: '2 เดือน',
+      animalCount: 125,
+      illness: null,
+      vaccinations: null,
+    },
+    reportLang: null,
+    batches: [
+      {
+        testType: 1,
+        sampleCount: 6,
+        totalPrice: 25500,
+        tests: {
+          0: true,
+          1: false,
+          2: false,
+          3: false,
+          4: false,
+          5: false,
+          6: false,
+          7: true,
+          8: false,
+          9: true,
+          10: false,
+          11: false,
+          12: true,
+          13: false
+        },
+        samples: [
+          {
+            sampleId: 'A1',
+            extraInfo: null
+          },
+          {
+            sampleId: 'A2',
+            extraInfo: 'สัตว์มีไข้'
+          },
+          {
+            sampleId: 'A3',
+            extraInfo: null
+          },
+          {
+            sampleId: 'A4',
+            extraInfo: 'สีเลือดมีความผิดปกติ'
+          },
+          {
+            sampleId: 'A5',
+            extraInfo: null
+          },
+          {
+            sampleId: 'A6',
+            extraInfo: null
+          }
+        ],
+        customTests: [],
+        sensitivityTests: null
+      }
+    ]
+  }
 }
 
 const getters = {
@@ -263,6 +337,9 @@ const getters = {
       .filter( t => t.category === 12)
       .map( t => t.id)
   },
+  mockSubmission: state => {
+    return state.mockSubmission
+  }
 }
 
 export default {

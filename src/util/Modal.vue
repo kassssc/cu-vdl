@@ -13,7 +13,7 @@
         <slot name="modal-header" />
         <button v-if="xClose"
                 type="button"
-                class="close"
+                class="close btn"
                 data-dismiss="modal"
                 aria-label="Close">
           <span aria-hidden="true"><i class="fas fa-times icon-md" /></span>
@@ -53,6 +53,9 @@ export default {
 }
 
 </script>
-<style lang="scss" scoped>
 
+<style lang="scss" scoped>
+.modal {
+  font-family: 'CHULALONGKORN';
+}
 </style>

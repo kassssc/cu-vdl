@@ -22,7 +22,7 @@
           modal-dialog-class="modal-sm modal-dialog-centered"
           x-close>
     <template #modal-header>
-      <h3 class="font-chatthai text-primary">
+      <h3 class="text-primary">
         <i class="fas fa-exclamation-triangle icon-md mr-1" />
         คำเตือน
       </h3>

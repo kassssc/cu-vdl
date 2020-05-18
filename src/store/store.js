@@ -28,13 +28,7 @@ export default new Vuex.Store({
       submitters: [],
       name: 'ฟาร์มสมควร',
       phone: '087-654-3210',
-      addr: {
-        line1: '123 ทองหล่อ ซ.12 ถนนสุขุมวิท',
-        line2: 'แขวงคลองตันเหนือ เขตวัฒนา',
-        city: 'กรุงเทพ',
-        province: 'กรุงเทพ',
-        zip: '10110'
-      },
+      addr: '123 ทองหล่อ ซ.12 ถนนสุขุมวิท\nแขวงคลองตันเหนือ เขตวัฒนา\nกรุงเทพฯ 10110',
       documents: {
         ภพ20: null,
         registration: null

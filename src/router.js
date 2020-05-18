@@ -40,6 +40,14 @@ const router = new Router({
                 '@/views/ViewSubmission'
               ),
               meta: { requiresLogin: true }
+            },
+            {
+              path: 'edit/:id',
+              name: 'editsubmission',
+              component: () => import(/* webpackChunkName: "group-submitsamples" */
+                '@/views/SubmitSamples'
+              ),
+              meta: { requiresLogin: true, requiresAdmin: true },
             }
           ]
         },
@@ -77,35 +85,18 @@ const router = new Router({
             },
 
             {
-              path: 'employee/submitters',
-              name: 'dashboard-employee-submitters',
-              component: () => import(/* webpackChunkName: "group-employee" */
-                '@/views/dashboard/DashboardEmployeeSubmitters'
+              path: 'employee/org',
+              name: 'dashboard-employee-org',
+              component: () => import(/* webpackChunkName: "group-dashboard" */
+                '@/views/dashboard/DashboardEmployeeOrg'
               ),
               meta: { requiresLogin: true }
             },
-            {
-              path: 'employee/addsubmitter',
-              name: 'dashboard-employee-addsubmitter',
-              component: () => import(/* webpackChunkName: "group-employee" */
-                '@/views/dashboard/DashboardEmployeeAddSubmitter'
-              ),
-              meta: { requiresLogin: true }
-            },
-
             {
               path: 'freelance/orgs',
               name: 'dashboard-freelance-orgs',
-              component: () => import(/* webpackChunkName: "group-freelance" */
+              component: () => import(/* webpackChunkName: "group-dashboard" */
                 '@/views/dashboard/DashboardFreelanceOrgs'
-              ),
-              meta: { requiresLogin: true }
-            },
-            {
-              path: 'freelance/addorg',
-              name: 'dashboard-freelance-addorg',
-              component: () => import(/* webpackChunkName: "group-freelance" */
-                '@/views/dashboard/DashboardFreelanceAddOrg'
               ),
               meta: { requiresLogin: true }
             }
@@ -144,14 +135,6 @@ const router = new Router({
               meta: { requiresLogin: true, requiresAdmin: true },
             }    
           ]
-        },
-        {
-          path: '/adminrequests',
-          name: 'admin-requests',
-          component: () => import(/* webpackChunkName: "group-admin" */
-            '@/views/admin/AdminRequests'
-          ),
-          meta: { requiresLogin: true, requiresAdmin: true },
         }
       ]
     },

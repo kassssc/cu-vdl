@@ -125,6 +125,7 @@ button.btn-option {
   padding-right: 0;
   &.selected {
     @include color-primary-white;
+    pointer-events: none;
     &.teal { background: $teal; }
     &.blue { background: $blue; }
     &.purple { background: $purple; }

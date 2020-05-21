@@ -1,5 +1,5 @@
 <template>
-<div class="fill-page d-flex flex-column justify-content-center align-items-center">
+<div class="d-flex flex-column justify-content-center align-items-center fill-height">
   <div class="login-form">
     <button class="btn btn-transparent mb-3 align-self-start"
             @click="$router.go(-1)">

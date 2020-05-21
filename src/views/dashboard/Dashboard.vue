@@ -1,6 +1,6 @@
 <template>
-<div class="page max-width-1500 d-flex">
-  <div id="dashboard-nav" class="sub-nav sticky p-4">
+<div class="page page-lg d-flex">
+  <div class="sub-nav">
     <h2 class="mb-4 ml-3">Account</h2>
     <router-link  :to="{name: 'dashboard'}"
                   class="btn btn-transparent btn-block btn-lg"
@@ -25,24 +25,13 @@
       <i class="fas fa-sitemap btn-inner-icon-lg"></i> องค์กรที่เป็นตัวแทน
     </router-link>
   </div>
-  <div id="dashboard-content" class="border-left-lighter">
+  <div class="sub-nav-content content-height">
     <transition name="fade">
       <router-view />
     </transition>
   </div>
 </div>
 </template>
-
-<style lang="scss" scoped>
-$nav-width: 350px;
-#dashboard-nav {
-  width: $nav-width;
-}
-#dashboard-content {
-  width: calc(100% - #{$nav-width});
-  min-height: $content-height;
-}
-</style>
 
 <script>
 import { mapGetters } from 'vuex'

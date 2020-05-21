@@ -1,5 +1,5 @@
 <template>
-<div class="p-4">
+<div>
   <div class="row">
     <div class="col-12">
       <h3 class="mb-4">
@@ -16,16 +16,19 @@
       </div>
       <div class="col-xl-10 col-12">
         <div class="form-row">
-          <FormInput
-            class="col-5"
-            input-class="form-control-lg text-primary"
-            label="ประเภท Account"
-            :value="accountTypes[user.accountType]"
-            disabled />
+          <div class="form-group col-5">
+            <h5 class="text-medium mb-1">ประเภท Account</h5>
+            <div  class="light-tag d-block lg"
+                  :class="accountTypeCSS[user.accountType]">
+              <div  class="small-square mr-1"
+                    :class="accountTypeCSS[user.accountType]" />
+              {{ accountTypes[user.accountType] }}
+            </div>
+          </div>
           <div class="w-100"></div>
           <FormInput
             class="col-5"
-            label="ชื่อ"
+            label="ชื่อ-นามสกุล"
             :value="`${user.title}${user.firstName} ${user.lastName}`"
             disabled />
           <div class="w-100"></div>
@@ -64,9 +67,6 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-</style>
-
 <script>
 import { mapGetters } from 'vuex'
 
@@ -80,5 +80,14 @@ export default {
       'userIsAdmin',
     ])
   },
+  data () {
+    return {
+      accountTypeCSS: {
+        0: 'primary',
+        1: 'purple',
+        2: 'pink'
+      }
+    }
+  }
 }
 </script>

@@ -4,7 +4,7 @@
           :class="labelSize">
     {{ label }}
     <i  v-if="required"
-        class="fas fa-star-of-life text-primary icon-sm" />
+        class="fas fa-star-of-life" />
   </label>
   <div  class="file-input form-control pointer d-flex align-items-center justify-content-between"
         :class="inputClass"

@@ -1,5 +1,5 @@
 <template>                                                            
-<div class="page d-flex align-items-start">
+<div class="page page-xxl d-flex align-items-start">
   <div class="sidebar content-height"
        :class="{'folded': sidebarFolded}">
     <button class="btn btn-transparent fold-btn align-self-end"
@@ -20,7 +20,7 @@
           v-model="activeSubmitterFilter"
           label="name"
           placeholder="ค้นหาผู้ส่ง..."
-          :reduce="option => option.id "
+          :reduce="option => option.id"
           :options="submitterOptions"
           @input="filterBySubmitter($event)" />
       </template>
@@ -49,7 +49,7 @@
                 :key="filter.id"
                 class="filter-btn btn btn-sm btn-block text-left"
                 :class="[
-                  submissionStatusCSS[filter.id],
+                  submissionStatusData[filter.id].color,
                   {'active': activeStatusFilter === filter.id}
                 ]"
                 @click="filterByStatus(filter.id)">
@@ -57,8 +57,8 @@
               class="fas fa-check btn-inner-icon" />
           <div  v-else
                 class="small-square mr-1"
-                :class="submissionStatusCSS[filter.id]" />
-          {{ filter.name }}
+                :class="submissionStatusData[filter.id].color" />
+          {{ filter.label }}
         </button>
       </div>
       <h6 class="mb-1 mt-4 text-medium">สถานะการชำระค่าใช่จ่าย</h6>
@@ -75,7 +75,7 @@
                 :key="filter.id"
                 class="filter-btn btn btn-sm btn-block text-left"
                 :class="[
-                  submissionInvoiceStatusCSS[filter.id],
+                  submissionInvoiceStatusData[filter.id].color,
                   {'active': activeInvoiceStatusFilter === filter.id}
                 ]"
                 @click="filterByInvoiceStatus(filter.id)">
@@ -83,40 +83,48 @@
             class="fas fa-check btn-inner-icon" />
           <div  v-else
                 class="small-square mr-1"
-                :class="submissionInvoiceStatusCSS[filter.id]" />
-          {{ filter.name }}
+                :class="submissionInvoiceStatusData[filter.id].color" />
+          {{ filter.label }}
         </button>
       </div>
     </div>
   </div>
 
-  <div class="submission-list pl-4 border-left-lighter">
-    <!-- <div class="row no-gutters w-100">
-      <div class="col-8">
-        <h2>ติดตามผลและรายงาน</h2>
-      </div>
-      <SearchInput
-        class="col-4"
-        placeholder="ค้นหาด้วยหมายเลขการส่ง..."
-        @debounced-search="search($event)" />
-    </div> -->
+  <div class="flex-1 content-height pl-4 border-left-lighter">
     <div id="table-container" class="scroll-container">
       <table>
-        <thead id="table-header">
+        <thead>
           <tr>
-            <th v-for="(col, idx) in table.head"
-                :key="idx"
-                class="p-0">
-              <button class="btn btn-transparent sort-btn"
-                      :class="{'selected': sortField === idx}"
-                      @click="setSortField(idx)">
-                {{ col }}
-                <i class="fas fa-chevron-down icon-sm"
-                   :class="{
-                      'rotate': sortDirection === 1 && sortField === idx,
-                      'show': sortField === idx
-                   }"/>
-              </button>
+            <th>
+              สถานะ
+              <div class="shadow-th"></div>
+            </th>
+            <th>
+              การชำระเงิน
+              <div class="shadow-th"></div>
+            </th>
+            <th>
+              เลขที่ส่ง
+              <div class="shadow-th"></div>
+            </th>
+            <th>
+              วันที่ส่ง
+              <div class="shadow-th"></div>
+            </th>
+            <th v-if="!userIsFreelance">
+              ชื่อผู้ส่ง
+              <div class="shadow-th"></div>
+            </th>
+            <th v-if="!userIsEmployee">
+              องค์กรเจ้าของ
+              <div class="shadow-th"></div>
+            </th>
+            <th>
+              ประเภทการตรวจ
+              <div class="shadow-th"></div>
+            </th>
+            <th>
+              ใบส่งตัวอย่าง
               <div class="shadow-th"></div>
             </th>
           </tr>
@@ -125,42 +133,33 @@
           <router-link  :to="{name: 'viewsubmission', params: { id: row.orderNum }}"
                         tag="tr"
                         class="clickable"
-                        v-for="(row, idx) in [...table.body, ...table.body, ...table.body, ...table.body, ...table.body]"
+                        v-for="(row, idx) in [...table.body, ...table.body, ...table.body, ...table.body, ...table.body, ...table.body, ...table.body]"
                         :key="idx">
             <td>
-              <div  class="light-tag"
-                    :class="submissionStatusCSS[row.status]">
-                <div  class="small-square mr-1"
-                      :class="submissionStatusCSS[row.status]" />
-                {{ row.statusDisplay }}
-              </div>
+              <ColorTag
+                :color="submissionStatusData[row.status].color"
+                :label="submissionStatusData[row.status].label" />
             </td>
             <td>
-              <div  class="light-tag"
-                    :class="submissionInvoiceStatusCSS[row.invoiceStatus]">
-                <div  class="small-square mr-1"
-                      :class="submissionInvoiceStatusCSS[row.invoiceStatus]" />
-                {{ row.invoiceStatusDisplay }}
-              </div>
+              <ColorTag
+                :color="submissionInvoiceStatusData[row.invoiceStatus].color"
+                :label="submissionInvoiceStatusData[row.invoiceStatus].label" />
             </td>
             <td>{{ row.orderNum }}</td>
             <td>{{ row.submittedDate }}</td>
-            <td>{{ row.receiptNum }}</td>
-            <td>{{ row.receivedDate }}</td>
-            <td>{{ row.person }}</td>
-            <td>{{ row.organization }}</td>
+            <td v-if="!userIsFreelance">{{ row.submitter }}</td>
+            <td v-if="!userIsEmployee">{{ row.organization }}</td>
+            <td>
+              <ColorTag
+                :color="submissionTypeData[row.type].color"
+                :label="submissionTypeData[row.type].label" />
+            </td>
             <td>
               <button class="btn btn-transparent btn-icon"
-                      @click="e => e.stopPropagation()">
-                <i class="fas fa-file-download"></i>
+                      @click.stop="download()">
+                <i class="fas fa-file-pdf"></i>
               </button>
             </td>
-            <!-- <td>
-              <button class="btn btn-transparent download"
-                      @click="e => e.stopPropagation()">
-                <i class="fas fa-file-download"></i>
-              </button>
-            </td> -->
           </router-link>
         </tbody>
       </table>
@@ -181,13 +180,14 @@ export default {
       'userIsFreelance',
       'orgOptions',
       'submissionStatuses',
-      'submissionInvoiceStatuses'
+      'submissionStatusData',
+      'submissionInvoiceStatuses',
+      'submissionInvoiceStatusData',
+      'submissionTypeData'
     ])
   },
   data () {
     return {
-      sortField: 2,
-      sortDirection: 0,
       activeStatusFilter: 0,
       activeInvoiceStatusFilter: 0,
       activeSubmitterFilter: null,
@@ -199,8 +199,7 @@ export default {
           'การชำระเงิน',
           'เลขที่ส่ง',
           'วันที่ส่ง',
-          'เลขที่รับ',
-          'วันที่รับ',
+          'ประเภทการตรวจ',
           'ผู้จัดส่ง',
           'องค์กร',
           'ใบส่งตัวอย่าง',
@@ -208,6 +207,7 @@ export default {
         body: [
           {
             status: 1,
+            type: 1,
             statusDisplay: 'ส่งแล้ว',
             invoiceStatus: 1,
             invoiceStatusDisplay: 'ยังไม่ออก Invoice',
@@ -215,7 +215,7 @@ export default {
             submittedDate: '05/05/2020',
             receiptNum: 654321,
             receivedDate: '-',
-            person: 'สมควร สมสกุล',
+            submitter: 'สมควร สมสกุล',
             organization: 'ฟาร์มสมควร',
             sampleQuantity: 40,
             price: 2000,
@@ -224,6 +224,7 @@ export default {
           },
           {
             status: 2,
+            type: 1,
             statusDisplay: 'ได้รับแล้ว',
             invoiceStatus: 2,
             invoiceStatusDisplay: 'ออก Invoice แล้ว',
@@ -231,7 +232,7 @@ export default {
             submittedDate: '05/05/2020',
             receiptNum: 654321,
             receivedDate: '06/06/2020',
-            person: 'สมควร สมสกุล',
+            submitter: 'สมควร สมสกุล',
             organization: 'ฟาร์มสมศรี',
             sampleQuantity: 40,
             price: 2000,
@@ -240,6 +241,7 @@ export default {
           },
           {
             status: 3,
+            type: 2,
             statusDisplay: 'เสร็จสิ้น',
             invoiceStatus: 3,
             invoiceStatusDisplay: 'ชำระค่าบริการแล้ว',
@@ -247,7 +249,7 @@ export default {
             submittedDate: '05/05/2020',
             receiptNum: 654321,
             receivedDate: '06/06/2020',
-            person: 'สมควร สมสกุล',
+            submitter: 'สมควร สมสกุล',
             organization: 'ฟาร์มสมปอง',
             sampleQuantity: 40,
             price: 2000,
@@ -256,6 +258,7 @@ export default {
           },
           {
             status: 4,
+            type: 1,
             statusDisplay: 'ยกเลิก',
             invoiceStatus: 1,
             invoiceStatusDisplay: 'ยังไม่ออก Invoice',
@@ -263,7 +266,7 @@ export default {
             submittedDate: '05/05/2020',
             receiptNum: 654321,
             receivedDate: '06/06/2020',
-            person: 'สมควร สมสกุล',
+            submitter: 'สมควร สมสกุล',
             organization: 'ฟาร์มสมควร',
             sampleQuantity: 40,
             price: 2000,
@@ -271,17 +274,6 @@ export default {
             report: 'https://backend/path-to-report'
           },
         ],
-      },
-      submissionStatusCSS: {
-        1: 'grey',
-        2: 'orange',
-        3: 'green',
-        4: 'red'
-      },
-      submissionInvoiceStatusCSS: {
-        1: 'grey',
-        2: 'orange',
-        3: 'green',
       },
       submitterOptions: [
         { id: 1, name: 'สมควร สมสกุล' },
@@ -293,14 +285,6 @@ export default {
     }
   },
   methods: {
-    setSortField (idx) {
-      if (idx === this.sortField) {
-        this.sortDirection = this.sortDirection === 0? 1 : 0
-      } else {
-        this.sortField = idx
-        this.sortDirection = 0
-      }
-    },
     filterByStatus (filterId) {
       this.activeStatusFilter = filterId
     },
@@ -315,31 +299,18 @@ export default {
     },
     toggleSidebar () {
       this.sidebarFolded = !this.sidebarFolded
+    },
+    download () {
+
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.submission-list {
-  flex-grow: 100;
-}
-button.sort-btn {
-  padding: .1em .4em 0 .4em;
-  font-size: 1em;
-  &.selected {
-    color: $primary;
-    background: $accent;
-  }
-  &:hover i { opacity: 1; }
-  i {
-    opacity: 0; 
-    transition: transform 100ms ease-in-out;
-    &.show { opacity: 1; }
-  }
-}
 #table-container {
-  height: calc(100vh - #{$titlebar-height} - #{$footer-height});
-  position: relative;
+  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 30px);
+  padding-bottom: 1.5rem;
+  padding-right: 1rem;
 }
 </style>

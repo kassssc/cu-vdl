@@ -8,12 +8,16 @@
   <div class="d-flex">
     <button v-for="(option, idx) in options"
             :key="idx"
-            class="btn btn-secondary btn-option no-wrap d-flex align-items-center justify-content-center"
-            :class="btnClass"
-            :disabled="value === option.id"
+            class="btn btn-secondary btn-option no-wrap"
+            :class="[
+              btnClass,
+              btnClassList? btnClassList[idx] : '',
+              { 'selected': value === option.id }
+            ]"
+            :disabled="disabled"
             @click="onOptionClick(option.id)">
       <i  v-show="value === option.id && tick"
-          class="fas fa-check btn-inner-icon" />
+          class="fas fa-check btn-inner-icon mr-0" />
       {{ option.name }}
     </button>
   </div>
@@ -44,21 +48,6 @@
   </Modal>
 </div>
 </template>
-
-<style lang="scss" scoped>
-.btn-option {
-  width: 100%;
-  padding-left: 0;
-  padding-right: 0;
-  &[disabled] {
-    opacity: 1;
-    @include color-primary-white;
-  }
-  &:not(:last-child) {
-    margin-right: 17px;
-  }
-}
-</style>
 
 <script>
 import $ from 'jquery'
@@ -95,6 +84,14 @@ export default {
     tick: {
       type: Boolean,
       default: true
+    },
+    btnClassList: {
+      type: Array,
+      default: null
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -120,3 +117,24 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+button.btn-option {
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  &.selected {
+    @include color-primary-white;
+    &.teal { background: $teal; }
+    &.blue { background: $blue; }
+    &.purple { background: $purple; }
+    &.pink { background: $pink; }
+    &[disabled] {
+      opacity: 1
+    }
+  }
+  &:not(:last-child) {
+    margin-right: 17px;
+  }
+}
+</style>

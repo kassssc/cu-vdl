@@ -3,6 +3,10 @@ const state = {
     { id: 1,  name: 'การตรวจทั่วไป' },
     { id: 2,  name: 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ' }
   ],
+  submissionTypeData: {
+    1: { label: 'การตรวจทั่วไป',           color: 'teal' },
+    2: { label: 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ', color: 'blue' }
+  },
   tests: [
     {
       id: 1,
@@ -319,6 +323,9 @@ const state = {
 const getters = {
   reportTypes: state => {
     return state.reportTypes
+  },
+  submissionTypeData: state => {
+    return state.submissionTypeData
   },
   tests: state => reportTypeId => {
     return state.tests.filter( t => t.reportType === reportTypeId )

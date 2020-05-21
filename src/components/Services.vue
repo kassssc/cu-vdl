@@ -15,7 +15,7 @@
         </a>
       </div>
       <img :src="servicesImg[i]"
-           class="ml-3 img unselectable">
+           class="ml-3 img">
     </div>
     <h3 class="mb-5 mt-1 font-weight-bold">
       {{ `6. ${text[5]}` }}
@@ -25,6 +25,7 @@
 
 <style lang="scss" scoped>
 .img {
+  @include unselectable;
   min-width: 400px;
   max-width: 650px;
   height: auto;

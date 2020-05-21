@@ -4,7 +4,7 @@
           :class="labelClass">
     {{ label }}
     <i  v-if="required && !disabled"
-        class="fas fa-star-of-life text-primary icon-sm" />
+        class="fas fa-star-of-life" />
   </label>
   <input  :class="['form-control', inputClass]"
           v-bind="$attrs"

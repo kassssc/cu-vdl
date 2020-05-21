@@ -157,7 +157,7 @@
                 {{ `${batch.dilutionCost.toLocaleString()}฿` }}
               </h4>
               <h5 class="text-medium">ค่า Dilution</h5>
-              <div class="hint-container">
+              <div class="hint-box">
                 <h4 class="text-primary mb-1">การคำนวณค่า Dilution</h4>
                 <h5>คำนวณจากจำนวนความเข้มข้นของแต่ละประเภท cell ไวรัส ซึ่งระบุไว้ใน [ ] หลังชื่อไวรัส หากไวรัสหลายตัวภายใต้ cell ประเภทเดียวกันใช้ความเข้มข้นซํ้ากัน จะคิดราคาแค่รอบเดียวเท่านั้น</h5>
                 <div  v-for="(arr, cell) in batch.uniqueCells"
@@ -305,10 +305,10 @@ export default {
 <style lang="scss" scoped>
 .cost-container {
   cursor: pointer;
-  &:hover .hint-container {
+  &:hover .hint-box {
     transform: scale(1);
   }
-  .hint-container {
+  .hint-box {
     width: 300px;
     bottom: 60px;
     right: -10px;

@@ -1,6 +1,6 @@
 <template>
-<div class="page max-width-1500 d-flex align-items-start">
-  <div id="view-submission-nav" class="sub-nav sticky p-4">
+<div class="page page-lg d-flex align-items-start">
+  <div class="sub-nav sticky pl-4">
     <router-link  :to="{name: 'submissionslist'}"
                   tag="button"
                   exact
@@ -11,7 +11,7 @@
     <scrollactive active-class="scrollactive-active"
                   :offset="200"
                   :modify-url="false"
-                  highlight-first-item >
+                  highlight-first-item>
       <a  href="#info"
           class="btn btn-transparent btn-block btn-lg scrollactive-item">
         <i class="fas fa-file-alt btn-inner-icon-lg" />
@@ -49,9 +49,8 @@
       </template>
     </scrollactive>
   </div>
-  <div  id="view-submission-content"
-        class="p-4 border-left-lighter">
-
+  
+  <div class="sub-nav-content">
     <div id="info"
          class="section">
       <h2 class="mb-4">
@@ -66,9 +65,11 @@
         <div class="col-10 pt-1">
           <div class="form-row">
             <div class="form-group col-6">
-              <div class="color-tag red form-control form-control-lg">
-                X - Cancelled
-              </div>
+              <ColorTag
+                class="d-block"
+                :color="submissionStatusData[submission.status].color"
+                :label="submissionStatusData[submission.status].label"
+                size="lg" />
             </div>
           </div>
         </div>
@@ -82,7 +83,7 @@
           <div class="form-row">
             <FileView
               class="col-6"
-              btn-class="btn-secondary btn-lg"
+              btn-class="btn-secondary"
               :file-name="`${$route.params.id}_submission_form.pdf`"
               icon-class="fa-file-alt" />
           </div>
@@ -95,10 +96,13 @@
         </div>
         <div class="col-10 pt-1">
           <div class="form-row">
-            <FormInput
-              class="col-8"
-              label="ประเภทการทดสอบ"
-              disabled />
+            <div class="col-6 mb-3">
+              <ColorTag
+                class="d-block"
+                :color="submissionTypeData[submission.type].color"
+                :label="submissionTypeData[submission.type].label"
+                size="lg" />
+            </div>
 
             <div class="w-100"></div>
 
@@ -157,9 +161,11 @@
         <div class="col-10 pt-1">
           <div class="form-row">
             <div class="form-group col-6">
-              <div class="color-tag grey form-control form-control-lg">
-                N - Not Invoiced
-              </div>
+              <ColorTag
+                class="d-block"
+                :color="submissionInvoiceStatusData[submission.invoiceStatus].color"
+                :label="submissionInvoiceStatusData[submission.invoiceStatus].label"
+                size="lg" />
             </div>
           </div>
         </div>
@@ -173,7 +179,7 @@
           <div class="form-row">
             <FileView
               class="col-6"
-              btn-class="btn-secondary btn-lg"
+              btn-class="btn-secondary"
               :file-name="`${$route.params.id}_invoice.pdf`"
               icon-class="fa-file-invoice-dollar" />
           </div>
@@ -339,11 +345,16 @@
   </div>
 
   <Modal  modal-id="cancelSubmissionModal"
+          modal-dialog-class="modal-sm modal-dialog-centered"
           x-close>
     <template #modal-header>
       <h3 class="text-danger">
-        <i class="fas fa-exclamation-triangle icon-lg mr-2" />ท่านกำลังจะยกเลิกการส่งตัวอย่าง
+        <i class="fas fa-exclamation-triangle icon-lg mr-2" />ยืนยันการยกเลิก
       </h3>
+    </template>
+    <template #modal-body>
+      <h4>ท่านกำลังจะยกเลิกการส่งตัวอย่าง</h4>
+      <h3 class="mt-2 text-center text-danger">{{ `#${$route.params.id}` }}</h3>
     </template>
     <template #modal-footer>
       <div class="d-flex flex-nowrap w-100">
@@ -361,36 +372,6 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-$nav-width: 300px;
-#view-submission-nav {
-  width: $nav-width;
-  overflow-x: visible;
-}
-#view-submission-content {
-  width: calc(100% - #{$nav-width});
-  min-height: $content-height;
-}
-.section {
-  font-family: 'CS ChatThai';
-  border-bottom: 1px solid $accent;
-  padding: 2em 1em 2em 1em;
-  &:first-child {
-    padding-top: 0;
-  }
-  &:last-child {
-    margin-bottom: 55vh;
-  }
-}
-.btn.back-btn {
-  @include media-breakpoint-up(xl) {
-    position: absolute;
-    top: 25px;
-    left: -100px;
-  }
-}
-</style>
-
 <script>
 import { mapGetters } from 'vuex'
 import $ from 'jquery'
@@ -398,7 +379,12 @@ import $ from 'jquery'
 export default {
   name: 'view-submission',
   computed: {
-    ...mapGetters(['userIsAdmin'])
+    ...mapGetters([
+      'userIsAdmin',
+      'submissionTypeData',
+      'submissionStatusData',
+      'submissionInvoiceStatusData'
+    ])
   },
   data () {
     return {
@@ -423,8 +409,8 @@ export default {
           nationalId: null
         },
         type: 1,
-        status: 1,
-        invoiceStatus: 1,
+        status: 3,
+        invoiceStatus: 2,
         finalPrice: 85000,
         submitDate: '01/05/2020',
         bestLimsSubmissionNum: '',
@@ -481,3 +467,27 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.sub-nav {
+  overflow-x: visible;
+}
+.section {
+  font-family: 'CS ChatThai';
+  border-bottom: 1px solid $accent;
+  padding: 2em 1em;
+  &:first-child {
+    padding-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 55vh;
+  }
+}
+.btn.back-btn {
+  @include media-breakpoint-up(xl) {
+    position: absolute;
+    top: 15px;
+    left: -100px;
+  }
+}
+</style>

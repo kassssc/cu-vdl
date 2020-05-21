@@ -46,6 +46,7 @@ const SearchInput = () => import(/* webpackChunkName: "group-form" */
   '@/util/SearchInput'
 )
 const Modal = () => import('@/util/Modal')
+const ColorTag = () => import('@/components/ColorTag')
 
 Vue.component('checkbox', FormCheckbox)
 Vue.component('FormInput', FormInput)
@@ -58,6 +59,7 @@ Vue.component('FormDateInput', FormDateInput)
 Vue.component('FileView', FileView)
 Vue.component('SearchInput', SearchInput)
 Vue.component('Modal', Modal)
+Vue.component('ColorTag', ColorTag)
 
 /* Vue.mixin({
   methods: {

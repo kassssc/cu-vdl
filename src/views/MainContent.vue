@@ -1,5 +1,5 @@
 <template>
-<div class="d-flex flex-column align-items-center full-width fill-height">
+<div class="d-flex flex-column align-items-center">
   <Titlebar/>
   <transition name="fade">
     <router-view />

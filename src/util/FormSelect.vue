@@ -3,7 +3,7 @@
   <label v-if="formLabel">
     {{ formLabel }}
     <i  v-if="required && !disabled"
-        class="fas fa-star-of-life text-primary icon-sm" />
+        class="fas fa-star-of-life" />
   </label>
   <vSelect
     class="custom"

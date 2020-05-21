@@ -3,7 +3,7 @@
   <label v-if="label">
     {{ label }}
     <i  v-if="required && !disabled"
-        class="fas fa-star-of-life text-primary icon-sm" />
+        class="fas fa-star-of-life text-primary" />
   </label>
   <datepicker v-bind="$attrs"
               v-on="listeners"

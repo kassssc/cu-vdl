@@ -1,6 +1,6 @@
 <template>
-<div class="page max-width-1500 d-flex flex-column pb-5 mb-5">
-  <div class="mb-2 position-relative">
+<div class="page page-md d-flex flex-column pb-5 mb-5">
+  <div class="my-2 position-relative">
     <button v-if="isEditMode"
             class="btn back-btn btn-transparent"
             @click="$router.go(-1)">
@@ -81,8 +81,10 @@
             class="col-8 col-xl-6"
             label="ประเภทการตรวจ"
             label-class="label-lg"
+            :btn-class-list="['teal', 'blue']"
             v-model="submission.type"
             :options="reportTypes"
+            :disabled="isEditMode"
             :warn-before-change="wholeFormHasInformation()"
             warning-msg="ข้อมูลที่ถูกกรอกไว้แล้วด้านล่างจะหายไปถ้าท่านเปลี่ยนตัวเลือกนี้"
             @change="onReportTypeChange()" />
@@ -202,7 +204,7 @@
       <GeneralBatch
         v-for="(batch, idxBatch) of submission.batches"
         :key="idxBatch"
-        :id="'batch' + (idxBatch+1)"
+        :id="`batch${idxBatch+1}`"
         :idx="idxBatch"
         :has-multiple-batches="hasMultipleBatches"
         :batch="batch"
@@ -213,7 +215,7 @@
       <DisinfectantBatch
         v-for="(batch, idxBatch) of submission.batches"
         :key="idxBatch"
-        :id="'batch' + (idxBatch+1)"
+        :id="`batch${idxBatch+1}`"
         :idx="idxBatch"
         :has-multiple-batches="hasMultipleBatches"
         :batch="batch"

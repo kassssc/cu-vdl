@@ -1,5 +1,5 @@
 <template>
-<div class="p-4">
+<div>
   <div class="row">
     <div class="col-12">
       <h3 class="mb-4">
@@ -10,7 +10,6 @@
   </div>
 
   <div class="font-chatthai">
-
     <div class="border-bottom-lighter row w-100 py-3 mb-3">
       <div class="col-xl-3 col-12">
         <h4>แก้ไขข้อมูลการติดต่อ</h4>

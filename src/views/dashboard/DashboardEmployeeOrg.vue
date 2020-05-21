@@ -1,10 +1,10 @@
 <template>
-  <div class="p-4">
+  <div>
     <div class="row mb-3">
       <div class="col-12">
         <h2>
           <i class="fas fa-sitemap icon-lg mr-1"></i>
-          ข้อมูลองค์กร {{ org.name }}
+          ข้อมูลองค์กร <span class="text-primary">{{ org.name }}</span>
         </h2>
       </div>
     </div>
@@ -44,19 +44,19 @@
           <thead>
             <tr>
               <th> 
-                <h4>ชื่อ-นามสกุล</h4>
+                ชื่อ-นามสกุล
                 <div class="shadow-th"></div>
               </th>
               <th> 
-                <h4>ประเภท Account</h4>
+                ประเภท Account
                 <div class="shadow-th"></div>
               </th>
               <th> 
-                <h4>อีเมล</h4>
+                อีเมล
                 <div class="shadow-th"></div>
               </th>
               <th> 
-                <h4>หมายเลขโทรศัพท์</h4>
+                หมายเลขโทรศัพท์
                 <div class="shadow-th"></div>
               </th>
             </tr>

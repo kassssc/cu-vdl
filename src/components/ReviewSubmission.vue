@@ -4,12 +4,19 @@
           @click="$emit('back')">
     <i class="fas fa-chevron-left btn-inner-icon-lg text-left mr-0" />กลับไปแก้ไข
   </button>
-  <button class="submit btn btn-lg btn-success"
-          @click="$emit('submit')">
-    <i class="fas fa-paper-plane btn-inner-icon-lg text-left mr-0" />
-    {{ isEditMode? 'ยืนยันและบันทึก' : 'ยืนยันและส่งตัวอย่าง' }}
-  </button>
-  <div class="d-flex flex-column w-100 align-items-center pt-3 full-height scroll-container">
+  <div class="right-btn-container">
+    <button class="submit btn btn-lg btn-success btn-block mb-4"
+            @click="$emit('submit')">
+      <i class="fas fa-paper-plane btn-inner-icon-lg text-left mr-0" />
+      {{ isEditMode? 'ยืนยันและบันทึก' : 'ยืนยันและส่งตัวอย่าง' }}
+    </button>
+    <button class="submit btn btn-lg btn-secondary btn-block"
+            @click="download()">
+      <i class="fas fa-file-pdf btn-inner-icon-lg text-left mr-0" />
+      ดาวน์โหลดไฟล์ PDF
+    </button>
+  </div>
+  <div class="d-flex flex-column w-100 align-items-center pt-3 fill-height scroll-container">
 
     <div class="A4-page-wrapper">
       <div class="A4-page">
@@ -137,6 +144,9 @@ export default {
   methods: {
     getDate(iso) {
       return moment(iso).format("DD/MM/YY")
+    },
+    download () {
+      
     }
     /* createPDF () {
       const fileName = 'test'
@@ -166,7 +176,7 @@ export default {
     color: $default;
   }
 }
-.submit {
+.right-btn-container {
   position: fixed;
   right: 90px;
   top: 90px;

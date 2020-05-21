@@ -4,7 +4,7 @@
           :class="labelSize">
     {{ label }}
     <i  v-if="required && !disabled"
-        class="fas fa-star-of-life text-primary icon-sm" />
+        class="fas fa-star-of-life" />
   </label>
   <textarea :class="[
               'form-control',

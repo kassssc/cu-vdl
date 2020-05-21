@@ -32,7 +32,7 @@
            @keyup.enter="parseOutput()">
     <div class="hint">
       <i class="fas fa-question color-text-light"></i>
-      <div class="hint-container">
+      <div class="hint-box">
         <h5>
           ให้ใส่รายการความเข้มข้นทุกระดับที่ต้องการตรวจ โดยขั้นด้วย คอมม่า ( , )
           ยกตัวอย่างเช่น
@@ -62,7 +62,7 @@
             @keyup.enter="parseOutput()">
     <div class="hint">
       <i class="fas fa-question color-text-light"></i>
-      <div class="hint-container">
+      <div class="hint-box">
         <h5>
           ให้ใส่รายการระยะเวลาสัมผัสเชื้อทุกเวลาที่ต้องการตรวจ โดยขั้นด้วย คอมม่า ( , )
           ยกตัวอย่างเช่น
@@ -87,7 +87,7 @@
             @keyup.enter="parseOutput()">
     <div class="hint">
       <i class="fas fa-question color-text-light"></i>
-      <div class="hint-container">
+      <div class="hint-box">
         <h5>
           ให้ใส่รายการระยะเวลาเจือจางทุกระยะที่ต้องการตรวจ โดยขั้นด้วย คอมม่า ( , )
           ยกตัวอย่างเช่น
@@ -112,7 +112,7 @@
 </template>
 
 <style lang="scss" scoped>
-.hint-container {
+.hint-box {
   width: 250px;
   bottom: 43px;
   right: 0px;

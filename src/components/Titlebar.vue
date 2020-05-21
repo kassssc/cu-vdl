@@ -10,8 +10,7 @@
       หน่วยชันสูตรโรคสัตว์กลาง จุฬาฯ
     </h4>
   </div>
-  <div  v-if="loggedIn"
-        class="d-flex align-items-stretch">
+  <nav  v-if="loggedIn">
     <router-link  :to="{name: 'home'}"
                   tag="a"
                   class="btn btn-transparent mr-2"
@@ -27,7 +26,7 @@
         <i class="fas fa-list btn-inner-icon"></i>
         การส่งตัวอย่าง
       </router-link>
-      <router-link  :to="{name: 'admin-create-user'}"
+      <router-link  :to="{name: 'admin'}"
                     tag="a"
                     class="btn btn-transparent mr-2">
         <i class="fas fa-tools btn-inner-icon"></i>
@@ -42,7 +41,7 @@
         <i class="fas fa-file-invoice btn-inner-icon"></i>
         ติดตามผลและรายงาน
       </router-link>
-      <router-link  :to="{name: 'submitsamples'}"
+      <router-link  :to="{name: 'submit-samples'}"
                     tag="a"
                     class="btn btn-transparent mr-2">
         <i class="fas fa-vial btn-inner-icon"></i>
@@ -57,14 +56,14 @@
       <span class="d-xl-inline d-none mr-2">{{ user.lastName }}</span>
       <i class="fas fa-cog btn-inner-icon mr-0"></i>
     </router-link>
-    <button class="btn btn-transparent btn-icon d-flex"
+    <button class="btn btn-transparent btn-icon"
             @click="logoutAndNavigateToHome()">
       <i class="fas fa-sign-out-alt" />
     </button>
     
-  </div>
+  </nav>
 
-  <div  v-else
+  <nav  v-else
         class="d-flex align-items-center">
     <scrollactive active-class="scrollactive-active"
                   :offset="80"
@@ -98,7 +97,7 @@
       <i class="fas fa-sign-in-alt btn-inner-icon" />
       เข้าสู่ระบบ
     </router-link>
-  </div>
+  </nav>
 
 </div>
 </template>
@@ -108,7 +107,7 @@
   z-index: 999;
   position: fixed;
   top: 0; left: 0;
-  width: 100%; 
+  width: 100vw; 
   height: $titlebar-height;
   backdrop-filter: blur(20px);
   border-bottom: 1px solid transparent;
@@ -135,20 +134,6 @@
     height: 60px;
     margin-right: 15px;
     transition: all 100ms ease-in-out;
-  }
-}
-.notifications-badge {
-  display: inline-block;
-  text-align: center;
-  font-weight: bold;
-  padding: 0 0.25em;
-  border-radius: 5px;
-  height: 24px;
-  margin-left: .1em;
-  @include color-primary-white;
-  p {
-    font-size: 0.8em;
-    margin-bottom: 0px;
   }
 }
 // Firefox style fixes for no backdrop-filter support

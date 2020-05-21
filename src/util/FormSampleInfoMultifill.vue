@@ -21,7 +21,7 @@
               @blur="processRawSampleRange()">
       <div class="hint">
         <i class="fas fa-question color-text-light"></i>
-        <div class="hint-container">
+        <div class="hint-box">
           <h5>
             ให้ใส่ระยะหมายเลขตัวอย่างที่ต้องการใส่ข้อมูล หรือสามารถใส่เลขตัวอย่างเฉยๆก็ได้ โดยขั้นทุกอย่างด้วย คอมม่า ( , )
             <br>ยกตัวอย่างเช่น
@@ -80,7 +80,7 @@
     }
   }
 }
-.hint-container {
+.hint-box {
   width: 450px;
   bottom: -7px;
   right: -460px;

@@ -8,7 +8,7 @@
       </h2>
     </div>
   </div>
-  <div id="orgs-table-container" class="scroll-container">
+  <div id="orgs-table-container" class="scroll-container pr-3">
     <table>
       <thead>
         <tr>
@@ -20,7 +20,10 @@
             <h4>ที่อยู่</h4>
             <div class="shadow-th"></div>
           </th>
-          <th><div class="shadow-th"></div></th>
+          <th>
+            <h5 class="text-right text-medium">ถอนตัวจากการเป็นตัวแทน</h5>
+            <div class="shadow-th"></div>
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -31,10 +34,9 @@
           </td>
           <td class="pre-line squeeze-line">{{ org.addr }}</td>
           <td class="text-right">
-            <button class="btn btn-sm btn-danger"
+            <button class="btn btn-sm btn-icon btn-icon-danger"
                     @click="showRemoveOrgModal(idx)">
-              <i class="fas fa-user-slash btn-inner-icon"></i>
-              ถอนตัวจากการเป็นตัวแทนองค์กร
+              <i class="fa fa-user-slash"></i>
             </button>
           </td>
         </tr>
@@ -69,12 +71,6 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-#orgs-table-container {
-  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 100px);
-}
-</style>
-
 <script>
 import { mapGetters } from 'vuex'
 import $ from 'jquery'
@@ -103,3 +99,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+#orgs-table-container {
+  height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 100px);
+}
+</style>

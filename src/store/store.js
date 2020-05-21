@@ -14,17 +14,6 @@ export default new Vuex.Store({
   state: {
     org: {
       id: 1,
-      mainContactPerson: {
-        id: 2,
-        accountType: 1,
-        org: 1,
-        title: 'นาย',
-        firstName: 'สมหมาย',
-        lastName: 'สมสุทธิสกุล',
-        email: 'mr.sommhai@gmail.com',
-        phone: '088-888-8888',
-        nationalId: null
-      },
       submitters: [],
       name: 'ฟาร์มสมควร',
       phone: '087-654-3210',
@@ -153,131 +142,30 @@ export default new Vuex.Store({
         'สพ.ญ.',
       ]
     },
-    types: {  
-      requestTypes: [
-        { id: 1,  name: 'คำขอแก้ไขการส่งตัวอย่าง' },
-        { id: 2,  name: 'คำขอสมัครสมาชิก' },
-        { id: 3,  name: 'คำขอเพิ่มตัวแทนส่งตัวอย่าง' },
-        { id: 4,  name: 'คำขอเป็นตัวแทนองค์กร' },
-        { id: 5,  name: 'คำขออื่นๆ' },
-      ],
-      requestStatuses: [
-        { id: 1,  name: 'รอการตอบรับ'},
-        { id: 2,  name: 'รับคำขอแล้ว'},
-        { id: 3,  name: 'ปฏิเสธคำขอแล้ว'},
-      ],
+    types: {
       submissionStatuses: [
-        { id: 1,  key: 'S', name: 'ส่งแล้ว'},
-        { id: 2,  key: 'R', name: 'ได้รับแล้ว'},
-        { id: 3,  key: 'C', name: 'เสร็จสิ้น'},
-        { id: 4,  key: 'X', name: 'ยกเลิก'},
+        { id: 1,  key: 'S', label: 'ส่งแล้ว',},
+        { id: 2,  key: 'R', label: 'ได้รับแล้ว'},
+        { id: 3,  key: 'C', label: 'เสร็จสิ้น'},
+        { id: 4,  key: 'X', label: 'ยกเลิก'},
       ],
-      submissionInvoiceStatuses: [
-        { id: 1,  key: 'N', name: 'ยังไม่ออก Invoice'},
-        { id: 2,  key: 'I', name: 'ออก Invoice แล้ว'},
-        { id: 3,  key: 'P', name: 'ชำระค่าบริการแล้ว'},        
-      ]
-    },
-    requests: [
-      {
-        name: 'รอการตอบรับ',
-        list: [
-          {
-            id: 1,
-            requestNum: 'S000002',
-            status: 1,
-            statusLabel: 'รอการตอบรับ',
-            type: 1,
-            typeLabel: 'คำขอแก้ไขการส่งตัวอย่าง',
-            createdDate: '04/05/2020',
-            user: {
-              name: 'สมควร สมสกุล',
-              email: 'mr.somkuan@gmail.com',
-              phone: '081-234-5678'
-            },
-            orgName: 'ฟาร์มสมควร',
-            submissionNum: 'G22334455',
-            details: ''
-          },
-          {
-            id: 2,
-            requestNum: 'S000001',
-            status: 1,
-            statusLabel: 'รอการตอบรับ',
-            type: 1,
-            typeLabel: 'คำขอแก้ไขการส่งตัวอย่าง',
-            createdDate: '04/05/2020',
-            user: {
-              name: 'สมเดช สมวงศ์สกุล',
-              email: 'mr.somdej@gmail.com',
-              phone: '087-777-8888'
-            },
-            orgName: 'ฟาร์มสมควร',
-            submissionNum: 'D12345678',
-            details: ''
-          },
-          {
-            id: 3,
-            requestNum: 'M000003',
-            status: 1,
-            statusLabel: 'รอการตอบรับ',
-            type: 2,
-            typeLabel: 'คำขอสมัครสมาชิก',
-            createdDate: '02/05/2020'
-          },
-          {
-            id: 4,
-            requestNum: 'A000001',
-            status: 1,
-            statusLabel: 'รอการตอบรับ',
-            type: 3,
-            typeLabel: 'คำขอเพิ่มตัวแทนส่งตัวอย่าง',
-            createdDate: '01/05/2020'
-          },
-        ]
+      submissionStatusData: {
+        1: { label: 'ส่งแล้ว',    color: 'grey'},
+        2: { label: 'ได้รับแล้ว',  color: 'orange'},
+        3: { label: 'เสร็จสิ้น',   color: 'green'},
+        4: { label: 'ยกเลิก',    color: 'red'},
       },
-      {
-        name: 'เสร็จเรียบร้อย',
-        list: [
-          {
-            id: 5,
-            requestNum: 'X000001',
-            status: 2,
-            statusLabel: 'รับคำขอแล้ว',
-            type: 5,
-            typeLabel: 'คำขออื่นๆ',
-            createdDate: '29/04/2020'
-          },
-          {
-            id: 6,
-            requestNum: 'M000002',
-            status: 3,
-            statusLabel: 'ปฏิเสธคำขอแล้ว',
-            type: 2,
-            typeLabel: 'คำขอสมัครสมาชิก',
-            createdDate: '28/04/2020'
-          },
-          {
-            id: 7,
-            requestNum: 'F000001',
-            status: 3,
-            statusLabel: 'ปฏิเสธคำขอแล้ว',
-            type: 4,
-            typeLabel: 'คำขอเป็นตัวแทนองค์กร',
-            createdDate: '25/04/2020'
-          },
-          {
-            id: 8,
-            requestNum: 'M000001',
-            status: 2,
-            statusLabel: 'รับคำขอแล้ว',
-            type: 2,
-            typeLabel: 'คำขอสมัครสมาชิก',
-            createdDate: '05/04/2020'
-          },
-        ]
+      submissionInvoiceStatuses: [
+        { id: 1,  key: 'N', label: 'ยังไม่ออก Invoice'},
+        { id: 2,  key: 'I', label: 'ออก Invoice แล้ว'},
+        { id: 3,  key: 'P', label: 'ชำระค่าบริการแล้ว'},        
+      ],
+      submissionInvoiceStatusData: {
+        1: { label: 'ยังไม่ออก Invoice', color: 'grey' },
+        2: { label: 'ออก Invoice แล้ว', color: 'orange' },
+        3: { label: 'ชำระค่าบริการแล้ว',  color: 'green' }
       }
-    ]
+    },
   },
   getters: {
     orgChart: state => {
@@ -296,21 +184,18 @@ export default new Vuex.Store({
     orgOptions: state => {
       return state.selectOptions.orgs
     },
-    requestTypes: state => {
-      return state.types.requestTypes
-    },
-    requestStatuses: state => {
-      return state.types.requestStatuses
-    },
-    requests: state => {
-      return state.requests
-    },
 
     submissionStatuses: state => {
       return state.types.submissionStatuses
     },
+    submissionStatusData: state => {
+      return state.types.submissionStatusData
+    },
     submissionInvoiceStatuses: state => {
       return state.types.submissionInvoiceStatuses
+    },
+    submissionInvoiceStatusData: state => {
+      return state.types.submissionInvoiceStatusData
     },
 
     nameTitles: state => state.selectOptions.nameTitles

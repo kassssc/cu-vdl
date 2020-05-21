@@ -34,7 +34,6 @@
 }
 
 html {
-  box-sizing: border-box;
   font-size: 14px;
   @include media-breakpoint-up(lg) {
     font-size: 15px;
@@ -42,10 +41,6 @@ html {
   @include media-breakpoint-up(xl) {
     font-size: 16px;
   }
-}
-
-* {
-  box-sizing: border-box;
 }
 
 #app {
@@ -80,9 +75,15 @@ button.btn, a.btn {
   &.btn-transparent:hover {
     background: $accent;
   }
-  &.btn-icon:hover {
-    color: $primary;
-    background: $accent;
+  &.btn-icon {
+    &:hover {
+      color: $primary;
+      background: $accent;
+    }
+    &.btn-icon-danger:hover {
+        color: $danger;
+        background: $accent;
+    }
   }
   &.btn-x {
     z-index: 2;
@@ -130,38 +131,46 @@ button.btn, a.btn {
     color: $primary;
     background: $accent;  
   }
-  &.btn-list {
-    text-align: left;
-    padding: .25em .5em;
+}
+
+i {
+  &.icon-sm {
+    font-size: 1px;
+  }
+  &.icon-md {
+    font-size: 1.25rem;
+  }
+  &.icon-lg {
     font-size: 1.5rem;
-    border-bottom: 1px solid $accent;
-    &:hover {
-      background: $accent;
-    }
-    &.active {
-      background: $accent;
-      color: $primary;
-      cursor: default;
-    }
+    width: 30px;
   }
 }
 
-.form-group label {
-  font-weight: bold;
-  font-size: 1.25em;
-  color: $medium;
-  line-height: 1.1em;
-  i {
-    font-size: 14px;
-    color: $primary;  
-  }
-  &.col-form-label {
-    text-align: right;
-    font-size: 1.3rem;
-  }
-  &.label-lg {
-    font-size: 1.5rem;
-    color: $dark;
+ul.item-list {
+  list-style: none;
+  font-size: 1.5rem;
+  padding: 0 .5em;
+  margin: 0;
+  li {
+    font-weight: bold;
+    border-bottom: 1px solid $accent;
+    padding: .3em .6em;
+    &:first-child {
+      border-top: 1px solid $accent;
+    }
+    &.clickable {
+      cursor: pointer;
+      &:not(.active):hover {
+        background: $accent;
+        border-radius: $border-radius-lg;
+      }
+      &.active {
+        cursor: default;
+        box-shadow: 0 0 0 .12em $primary inset;
+        border-radius: $border-radius-lg;
+        background: rgba($primary, .15);
+      }
+    }
   }
 }
 
@@ -170,6 +179,10 @@ table {
   font-family: 'CS ChatThai';
   font-weight: bold;
   width: 100%;
+  .clickable:not(.active):hover {
+    cursor: pointer;
+    background: $accent;
+  }
   thead {
     th {
       position: sticky;
@@ -191,18 +204,33 @@ table {
   tbody {
     tr {
       border-bottom: 1px solid $accent;
-      &.clickable:hover {
-        background: $accent;
-        cursor: pointer;
-      }
       &:first-child td {
-        padding-top: .5em;
+        padding-top: .4em;
       }
       td {
         color: $dark;
         padding: 0.3em 0.55em;
       }
     }
+  }
+}
+
+.form-group label {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: $medium;
+  line-height: 1.1em;
+  i {
+    font-size: 14px;
+    color: $primary;  
+  }
+  &.col-form-label {
+    text-align: right;
+    font-size: 1.3rem;
+  }
+  &.label-lg {
+    font-size: 1.5rem;
+    color: $dark;
   }
 }
 
@@ -216,8 +244,15 @@ table {
     padding-left: $outer-padding;
     padding-right: $outer-padding;
   }
+  &.page-sm { max-width: 750px; }
+  &.page-md { max-width: 1250px; }
+  &.page-lg { max-width: 1500px; }
+  &.page-xl { max-width: 1650px; }
+  &.page-xxl { max-width: 2000px; }
 }
-
+.flex-1 {
+  flex: 1;
+}
 .font-chatthai {
   font-family: 'CS ChatThai';
 }
@@ -248,6 +283,20 @@ table {
 }
 .pre {
   white-space: pre;
+}
+.squeeze-up {
+  margin-top: -0.4em;
+}
+.no-pointer-events {
+  pointer-events: none;
+}
+.content-height {
+  height: $content-height;
+  min-height: $content-height;
+  max-height: $content-height;
+}
+.fill-height {
+  height: 100vh;
 }
 
 .border-bottom-pink {
@@ -282,56 +331,24 @@ table {
   }
 }
 
-.max-width-750 {
-  max-width: 750px;
-}
-.max-width-1250 {
-  max-width: 1250px;
-}
-.max-width-1500 {
-  max-width: 1500px;
-}
-.max-width-1650 {
-  max-width: 1650px;
-}
-.fill-page {
-  height: 100vh;
-  width: 100vw;
-}
-
-.icon-sm {
-  font-size: 14px;
-}
-.icon-md {
-  font-size: 20px;
-}
-.icon-lg {
-  font-size: 1.5rem;
-  width: 30px;
-}
-.squeeze-up {
-  margin-top: -0.4em;
-}
-.no-pointer-events {
-  pointer-events: none;
+.hover-appear-wrapper {
+  .hover-appear {
+    visibility: hidden;
+  }
+  &:hover .hover-appear {
+    visibility: visible;
+  }
 }
 
 .subcontainer {
-  border-radius: 5px;
+  border-radius: $border-radius;
   padding: 1em;
   background: $accent-light;
 }
 
-.scroll-outer-container {
-  border-radius: 5px;
-  padding: .5em .5em .5em 1em;
-  background: $accent-light;
-}
 .scroll-container {
-  padding-right: 1em;
-  //overflow-y: scroll; 
-  //overflow-x: hidden;
-  overflow: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
   &::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 7px;
@@ -347,26 +364,25 @@ table {
 .fade-gradient-top {
   position: sticky;
   top: 0; left: 0; right: 1em;
-  height: 30px;
-  margin-bottom: -10px;
+  height: 20px;
   background: linear-gradient(
     to bottom,
-    rgba($accent-light, 1) 0%,
-    rgba($accent-light, 1) 5%,
-    rgba($accent-light, .9) 30%,
-    rgba($accent-light, .1) 100%
+    rgba($light, 1) 0%,
+    rgba($light, 1) 5%,
+    rgba($light, .9) 30%,
+    rgba($light, .1) 100%
   );
 }
 .fade-gradient-bottom {
   position: sticky;
   bottom: -2px; left: 0; right: 1em;
-  height: 30px;
+  height: 25px;
   background: linear-gradient(
     to top,
-    rgba($accent-light, 1) 0%,
-    rgba($accent-light, 1) 5%,
-    rgba($accent-light, .9) 30%,
-    rgba($accent-light, .1) 100%
+    rgba($light, 1) 0%,
+    rgba($light, 1) 5%,
+    rgba($light, .9) 30%,
+    rgba($light, .1) 100%
   );
 }
 
@@ -388,15 +404,11 @@ table {
   }
   &.folded {  
     width: 40px;
-    .content {
-      opacity: 0;
-    }
+    .content { opacity: 0; }
   }
   .fold-btn {
     width: 40px;
-    i {
-      transition: 250ms ease-in-out;
-    }
+    i { transition: 250ms ease-in-out; }
   }
 }
 
@@ -405,20 +417,20 @@ table {
   padding-top: 3px;
   position: absolute;
   right: 0.5em;
-  top: 28px;
+  top: 26px;
   cursor: pointer;
   i {
     color: $medium;
     margin-top: 0.45em;
   }
   &:hover {
-    .hint-container {
+    .hint-box {
       transform: scale(1);
     }
     i { color: $primary; }
   }
 }
-.hint-container {
+.hint-box {
   text-align: left;
   padding: 1em;
   z-index: 1000;
@@ -426,55 +438,38 @@ table {
   transition: transform 100ms ease-in-out;
   transform: scale(0);
   background: $accent-light;
-  border-radius: 5px;
+  border-radius: $border-radius;
   box-shadow: $drop-shadow;
 }
 
-.row {
-  margin-left: 0;
-  margin-right: 0;
-}
-
-.color-tag {
-  &.sm {
-    font-size: 1.3rem;
-    width: 30px;
-    height: 33px;
-  }
-  i {
-    font-size: .8em;
-  }
-  font-weight: bold;
-  border-radius: 3px;
-  color: $light;
-  text-align: center;
-  @include unselectable;
-  &.blue {
-    background: $blue
-  }
-  &.teal {
-    background: $teal;
-  }
-  &.orange {
-    background: $orange;
-  }
-  &.green {
-    background: $green;
-  }
-  &.red {
-    background: $red;
-  }
-  &.grey {
-    background: $medium;
-  }
+.small-square {
+  width: .7em;
+  height: .7em;
+  display: inline-block;
+  border-radius: $border-radius-sm;
+  &.primary { background: $primary; }
+  &.pink { background: $pink; }
+  &.orange { background: $orange; }
+  &.green { background: $green; }
+  &.teal { background: $teal; }
+  &.blue { background: $blue; }
+  &.purple { background: $purple; }
+  &.grey { background: $medium; }
+  &.red { background: $red; }
 }
 
 .light-tag {
-  border-radius: .25em;
+  border-radius: $border-radius;
   padding: 0 .4em;
   display: inline-block;
   font-size: .9em;
+  font-weight: bold;
+  &.lg {
+    font-size: 1.5rem;
+    padding: .1em .6em;
+  }
   * { vertical-align: middle; }
+  &.primary { background: rgba($primary, .2); }
   &.pink { background: rgba($pink, .2); }
   &.purple { background: rgba($purple, .2); }
   &.grey { background: rgba($medium, .2); }
@@ -482,7 +477,10 @@ table {
   &.green { background: rgba($green, .2); }
   &.blue { background: rgba($blue, .2); }
   &.orange { background: rgba($orange, .2); }
+  &.teal { background: rgba($teal, .2); }
+  &.blue { background: rgba($blue, .2); }
 }
+
 
 .filter-btn {
   color: $default;
@@ -513,30 +511,24 @@ table {
   }
 }
 
-.small-square {
-  width: 15px;
-  height: 15px;
-  display: inline-block;
-  border-radius: 3px;
-  &.primary { background: $primary; }
-  &.pink { background: $pink; }
-  &.orange { background: $orange; }
-  &.green { background: $green; }
-  &.teal { background: $teal; }
-  &.purple { background: $purple; }
-  &.grey { background: $medium; }
-  &.red { background: $red; }
-}
-
-i.yellow { color: $yellow; }
-i.green { color: $green; }
-i.red { color: $red; }
-
 .sub-nav {
   height: $content-height;
+  padding: 1rem 1.75rem 1rem 0;
+  width: 300px;
   a, button {
     text-align: left;
     margin-bottom: .75em;
+  }
+}
+.sub-nav-content {
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-left: 1px solid $accent;
+  flex: 1;
+  &:last-child {
+    padding-right: 0;
   }
 }
 
@@ -548,16 +540,6 @@ i.red { color: $red; }
   &:not(:first-child) {
     padding-top: 5px;
   }
-}
-
-.content-height {
-  height: $content-height;
-}
-.fill-height {
-  min-height: 100vh;
-}
-.full-height {
-  height: 100vh;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -578,7 +560,6 @@ i.red { color: $red; }
 }
 
 .modal {
-  //background: rgba($black, .55);
   @include unselectable;
   backdrop-filter: blur(20px);
 }

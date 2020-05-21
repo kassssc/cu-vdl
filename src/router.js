@@ -54,7 +54,7 @@ const router = new Router({
 
         {
           path: '/submitsamples',
-          name: 'submitsamples',
+          name: 'submit-samples',
           component: () => import(/* webpackChunkName: "group-submitsamples" */
             '@/views/SubmitSamples'
           ),
@@ -112,9 +112,17 @@ const router = new Router({
           children: [
             {
               path: '',
-              name: 'admin-create-user',
+              name: 'admin',
               component: () => import(/* webpackChunkName: "group-admin" */
                 '@/views/admin/AdminCreateUser'
+              ),
+              meta: { requiresLogin: true, requiresAdmin: true },
+            },
+            {
+              path: 'create-org',
+              name: 'admin-create-org',
+              component: () => import(/* webpackChunkName: "group-admin" */
+                '@/views/admin/AdminCreateOrg'
               ),
               meta: { requiresLogin: true, requiresAdmin: true },
             },

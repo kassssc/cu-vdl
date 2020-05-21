@@ -77,6 +77,9 @@ const getters = {
   },
   accountTypes: state => {
     return state.accountTypes
+  },
+  usersMock: state => {
+    return [state.DEV_mocks.users[1], state.DEV_mocks.users[2]]
   }
 }
 

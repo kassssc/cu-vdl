@@ -4,8 +4,9 @@
   <div  v-once
         id="home"
         class="w-100 d-flex flex-column align-items-center pb-5">
-    <div class="home-section d-flex justify-content-between align-items-center">
-      <div class="intro">
+    <div class="home-section">
+      <div class="faded-logo" />
+      <div class="w-100 intro">
         <h4 class="mb-2 text-muted">เกี่ยวกับเรา</h4>
         <h1 class="text-primary mb-2">หน่วยชันสูตรโรคสัตว์กลาง</h1>
         <h4 class="text-primary mb-3">คณะสัตวแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h4>
@@ -22,7 +23,6 @@
         </ul>
         
       </div>
-      <div class="faded-logo" />
     </div>
     
     <div class="test d-flex align-items-center justify-content-center">
@@ -142,6 +142,26 @@
 </div>  
 </template>
 
+<script>
+import { mapGetters } from 'vuex'
+
+import Services from './Services'
+import OrgChart from './OrgChart'
+import Contact from './Contact'
+
+export default {
+  name: 'home',
+  components: {
+    Services,
+    OrgChart,
+    Contact
+  },
+  computed: {
+    ...mapGetters(['loggedIn'])
+  }
+}
+</script>
+
 <style lang="scss" scoped>
 ul.info-text {
   position: relative;
@@ -169,9 +189,27 @@ ul.info-text {
     }
   }
 }
+.home-section-btn {
+  width: 230px;
+}
 .home-section {
   width: 100%;
   margin: 4rem 0;
+  position: relative;
+  .intro {
+    z-index: 2;
+    max-width: 550px;
+  }
+  .faded-logo {
+    @include logo;
+    background-size: 305px 300px;
+    width: 320px;
+    height: 300px;
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    opacity: .15;
+    z-index: -1;
+  }
 }
 .mission {
   margin-left: 5em;
@@ -198,19 +236,6 @@ ul.info-text {
   background-size: cover;
   filter: contrast(70%);
 }
-.home-section-btn {
-  width: 230px;
-}
-.intro {
-  max-width: 550px;
-}
-.faded-logo {
-  @include logo;
-  background-size: 305px 300px;
-  width: 320px;
-  height: 300px;
-  opacity: .15;
-}
 .test {
   width: 100vw;
   height: 550px;
@@ -228,23 +253,3 @@ ul.info-text {
   }
 }
 </style>
-
-<script>
-import { mapGetters } from 'vuex'
-
-import Services from '@/components/Services'
-import OrgChart from '@/components/OrgChart'
-import Contact from '@/components/Contact'
-
-export default {
-  name: 'home',
-  components: {
-    Services,
-    OrgChart,
-    Contact
-  },
-  computed: {
-    ...mapGetters(['loggedIn'])
-  }
-}
-</script>

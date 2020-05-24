@@ -142,18 +142,102 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
-import PersonCard from '@/components/PersonCard.vue'
+import PersonCard from './PersonCard.vue'
 
 export default {
   name: 'org-chart',
   components: {
     'person-card': PersonCard,
   },
-  computed: {
-    ...mapGetters([
-      'orgChart',
-    ])
+  data () {
+    return {
+      orgChart: {
+
+        left: {
+          boss: {
+            title: 'หัวหน้าหน่วยชันสูตรโรคสัตว์กลาง',
+            name: 'ผศ.น.สพ.ดร.สว่าง  เกษแดงสกลวุฒิ',
+            img: 'https://i.ibb.co/KrcGxKJ/boss.jpg'
+          },
+          vets: {
+            title: 'สัตวแพทย์',
+            people: [
+              {
+                name: 'น.สพ.รชฎ ตันติเลิศเจริญ',
+                img: 'https://i.ibb.co/GM8S577/vet1.png'
+              },
+              {
+                name: 'สพ.ญ.นภวัลย์ บรรพพงศ์',
+                img: 'https://i.ibb.co/T0z5kjN/vet2.png'
+              },
+            ]
+          }
+        },
+        middle: {
+          title: 'เจ้าหน้าที่บริการวิทยาศาสตร์',
+          top: [
+            {
+              title: 'งานไวรัสวิทยา',
+              name: 'นางพอจิต ชูใจ',
+              img: 'https://i.ibb.co/QmkCcY2/virus.png'
+            },
+            {
+              title: 'งานซีรั่มวิทยา',
+              name: 'นางผุสดี มาคุ้ม',
+              img: 'https://i.ibb.co/t3Z9Cmr/serum.png'
+            }
+          ],
+          middle: [
+            {
+              title: 'งานแบคทีเรีย',
+              name: 'นายพงษ์ไทย บุญคำ',
+              img: 'https://i.ibb.co/RYGSCJk/bacteria.png'
+            },
+            {
+              title: 'งานอณูชีววิทยา',
+              name: 'นางสาวนันทิยา เอี่ยมประภาศ',
+              img: 'https://i.ibb.co/dWYtw3S/bio.png'
+            },
+          ],
+          bottom: [
+            {
+              title: 'งานโลหิตวิทยา',
+              name: 'นางเกษร เอี่ยมละออ',
+              img: 'https://i.ibb.co/VQJGGSZ/blood1.png'
+            },
+            {
+              title: 'งานโลหิตวิทยา',
+              name: 'นางวันเพ็ญ อดุลยานุภาพ',
+              img: 'https://i.ibb.co/7vnjSKV/blood2.png'
+            },
+            {
+              title: 'งานโลหิตวิทยา',
+              name: 'นายกฤษณ์ หัสเขตร์',
+              img: 'https://i.ibb.co/zR7DZGM/blood3.png'
+            },
+          ]
+        },
+        right: {
+          people: [
+            {
+              title: 'เจ้าหน้าที่สำนักงาน (ธุรการ)',
+              name: 'นางสาวธันยาภัทร์ พัฒน์สินศิริ',
+              img: 'https://i.ibb.co/n3yYwMj/staff.png'
+            },
+            {
+              title: 'พนักงานบริการทั่วไป',
+              name: 'นางสาวศศิกานต์ สินโทต้อม',
+              img: 'https://i.ibb.co/wYKrPzT/service.png'
+            },
+            {
+              title: 'พนักงานห้องทดลอง',
+              name: 'นางสาวจีรภรณ์ สุขชูศรี',
+              img: 'https://i.ibb.co/3ByBS3y/lab.png'
+            },
+          ]
+        }
+      }
+    }
   }
 }
 </script>

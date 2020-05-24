@@ -2,7 +2,6 @@ import Vue from 'vue'
 import App from '@/App'
 import router from '@/router'
 import store from '@/store/store'
-//import i18n from '@/lang'
 
 Vue.config.productionTip = false
 
@@ -45,8 +44,12 @@ const FileView = () => import(/* webpackChunkName: "group-form" */
 const SearchInput = () => import(/* webpackChunkName: "group-form" */
   '@/util/SearchInput'
 )
-const Modal = () => import('@/util/Modal')
-const ColorTag = () => import('@/components/ColorTag')
+const Modal = () => import(/* webpackChunkName: "group-util" */
+  '@/util/Modal'
+)
+const ColorTag = () => import(/* webpackChunkName: "group-util" */
+  '@/util/ColorTag'
+)
 
 Vue.component('checkbox', FormCheckbox)
 Vue.component('FormInput', FormInput)
@@ -61,15 +64,6 @@ Vue.component('SearchInput', SearchInput)
 Vue.component('Modal', Modal)
 Vue.component('ColorTag', ColorTag)
 
-/* Vue.mixin({
-  methods: {
-    gen_URL: function (url) {
-      return 'url(' + require('./assets/' + url) + ')'
-    },
-  }
-})
- */
-
 Vue.directive('focus-on-create', {
   inserted: el => el.focus()
 })
@@ -77,6 +71,5 @@ Vue.directive('focus-on-create', {
 new Vue({
   router,
   store,
-  //i18n,
   render: h => h(App)
 }).$mount('#app')

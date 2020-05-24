@@ -245,7 +245,7 @@ table {
     padding-right: $outer-padding;
   }
   &.page-sm { max-width: 750px; }
-  &.page-md { max-width: 1250px; }
+  &.page-md { max-width: 1300px; }
   &.page-lg { max-width: 1500px; }
   &.page-xl { max-width: 1650px; }
   &.page-xxl { max-width: 2000px; }
@@ -294,6 +294,9 @@ table {
   height: $content-height;
   min-height: $content-height;
   max-height: $content-height;
+}
+.overflow-visible {
+  overflow: visible;
 }
 .fill-height {
   height: 100vh;

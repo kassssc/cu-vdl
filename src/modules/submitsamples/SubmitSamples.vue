@@ -1,5 +1,5 @@
 <template>
-<div class="page page-md d-flex flex-column pb-5 mb-5">
+<div class="page page-md d-flex flex-column">
   <div class="my-2 position-relative">
     <button v-if="isEditMode"
             class="btn back-btn btn-transparent"
@@ -40,7 +40,7 @@
     </scrollactive>
     <button class="btn btn-transparent btn-sm"
             @click="inReviewMode = true">
-      {{ `สรุปและ${isEditMode? 'บันทึก' : 'ส่ง'}` }}
+      {{ reviewAndSubmitLabel }}
     </button>
   </div>
 
@@ -57,7 +57,7 @@
             class="col-4"
             label="ชื่อผู้ส่ง"
             disabled  
-            :value="isEditMode? submission.submitterName : `${user.title}${user.firstName} ${user.lastName}`" />
+            :value="submitterNameValue" />
           <FormDateInput
             class="col-2"
             label="วันที่ส่งตัวอย่าง"
@@ -229,16 +229,13 @@
           :disabled="!batchHasInformation(submission.batches[submission.batches.length-1])"
           @click="addBatch()">
       <i class="fas fa-plus btn-inner-icon" />
-    {{ 
-      isGeneralSubmission?      'เพิ่มกลุ่มการทดสอบ' :
-      isDisinfectantSubmission? 'เพิ่มรายการนํ้ายาฆ่าเชื้อ' : ''
-    }}
+    {{ addBatchLabel }}
   </button>
 
   <button class="btn btn-primary align-self-center px-5 my-5 btn-lg"
           @click="inReviewMode = true">
     <i class="fas fa-check btn-inner-icon" />
-    {{ `สรุปและ${isEditMode? 'บันทึก' : 'ส่ง'}` }}
+    {{ reviewAndSubmitLabel }}
   </button>
 
   <transition name="fade">
@@ -297,13 +294,13 @@ export default {
   name: 'submit-samples',
   components: {
     GeneralBatch: () => import(/* webpackChunkName: "group-submitsamples" */
-      '@/components/GeneralBatch'
+      './GeneralBatch'
     ),
     DisinfectantBatch: () => import(/* webpackChunkName: "group-submitsamples" */
-      '@/components/DisinfectantBatch'
+      './DisinfectantBatch'
     ),
     ReviewSubmission: () => import(/* webpackChunkName: "group-submitsamples" */
-      '@/components/ReviewSubmission'
+      './ReviewSubmission'
     )
   },
   mixins: [smoothReflow],
@@ -331,10 +328,6 @@ export default {
       'org',
       'orgOptions',
       'reportTypes',
-      'tests',
-      'testType',
-      'testCategory',
-      'sensitivityTestIds',
       'mockSubmission'
     ]),
     isGeneralSubmission () {
@@ -351,6 +344,16 @@ export default {
     },
     isEditMode () {
       return !!this.$route.params.id
+    },
+    addBatchLabel () {
+      return  this.isGeneralSubmission? 'เพิ่มกลุ่มการทดสอบ' :
+              this.isDisinfectantSubmission? 'เพิ่มรายการนํ้ายาฆ่าเชื้อ' : ''
+    },
+    reviewAndSubmitLabel () {
+      return `สรุปและ${this.isEditMode? 'บันทึก' : 'ส่ง'}`
+    },
+    submitterNameValue () {
+      return this.isEditMode? this.submission.submitterName : `${this.user.title}${this.user.firstName} ${this.user.lastName}`
     }
   },
   watch: {
@@ -412,7 +415,6 @@ export default {
       // General type
       if (this.isGeneralSubmission) {
         newBatch = {
-          testType: 1,
           sampleCount: null,
           totalPrice: 0,
           tests: {},
@@ -501,6 +503,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.page {
+  padding-bottom: 25vh;
+}
 .expand-in-batch {
   max-height: 8000px;
   opacity: 1;

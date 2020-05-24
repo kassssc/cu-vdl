@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import Titlebar from '@/components/Titlebar.vue'
-import FooterSection from '@/components/FooterSection.vue'
+import Titlebar from './Titlebar'
+import FooterSection from './FooterSection'
 
 export default {
   name: 'main-content',

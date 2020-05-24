@@ -71,6 +71,10 @@
       font-size: 1.3rem;
       margin-top: .2em;
     }
+    &.label-xl {
+      font-size: 1.5rem;
+      margin-top: .1em;
+    }
     @include unselectable;
     &.disabled {
       color: $muted;

@@ -38,7 +38,7 @@
           class="col-6"
           label="ทดสอบประสิทธิภาพยาฆ่าเชื้อต่อ"
           label-class="label-lg"
-          :options="tests(2)"
+          :options="disinfectantTests"
           v-model="batch.testType"
           @change="onBatchTestTypeChange()" />
       </div>
@@ -196,7 +196,7 @@
       <FormDisinfectantTestInput
         class="mt-4"
         :testType="batch.testType"
-        :tests="testType(batch.testType).testInfo"
+        :tests="disinfectantTestCategory(batch.testType)"
         @add="addDisinfectantTest($event)" />
 
     </div>
@@ -212,7 +212,7 @@ export default {
   name: 'disinfectant-batch',
   components: {
     FormDisinfectantTestInput: () => import(/* webpackChunkName: "group-submitsamples" */
-      '@/util/FormDisinfectantTestInput'
+      './FormDisinfectantTestInput'
     ),
   },
   props: {
@@ -239,8 +239,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'testType',
-      'tests'
+      'disinfectantTests',
+      'disinfectantTestCategory'
     ]),
     isBacteriaTestBatch () {
       return this.batch.testType === 6

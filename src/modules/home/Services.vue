@@ -33,19 +33,25 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
   name: 'services',
-  computed: {
-    ...mapGetters([
-      'downloads',
-      'servicesImg'
-    ])
-  },
   data () {
     return {
-      text: ['งานโลหิตวิทยา', 'งานแบคทีเรีย', 'งานไวรัสวิทยา', 'งานซีรั่มวิทยา', 'งานอนูชีววิทยา', 'งานทดสอบประสิทธิภาพยาฆ่าเชื้อ - ประเมินราคาก่อนให้บริการ']
+      text: ['งานโลหิตวิทยา', 'งานแบคทีเรีย', 'งานไวรัสวิทยา', 'งานซีรั่มวิทยา', 'งานอนูชีววิทยา', 'งานทดสอบประสิทธิภาพยาฆ่าเชื้อ - ประเมินราคาก่อนให้บริการ'],
+      servicesImg: [
+        'https://i.ibb.co/jh444d8/01.png',
+        'https://i.ibb.co/pRsWJYs/02.png',
+        'https://i.ibb.co/TkMRLzT/03.png',
+        'https://i.ibb.co/55CTcdM/04.png',
+        'https://i.ibb.co/Xtp2SC7/05.png'
+      ],
+      downloads: [
+        'hermatology.pdf',
+        'bacteriology.pdf',
+        'virology.pdf',
+        'serology.pdf',
+        'molecular.pdf'
+      ]
     }
   },
 }

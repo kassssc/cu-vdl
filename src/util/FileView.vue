@@ -4,7 +4,8 @@
           :class="labelSize">
     {{ label }}
   </label>
-  <div class="d-flex">
+  <div class="d-flex hover-appear-wrapper">
+    <h5 class="hover-appear view-file-label">ดูไฟล์</h5>
     <button class="btn btn-block text-left"
             :class="btnClass">
       <i  v-if="iconClass"
@@ -12,19 +13,9 @@
           :class="iconClass" />
       {{ fileName }}
     </button>
-    <button class="btn btn-download"
-            :class="btnClass">
-      <i class="fa fa-file-download" />
-    </button>
   </div>
 </div>
 </template>
-
-<style lang="scss" scoped>
-button.btn.btn-download {
-  margin-left: 8.5px;
-}
-</style>
 
 <script>
 export default {
@@ -57,3 +48,15 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.view-file-label {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: .5em;
+  margin: auto;
+  height: 50%;
+  pointer-events: none;
+}
+</style>

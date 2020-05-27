@@ -16,17 +16,6 @@
 </div>
 </template>
 
-<style lang="scss">
-textarea.form-control {
-  line-height: 1.2em;
-  padding: 0.5em;
-  resize: none;
-  &.resize {
-    resize: vertical;
-  }
-}
-</style>
-
 <script>
 export default {
   name: 'form-textarea',
@@ -63,3 +52,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+textarea.form-control {
+  line-height: 1.2em;
+  padding: 0.5em;
+  resize: none;
+  &.resize {
+    resize: vertical;
+  }
+}
+</style>

@@ -27,6 +27,40 @@
 </div>
 </template>
 
+<script>
+export default {
+  name: 'form-checkbox',
+  props: {
+    label: {
+      default: '',
+      type: String
+    },
+    labelClass: {
+      default: undefined,
+      type: String
+    },
+    secondaryLabel: {
+      default: undefined,
+      type: String
+    },
+    value: {
+      default: false,
+      type: Boolean
+    },
+    disabled: {
+      default: false,
+      type: Boolean
+    }
+  },
+  methods: {
+    onChange (newVal) {
+      this.$emit('input', newVal)
+      this.$emit('change')
+    }
+  }
+}
+</script>
+
 <style lang="scss" scoped>
 .hidden-input {
   position: absolute;
@@ -82,37 +116,3 @@
   }
 }
 </style>
-
-<script>
-export default {
-  name: 'form-checkbox',
-  props: {
-    label: {
-      default: '',
-      type: String
-    },
-    labelClass: {
-      default: undefined,
-      type: String
-    },
-    secondaryLabel: {
-      default: undefined,
-      type: String
-    },
-    value: {
-      default: false,
-      type: Boolean
-    },
-    disabled: {
-      default: false,
-      type: Boolean
-    }
-  },
-  methods: {
-    onChange (newVal) {
-      this.$emit('input', newVal)
-      this.$emit('change')
-    }
-  }
-}
-</script>

@@ -1,5 +1,5 @@
 <template>
-<div class="form-row no-gutters pt-3 border-top-lighter">
+<div class="form-row no-gutters pt-3 border-t">
   <div class="col-2">
     <h5 class="mb-2">เลือกยาต้านจุลชีพเพื่อการทดสอบความไว</h5>
     <h5 class="text-medium">(เลือกได้ถึง 8 รายการ)</h5>
@@ -9,7 +9,7 @@
       <div v-for="(category, idxCategory) in options"
           :key="idxCategory"
           class="category-container mr-3 d-flex flex-column">
-        <h5 class="w-100 mb-2 border-bottom-lighter">{{ category.name }}</h5>
+        <h5 class="w-100 mb-2 border-b">{{ category.name }}</h5>
         <div class="form-group">
           <checkbox v-for="(item, idxItem) in category.items"
                     :key="idxItem"
@@ -24,17 +24,6 @@
 </div>
   
 </template>
-
-<style lang="scss" scoped>
-.items-container {
-  display: flex;
-  flex-flow: column wrap;
-  max-height: 500px;
-}
-.category-container {
-  width: 140px;
-}
-</style>
 
 <script>
 export default {
@@ -78,3 +67,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.items-container {
+  display: flex;
+  flex-flow: column wrap;
+  max-height: 500px;
+}
+.category-container {
+  width: 140px;
+}
+</style>

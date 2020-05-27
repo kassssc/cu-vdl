@@ -1,5 +1,5 @@
 <template>
-<div class="border-bottom-lighter py-2 mb-4">
+<div class="border-b py-2 mb-4">
   <div  v-for="group of testCategory.testGroups"
         :key="group.id"
         class="row no-gutters test-row">

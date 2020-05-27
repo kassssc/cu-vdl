@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <div class="form-row font-chatthai pb-3 border-bottom-lighter">
+    <div class="form-row font-chatthai pb-3 border-b">
       <FormInput
         class="col-8"
         label="อีเมล"
@@ -133,7 +133,7 @@
               </th>
             </tr>
           </thead>
-          <tbody class="border-top-lighter">
+          <tbody class="border-t">
             <tr v-for="org of orgOptions"
                 :key="org.id">
               <router-link  :to="{ name: 'admin-orgs-list' }"
@@ -166,7 +166,7 @@
       </div>
     </div>
 
-    <div class="form-row font-chatthai py-4 border-top-lighter">
+    <div class="form-row font-chatthai py-4 border-t">
       <div class="form-group col-8">
         <button class="btn btn-danger btn-block"
                 @click="showDeactivateAccountModal()">

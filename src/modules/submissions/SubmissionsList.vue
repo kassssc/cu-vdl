@@ -90,7 +90,7 @@
     </div>
   </div>
 
-  <div class="flex-1 content-height pl-4 border-left-lighter">
+  <div class="flex-1 content-height pl-4 border-l">
     <div id="table-container" class="scroll-container">
       <table>
         <thead>

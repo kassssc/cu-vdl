@@ -10,7 +10,7 @@
   </div>
 
   <div class="font-chatthai">
-    <div class="row py-3 border-bottom-lighter">
+    <div class="row py-3 border-b">
       <div class="col-xl-3 col-12">
         <h4>ประเภท Account</h4>
       </div>
@@ -70,7 +70,7 @@
     </div>
 
     <div  v-if="userFormData.accountType !== null"
-          class="row w-100 pt-4 pb-3 border-top-lighter">
+          class="row w-100 pt-4 pb-3 border-t">
       <div class="col-xl-3 col-12">
         <h4>{{ userFormData.accountType === 1? 'องค์กรประจำ' : 'องค์กรที่เป็นตัวแทน' }}</h4>
       </div>
@@ -104,7 +104,7 @@
       </div>
     </div>
 
-    <div class="row w-100 py-4 border-top-lighter">
+    <div class="row w-100 py-4 border-t">
       <div class="col-xl-3 col-12"></div>
       <div class="col-xl-8 col-12">
         <div class="form-row">
@@ -121,10 +121,6 @@
 
 </div>
 </template>
-
-<style lang="scss" scoped>
-
-</style>
 
 <script>
 import { mapGetters } from 'vuex'

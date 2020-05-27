@@ -1,6 +1,5 @@
 <template>
 <div class="page page-md d-flex flex-column align-items-center">
-  
   <div  v-once
         id="home"
         class="w-100 d-flex flex-column align-items-center pb-5">

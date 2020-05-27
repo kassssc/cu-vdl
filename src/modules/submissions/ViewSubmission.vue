@@ -1,6 +1,6 @@
 <template>
 <div class="page page-lg d-flex align-items-start">
-  <div class="sub-nav sticky pl-4">
+  <div class="sub-nav overflow-visible sticky pl-4">
     <router-link  :to="{name: 'submissionslist'}"
                   tag="button"
                   exact
@@ -17,15 +17,15 @@
         <i class="fas fa-file-alt btn-inner-icon-lg" />
         ข้อมูลเบื้องต้น
       </a>
-      <a  href="#payment"
-          class="btn btn-transparent btn-block btn-lg scrollactive-item">
-        <i class="fas fa-file-invoice-dollar btn-inner-icon-lg" />
-        การชำระเงิน
-      </a>
       <a  href="#reports"
           class="btn btn-transparent btn-block btn-lg scrollactive-item">
         <i class="fas fa-file-invoice btn-inner-icon-lg" />
         รายงาน
+      </a>
+      <a  href="#payment"
+          class="btn btn-transparent btn-block btn-lg scrollactive-item">
+        <i class="fas fa-file-invoice-dollar btn-inner-icon-lg" />
+        การชำระเงิน
       </a>
       <a  href="#contact"
           class="btn btn-transparent btn-block btn-lg scrollactive-item">
@@ -33,7 +33,7 @@
         ข้อมูลการติดต่อ
       </a>
       <template v-if="userIsAdmin">
-        <div class="w-100 border-bottom-lighter mb-3"></div>
+        <div class="w-100 border-b mb-3"></div>
         <h3 class="mb-3">Admin</h3>
         <router-link  :to="{ name: 'editsubmission', params: { id: 123456 } }"
                       tag="a"
@@ -58,7 +58,7 @@
         การส่งตัวอย่างหมายเลข <span class="text-primary">{{ `${$route.params.id}` }}</span>
       </h2>
 
-      <div class="row ">
+      <div class="row">
         <div class="col-2">
           <h4>สถานะ</h4>
         </div>
@@ -92,7 +92,7 @@
 
       <div class="row mb-4">
         <div class="col-2">
-          <h4>ข้อมูลเบื้องต้น</h4>
+          <h4>ข้อมูลการส่งตัวอย่าง</h4>
         </div>
         <div class="col-10 pt-1">
           <div class="form-row">
@@ -103,9 +103,7 @@
                 :label="submissionTypeData[submission.type].label"
                 size="lg" />
             </div>
-
             <div class="w-100"></div>
-
             <FormInput
               class="col-4"
               label="หมายเลขการส่งตัวอย่าง"
@@ -116,9 +114,7 @@
               label="หมายเลขรับตัวอย่าง"
               :value="submission.receptionNum"
               disabled />
-
             <div class="w-100"></div>
-
             <FormDateInput
               class="col-4"
               label="วันที่ส่งตัวอย่าง"
@@ -142,6 +138,93 @@
               label="องค์กรเจ้าของตัวอย่าง"
               disabled
               :value="submission.org.name" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="reports"
+         class="section">
+      <h2 class="mb-4">
+        <i class="fas fa-file-invoice icon-lg" />
+        รายงาน
+      </h2>
+      <div class="download-reports mb-2 p-3 flex-grow-1">
+        <div class="row color-dark-grey border-b py-2">
+          <div class="col-2">
+            <h4 class="mb-0">เลขที่รายงาน</h4>
+          </div>
+          <div class="col-1">
+            <h4 class="mb-0">สถานะ</h4>
+          </div>
+          <div class="col-2">
+            <h4 class="mb-0">วันที่</h4>
+          </div>
+          <div class="col-4">
+            <h4 class="mb-0">รายละเอียด</h4>
+          </div>
+          <div class="col-1">
+            <h4 class="mb-0">ดูไฟล์</h4>
+          </div>
+          <div class="col-2">
+            <h4 class="mb-0">ดาวน์โหลด</h4>
+          </div>
+        </div>
+
+        <div  v-for="(report, idx) in submission.reports"
+              :key="idx"
+              class="row py-1 border-b">
+          <div class="col-2 d-flex align-items-center">
+            <h5 class="mb-0">{{ report.id }}</h5>
+          </div>
+          <div class="col-1 d-flex align-items-center">
+            <h5 class="mb-0">{{ report.status }}</h5>
+          </div>
+          <div class="col-2 d-flex align-items-center">
+            <h5 class="mb-0">{{ report.date }}</h5>
+          </div>
+          <div class="col-4 d-flex align-items-center">
+            <h5 class="mb-0">{{ report.details }}</h5>
+          </div>
+          <div class="col-1">
+            <button class="btn btn-icon">
+              <i class="fas fa-file-invoice"></i>
+            </button>
+          </div>
+          <div class="col-2">
+            <button class="btn btn-icon">
+              <i class="fas fa-file-download"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="row mt-3">
+          <div class="col-12 d-flex justify-content-end">
+            <button class="btn btn-primary"
+                    @click="downloadAllReports()">
+              <i class="fas fa-download btn-inner-icon" />
+              ดาวน์โหลดทั้งหมด (เป็น zip)
+            </button>
+          </div>  
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-2">
+          <h4 class="mb-2 mt-3">ช่องทางการแจ้งผล</h4>
+        </div>
+        <div class="col-10">
+          <div class="form-row">
+            <FormInput
+              class="col-4"
+              label="อีเมล"
+              disabled
+              :value="submission.submitter.email" />
+            <FormInput
+              class="col-4"
+              label="หมายเลขโทรศัพท์"
+              disabled
+              :value="submission.submitter.phone" />
           </div>
         </div>
       </div>
@@ -202,93 +285,6 @@
         </div>
       </div>
 
-    </div>
-
-    <div id="reports"
-         class="section">
-      <h2 class="mb-4">
-        <i class="fas fa-file-invoice icon-lg" />
-        รายงาน
-      </h2>
-      <div class="download-reports mb-2 p-3 flex-grow-1">
-        <div class="row color-dark-grey border-bottom-lighter py-2">
-          <div class="col-2">
-            <h4 class="mb-0">เลขที่รายงาน</h4>
-          </div>
-          <div class="col-1">
-            <h4 class="mb-0">สถานะ</h4>
-          </div>
-          <div class="col-2">
-            <h4 class="mb-0">วันที่</h4>
-          </div>
-          <div class="col-4">
-            <h4 class="mb-0">รายละเอียด</h4>
-          </div>
-          <div class="col-1">
-            <h4 class="mb-0">ดูไฟล์</h4>
-          </div>
-          <div class="col-2">
-            <h4 class="mb-0">ดาวน์โหลด</h4>
-          </div>
-        </div>
-
-        <div  v-for="(report, idx) in submission.reports"
-              :key="idx"
-              class="row py-1 border-bottom-lighter">
-          <div class="col-2 d-flex align-items-center">
-            <h5 class="mb-0">{{ report.id }}</h5>
-          </div>
-          <div class="col-1 d-flex align-items-center">
-            <h5 class="mb-0">{{ report.status }}</h5>
-          </div>
-          <div class="col-2 d-flex align-items-center">
-            <h5 class="mb-0">{{ report.date }}</h5>
-          </div>
-          <div class="col-4 d-flex align-items-center">
-            <h5 class="mb-0">{{ report.details }}</h5>
-          </div>
-          <div class="col-1">
-            <button class="btn btn-icon">
-              <i class="fas fa-file-invoice"></i>
-            </button>
-          </div>
-          <div class="col-2">
-            <button class="btn btn-icon">
-              <i class="fas fa-file-download"></i>
-            </button>
-          </div>
-        </div>
-        
-        <div class="row mt-3">
-          <div class="col-12 d-flex justify-content-end">
-            <button class="btn btn-primary"
-                    @click="downloadAllReports()">
-              <i class="fas fa-download btn-inner-icon" />
-              ดาวน์โหลดทั้งหมด (เป็น zip)
-            </button>
-          </div>  
-        </div>
-      </div>
-
-      <div class="row mt-4">
-        <div class="col-2">
-          <h4 class="mb-2 mt-3">ช่องทางการแจ้งผล</h4>
-        </div>
-        <div class="col-10">
-          <div class="form-row">
-            <FormInput
-              class="col-4"
-              label="อีเมล"
-              disabled
-              :value="submission.submitter.email" />
-            <FormInput
-              class="col-4"
-              label="หมายเลขโทรศัพท์"
-              disabled
-              :value="submission.submitter.phone" />
-          </div>
-        </div>
-      </div>
     </div>
 
     <div id="contact" class="section">
@@ -358,10 +354,13 @@
     </template>
     <template #modal-footer>
       <div class="d-flex flex-nowrap w-100">
-        <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
+        <button type="button"
+                class="btn btn-secondary w-50"
+                data-dismiss="modal">
           กลับไป
         </button>
-        <button type="button" class="btn btn-danger ml-2 w-100"
+        <button type="button"
+                class="btn btn-danger ml-2 w-100"
                 @click="adminCancelSubmission()">
           ยืนยันว่าจะยกเลิก
         </button>
@@ -449,13 +448,9 @@ export default {
   
         ]
       },
-      modificationRequestMsg: null
     }
   },
   methods: {
-    submitModificationRequest () {
-      this.modificationRequestMsg = null
-    },
     downloadAllReports () {
     },
     adminCancelSubmission () {
@@ -469,9 +464,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sub-nav {
-  overflow-x: visible;
-}
 .section {
   font-family: 'CS ChatThai';
   border-bottom: 1px solid $accent;

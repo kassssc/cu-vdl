@@ -10,7 +10,7 @@
   </div>
 
   <div class="font-chatthai">
-    <div class="border-bottom-lighter row w-100 py-3 mb-3">
+    <div class="border-b row w-100 py-3 mb-3">
       <div class="col-xl-3 col-12">
         <h4>แก้ไขข้อมูลการติดต่อ</h4>
       </div>
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="border-bottom-lighter row w-100 py-3 mb-3">
+    <div class="border-b row w-100 py-3 mb-3">
       <div class="col-xl-3 col-12">
         <h4>เปลี่ยนรหัสผ่าน</h4>
       </div>
@@ -63,7 +63,7 @@
     </div>
 
     <div  v-if="!userIsAdmin"
-          class="border-bottom-lighter row w-100 py-3">
+          class="border-b row w-100 py-3">
       <div class="col-xl-3 col-12">
         <h4>ระงับการใช้งาน Account</h4>
       </div>
@@ -106,9 +106,6 @@
   </Modal>
 </div>
 </template>
-
-<style lang="scss" scoped>
-</style>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'

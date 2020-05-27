@@ -379,33 +379,6 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-.signup-logo {
-  @include logo;
-  width: 150px;
-  height: 150px;
-}
-
-.org-row:not(:last-child) {
-  border-bottom: 1px solid $accent;
-}
-
-.questionaire-form {
-  width: 700px;
-}
-.info-form {
-  width: 850px;
-}
-#orgs-container {
-  max-height: 450px;
-}
-.btn.btn-x.delete-org {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-}
-</style>
-
 <script>
 import { mapGetters } from 'vuex'
 
@@ -530,3 +503,30 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.signup-logo {
+  @include logo;
+  width: 150px;
+  height: 150px;
+}
+
+.org-row:not(:last-child) {
+  border-bottom: 1px solid $accent;
+}
+
+.questionaire-form {
+  width: 700px;
+}
+.info-form {
+  width: 850px;
+}
+#orgs-container {
+  max-height: 450px;
+}
+.btn.btn-x.delete-org {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+</style>

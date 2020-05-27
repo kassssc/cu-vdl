@@ -9,6 +9,22 @@
 </div>
 </template>
 
+<script>
+export default {
+  name: 'person-card',
+  props: {
+    name: {
+      type: String,
+      default: ''
+    },
+    img: {
+      type: String,
+      default: ''
+    }
+  },
+}
+</script>
+
 <style scoped lang="scss">
 .person-card {
   display: flex;
@@ -29,26 +45,3 @@
   margin: 0.75em 0;
 }
 </style>
-
-<script>
-import { mapGetters } from 'vuex'
-
-export default {
-  name: 'person-card',
-  props: {
-    name: {
-      type: String,
-      default: ''
-    },
-    img: {
-      type: String,
-      default: ''
-    }
-  },
-  computed: {
-    ...mapGetters([
-      'lang'
-    ])
-  },
-}
-</script>

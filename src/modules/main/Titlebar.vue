@@ -102,6 +102,33 @@
 </div>
 </template>
 
+<script>
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
+  name: 'title-bar',
+  computed: {
+    ...mapGetters([
+      'nav',
+      'loggedIn',
+      'user',
+      'userIsAdmin'
+    ])
+  },
+  methods: {
+    ...mapActions([
+			'logout',
+    ]),
+    logoutAndNavigateToHome () {
+      this.logout()
+      if (this.$route.name !== 'home') {
+        this.$router.push('/')
+      }
+    }
+  }
+}
+</script>
+
 <style scoped lang="scss">
 #titlebar {
   z-index: 999;
@@ -143,30 +170,3 @@
   }
 }
 </style>
-
-<script>
-import { mapGetters, mapActions } from 'vuex'
-
-export default {
-  name: 'title-bar',
-  computed: {
-    ...mapGetters([
-      'nav',
-      'loggedIn',
-      'user',
-      'userIsAdmin'
-    ])
-  },
-  methods: {
-    ...mapActions([
-			'logout',
-    ]),
-    logoutAndNavigateToHome () {
-      this.logout()
-      if (this.$route.name !== 'home') {
-        this.$router.push('/')
-      }
-    }
-  }
-}
-</script>

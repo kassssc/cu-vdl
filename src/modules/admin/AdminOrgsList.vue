@@ -27,7 +27,7 @@
     <h2 class="mb-4">{{ org.name }}</h2>
 
     <div class="font-chatthai">
-      <div class="form-row border-bottom-lighter pb-3">
+      <div class="form-row border-b pb-3">
         <FormTextarea
           class="col-12"
           label="ที่อยู่"

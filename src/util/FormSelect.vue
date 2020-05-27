@@ -19,6 +19,38 @@
 </div>
 </template>
 
+<script>
+export default {
+  name: 'form-select',
+  components: {
+    vSelect: () => import(/* webpackChunkName: "group-form-select" */ 'vue-select')
+  },
+  inheritAttrs: false,
+  props: {
+    formLabel: {
+      type: String,
+      default: null
+    },
+    required: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+  },
+  computed: {
+    listeners () {
+      return {
+        ...this.$listeners,
+        input: ev => this.$emit('input', ev),
+      }
+    }
+  }
+}
+</script>
+
 <style lang="scss">
 .v-select.custom {
   border-radius: $border-radius;
@@ -110,35 +142,3 @@
   }
 }
 </style>
-
-<script>
-export default {
-  name: 'form-select',
-  components: {
-    vSelect: () => import(/* webpackChunkName: "group-form-select" */ 'vue-select')
-  },
-  inheritAttrs: false,
-  props: {
-    formLabel: {
-      type: String,
-      default: null
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-  },
-  computed: {
-    listeners () {
-      return {
-        ...this.$listeners,
-        input: ev => this.$emit('input', ev),
-      }
-    }
-  }
-}
-</script>

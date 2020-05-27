@@ -8,7 +8,7 @@
         </h2>
       </div>
     </div>
-    <div class="row font-chatthai border-bottom-lighter w-100 py-3 mb-3">
+    <div class="row font-chatthai border-b w-100 py-3 mb-3">
       <div class="col-12">
         <div class="form-row">
           <FormTextarea

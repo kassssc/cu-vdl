@@ -42,11 +42,56 @@
         <router-link  :to="{name: 'signup'}"
                       tag="a"
                       class="btn btn-secondary btn-lg btn-block">
-          <i class="fas fa-user-plus btn-inner-icon"></i> สมัครสมาชิก
+          <i class="fas fa-user-plus btn-inner-icon"></i> ขอสมัครสมาชิก
         </router-link>
       </div>
     </div>
   </div>
+
+  <Modal  modal-id="forgotPasswordModal"
+          x-close>
+    <template #modal-header>
+      <h3 class="text-primary">
+        <i class="fas fa-question icon-md mr-1" />
+        ลืมรหัสผ่าน
+      </h3>
+    </template>
+    <template #modal-body>
+      <div class="form-row d-flex justify-content-center">
+        <div class="col-10">
+          <h4 class="text-medium mb-3">
+            กรุณากรอกข้อมูลเพื่อยืนยันตัวตน หากข้อมูลถูกต้อง ท่านจะได้รับลิ้งค์เปลี่ยนรหัสผ่านทางอีเมล
+          </h4>
+        </div>
+        <FormInput
+          class="col-9"
+          input-class="form-control-lg"
+          type="text"
+          label="อีเมลที่ใช้ login" />
+        <FormInput
+          class="col-9"
+          input-class="form-control-lg"
+          type="text"
+          label="ชื่อจริง" />
+        <FormInput
+          class="col-9"
+          input-class="form-control-lg"
+          type="text"
+          label="นามสกุล" />
+      </div>
+    </template>
+    <template #modal-footer>
+      <div class="w-100 d-flex flex-nowrap">
+        <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
+          ยกเลิก
+        </button>
+        <button type="button" class="btn btn-primary ml-2 w-100"
+                @click="submitForgotPasswordForm()">
+          ส่งลิ้งค์เปลี่ยนรหัสผ่านทางอีเมล
+        </button>
+      </div>
+    </template>
+  </Modal>
 
   <div class="d-flex flex-column position-absolute __dev-panel">
     <h3 class="mb-3">DEV TOOLS</h3>
@@ -66,28 +111,9 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-.__dev-panel {
-  right: 20px;
-  margin: auto;
-  width: 400px;
-}
-.login-logo {
-  @include logo;
-  width: 250px;
-  height: 250px;
-  margin-bottom: 2em;
-}
-.login-form {
-  width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-</style>
-
 <script>
 import { mapActions } from 'vuex'
+import $ from 'jquery'
 
 export default {
   name: 'login',
@@ -113,8 +139,31 @@ export default {
       this.$router.push({ name: 'submissionslist' })
     },
     forgotPassword () {
-
+      $('#forgotPasswordModal').modal('show')
+    },
+    submitForgotPasswordForm () {
+      $('#forgotPasswordModal').modal('hide')
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.__dev-panel {
+  right: 20px;
+  margin: auto;
+  width: 400px;
+}
+.login-logo {
+  @include logo;
+  width: 250px;
+  height: 250px;
+  margin-bottom: 2em;
+}
+.login-form {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+</style>

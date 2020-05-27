@@ -1,6 +1,6 @@
 <template>
   <div id="orgchart" class="no-wrap">
-    <h1 class="mb-5 pb-2 text-primary thick-border-bottom-gradient">
+    <h1 class="mb-5 pb-2 text-primary border-b-gradient">
       บุคลากร
     </h1>
 
@@ -84,62 +84,6 @@
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.grid-main {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  .grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-column-gap: 3em;
-    grid-row-gap: 1em;
-    padding: 1em;
-  }
-  .grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-column-gap: 3em;
-    grid-row-gap: 1em;
-    padding-bottom: 3em;
-  }
-}
-.label-tag {
-  background: $primary;
-  color: $light;
-  border-radius: $border-radius;
-  padding: .1em 0.4em;
-  font-weight: bold;
-  font-size: 1.3rem;
-  text-align: center;
-  min-width: 125px;
-  &.gradient-bg {
-    background: linear-gradient(to right, $primary, $placeholder);
-    border-width: 0;
-  }
-  &::selection {
-    color: $primary; /* WebKit/Blink Browsers */
-    background: rgba($white, 0.99);
-  }
-  &::-moz-selection {
-    color: $primary; /* Gecko Browsers */
-    background: rgba($white, 0.99);
-  }
-  &.outline {
-    box-shadow:0px 0px 0px 2px $primary inset;
-    color: $primary;
-    background: transparent;
-    &::selection {
-      background: rgba($primary,.99); /* WebKit/Blink Browsers */
-      color: $white;
-    }
-    &::-moz-selection {
-      background: rgba($primary,.99); /* Gecko Browsers */
-      color: $white;
-    }
-  }
-}
-</style>
 
 <script>
 import PersonCard from './PersonCard.vue'
@@ -241,3 +185,59 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.grid-main {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 3em;
+    grid-row-gap: 1em;
+    padding: 1em;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 3em;
+    grid-row-gap: 1em;
+    padding-bottom: 3em;
+  }
+}
+.label-tag {
+  background: $primary;
+  color: $light;
+  border-radius: $border-radius;
+  padding: .1em 0.4em;
+  font-weight: bold;
+  font-size: 1.3rem;
+  text-align: center;
+  min-width: 125px;
+  &.gradient-bg {
+    background: linear-gradient(to right, $primary, $placeholder);
+    border-width: 0;
+  }
+  &::selection {
+    color: $primary; /* WebKit/Blink Browsers */
+    background: rgba($white, 0.99);
+  }
+  &::-moz-selection {
+    color: $primary; /* Gecko Browsers */
+    background: rgba($white, 0.99);
+  }
+  &.outline {
+    box-shadow:0px 0px 0px 2px $primary inset;
+    color: $primary;
+    background: transparent;
+    &::selection {
+      background: rgba($primary,.99); /* WebKit/Blink Browsers */
+      color: $white;
+    }
+    &::-moz-selection {
+      background: rgba($primary,.99); /* Gecko Browsers */
+      color: $white;
+    }
+  }
+}
+</style>

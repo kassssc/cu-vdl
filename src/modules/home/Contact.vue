@@ -1,6 +1,6 @@
 <template>
 <div id="contact">
-  <h1 class="mb-5 pb-2 text-primary thick-border-bottom-gradient">
+  <h1 class="mb-5 pb-2 text-primary border-b-gradient">
     ติดต่อสอบถาม
   </h1>
 
@@ -95,14 +95,14 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-#contact {
-  margin-bottom: 20vh;
-}
-</style>
-
 <script>
 export default {
   name: 'contact'
 }
 </script>
+
+<style lang="scss" scoped>
+#contact {
+  margin-bottom: 20vh;
+}
+</style>

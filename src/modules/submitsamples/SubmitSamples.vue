@@ -47,7 +47,7 @@
   <div  id="sample-info-form"
         class="font-chatthai d-flex flex-column align-items-center px-3 py-0 max-width-1250">    
     
-    <div id="info" class="border-bottom-lighter row w-100 pt-4 pt-xl-5">
+    <div id="info" class="border-b row w-100 pt-4 pt-xl-5">
       <div class="col-xl-2 col-12">
         <h3 class="mb-2">ข้อมูลเบื้องต้น</h3>
       </div>
@@ -91,60 +91,62 @@
         </div>
 
 
-        <div  v-if="isGeneralSubmission"
-              class="form-row mb-4">
-          <FormSuggestInput
-            class="col-4"
-            label="ประเภทตัวอย่าง"
-            :list="['เลือด', 'เสมหะ', 'นํ้าลาย', 'เนื้อ']"
-            filter-by-query
-            v-model="submission.sampleInfo.sampleType" />
-          <FormDateInput
-            v-if="isGeneralSubmission"
-            class="col-2"
-            label="วันที่เก็บตัวอย่าง"
-            format="dd/MM/yy"
-            required
-            v-model="submission.sampleInfo.sampleTakenDate" />
-          <div class="w-100"></div>
-          <FormSuggestInput
-            class="col-3"
-            label="ชนิดสัตว์"
-            :list="['สุกร', 'สุนัข', 'กระต่าย', 'ม้า']"
-            filter-by-query
-            v-model="submission.sampleInfo.animalType" />
-          <FormInput
-            class="col-3"
-            type="text"
-            label="พันธุ์"
-            v-model="submission.sampleInfo.animalSpecies" />
-          <FormInput
-            class="col-4"
-            type="text"
-            label="อายุสัตว์"
-            v-model="submission.sampleInfo.animalAge" />
-          <FormInput
-            class="col-2"
-            type="number"
-            label="จำนวนที่เลี้ยง"
-            v-model.number="submission.sampleInfo.animalCount" />
-          <FormInput 
-            class="col-6"
-            type="text"
-            label="ประวัติการป่วย"
-            v-model="submission.sampleInfo.illness" />
-          <FormInput
-            class="col-6"
-            type="text"
-            label="ประวัติการทำวัคซีน"
-            v-model="submission.sampleInfo.vaccinations" />
-        </div>
+        <transition name="fade-no-delay">
+          <div  v-if="isGeneralSubmission"
+                class="form-row mb-4">
+            <FormSuggestInput
+              class="col-4"
+              label="ประเภทตัวอย่าง"
+              :list="['เลือด', 'เสมหะ', 'นํ้าลาย', 'เนื้อ']"
+              filter-by-query
+              v-model="submission.sampleInfo.sampleType" />
+            <FormDateInput
+              v-if="isGeneralSubmission"
+              class="col-2"
+              label="วันที่เก็บตัวอย่าง"
+              format="dd/MM/yy"
+              required
+              v-model="submission.sampleInfo.sampleTakenDate" />
+            <div class="w-100"></div>
+            <FormSuggestInput
+              class="col-3"
+              label="ชนิดสัตว์"
+              :list="['สุกร', 'สุนัข', 'กระต่าย', 'ม้า']"
+              filter-by-query
+              v-model="submission.sampleInfo.animalType" />
+            <FormInput
+              class="col-3"
+              type="text"
+              label="พันธุ์"
+              v-model="submission.sampleInfo.animalSpecies" />
+            <FormInput
+              class="col-4"
+              type="text"
+              label="อายุสัตว์"
+              v-model="submission.sampleInfo.animalAge" />
+            <FormInput
+              class="col-2"
+              type="number"
+              label="จำนวนที่เลี้ยง"
+              v-model.number="submission.sampleInfo.animalCount" />
+            <FormInput 
+              class="col-6"
+              type="text"
+              label="ประวัติการป่วย"
+              v-model="submission.sampleInfo.illness" />
+            <FormInput
+              class="col-6"
+              type="text"
+              label="ประวัติการทำวัคซีน"
+              v-model="submission.sampleInfo.vaccinations" />
+          </div>
+        </transition>
       </div>
     </div>
     <!-- END INFO SECTION -->
   
     <div  id="report"
-          class="row w-100 border-bottom-pink py-4">
+          class="row w-100 border-b-md-primary py-4">
       <div class="col-xl-2 col-12">
         <h3 class="mb-2">รายงาน</h3>
       </div>
@@ -226,7 +228,7 @@
   </div>
 
   <button class="btn btn-secondary align-self-center mt-4 font-chatthai"
-          :disabled="!batchHasInformation(submission.batches[submission.batches.length-1])"
+          :disabled="!submission.batches[submission.batches.length-1].hasInfo"
           @click="addBatch()">
       <i class="fas fa-plus btn-inner-icon" />
     {{ addBatchLabel }}
@@ -420,7 +422,8 @@ export default {
           tests: {},
           samples: [],
           customTests: [],
-          sensitivityTests: null
+          sensitivityTests: null,
+          hasInfo: false
         }
       // Disinfectant Type
       } else if (this.isDisinfectantSubmission) {
@@ -431,7 +434,8 @@ export default {
           totalPrice: 0,
           dilutionCost: 0,
           uniqueCells: {},
-          tests: {}
+          tests: {},
+          hasInfo: false
         }
       }
       return newBatch
@@ -475,15 +479,11 @@ export default {
               (this.isGeneralSubmission)? `กลุ่ม ${number}` :
               (this.isDisinfectantSubmission)? `นํ้ายาฆ่าเชื้อ ${number}` : '???'
     },
-    batchHasInformation (batch) {
-      if (batch) return batch.totalPrice !== 0
-      return false
-    },
     wholeFormHasInformation () {
       const sampleInfoSectionHasInfo = this.isGeneralSubmission && 
         Object.values(this.submission.sampleInfo).reduce( (hasInfo, info) => hasInfo || !!info, false)
       const batchesHaveInfo = this.submission.batches
-        .reduce( (hasInfo, b) => hasInfo || this.batchHasInformation(b), false)
+        .reduce( (hasInfo, b) => hasInfo || b.hasInfo, false)
       return sampleInfoSectionHasInfo || batchesHaveInfo
     },
     submit () {

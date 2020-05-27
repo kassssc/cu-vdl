@@ -111,15 +111,6 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-.hint-box {
-  width: 250px;
-  bottom: 43px;
-  right: 0px;
-  transform-origin: 100% 100%;
-}
-</style>
-
 <script>
 import uniq from 'lodash/uniq'
 
@@ -255,3 +246,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.hint-box {
+  width: 250px;
+  bottom: 43px;
+  right: 0px;
+  transform-origin: 100% 100%;
+}
+</style>

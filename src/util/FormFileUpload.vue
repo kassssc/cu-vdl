@@ -19,21 +19,6 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-.file-input {
-  i { color: $muted; }
-  &:hover i {
-    color: $primary;
-  }
-}
-label.inner {
-  margin-top: 0.15em;
-  margin-bottom: 0;
-  font-size: 1em;
-  color: $placeholder;
-}
-</style>
-
 <script>
 export default {
   name: 'form-file-upload',
@@ -64,3 +49,18 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.file-input {
+  i { color: $muted; }
+  &:hover i {
+    color: $primary;
+  }
+}
+label.inner {
+  margin-top: 0.15em;
+  margin-bottom: 0;
+  font-size: 1em;
+  color: $placeholder;
+}
+</style>

@@ -61,33 +61,6 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-.subcontainer {
-  transition: height 125ms linear;
-  overflow: hidden;
-  &.folded {
-    height: 70px;
-  }
-  height: 310px;
-}
-.fold-section {
-  cursor: pointer;
-  border-radius: 5px;
-  &:hover {
-    a.btn {
-      background: $accent;
-      color: $primary;
-    }
-  }
-}
-.hint-box {
-  width: 450px;
-  bottom: -7px;
-  right: -460px;
-  transform-origin: 0% 85%;
-}
-</style>
-
 <script>
 import uniq from 'lodash/uniq'
 
@@ -135,3 +108,30 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.subcontainer {
+  transition: height 125ms linear;
+  overflow: hidden;
+  &.folded {
+    height: 70px;
+  }
+  height: 310px;
+}
+.fold-section {
+  cursor: pointer;
+  border-radius: 5px;
+  &:hover {
+    a.btn {
+      background: $accent;
+      color: $primary;
+    }
+  }
+}
+.hint-box {
+  width: 450px;
+  bottom: -7px;
+  right: -460px;
+  transform-origin: 0% 85%;
+}
+</style>

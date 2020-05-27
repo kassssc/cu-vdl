@@ -10,7 +10,7 @@
   </div>
 
   <div class="font-chatthai">
-    <div class="border-bottom-lighter row w-100 py-3 mb-3">
+    <div class="border-b row w-100 py-3 mb-3">
       <div class="col-xl-2 col-12">
         <h4>ข้อมูลผู้ใช้</h4>
       </div>
@@ -42,7 +42,7 @@
       </div>
     </div>
   
-    <div class="border-bottom-lighter row w-100 py-3 mb-3">
+    <div class="border-b row w-100 py-3 mb-3">
       <div class="col-xl-2 col-12">
         <h4>ข้อมูลการติดต่อ</h4>
       </div>

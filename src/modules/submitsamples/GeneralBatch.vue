@@ -1,5 +1,5 @@
 <template>
-<div class="batch w-100 position-relative border-bottom-medium py-5">
+<div class="batch w-100 position-relative border-b-md py-5">
   <a  v-if="hasMultipleBatches"
       class="btn btn-x batch-section"
       @click="$emit('delete-batch')">
@@ -38,7 +38,7 @@
       <div  v-for="testCategory of generalTests"
             :key="testCategory.id"
             class="pb-2">
-        <div class="form-row no-gutters border-bottom-lighter pb-1">
+        <div class="form-row no-gutters border-b pb-1">
           <div class="form-group col-2 mb-0 text-dark d-flex overflow-visible nowrap">
             <checkbox
               label-class="label-xl"
@@ -71,7 +71,7 @@
       </div>
 
       <div  v-if="activeTestCount > 0 && !!batch.sampleCount"
-            class="form-row no-gutters pt-2 pb-4 border-bottom-lighter">
+            class="form-row no-gutters pt-2 pb-4 border-b">
         <div class="col-2"></div>
         <div class="col-10">
           <div class="form-row">
@@ -203,13 +203,11 @@ export default {
       return this.hasMultipleBatches? `กลุ่มการทดสอบ ${this.idx+1}` : 'รายการทดสอบ'
     },
     totalPriceLabel () {
-      const hasActiveTests = this.activeTestCount > 0
-      const hasCustomTests = this.batch.customTests.length > 0
-      const shouldDisplayPrice = (hasActiveTests || hasCustomTests) && !!this.batch.sampleCount
-      return shouldDisplayPrice? `${hasCustomTests? '~':''}${this.batch.totalPrice.toLocaleString()}฿` : 'N/A'
+      const shouldDisplayPrice = (this.activeTestCount > 0 || this.customTestCount.length > 0) && !!this.batch.sampleCount
+      return shouldDisplayPrice? `${this.customTestCount.length > 0? '~':''}${this.batch.totalPrice.toLocaleString()}฿` : 'N/A'
     },
     includesBacteriaTest () {
-      return !!this.batch.test[4]
+      return !!this.batch.tests[4]
     },
     activeTestCount () {
       let testCount = Object.values(this.batch.tests).reduce( (count, category) => {
@@ -224,6 +222,10 @@ export default {
       }, 0)
       return testCount
     },
+    customTestCount () {
+      if (!this.includesBacteriaTest) return 0
+      return this.batch.tests[4].customBacteriaTests.length
+    },
     totalPrice () {
       return Object.values(this.batch.tests).reduce( (batchPrice, category) => {
         if (category) return batchPrice += category.price
@@ -231,12 +233,15 @@ export default {
       }, 0)
     },
     hasInfo () {
-      return this.activeTestCount > 0 || this.batch.customTests.length > 0
+      return this.activeTestCount > 0 || this.customTestCount > 0 || !!this.batch.sampleCount
     }
   },
   watch: {
     totalPrice (val) {
       this.batch.totalPrice = val
+    },
+    hasInfo (val) {
+      this.batch.hasInfo = val
     }
   },
   methods: {

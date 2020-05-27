@@ -12,6 +12,34 @@
 </div>
 </template>
 
+<script>
+export default {
+  name: 'form-suggest-input',
+  components: {
+    VueSimpleSuggest: () => import(/* webpackChunkName: "group-form" */ 'vue-simple-suggest')
+  },
+  inheritAttrs: false,
+  props: {
+    label: {
+      type: String,
+      default: null
+    },
+    required: {
+      type: Boolean,
+      default: false
+    },
+  },
+  computed: {
+    listeners () {
+      return {
+        ...this.$listeners,
+        input: ev => this.$emit('input', ev),
+      }
+    }
+  }
+}
+</script>
+
 <style lang="scss">
 .vue-simple-suggest {
   position: relative;
@@ -48,31 +76,3 @@
   }
 }
 </style>
-
-<script>
-export default {
-  name: 'form-suggest-input',
-  components: {
-    VueSimpleSuggest: () => import(/* webpackChunkName: "group-form" */ 'vue-simple-suggest')
-  },
-  inheritAttrs: false,
-  props: {
-    label: {
-      type: String,
-      default: null
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-  },
-  computed: {
-    listeners () {
-      return {
-        ...this.$listeners,
-        input: ev => this.$emit('input', ev),
-      }
-    }
-  }
-}
-</script>

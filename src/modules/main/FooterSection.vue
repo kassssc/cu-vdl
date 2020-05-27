@@ -7,6 +7,12 @@
 </div>
 </template>
 
+<script>
+export default {
+  name: 'footer-section'
+}
+</script>
+
 <style lang="scss" scoped>
 .footer {
   width: 100vw;
@@ -18,9 +24,3 @@
   background: linear-gradient(to right, $primary, $placeholder);
 }
 </style>
-
-<script>
-export default {
-  name: 'footer-section'
-}
-</script>

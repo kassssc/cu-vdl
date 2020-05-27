@@ -1,9 +1,9 @@
 <template>
   <div id="services">
-    <h1 class="mb-4 pb-2 text-primary thick-border-bottom-gradient">
+    <h1 class="mb-4 pb-2 text-primary border-b-gradient">
       <span class="text-primary">฿</span> รายการค่าบริการ
     </h1>
-    <div v-for="i in [0,1,2,3,4]" :key="i" class="border-bottom-lighter mb-4 pb-3">
+    <div v-for="i in [0,1,2,3,4]" :key="i" class="border-b mb-4 pb-3">
       <div class="d-flex justify-content-between align-items-center mb-1">
         <h3 class="m-none font-weight-bold">
           {{ `${i+1}. ${text[i]}` }}
@@ -22,15 +22,6 @@
     </h3>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.img {
-  @include unselectable;
-  min-width: 400px;
-  max-width: 650px;
-  height: auto;
-}
-</style>
 
 <script>
 export default {
@@ -56,3 +47,12 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.img {
+  @include unselectable;
+  min-width: 400px;
+  max-width: 650px;
+  height: auto;
+}
+</style>

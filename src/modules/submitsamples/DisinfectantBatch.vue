@@ -1,5 +1,5 @@
 <template>
-<div class="batch w-100 position-relative border-bottom-medium py-5">
+<div class="batch w-100 position-relative border-b-md py-5">
   <a  v-if="hasMultipleBatches"
       class="btn btn-x batch-section"
       @click="$emit('delete-batch')">
@@ -15,23 +15,25 @@
     </div>
 
     <div class="col-xl-10 col-12">
-
       <h4>ชื่อนํ้ายาฆ่าเชื้อ</h4>
-      
-      <div  v-show="reportLang.thai"
-            class="form-row">
-        <FormInput
-          class="form-group col-6 mb-2"
-          label="ภาษาไทย"
-          v-model="batch.disinfectantName" />
-      </div>
-      <div  v-show="reportLang.eng"
-            class="form-row">
-        <FormInput
-          class="form-group col-6 mb-2"
-          label="English"
-          v-model="batch.disinfectantNameEng" />
-      </div>
+      <transition name="fade-no-delay">
+        <div  v-if="reportLang.thai"
+              class="form-row">
+          <FormInput
+            class="form-group col-6 mb-2"
+            label="ภาษาไทย"
+            v-model="batch.disinfectantName" />
+        </div>
+      </transition>
+      <transition name="fade-no-delay">
+        <div  v-if="reportLang.eng"
+              class="form-row">
+          <FormInput
+            class="form-group col-6 mb-2"
+            label="English"
+            v-model="batch.disinfectantNameEng" />
+        </div>
+      </transition>
 
       <div class="mt-3 form-row">
         <FormInlineSelect
@@ -44,7 +46,7 @@
       </div>
 
       <h3 class="mt-3 mb-1">รายการทดสอบ</h3>
-      <div class="form-row border-bottom-lighter px-3 pb-2 mb-1">
+      <div class="form-row border-b px-3 pb-2 mb-1">
         <div class="col-4">
           <h5 class="text-medium">
             ชื่อ{{ isBacteriaTestBatch? 'แบคทีเรีย' : 'ไวรัส' }}
@@ -72,7 +74,7 @@
 
       <div  v-for="(info, test) in batch.tests"
             :key="test"
-            class="form-row test-row border-bottom-lighter position-relative px-3">
+            class="form-row test-row border-b position-relative px-3">
         <a class="btn btn-sm btn-x disinfectant-test"
             @click="deleteDisinfectantTest(test)">
           <i class="fas fa-times" />
@@ -83,7 +85,7 @@
         </div>
 
         <div class="col-6">
-          <div v-for="dilution of info.dilutions"
+          <div  v-for="dilution of info.dilutions"
                 :key="dilution"
                 class="form-row test-row">
             <div class="col-4 position-relative">
@@ -92,7 +94,7 @@
 
             <div  v-if="!isBacteriaTestBatch"
                   class="col-4">
-              <div v-for="time of info.contactTimes"
+              <div  v-for="time of info.contactTimes"
                     :key="time"
                     class="test-row position-relative">
                 <h5 class="d-inline">{{ time }}</h5>
@@ -140,8 +142,8 @@
         </div>
       </div>
 
-      <div v-show="Object.keys(batch.tests).length <= 0"
-            class="border-bottom-lighter">
+      <div  v-show="Object.keys(batch.tests).length <= 0"
+            class="border-b">
         <h4 class="text-muted my-3 ml-3">
           ยังไม่มีรายการทดสอบ
         </h4>
@@ -268,7 +270,13 @@ export default {
       return 3000 + testsPrice
     },
     totalPriceLabel () {
-      return Object.values(this.batch.tests).length > 0? `${this.batch.totalPrice.toLocaleString()}฿` : 'N/A'
+      return this.hasTests? `${this.batch.totalPrice.toLocaleString()}฿` : 'N/A'
+    },
+    hasTests () {
+      return Object.values(this.batch.tests).length > 0
+    },
+    hasInfo () {
+      return this.batch.disinfectantName || this.batch.disinfectantNameEng || this.hasTests
     }
   },
   watch: {
@@ -280,6 +288,9 @@ export default {
     },
     dilutionCost (val) {
       this.batch.dilutionCost = val
+    },
+    hasInfo (val) {
+      this.batch.hasInfo = val
     }
   },
   methods: {

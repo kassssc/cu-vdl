@@ -10,7 +10,7 @@
     </div>
 
     <div class="font-chatthai">
-      <div class="row py-3 border-bottom-lighter">
+      <div class="row py-3 border-b">
         <div class="col-xl-2 col-12">
           <h4>ข้อมูลองค์กร</h4>
         </div>
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <div class="row py-3 border-bottom-lighter">
+      <div class="row py-3 border-b">
         <div class="col-xl-2 col-12">
           <h4>อัพโหลดเอกสาร</h4>
         </div>
@@ -91,10 +91,6 @@
 
   </div>
 </template>
-
-<style lang="scss" scoped>
-
-</style>
 
 <script>
 export default {

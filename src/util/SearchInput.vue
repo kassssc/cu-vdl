@@ -14,6 +14,43 @@
 </div>
 </template>
 
+<script>
+import debounce from 'lodash/debounce'
+
+export default {
+  name: 'search-input',
+  inheritAttrs: false,
+  props: {
+    inputClass: {
+      type: String,
+      default: ''
+    },
+    clearable: {
+      type: Boolean,
+      default: true
+    },
+    placeholder: {
+      type: String,
+      default: 'ค้นหา...'
+    }
+  },
+  data () {
+    return {
+      query: ''
+    }
+  },
+  methods: {
+    debouncedSearch: debounce( function (ev) {
+      this.$emit('debounced-search', ev.target.value)
+    }, 500),
+    clear () {
+      this.query = ''
+      this.$emit('debounced-search', this.query)
+    }
+  }
+}
+</script>
+
 <style lang="scss" scoped>
 .search-input {
   position: relative;
@@ -51,40 +88,3 @@
   }
 }
 </style>
-
-<script>
-import debounce from 'lodash/debounce'
-
-export default {
-  name: 'search-input',
-  inheritAttrs: false,
-  props: {
-    inputClass: {
-      type: String,
-      default: ''
-    },
-    clearable: {
-      type: Boolean,
-      default: true
-    },
-    placeholder: {
-      type: String,
-      default: 'ค้นหา...'
-    }
-  },
-  data () {
-    return {
-      query: ''
-    }
-  },
-  methods: {
-    debouncedSearch: debounce( function (ev) {
-      this.$emit('debounced-search', ev.target.value)
-    }, 500),
-    clear () {
-      this.query = ''
-      this.$emit('debounced-search', this.query)
-    }
-  }
-}
-</script>

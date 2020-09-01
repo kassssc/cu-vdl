@@ -190,6 +190,7 @@ table {
   thead {
     th {
       position: sticky;
+      z-index: 100;
       top: 0px;
       height: 50px;
       background: $light;

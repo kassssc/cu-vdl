@@ -116,57 +116,56 @@
     </div>
 
     <div  v-else
-          class="form-row font-chatthai py-3">
-      <div class="col-12 scroll-container org-list mb-3">
-        <table>
-          <thead>
-            <tr>
-              <th class="w-100"> 
-                <h3>องค์กรที่เป็นตัวแทน</h3>
-                <div class="shadow-th" />
-              </th>
-              <th class="text-right nowrap">
-                <h5 class="text-medium">
-                  ถอนสิทธิในการเป็นตัวแทน
+          class="font-chatthai scroll-container my-3">
+      <table>
+        <thead>
+          <tr>
+            <th class="w-100"> 
+              <h3>องค์กรที่เป็นตัวแทน</h3>
+              <div class="shadow-th" />
+            </th>
+            <th class="text-right nowrap">
+              <h5 class="text-medium">
+                ถอนสิทธิในการเป็นตัวแทน
+              </h5>
+              <div class="shadow-th" />
+            </th>
+          </tr>
+        </thead>
+        <tbody class="border-t">
+          <tr v-for="org of orgOptions"
+              :key="org.id">
+            <router-link  :to="{ name: 'admin-orgs-list' }"
+                          tag="td"
+                          class="text-right nowrap hover-appear-wrapper clickable">
+              <div class="d-flex justify-content-between align-items-center">
+                {{ org.name }}
+                <h5 class="hover-appear">
+                  ดูข้อมูลองค์กร
+                  <i class="fas fa-arrow-right icon-sm ml-1"></i>
                 </h5>
-                <div class="shadow-th" />
-              </th>
-            </tr>
-          </thead>
-          <tbody class="border-t">
-            <tr v-for="org of orgOptions"
-                :key="org.id">
-              <router-link  :to="{ name: 'admin-orgs-list' }"
-                            tag="td"
-                            class="text-right nowrap hover-appear-wrapper clickable">
-                <div class="d-flex justify-content-between align-items-center">
-                  {{ org.name }}
-                  <h5 class="hover-appear">
-                    ดูข้อมูลองค์กร
-                    <i class="fas fa-arrow-right icon-sm ml-1"></i>
-                  </h5>
-                </div>
-              </router-link>
-              <td class="text-right">
-                <button class="btn btn-sm btn-icon btn-icon-danger"
-                        @click="showRemoveSubmitterModal()">
-                  <i class="fa fa-user-slash"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="form-group col-8">
+              </div>
+            </router-link>
+            <td class="text-right">
+              <button class="btn btn-sm btn-icon btn-icon-danger"
+                      @click="showRemoveSubmitterModal()">
+                <i class="fa fa-user-slash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="form-row font-chatthai pt-4 border-t">
+      <div  v-if="selectedUser.accountType === 2"
+            class="form-group col-8">
         <button class="btn btn-primary btn-block"
                 @click="showFreelanceAddOrgModal()">
           <i class="fas fa-user-plus btn-inner-icon"></i>
           ให้สิทธิในการเป็นตัวแทนองค์กร
         </button>
       </div>
-    </div>
-
-    <div class="form-row font-chatthai py-4 border-t">
       <div class="form-group col-8">
         <button class="btn btn-danger btn-block"
                 @click="showDeactivateAccountModal()">
@@ -329,9 +328,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.scroll-container.org-list {
-  max-height: calc(100vh - #{$titlebar-height} - #{$footer-height} - 580px);
-}
-</style>

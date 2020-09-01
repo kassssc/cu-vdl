@@ -44,9 +44,9 @@ const state = {
         { id: 16,  group: 4, name: 'Mycoplasma Synoviae (MS)',           price: 40  },
         { id: 17,  group: 4, name: 'Infectious Bural Disease (IBD)',     price: 50  },
         { id: 18,  group: 4, name: 'Avian Reovirus',                     price: 50  },
-        { id: 19,  group: 4, name: 'Infectious Bronchitis Virus (IBV)',  price: 50  },
+        { id: 78,  group: 4, name: 'Infectious Bronchitis Virus (ELISA-IBV)',  price: 50  },
         { id: 20,  group: 4, name: 'Chicken Anemia Virus (CAV)',         price: 120 },
-
+        
         { id: 21,  group: 5, name: 'PRRSV',                              price: 250, max: 20, constraint: '(≤ 20 ต.ย.)' },
         { id: 22,  group: 5, name: 'PRRSV',                              price: 230, min: 21, constraint: '(> 20 ต.ย.)' },
         { id: 23,  group: 5, name: 'Aujeszky\'s Disease',                price: 120, max: 20, constraint: '(≤ 20 ต.ย.)' },
@@ -54,7 +54,8 @@ const state = {
         { id: 25,  group: 5, name: 'Mycoplasma Hyopneumoniae',           price: 180, max: 20, constraint: '(≤ 20 ต.ย.)' },
         { id: 26,  group: 5, name: 'Mycoplasma Hyopneumoniae',           price: 150, min: 21, constraint: '(> 20 ต.ย.)' },
         { id: 27,  group: 5, name: 'Porcine Circovirus Type 2 (PCV2)',   price: 200 },
-
+        
+        { id: 19,  group: 6, name: 'Infectious Bronchitis Virus (HI-IBV)',  price: 50  },
         { id: 28,  group: 6, name: 'Newcastle Disease',                  price: 30  },
         
         { id: 29,  group: 7, name: 'Mycoplasma Gallisepticum (MG)',      price: 45  },
@@ -89,6 +90,11 @@ const state = {
         { id: 46,  group: 8,   name: 'Brachyspira Hyodysenteriae',                     price: 1000 },
         { id: 47,  group: 8,   name: 'Lawsonia Intracellularis',                       price: 1000 },
         { id: 48,  group: 8,   name: 'Salmonella spp.',                                price: 1000 },
+        { id: 74,  group: 8,   name: 'African swine fever (Realtime)',                 price: 800,  constraint: '(≤ 4 ต.ย.)' ,  max: 4 },
+        { id: 75,  group: 8,   name: 'African swine fever (Realtime)',                 price: 700,  constraint: '(5-9 ต.ย.)',   min: 5,   max: 9 },
+        { id: 76,  group: 8,   name: 'African swine fever (Realtime)',                 price: 650,  constraint: '(10-14 ต.ย.)', min: 10, max: 14 },
+        { id: 77,  group: 8,   name: 'African swine fever (Realtime)',                 price: 600,  constraint: '(≥ 15 ต.ย.)',  min: 15},
+        
 
         { id: 49,  group: 9,   name: 'Avian Influenza Virus (AI)',                     price: 1000 },
         { id: 50,  group: 9,   name: 'Newcastle Disease Virus (ND)',                   price: 1000 },

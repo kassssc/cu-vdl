@@ -88,7 +88,7 @@ const getters = {
     return state.types.submissionInvoiceStatusData
   },
   nameTitles: state => {
-    state.selectOptions.nameTitles
+    return state.selectOptions.nameTitles
   }
 }
 

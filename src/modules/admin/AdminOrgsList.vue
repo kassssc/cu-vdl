@@ -23,7 +23,7 @@
 
   </div>
 
-  <div class="col-7 sub-nav-content content-height">
+  <div class="col-7 sub-nav-content content-height d-flex flex-column">
     <h2 class="mb-4">{{ org.name }}</h2>
 
     <div class="font-chatthai">
@@ -47,13 +47,12 @@
       </div>
     </div>
 
-    <div class="font-chatthai py-3 mb-3">
-      <h3>รายชื่อตัวแทนส่งตัวอย่าง</h3>
+    <div class="font-chatthai scroll-container mt-3 pr-2">
       <table>
         <thead>
           <tr>
             <th> 
-              ชื่อ-นามสกุล
+              <h3>รายชื่อตัวแทนส่งตัวอย่าง</h3>
               <div class="shadow-th" />
             </th>
             <th> 

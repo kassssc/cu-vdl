@@ -57,6 +57,7 @@ export default {
   background: $input-bg;
   font-size: $input-btn-font-size;
   font-weight: bold;
+  // max-height: ;
   color: $default;
   border-width: 0px;
   width: 100%;
@@ -75,7 +76,7 @@ export default {
     }
   }
   .vs__dropdown-toggle {
-    padding: 0.25rem 0.75rem;
+    padding: 0.19rem 0.75rem;
     border-style: none;
   }
   input.vs__search,

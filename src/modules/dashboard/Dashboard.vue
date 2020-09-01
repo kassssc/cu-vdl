@@ -1,6 +1,6 @@
 <template>
 <div class="page page-lg d-flex">
-  <div class="sub-nav">
+  <div class="sub-nav sticky">
     <h2 class="mb-4 ml-3">Account</h2>
     <router-link  :to="{name: 'dashboard'}"
                   class="btn btn-transparent btn-block btn-lg"
@@ -25,7 +25,7 @@
       <i class="fas fa-sitemap btn-inner-icon-lg"></i> องค์กรที่เป็นตัวแทน
     </router-link>
   </div>
-  <div class="sub-nav-content content-height">
+  <div class="sub-nav-content">
     <transition name="fade">
       <router-view />
     </transition>

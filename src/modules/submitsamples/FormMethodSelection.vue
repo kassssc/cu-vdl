@@ -63,6 +63,7 @@
           </div>
           <div class="d-flex justify-content-between align-items-center">
             <button class="btn btn-primary btn-sm"
+                    :disabled="customBacteriaTests.length >= 5"
                     @click="addCustomBacteriaTest()">
               เพิ่มรายการแบคทีเรีย
             </button>
@@ -174,8 +175,8 @@ export default {
     sampleCount (newSampleCount) {
       this.testCategory.testInfo.forEach( test => {
         const violatesConstraint = (
-          (test.max && newSampleCount > test.max) ||
-          (test.min && newSampleCount < test.min)
+          (!!test.max && (newSampleCount > test.max)) ||
+          (!!test.min && (newSampleCount < test.min))
         )
         if (this.tests[test.id] && violatesConstraint) {
           this.tests[test.id] = false

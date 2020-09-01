@@ -84,7 +84,7 @@
             </div>
             <div class="col-2 text-right">
               <h2 class="text-primary">
-                {{ activeTestCount + batch.customTests.length }}
+                {{ activeTestCount + (batch.tests[4]? batch.tests[4].customBacteriaTests.length : 0) }}
               </h2>
               <h5 class="text-medium">รายการทดสอบ</h5>
             </div>

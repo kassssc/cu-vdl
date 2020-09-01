@@ -80,7 +80,7 @@
           <div class="form-row">
             <div class="form-group col-5">
               <button class="btn btn-primary btn-lg btn-block">
-                <i class="fas fa-plus btn-inner-icon"></i>
+                <i class="fas fa-plus btn-inner-icon" />
                 สร้างองค์กร
               </button>
             </div>

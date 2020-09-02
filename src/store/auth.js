@@ -97,12 +97,12 @@ const mutations = {
     state.token = null
     localStorage.removeItem(AUTH_TOKEN)
   },
-  
+
   LOGOUT: state => {
     state.user = { accountType: -1 }
     state.loggedIn = false
   },
-  LOGIN_USER: (state, payload) => {
+  LOGIN_AS_USER: (state, payload) => {
     state.user = state.DEV_mocks.users[payload]
     state.loggedIn = true
   }
@@ -110,7 +110,7 @@ const mutations = {
 
 const actions = {
   loginAsType: ({ commit }, accType) => {
-    commit('LOGIN_USER', accType)
+    commit('LOGIN_AS_USER', accType)
   },
   logout: ({ commit }) => {
     commit('LOGOUT')

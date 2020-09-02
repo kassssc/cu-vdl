@@ -1,4 +1,7 @@
+const AUTH_TOKEN = 'auth-token'
+
 const state = {
+  token: null,
   loggedIn: true,
   user: {
     id: 1,
@@ -84,6 +87,17 @@ const getters = {
 }
 
 const mutations = {
+  SET_TOKEN: (state, token) => {
+    state.token = token
+  },
+  LOGIN_USER: (state, user) => {
+    state.user = { ...user }
+  },
+  LOGOUT_USER: state => {
+    state.token = null
+    localStorage.removeItem(AUTH_TOKEN)
+  },
+  
   LOGOUT: state => {
     state.user = { accountType: -1 }
     state.loggedIn = false

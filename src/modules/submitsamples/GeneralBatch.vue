@@ -259,7 +259,7 @@ export default {
         this.batch.sampleCount = 100
       }
       
-      // Update this.batch samples list
+      // Update batch samples list
       const diff = Math.abs(this.batch.sampleCount - this.batch.samples.length)
       if (this.batch.sampleCount > this.batch.samples.length) {
         for (let i = this.batch.samples.length; i < this.batch.sampleCount; i++) {
@@ -287,7 +287,7 @@ export default {
     for (let testCategory of this.generalTests) {
       newTests[testCategory.id] = null
     }
-    this.batch.tests = {...newTests}
+    this.batch.tests = { ...newTests }
   }
 }
 </script>

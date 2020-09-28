@@ -26,7 +26,7 @@
     
     <div class="test d-flex align-items-center justify-content-center">
       <div class="inner">
-        <h4 class="text-medium mb-3">งานของเราครอบคลุมด้าน...</h4>
+        <h4 class="text-medium mb-3">ขอบข่ายงานบริการ</h4>
         <div class="d-flex w-100 justify-content-center">
           <h1 class="text-primary mr-4">โลหิตวิทยา</h1>
           <h1 class="text-primary mr-4">ซีรัมวิทยา</h1>
@@ -60,7 +60,7 @@
   
         <div>
           <i class="fa fa-paper-plane icon-lg mb-3"></i>
-          <h5>ส่งตัวอย่างทาง<br/>ไปรษณีย์</h5>
+          <h5>ส่งตัวอย่าง<br/>ให้เรา</h5>
         </div>
         <i class="fa fa-chevron-right icon-lg mx-3"></i>
   
@@ -142,11 +142,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 import Services from './Services'
 import OrgChart from './OrgChart'
 import Contact from './Contact'
+import { LOGGED_IN } from '@/graphql/local'
 
 export default {
   name: 'home',
@@ -155,8 +154,11 @@ export default {
     OrgChart,
     Contact
   },
-  computed: {
-    ...mapGetters(['loggedIn'])
+  apollo: {
+    loggedIn: {
+      query: LOGGED_IN,
+      update: data => data.auth.loggedIn
+    }
   }
 }
 </script>

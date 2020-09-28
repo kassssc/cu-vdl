@@ -12,13 +12,15 @@
         input-class="form-control-lg"
         type="text"
         label="อีเมล"
-        v-model="loginForm.email"/>
+        v-model="loginForm.email"
+        @keyup.enter="onLogin()" />
       <FormInput
         class="col-12"
         input-class="form-control-lg"
         type="password"
         label="รหัสผ่าน"
-        v-model="loginForm.password"/>
+        v-model="loginForm.password"
+        @keyup.enter="onLogin()" />
     </div>
     <div class="form-row w-100">
       <div class="form-group col-12 d-flex justify-content-between">
@@ -31,11 +33,24 @@
         </button>
       </div>
     </div>
+    <div v-if="error" class="form-row w-100">
+      <div class="form-group col-12">
+        <div class="error-box">
+          <h5 class="text-danger"><i class="fas fa-exclamation mr-2" />รหัสผ่าน หรือ อีเมล ไม่ถูกต้อง</h5>
+        </div>
+      </div>
+    </div>
     <div class="form-row w-100">
       <div class="form-group col-12">
-        <button class="btn btn-primary btn-lg btn-block"
-                @click="login()">
-          <i class="fas fa-sign-in-alt btn-inner-icon"></i> เข้าสู่ระบบ
+        <button class="btn btn-primary btn-lg btn-block loading"
+                :disabled="loading"
+                @click="onLogin()">
+          <template v-if="loading">
+            <LoadingAnimation />
+          </template>
+          <template v-else>
+            <i class="fas fa-sign-in-alt btn-inner-icon"></i> เข้าสู่ระบบ
+          </template>
         </button>
       </div>
       <div class="form-group col-12">
@@ -92,33 +107,21 @@
       </div>
     </template>
   </Modal>
-
-  <div class="d-flex flex-column position-absolute __dev-panel">
-    <h3 class="mb-3">DEV TOOLS</h3>
-    <button class="btn btn-dark btn-block"
-            @click="loginAs(0)">
-      Login as VDL Admin
-    </button>
-    <button class="btn btn-dark btn-block"
-            @click="loginAs(1)">
-      Login as Employee Submitter
-    </button>
-    <button class="btn btn-dark btn-block"
-            @click="loginAs(2)">
-      Login as Freelance Submitter
-    </button>
-  </div>
+  
 </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import $ from 'jquery'
+import { onLogin } from '@/vue-apollo'
+import { LOGIN } from '@/graphql/login'
 
 export default {
   name: 'login',
   data () {
     return {
+      loading: false,
+      error: false,
       loginForm: {
         email: '',
         password: '',
@@ -127,16 +130,34 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'loginAsType'
-    ]),
-    login () {
-      this.loginAsType(1)
-      this.$router.push({ name: 'submissionslist' })
-    },
-    loginAs (accType) {
-      this.loginAsType(accType)
-      this.$router.push({ name: 'submissionslist' })
+    async onLogin () {
+      const { email, password } = this.loginForm
+      try {
+        this.loading = true
+        const res = await this.$apollo.mutate({
+          mutation: LOGIN,
+          variables: {
+            email,
+            password
+          }
+        })
+        if (res.data.login.statuscode == 200) {
+          const jwt = res.data.login.result.jwt
+          await onLogin(
+            this.$apollo.provider.defaultClient,
+            jwt,
+            this.loginForm.stayLoggedIn
+          )
+          this.$router.push({ name: 'submissionslist' })
+        } else {
+          this.error = true
+          this.loading = false
+          this.loginForm.email = ''
+          this.loginForm.password = ''
+        }
+      } catch (err) {
+        console.log(err)
+      }
     },
     forgotPassword () {
       $('#forgotPasswordModal').modal('show')

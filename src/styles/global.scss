@@ -12,7 +12,7 @@ $teal:    #7DB9B9;
 //*/
 $accent-dark:   #d6cfcc;
 $accent:        #eae6e3;
-$accent-light:  #f9f6f3;
+$accent-light:  #f7f3f1;
 
 // Theme Colors
 $primary:       #5A9BAD;
@@ -103,6 +103,7 @@ $input-color:             $default;
 $input-border-color:      transparent;
 $input-border-width:      0;
 $input-placeholder-color: $placeholder;
+$input-btn-focus-width:   .2rem;
 $input-focus-box-shadow:  0 0 0 .2rem $primary;
 $input-padding-y-sm:  0;
 

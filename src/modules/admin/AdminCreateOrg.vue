@@ -12,6 +12,21 @@
     <div class="font-chatthai">
       <div class="row py-3 border-b">
         <div class="col-xl-2 col-12">
+          <h4>ประเภทองค์กร</h4>
+        </div>
+        <div class="col-xl-8 col-12">
+          <div class="form-row">
+            <FormInlineSelect
+              class="col-10"
+              :btn-class-list="['orange', 'red']"
+              v-model="orgFormData.orgType"
+              :options="org_typeOptions" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row py-3 border-b">
+        <div class="col-xl-2 col-12">
           <h4>ข้อมูลองค์กร</h4>
         </div>
         <div class="col-xl-8 col-12">
@@ -39,11 +54,12 @@
               label="เมือง"
               type="text"
               v-model="orgFormData.city" />
-            <FormInput
+            <FormSelect
               class="col-4 mb-2"
-              label="จังหวัด"
-              type="text"
+              form-label="จังหวัด"
+              :clearable="false"
               required
+              :options="provinces"
               v-model="orgFormData.province" />
             <FormInput
               class="col-2 mb-2"
@@ -73,13 +89,14 @@
         </div>
       </div>
 
-      <div class="row w-100 py-3">
+      <div class="row py-3">
         <div class="col-xl-2 col-12">
         </div>
         <div class="col-xl-8 col-12">
           <div class="form-row">
             <div class="form-group col-5">
-              <button class="btn btn-primary btn-lg btn-block">
+              <button class="btn btn-primary btn-block"
+                      @click="createOrg()">
                 <i class="fas fa-plus btn-inner-icon" />
                 สร้างองค์กร
               </button>
@@ -93,17 +110,130 @@
 </template>
 
 <script>
+import { CREATE_ORG } from '@/graphql/org'
+import { getJWT } from '@/vue-apollo'
+
 export default {
   name: 'admin-create-org',
   data () {
     return {
       orgFormData: {
+        orgType: null,
         name: '',
         addr1: '',
         addr2: '',
         city: '',
         province: '',
         zip: ''
+      },
+      org_typeOptions: [
+        { name: 'ฟาร์ม', id: 1 },
+        { name: 'บริษัทสัตวแพทย์', id: 2 }
+      ],
+      provinces: [
+        'กรุงเทพฯ',
+        'กระบี่',
+        'กาญจนบุรี',
+        'กาฬสินธุ์',
+        'กำแพงเพชร',
+        'ขอนแก่น',
+        'จันทบุรี',
+        'ฉะเชิงเทรา',
+        'ชลบุรี',
+        'ชัยนาท',
+        'ชัยภูมิ',
+        'ชุมพร',
+        'เชียงใหม่',
+        'เชียงราย',
+        'ตรัง',
+        'ตราด',
+        'ตาก',
+        'นครนายก',
+        'นครปฐม',
+        'นครพนม',
+        'นครราชสีมา',
+        'นครศรีธรรมราช',
+        'นครสวรรค์',
+        'นนทบุรี',
+        'นราธิวาส',
+        'น่าน',
+        'บึงกาฬ',
+        'บุรีรัมย์',
+        'ปทุมธานี',
+        'ประจวบคีรีขันธ์',
+        'ปราจีนบุรี',
+        'ปัตตานี',
+        'พระนครศรีอยุธยา',
+        'พะเยา',
+        'พังงา',
+        'พัทลุง',
+        'พิจิตร',
+        'พิษณุโลก',
+        'เพชรบุรี',
+        'เพชรบูรณ์',
+        'แพร่',
+        'ภูเก็ต',
+        'มหาสารคาม',
+        'มุกดาหาร',
+        'แม่ฮ่องสอน',
+        'ยโสธร',
+        'ยะลา',
+        'ร้อยเอ็ด',
+        'ระนอง',
+        'ระยอง',
+        'ราชบุรี',
+        'ลพบุรี',
+        'ลำปาง',
+        'ลำพูน',
+        'เลย',
+        'ศรีสะเกษ',
+        'สกลนคร',
+        'สงขลา',
+        'สตูล',
+        'สมุทรปราการ',
+        'สมุทรสงคราม',
+        'สมุทรสาคร',
+        'สระแก้ว',
+        'สระบุรี',
+        'สิงห์บุรี',
+        'สุโขทัย',
+        'สุพรรณบุรี',
+        'สุราษฎร์ธานี',
+        'สุรินทร์',
+        'หนองคาย',
+        'หนองบัวลำภู',
+        'อ่างทอง',
+        'อำนาจเจริญ',
+        'อุดรธานี',
+        'อุตรดิตถ์',
+        'อุทัยธานี',
+        'อุบลราชธานี',
+      ],
+    }
+  },
+  methods: {
+    async createOrg () {
+      const {
+        orgType, addr1, addr2, city, province, zip, name
+      } = this.orgFormData
+      const address = `${addr1}\n${addr2}\n${city} ${province} ${zip}`
+      try {
+        let res = await this.$apollo.mutate({
+          mutation: CREATE_ORG,
+          variables: {
+            jwt: getJWT(),
+            orgType,
+            address,
+            name
+          }
+        })
+        const newOrgIndex = res.data.create_org.result.index
+        this.$router.push({
+          name: 'admin-orgs-list',
+          params: { id: newOrgIndex }
+        })
+      } catch (err) {
+        console.log(err)
       }
     }
   }

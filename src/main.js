@@ -10,6 +10,7 @@ import 'vue-select/dist/vue-select.css' // vSelect styles
 
 import VueScrollactive from 'vue-scrollactive'
 import VueScrollTo from 'vue-scrollto'
+import { apolloProvider } from './vue-apollo'
 
 Vue.use(VueScrollTo)
 Vue.use(VueScrollactive)
@@ -50,6 +51,9 @@ const Modal = () => import(/* webpackChunkName: "group-util" */
 const ColorTag = () => import(/* webpackChunkName: "group-util" */
   '@/util/ColorTag'
 )
+const LoadingAnimation = () => import(/* webpackChunkName: "group-util" */
+  '@/util/LoadingAnimation'
+)
 
 Vue.component('checkbox', FormCheckbox)
 Vue.component('FormInput', FormInput)
@@ -63,6 +67,7 @@ Vue.component('FileView', FileView)
 Vue.component('SearchInput', SearchInput)
 Vue.component('Modal', Modal)
 Vue.component('ColorTag', ColorTag)
+Vue.component('LoadingAnimation', LoadingAnimation)
 
 Vue.directive('focus-on-create', {
   inserted: el => el.focus()
@@ -71,5 +76,9 @@ Vue.directive('focus-on-create', {
 new Vue({
   router,
   store,
+  apollo: {
+    // apollo config
+  },
+  apolloProvider,
   render: h => h(App)
 }).$mount('#app')

@@ -1,5 +1,6 @@
 <template>
-<div  id="titlebar"
+<div  v-if="!$apollo.loading"
+      id="titlebar"
       class="d-flex justify-content-between align-items-center">
   <div class="d-flex align-items-center">
     <div id="logo-img" />
@@ -10,7 +11,7 @@
       หน่วยชันสูตรโรคสัตว์กลาง จุฬาฯ
     </h4>
   </div>
-  <nav  v-if="loggedIn">
+  <nav  v-if="auth.loggedIn" class="d-flex">
     <router-link  :to="{name: 'home'}"
                   tag="a"
                   class="btn btn-transparent mr-2"
@@ -19,7 +20,7 @@
       หน้าหลัก
     </router-link>
 
-    <template v-if="userIsAdmin">
+    <template v-if="auth.isAdmin">
       <router-link  :to="{name: 'submissionslist'}"
                     tag="a"
                     class="btn btn-transparent mr-2">
@@ -30,7 +31,7 @@
                     tag="a"
                     class="btn btn-transparent mr-2">
         <i class="fas fa-tools btn-inner-icon"></i>
-        บริหารข้อมูล
+        บริหารระบบ
       </router-link>
     </template>
 
@@ -39,7 +40,7 @@
                   tag="a"
                   class="btn btn-transparent mr-2">
         <i class="fas fa-file-invoice btn-inner-icon"></i>
-        ติดตามผลและรายงาน
+        ติดตามผลการทดสอบ
       </router-link>
       <router-link  :to="{name: 'submit-samples'}"
                     tag="a"
@@ -49,11 +50,10 @@
       </router-link>
     </template>
 
-    <router-link  :to="{name: 'dashboard'}"
+    <router-link  :to="{name: 'account'}"
                   tag="a"
                   class="btn btn-transparent mr-2">
-      <span class="mr-1">{{ user.firstName }}</span>
-      <span class="d-xl-inline d-none mr-2">{{ user.lastName }}</span>
+      <span class="mr-2">{{ auth.userFullName }}</span>
       <i class="fas fa-cog btn-inner-icon mr-0"></i>
     </router-link>
     <button class="btn btn-transparent btn-icon"
@@ -63,8 +63,7 @@
     
   </nav>
 
-  <nav  v-else
-        class="d-flex align-items-center">
+  <nav v-else class="d-flex">
     <scrollactive active-class="scrollactive-active"
                   :offset="80"
                   :modify-url="false"
@@ -103,28 +102,24 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { onLogout } from '@/vue-apollo'
+import { AUTH_DATA } from '@/graphql/local'
 
 export default {
   name: 'title-bar',
-  computed: {
-    ...mapGetters([
-      'nav',
-      'loggedIn',
-      'user',
-      'userIsAdmin'
-    ])
-  },
   methods: {
-    ...mapActions([
-			'logout',
-    ]),
-    logoutAndNavigateToHome () {
-      this.logout()
+    async logoutAndNavigateToHome () {
+      await onLogout(this.$apollo.provider.defaultClient)
       if (this.$route.name !== 'home') {
         this.$router.push('/')
       }
     }
+  },
+  apollo: {
+    auth: {
+      query: AUTH_DATA,
+      update: data => data.auth
+    },
   }
 }
 </script>

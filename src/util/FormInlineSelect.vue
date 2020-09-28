@@ -17,7 +17,7 @@
             :disabled="disabled"
             @click="onOptionClick(option.id)">
       <i  v-show="value === option.id && tick"
-          class="fas fa-check btn-inner-icon mr-0" />
+          class="fas fa-check btn-inner-icon" />
       {{ option.name }}
     </button>
   </div>
@@ -130,6 +130,8 @@ button.btn-option {
     &.blue { background: $blue; }
     &.purple { background: $purple; }
     &.pink { background: $pink; }
+    &.orange { background: $orange; }
+    &.red { background: $red; }
     &[disabled] {
       opacity: 1
     }

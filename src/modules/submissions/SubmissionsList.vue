@@ -13,25 +13,29 @@
         class="d-block"
         placeholder="ใส่หมายเลขการส่ง..."
         @debounced-search="search($event)" />
-      <template v-if="!userIsFreelance">
+      <template v-if="currUser.isAdmin">
         <h6 class="mb-1 mt-3 text-medium">กรองโดยผู้ส่ง</h6>
         <FormSelect
           class="mb-2"
           v-model="activeSubmitterFilter"
           label="name"
           placeholder="ค้นหาผู้ส่ง..."
-          :reduce="option => option.id"
-          :options="submitterOptions"
+          :reduce="option => option.index"
+          :get-option-label="option => {
+            return `${option.title}${option.first_name} ${option.last_name}`
+          }"
+          :options="users"
           @input="filterBySubmitter($event)" />
       </template>
-      <template v-if="!userIsEmployee">
+      <template>
         <h6 class="mb-1 mt-3 text-medium">กรองโดยองค์กรเจ้าของ</h6>
         <FormSelect
           class="mb-2"
           label="name"
           placeholder="ค้นหาองค์กร..."
-          :reduce="option => option.id "
-          :options="orgOptions"
+          :reduce="option => option.index"
+          :get-option-label="option => option.name"
+          :options="selectOrgs"
           v-model="activeOrgFilter"
           @input="filterByOrg($event)" />
       </template>
@@ -96,36 +100,28 @@
         <thead>
           <tr>
             <th>
-              สถานะ
-              <div class="shadow-th"></div>
+              สถานะ<div class="shadow-th"></div>
             </th>
             <th>
-              การชำระเงิน
-              <div class="shadow-th"></div>
+              การชำระเงิน<div class="shadow-th"></div>
             </th>
             <th>
-              เลขที่ส่ง
-              <div class="shadow-th"></div>
+              เลขที่ส่ง<div class="shadow-th"></div>
             </th>
             <th>
-              วันที่ส่ง
-              <div class="shadow-th"></div>
+              วันที่ส่ง<div class="shadow-th"></div>
             </th>
-            <th v-if="!userIsFreelance">
-              ชื่อผู้ส่ง
-              <div class="shadow-th"></div>
-            </th>
-            <th v-if="!userIsEmployee">
-              องค์กรเจ้าของ
-              <div class="shadow-th"></div>
+            <th v-if="currUser.isAdmin">
+              ชื่อผู้ส่ง<div class="shadow-th"></div>
             </th>
             <th>
-              ประเภทการตรวจ
-              <div class="shadow-th"></div>
+              องค์กรเจ้าของ<div class="shadow-th"></div>
             </th>
             <th>
-              ใบส่งตัวอย่าง
-              <div class="shadow-th"></div>
+              ประเภทการตรวจ<div class="shadow-th"></div>
+            </th>
+            <th>
+              ใบส่งตัวอย่าง<div class="shadow-th"></div>
             </th>
           </tr>
         </thead>
@@ -147,8 +143,8 @@
             </td>
             <td>{{ row.orderNum }}</td>
             <td>{{ row.submittedDate }}</td>
-            <td v-if="!userIsFreelance">{{ row.submitter }}</td>
-            <td v-if="!userIsEmployee">{{ row.organization }}</td>
+            <td v-if="currUser.isAdmin">{{ row.submitter }}</td>
+            <td>{{ row.organization }}</td>
             <td>
               <ColorTag
                 :color="submissionTypeData[row.type].color"
@@ -170,21 +166,24 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { getJWT } from '@/vue-apollo'
+import { AUTH_DATA } from '@/graphql/local'
+import { USERS_LIST, USER_ORGS } from '@/graphql/user'
+import { ORGS_LIST } from '@/graphql/org'
 
 export default {
   name: 'submissions-list',
   computed: {
     ...mapGetters([
-      'userIsAdmin',
-      'userIsEmployee',
-      'userIsFreelance',
-      'orgOptions',
       'submissionStatuses',
       'submissionStatusData',
       'submissionInvoiceStatuses',
       'submissionInvoiceStatusData',
       'submissionTypeData'
-    ])
+    ]),
+    selectOrgs () {
+      return this.currUser.isAdmin? this.allOrgs : this.submitterOrgs
+    }
   },
   data () {
     return {
@@ -270,6 +269,53 @@ export default {
     },
     download () {
 
+    }
+  },
+  apollo: {
+    currUser: {
+      query: AUTH_DATA,
+      update: data => data.auth
+    },
+    users: {
+      query: USERS_LIST,
+      variables () {
+        return {
+          jwt: getJWT(),
+          searchQuery: '',
+          accountActive: true
+        }
+      },
+      update: data => data.search_backuser.result,
+      skip () {
+        return !this.currUser.isAdmin
+      }
+    },
+    allOrgs: {
+      query: ORGS_LIST,
+      variables () {
+        return {
+          jwt: getJWT(),
+          searchQuery: '',
+          orgType: null
+        }
+      },
+      update: data => data.search_org.result,
+      skip () {
+        return !this.currUser.isAdmin
+      }
+    },
+    submitterOrgs: {
+      query: USER_ORGS,
+      variables () {
+        return {
+          jwt: getJWT(),
+          index: [this.currUser.index]
+        }
+      },
+      update: data => data.get_backuser.result[0].submitter_of,
+      skip () {
+        return this.currUser.isAdmin
+      }
     }
   }
 }

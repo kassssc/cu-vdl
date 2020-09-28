@@ -1,30 +1,31 @@
 <template>
-<div class="border-b py-2 mb-4">
-  <div  v-for="group of testCategory.testGroups"
-        :key="group.id"
+<div class="method-selection-box border-b py-2 mb-4">
+  <div  v-for="(tests, category) in testMethodsByCategory"
+        :key="category"
         class="row no-gutters test-row">
     <div class="col-2 px-2 text-dark">
-      <h5>{{ group.name }}</h5>
+      <h5>{{ category }}</h5>
     </div>
     <div class="col-10">
-      <div  v-for="test of testCategory.testInfo.filter(t => t.group === group.id)"
-            :key="test.id"
+      <div  v-for="test of tests"
+            :key="test.BestLIMS_key"
             class="test-row form-row align-items-end">
         <div class="form-group mb-0 col-6">
-          <checkbox :label="test.name"
+          <checkbox :label="test.front_key.test_name"
+                    :secondary-label="'constraint'"
                     :disabled="
-                      (test.min && sampleCount < test.min) ||
-                      (test.max && sampleCount > test.max)
+                      (test.front_key.min && sampleCount < test.front_key.min) ||
+                      (test.front_key.max && sampleCount > test.front_key.max)
                     "
-                    :secondary-label="test.constraint"
-                    v-model="tests[test.id]"
+                    v-model="tests[test.BestLIMS_key]"
+                    :color="color"
                     @change="emitInput()" />
         </div>
         <div class="form-group text-right mb-0 col-2">
           <h5>{{ `${test.price}฿` }}</h5>
         </div>
         <div class="form-group col-1 mb-0 text-right text-muted">
-          <div  v-if="tests[test.id] && sampleCount"
+          <div  v-if="tests[test.BestLIMS_key] && sampleCount"
                 class="nowrap">
             <i class="fas fa-times icon-sm d-inline"></i>
             <h5 class="mx-1 d-inline">{{ sampleCount }}</h5>
@@ -32,7 +33,7 @@
           </div>
         </div>
         <div class="form-group col-2 mb-0 text-right">
-          <div v-if="tests[test.id] && sampleCount">
+          <div v-if="tests[test.BestLIMS_key] && sampleCount">
             <h5>{{ `${(test.price * sampleCount).toLocaleString()}฿` }}</h5>
           </div>
         </div>
@@ -87,13 +88,13 @@
   </div>
   <FormAntibioticsSensitivity
     v-if="includesSensitivityTest"
-    :options="testCategory.sensitivityTestOptions"
+    :options="testMethods.sensitivityTestOptions"
     v-model="sensitivityTests" />
 </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import groupBy from 'lodash/groupBy'
 
 export default {
   name: 'form-method-selection',
@@ -103,16 +104,16 @@ export default {
     )
   },
   computed: {
-    ...mapGetters([
-      'sensitivityTestIds'
-    ]),
+    testMethodsByCategory () {
+      return groupBy(this.testMethods, t => t.front_key.category_name)
+    },
     formValue () {
       let testList = []
-      for (const [testId, active] of Object.entries(this.tests)) {
-        if (active) testList.push(testId)
+      for (const [test, active] of Object.entries(this.tests)) {
+        if (active) testList.push(test)
       }
-      let price = this.testCategory.testInfo.reduce( (totalPrice, test) => {
-        if (this.tests[test.id]) {
+      let price = this.testMethods.reduce( (totalPrice, test) => {
+        if (this.tests[test.BestLIMS_key]) {
           return totalPrice + (test.price * this.sampleCount)
         } else {
           return totalPrice
@@ -123,31 +124,40 @@ export default {
       }
       let val = { testList, price }
       if (this.isBacteriaTest) {
-        const customBacteriaTests = this.customBacteriaTests
+        const customBacteriaTests = [...this.customBacteriaTests]
 
         val = {...val, customBacteriaTests}
       }
       return val
     },
     isBacteriaTest () {
-      return this.testCategory.id === 4
+      return this.department === 'bacteria'
     },
     customBacteriaTestPrice () {
       return this.customBacteriaTests.length * 500
     },
     includesSensitivityTest () {
-      if (!this.isBacteriaTest) return false
+      /* if (!this.isBacteriaTest) return false
       const sensitivityTestActive = this.sensitivityTestIds()
         .reduce( (includes, testId) => includes || !!this.tests[testId], false)
-      return sensitivityTestActive || this.customBacteriaTests.length > 0
+      return sensitivityTestActive || this.customBacteriaTests.length > 0 */
+      return false
     },
   },
   props: {
     sampleCount: {
       required: true
     },
-    testCategory: {
-      type: Object,
+    department: {
+      required: true,
+      type: String
+    },
+    testMethods: {
+      type: Array,
+      required: true
+    },
+    color: {
+      type: String,
       required: true
     }
   },
@@ -173,13 +183,13 @@ export default {
   },
   watch: {
     sampleCount (newSampleCount) {
-      this.testCategory.testInfo.forEach( test => {
+      this.testMethods.forEach( test => {
         const violatesConstraint = (
-          (!!test.max && (newSampleCount > test.max)) ||
-          (!!test.min && (newSampleCount < test.min))
+          (!!test.front_key.max && (newSampleCount > test.front_key.max)) ||
+          (!!test.front_key.min && (newSampleCount < test.front_key.min))
         )
-        if (this.tests[test.id] && violatesConstraint) {
-          this.tests[test.id] = false
+        if (this.tests[test.BestLIMS_key] && violatesConstraint) {
+          this.tests[test.BestLIMS_key] = false
         }
       })
       this.emitInput()
@@ -187,8 +197,8 @@ export default {
   },
   mounted () {
     const newTests = {}
-    for (const test of this.testCategory.testInfo) {
-      newTests[test.id] = false
+    for (const test of this.testMethods) {
+      newTests[test.BestLIMS_key] = false
     }
     for (const activeTest of this.$attrs.value.testList) {
       newTests[activeTest] = true

@@ -1,5 +1,5 @@
 <template>
-<div class="batch w-100 position-relative border-b-md py-5">
+<div v-if="!$apollo.loading" class="batch w-100 position-relative border-b-md py-5">
   <a  v-if="hasMultipleBatches"
       class="btn btn-x batch-section"
       @click="$emit('delete-batch')">
@@ -35,18 +35,20 @@
         </div>
       </div>
 
-      <div  v-for="testCategory of generalTests"
-            :key="testCategory.id"
+      <div  v-for="(tests, department) in testMethods"
+            :key="department"
             class="pb-2">
+            
         <div class="form-row no-gutters border-b pb-1">
           <div class="form-group col-2 mb-0 text-dark d-flex overflow-visible nowrap">
             <checkbox
               label-class="label-xl"
-              :label="`งาน${testCategory.name}`"
-              :value="!!batch.tests[testCategory.id]"
-              @input="onTestCategoryToggle(testCategory.id, $event)" />
+              :label="`งาน${department}`"
+              :value="!!batch.tests[department]"
+              :color="departmentColors[department]"
+              @input="onTestCategoryToggle(department, $event)" />
           </div>
-          <div v-if="batch.tests[testCategory.id]" class="col-10">
+          <div v-if="batch.tests[department]" class="col-10">
             <div class="form-row mt-2">
               <div class="col-6"></div>
               <div class="col-2 text-right">
@@ -62,10 +64,12 @@
 
         <transition name="fade-no-delay">
           <FormMethodSelection
-            v-if="batch.tests[testCategory.id]"
-            :test-category="testCategory"
+            v-if="batch.tests[department]"
+            :department="department"
+            :test-methods="tests"
             :sample-count="batch.sampleCount"
-            v-model="batch.tests[testCategory.id]" />
+            :color="departmentColors[department]"
+            v-model="batch.tests[department]" />
         </transition>
 
       </div>
@@ -84,7 +88,7 @@
             </div>
             <div class="col-2 text-right">
               <h2 class="text-primary">
-                {{ activeTestCount + (batch.tests[4]? batch.tests[4].customBacteriaTests.length : 0) }}
+                {{ activeTestCount + (batch.tests['bacteria']? batch.tests['bacteria'].customBacteriaTests.length : 0) }}
               </h2>
               <h5 class="text-medium">รายการทดสอบ</h5>
             </div>
@@ -167,7 +171,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { GENERAL_TEST_METHODS } from '@/graphql/tests'
+import groupBy from 'lodash/groupBy'
 
 export default {
   name: 'general-batch',
@@ -198,7 +203,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['generalTests']),
+    testMethods () {
+      return groupBy(this.testMethodsRaw, 'department_name')
+    },
     batchLabel () {
       return this.hasMultipleBatches? `กลุ่มการทดสอบ ${this.idx+1}` : 'รายการทดสอบ'
     },
@@ -234,6 +241,16 @@ export default {
     },
     hasInfo () {
       return this.activeTestCount > 0 || this.customTestCount > 0 || !!this.batch.sampleCount
+    }
+  },
+  data () {
+    return {
+      departmentColors: {
+        bacteria: 'pink',
+        molecular: 'red',
+        serum: 'orange',
+        virus: 'yellow'
+      }
     }
   },
   watch: {
@@ -282,12 +299,18 @@ export default {
       }
     },
   },
-  mounted () {
-    const newTests = {}
-    for (let testCategory of this.generalTests) {
-      newTests[testCategory.id] = null
+  apollo: {
+    testMethodsRaw: {
+      query: GENERAL_TEST_METHODS,
+      update: data => data.test_method_general_get.result,
+      result () {
+        const newTests = {}
+        for (let department of Object.keys(this.testMethods)) {
+          newTests[department] = null
+        }
+        this.batch.tests = { ...newTests }
+      }
     }
-    this.batch.tests = { ...newTests }
   }
 }
 </script>

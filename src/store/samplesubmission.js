@@ -243,6 +243,10 @@ const state = {
     {
       id: 6,
       name: 'แบคทีเรีย'
+    },
+    {
+      id: 7,
+      name: 'แบคทีเรีย (CP Protocol)'
     }
   ],
   mockSubmission: {

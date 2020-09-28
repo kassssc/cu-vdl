@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from '@/store/store.js'
 
+import store from '@/store/store.js'
 import MainContent from '@/modules/main/MainContent'
 import Home from '@/modules/home/Home'
+
+import { apolloProvider } from '@/vue-apollo'
+import { AUTH_DATA } from '@/graphql/local'
 
 Vue.use(Router)
 
@@ -59,59 +62,44 @@ const routes = [
         ),
         meta: { requiresLogin: true }
       },
-
+      
       {
-        path: '/dashboard',
-        component: () => import(/* webpackChunkName: "group-dashboard" */
-          '@/modules/dashboard/Dashboard'
+        path: '/account',
+        name: 'account',
+        component: () => import(/* webpackChunkName: "group-account" */
+          '@/modules/account/Account'
         ),
-        children: [
-          {
-            path: '',
-            name: 'dashboard',
-            component: () => import(/* webpackChunkName: "group-dashboard" */
-              '@/modules/dashboard/DashboardInfo'
-            ),
-            meta: { requiresLogin: true },
-          },
-          {
-            path: 'edit',
-            name: 'dashboard-edit',
-            component: () => import(/* webpackChunkName: "group-dashboard" */
-              '@/modules/dashboard/DashboardEdit'
-            ),
-            meta: { requiresLogin: true }
-          },
-
-          {
-            path: 'employee/org',
-            name: 'dashboard-employee-org',
-            component: () => import(/* webpackChunkName: "group-dashboard" */
-              '@/modules/dashboard/DashboardEmployeeOrg'
-            ),
-            meta: { requiresLogin: true }
-          },
-          {
-            path: 'freelance/orgs',
-            name: 'dashboard-freelance-orgs',
-            component: () => import(/* webpackChunkName: "group-dashboard" */
-              '@/modules/dashboard/DashboardFreelanceOrgs'
-            ),
-            meta: { requiresLogin: true }
-          }
-        ]
+        meta: { requiresLogin: true }
       },
 
       {
         path: '/admin',
+        name: 'admin',
         component: () => import(/* webpackChunkName: "group-admin" */
           '@/modules/admin/AdminPanel'
         ),
+        redirect: { name: 'admin-users-list' },
         meta: { requiresLogin: true, requiresAdmin: true },
         children: [
           {
-            path: '',
-            name: 'admin',
+            path: 'users/:id?',
+            name: 'admin-users-list',
+            component: () => import(/* webpackChunkName: "group-admin" */
+              '@/modules/admin/AdminUsersList'
+            ),
+            meta: { requiresLogin: true, requiresAdmin: true },
+          },
+          {
+            path: 'orgs/:id?',
+            name: 'admin-orgs-list',
+            component: () => import(/* webpackChunkName: "group-admin" */
+              '@/modules/admin/AdminOrgsList'
+            ),
+            meta: { requiresLogin: true, requiresAdmin: true },
+          },
+          {
+            path: 'create-user',
+            name: 'admin-create-user',
             component: () => import(/* webpackChunkName: "group-admin" */
               '@/modules/admin/AdminCreateUser'
             ),
@@ -125,22 +113,6 @@ const routes = [
             ),
             meta: { requiresLogin: true, requiresAdmin: true },
           },
-          {
-            path: 'users',
-            name: 'admin-users-list',
-            component: () => import(/* webpackChunkName: "group-admin" */
-              '@/modules/admin/AdminUsersList'
-            ),
-            meta: { requiresLogin: true, requiresAdmin: true },
-          },
-          {
-            path: 'orgs',
-            name: 'admin-orgs-list',
-            component: () => import(/* webpackChunkName: "group-admin" */
-              '@/modules/admin/AdminOrgsList'
-            ),
-            meta: { requiresLogin: true, requiresAdmin: true },
-          }    
         ]
       }
     ]
@@ -176,20 +148,33 @@ const router = new Router({
 })
 
 // Route Guard
-router.beforeEach((to, from, next) => {
-  // Login check
-  if (to.matched.some(record => record.meta.requiresLogin) &&
-      !store.getters.loggedIn) {
+router.beforeEach(async (to, from, next) => {
+  try {
+    const res = await apolloProvider.defaultClient.query({
+      query: AUTH_DATA
+    })
+    const { loggedIn, isAdmin } = res.data.auth
+    const unauthorized = (
+      (routeRequiresLogin(to) && !loggedIn) ||
+      (routeRequiresAdmin(to) && !isAdmin)
+    )
+  
+    if (unauthorized) {
+      next({ name: 'login' })
+    } else {
+      next()
+    }
+  } catch (err) {
+    console.log(err)
     next({ name: 'login' })
-
-  // CU admin check
-  } else if (to.matched.some(record => record.meta.requiresAdmin) &&
-      !store.getters.userIsAdmin) {
-    next({ name: 'login' })
-
-  } else {
-    next()
   }
 })
+
+const routeRequiresLogin = route => {
+  return route.matched.some(record => record.meta.requiresLogin)
+}
+const routeRequiresAdmin = route => {
+  return route.matched.some(record => record.meta.requiresAdmin)
+}
 
 export default router

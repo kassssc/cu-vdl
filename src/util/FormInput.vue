@@ -6,7 +6,12 @@
     <i  v-if="required && !disabled"
         class="fas fa-star-of-life" />
   </label>
-  <input  :class="['form-control', inputClass]"
+  <input  :class="[
+            'form-control',
+            inputClass,
+            {'is-invalid': invalid}
+          ]"
+          ref="inputbox"
           v-bind="$attrs"
           v-on="listeners"
           :disabled="disabled">
@@ -35,6 +40,10 @@ export default {
       default: false
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    invalid: {
       type: Boolean,
       default: false
     }

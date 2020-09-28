@@ -76,7 +76,7 @@ export default {
     }
   }
   .vs__dropdown-toggle {
-    padding: 0.19rem 0.75rem;
+    padding: 0.25rem 0.75rem;
     border-style: none;
   }
   input.vs__search,
@@ -85,13 +85,13 @@ export default {
   .vs__actions {
     background: transparent;
     font-weight: bold;
-    min-height: 33px;
+    //min-height: 33px;
     color: $default;
     margin: 0;
     padding: 0;
   }
   .vs__actions {
-    height: 33px;
+    //height: 33px;
   }
   input.vs__search::placeholder {
     color: $placeholder;

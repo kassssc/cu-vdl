@@ -37,7 +37,7 @@
 
       <div class="mt-3 form-row">
         <FormInlineSelect
-          class="col-6"
+          class="col-9"
           label="ทดสอบประสิทธิภาพยาฆ่าเชื้อต่อ"
           label-class="label-lg"
           :options="disinfectantTests"
@@ -49,7 +49,7 @@
       <div class="form-row border-b px-3 pb-2 mb-1">
         <div class="col-4">
           <h5 class="text-medium">
-            ชื่อ{{ isBacteriaTestBatch? 'แบคทีเรีย' : 'ไวรัส' }}
+            ชื่อ{{ isVirusTest? 'ไวรัส' : 'แบคทีเรีย'  }}
           </h5>
         </div>
         <div class="col-6">
@@ -59,12 +59,11 @@
             </div>
             <div class="col-8">
               <div class="form-row">
-                <div class="col-6">
-                  <h5 class="text-medium">ระยะสัมผัส</h5>
-                </div>
-                <div  v-show="isBacteriaTestBatch"
-                      class="col-6">
+                <div v-if="isCP" class="col-6">
                   <h5 class="text-medium">ระยะหลังการเจือจาง</h5>
+                </div>
+                <div class="col-6">
+                  <h5 class="text-medium">ระยะสัมผัสเชื้อ</h5>
                 </div>
               </div>
             </div>
@@ -92,8 +91,7 @@
               <h4 class="d-inline">{{ dilution }}</h4>
             </div>
 
-            <div  v-if="!isBacteriaTestBatch"
-                  class="col-4">
+            <div  v-if="!isCP" class="col-4">
               <div  v-for="time of info.contactTimes"
                     :key="time"
                     class="test-row position-relative">
@@ -102,22 +100,21 @@
               </div>
             </div>
 
-            <div  v-else-if="isBacteriaTestBatch"
-                  class="col-8">
-              <div  v-for="time of info.contactTimes"
-                    :key="time"
+            <div v-else class="col-8">
+              <div  v-for="dt of info.dilutionTimes"
+                    :key="dt"
                     class="form-row test-row">
                 <div class="col-6">
-                    <h5 class="d-inline">{{ time }}</h5>
-                    <h5 class="d-inline ml-1">นาที</h5>
+                    <h5 class="d-inline">{{ dt }}</h5>
+                    <h5 class="d-inline ml-1">วัน</h5>
                 </div>
                 <div class="col-6">
-                  <div  v-for="dt of info.dilutionTimes"
-                        :key="dt"
+                  <div  v-for="time of info.contactTimes"
+                        :key="time"
                         class="form-row test-row">
                     <div class="col-12">
-                      <h5 class="d-inline">{{ dt }}</h5>
-                      <h5 class="d-inline ml-1">วัน</h5>
+                      <h5 class="d-inline">{{ time }}</h5>
+                      <h5 class="d-inline ml-1">นาที</h5>
                     </div>
                   </div>
                 </div>
@@ -152,15 +149,15 @@
       <div class="form-row mt-4">
         <div class="col-9 d-flex justify-content-end align-items-end">
           <template v-if="Object.keys(batch.tests).length > 0">
-            <div  v-show="!isBacteriaTestBatch"
+            <div  v-if="batch.testType === 5"
                   class="text-right position-relative cost-container">
               <h4 class="text-primary">
                 <i class="fas fa-plus icon-sm"></i>
-                {{ `${batch.dilutionCost.toLocaleString()}฿` }}
+                {{ `${batch.toxicityTestCost.toLocaleString()}฿` }}
               </h4>
-              <h5 class="text-medium">ค่า Dilution</h5>
+              <h5 class="text-medium">ค่า Toxicity Test</h5>
               <div class="hint-box">
-                <h4 class="text-primary mb-1">การคำนวณค่า Dilution</h4>
+                <h4 class="text-primary mb-1">การคำนวณค่า Toxicity Test</h4>
                 <h5>คำนวณจากจำนวนความเข้มข้นของแต่ละประเภท cell ไวรัส ซึ่งระบุไว้ใน [ ] หลังชื่อไวรัส หากไวรัสหลายตัวภายใต้ cell ประเภทเดียวกันใช้ความเข้มข้นซํ้ากัน จะคิดราคาแค่รอบเดียวเท่านั้น</h5>
                 <div  v-for="(arr, cell) in batch.uniqueCells"
                       :key="cell">
@@ -196,9 +193,9 @@
       </div>
 
       <FormDisinfectantTestInput
+        v-if="batch.testType"
         class="mt-4"
-        :testType="batch.testType"
-        :tests="disinfectantTestCategory(batch.testType)"
+        :test-type="batch.testType"
         @add="addDisinfectantTest($event)" />
 
     </div>
@@ -207,7 +204,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import union from 'lodash/union'
 
 export default {
@@ -240,15 +236,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'disinfectantTests',
-      'disinfectantTestCategory'
-    ]),
-    isBacteriaTestBatch () {
-      return this.batch.testType === 6
+    isVirusTest () {
+      return this.batch.testType === 'virus'
+    },
+    isCP () {
+      return this.batch.testType === 'CP'
     },
     uniqueCells () {
-      if (this.isBacteriaTestBatch) return {}
+      if (!this.isVirusTest) return {}
       const cells = {}
       Object.values(this.batch.tests).forEach( t => {
         cells[t.cellName] = (t.cellName in cells)?
@@ -256,16 +251,16 @@ export default {
       })
       return cells      
     },
-    dilutionCost () {
-      if (this.isBacteriaTestBatch) return 0
+    toxicityTestCost () {
+      if (!this.isVirusTest) return 0
       return Object.values(this.uniqueCells)
         .reduce( (acc, curr) => acc + 3000 * curr.length, 0)
     },
     totalPrice () {
       let testsPrice = Object.values(this.batch.tests)
         .reduce( (acc, curr) => acc + curr.totalPrice, 0)
-      if (!this.isBacteriaTestBatch) {
-        testsPrice += this.dilutionCost
+      if (!this.isVirusTest) {
+        testsPrice += this.toxicityTestCost
       }
       return 3000 + testsPrice
     },
@@ -279,6 +274,15 @@ export default {
       return this.batch.disinfectantName || this.batch.disinfectantNameEng || this.hasTests
     }
   },
+  data () {
+    return {
+      disinfectantTests: [
+        { id: 'virus',    name: 'ไวรัส'},
+        { id: 'bacteria', name: 'แบคทีเรีย'},
+        { id: 'CP',       name: 'แบคทีเรีย (CP Protocol)'}
+      ]
+    }
+  },
   watch: {
     totalPrice (val) {
       this.batch.totalPrice = val
@@ -286,8 +290,8 @@ export default {
     uniqueCells (val) {
       this.batch.uniqueCells = val
     },
-    dilutionCost (val) {
-      this.batch.dilutionCost = val
+    toxicityTestCost (val) {
+      this.batch.toxicityTestCost = val
     },
     hasInfo (val) {
       this.batch.hasInfo = val
@@ -296,9 +300,11 @@ export default {
   methods: {
     onBatchTestTypeChange () {
       this.batch.totalPrice = 0
-      this.batch.dilutionCost = 0
-      this.batch.uniqueCells = {}
       this.batch.tests = {}
+      if (this.isVirusTest) {
+        this.batch.toxicityTestCost = 0
+        this.batch.uniqueCells = {}        
+      }
     },
     addDisinfectantTest (payload) {
       this.batch.tests = {...this.batch.tests, ...payload}

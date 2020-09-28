@@ -1,10 +1,13 @@
 <template>
 <div class="checkbox position-relative">
   <div class="box d-flex justify-content-center align-items-center my-1"
-       :class="{
-         'checked': value,
-         'disabled': disabled
-       }">
+       :class="[
+          {
+            'checked': value,
+            'disabled': disabled
+          },
+          color
+       ]">
     <i class="fas fa-check" />
   </div>
   <div  v-if="label"
@@ -50,6 +53,10 @@ export default {
     disabled: {
       default: false,
       type: Boolean
+    },
+    color: {
+      default: '',
+      type: String
     }
   },
   methods: {
@@ -86,6 +93,10 @@ export default {
     }
     &.checked {
       background: $primary;
+      &.pink { background: $pink; }
+      &.red { background: $red; }
+      &.orange { background: $orange; }
+      &.yellow { background: $yellow; }
       i {
         opacity: 1;
         visibility: visible;

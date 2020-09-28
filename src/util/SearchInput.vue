@@ -4,7 +4,7 @@
   <input  :class="['form-control', inputClass]"
           :placeholder="placeholder"
           v-model="query"
-          @input="debouncedSearch($event)"
+          @input="search($event)"
           @focus="$event.target.select()">
   <button v-show="query"
           class="btn btn-clear"
@@ -15,8 +15,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-
 export default {
   name: 'search-input',
   inheritAttrs: false,
@@ -40,12 +38,12 @@ export default {
     }
   },
   methods: {
-    debouncedSearch: debounce( function (ev) {
-      this.$emit('debounced-search', ev.target.value)
-    }, 500),
+    search (ev) {
+      this.$emit('search', ev.target.value)
+    },
     clear () {
       this.query = ''
-      this.$emit('debounced-search', this.query)
+      this.$emit('search', this.query)
     }
   }
 }
@@ -57,14 +55,13 @@ export default {
   i.icon-search {
     position: absolute;
     pointer-events: none;
-    width: 30px;
-    height: 22px;
+    height: 1em;
     top: 0;
     bottom: 0;
     margin-top: auto;
     margin-bottom: auto;
     left: 10px;
-    font-size: 1.3rem;
+    font-size: 1.3em;
   }
   input.form-control {
     padding-left: 2em;
@@ -72,14 +69,12 @@ export default {
   }
   button.btn-clear {
     position: absolute;
-    height: 20px;
-    width: 20px;
     right: .5em;
     top: 0;
     bottom: 0;
     margin-top: auto;
     margin-bottom: auto;
-    font-size: 1rem;
+    font-size: 1.2em;
     padding: 0;
     color: $muted;
     &:hover {

@@ -78,18 +78,28 @@
       </div>
     </div>
     <div class="col-4 pl-5">
-      <h2 class="mb-3">ที่อยู่</h2>
+      <h2 class="mb-2">ที่อยู่</h2>
       <h4 class="mb-1">ถนนอังรีดูนังต์</h4>
       <h4 class="mb-1">แขวงวังใหม่ เขตพญาไท</h4>
       <h4 class="mb-4">กรุงเทพฯ 10330</h4>
-      <h4 class="mb-2">
-        <i class="fas fa-phone mr-3 icon-md"></i>
-        โทร: 02-218-9606
-      </h4>
-      <h4>
-        <i class="fas fa-fax mr-3 icon-md"></i>
-        แฟ็กซ์: 02-218-9532
-      </h4>
+      <div class="mb-4 d-flex">
+        <div class="d-flex flex-column justify-content-between mr-3">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-phone mr-3 icon-md"></i><h4>โทร:</h4>
+          </div>
+          <div class="d-flex align-items-center">
+            <i class="fas fa-fax mr-3 icon-md"></i><h4>แฟ็กซ์:</h4>
+          </div>
+        </div>
+        <div class="d-flex flex-column justify-content-between">
+          <h4 class="mb-1">02-218-9604</h4>
+          <h4 class="mb-3">02-218-9606</h4>
+          <h4>02-218-9532</h4>
+        </div>
+      </div>
+      <div class="d-flex align-items-center">
+        <i class="fas fa-envelope mr-3 icon-md"></i><h4>อีเมล: cuvdl.thailand@gmail.com</h4>
+      </div>
     </div>
   </div>
 </div>

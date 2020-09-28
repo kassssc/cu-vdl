@@ -26,3 +26,29 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.light-tag {
+  @include unselectable;
+  border-radius: $border-radius;
+  padding: 0 .4em;
+  display: inline-block;
+  font-size: .9em;
+  font-weight: bold;
+  &.lg {
+    font-size: 1.3em;
+    padding: .1em .6em;
+  }
+  .small-square { vertical-align: middle; }
+  &.primary { background: rgba($primary, .2); }
+  &.pink    { background: rgba($pink, .2); }
+  &.purple  { background: rgba($purple, .2); }
+  &.grey    { background: rgba($medium, .2); }
+  &.red     { background: rgba($red, .2); }
+  &.green   { background: rgba($green, .2); }
+  &.blue    { background: rgba($blue, .2); }
+  &.orange  { background: rgba($orange, .2); }
+  &.teal    { background: rgba($teal, .2); }
+  &.blue    { background: rgba($blue, .2); }
+}
+</style>

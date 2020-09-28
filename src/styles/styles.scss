@@ -65,7 +65,6 @@ input {
 
 button.btn, a.btn {
   @include unselectable;
-  * { vertical-align: middle; }
   &[disabled] {
     cursor: default;
     pointer-events: none;
@@ -73,6 +72,10 @@ button.btn, a.btn {
   &:focus,
   &:active {
     box-shadow: none !important;
+  }
+  &.loading[disabled] {
+    pointer-events: none;
+    opacity: 1;
   }
   &.btn-transparent:hover {
     background: $accent;
@@ -85,6 +88,62 @@ button.btn, a.btn {
     &.btn-icon-danger:hover {
         color: $danger;
         background: $accent;
+    }
+  }
+  &.radio-btn {
+    background: transparent;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    font-size: 1.4em;
+    .box {
+      min-width: 23px;
+      height: 23px;
+      border-radius: 3px;
+      background: $accent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: .3em;
+      .box-chosen {
+        min-width: 11px;
+        height: 11px;
+        border-radius: 2px;
+        background: $primary;
+        transition: all 100ms ease-in-out;
+        visibility: hidden;
+        opacity: 0;
+      }
+      &.chosen .box-chosen {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  }
+  &.filter-btn {
+    color: $default;
+    background: $secondary;
+    position: relative;
+    padding-top: .2em;
+    padding-bottom: .2em;
+    justify-content: flex-start;
+    &[disabled] {
+      opacity: 1;
+    }
+    &:not(.active):hover {
+      background: $accent-dark;
+    }
+    &.active {
+      color: $light;
+      cursor: default;
+      &.primary { background: $primary; }
+      &.pink { background: $pink; }
+      &.orange { background: $orange; }
+      &.green { background: $green; }
+      &.teal { background: $teal; }
+      &.purple { background: $purple; }
+      &.grey { background: $medium; }
+      &.red { background: $red; }
     }
   }
   &.btn-x {
@@ -116,8 +175,9 @@ button.btn, a.btn {
     }
   }
   i {
+    vertical-align: middle;
     &.btn-inner-icon {
-      margin-right: .3em;
+      margin-right: .2em;
       font-size: .8em;
     }
     &.btn-inner-icon-lg {
@@ -150,7 +210,7 @@ i {
 
 ul.item-list {
   list-style: none;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   padding: 0 .5em;
   margin: 0;
   li {
@@ -170,10 +230,13 @@ ul.item-list {
       }
       &.active {
         cursor: default;
-        box-shadow: 0 0 0 .12em $primary inset;
+        box-shadow: 0 0 0 .14em $primary inset;
         border-radius: $border-radius-lg;
         background: rgba($primary, .15);
       }
+    }
+    &.faded {
+      color: $medium;
     }
   }
 }
@@ -215,6 +278,9 @@ table {
       td {
         color: $dark;
         padding: 0.3em 0.55em;
+        &.small-font {
+          font-size: .9em;
+        }
       }
     }
   }
@@ -250,7 +316,7 @@ table {
     padding-left: $outer-padding;
     padding-right: $outer-padding;
   }
-  &.page-sm  { max-width: 750px;  }
+  &.page-sm  { max-width: 800px;  }
   &.page-md  { max-width: 1300px; }
   &.page-lg  { max-width: 1500px; }
   &.page-xl  { max-width: 1650px; }
@@ -262,8 +328,14 @@ table {
 .font-chatthai {
   font-family: 'CS ChatThai';
 }
+.font-cu {
+  font-family: 'CHULALONGKORN';
+}
 .vertical-align-top {
   vertical-align: top;
+}
+.vertical-align-middle {
+  vertical-align: middle;
 }
 .nowrap {
   white-space: nowrap;
@@ -295,6 +367,9 @@ table {
 }
 .no-pointer-events {
   pointer-events: none;
+}
+.content-height-min {
+  min-height: $content-height;
 }
 .content-height {
   height: $content-height;
@@ -389,6 +464,13 @@ table {
   );
 }
 
+.error-box {
+  @include unselectable;
+  border-radius: $border-radius;
+  padding: .4em .8em;
+  background: rgba($red, .2);
+}
+
 .sidebar {
   width: 275px;
   position: sticky;
@@ -446,8 +528,9 @@ table {
 .small-square {
   width: .7em;
   height: .7em;
-  display: inline-block;
   border-radius: $border-radius-sm;
+  display: inline-block;
+  vertical-align: middle;
   &.primary { background: $primary; }
   &.pink { background: $pink; }
   &.orange { background: $orange; }
@@ -459,58 +542,10 @@ table {
   &.red { background: $red; }
 }
 
-.light-tag {
-  border-radius: $border-radius;
-  padding: 0 .4em;
-  display: inline-block;
-  font-size: .9em;
-  font-weight: bold;
-  &.lg {
-    font-size: 1.5rem;
-    padding: .1em .6em;
-  }
-  .small-square { vertical-align: middle; }
-  &.primary { background: rgba($primary, .2); }
-  &.pink { background: rgba($pink, .2); }
-  &.purple { background: rgba($purple, .2); }
-  &.grey { background: rgba($medium, .2); }
-  &.red { background: rgba($red, .2); }
-  &.green { background: rgba($green, .2); }
-  &.blue { background: rgba($blue, .2); }
-  &.orange { background: rgba($orange, .2); }
-  &.teal { background: rgba($teal, .2); }
-  &.blue { background: rgba($blue, .2); }
-}
-
-
-.filter-btn {
-  color: $default;
-  background: $secondary;
-  position: relative;
-  padding-top: .2em;
-  padding-bottom: .2em;
-  vertical-align: center; 
-  &:not(.active):hover {
-    background: $accent-dark;
-  }
-  &.active {
-    color: $light;
-    cursor: default;
-    &.primary { background: $primary; }
-    &.pink { background: $pink; }
-    &.orange { background: $orange; }
-    &.green { background: $green; }
-    &.teal { background: $teal; }
-    &.purple { background: $purple; }
-    &.grey { background: $medium; }
-    &.red { background: $red; }
-  }
-}
-
 .sub-nav {
   height: $content-height;
-  padding: 1rem 1.75rem 1rem 0;
-  width: 300px;
+  padding: .5rem 1.75rem 1rem 0;
+  width: 275px;
   a, button {
     text-align: left;
     margin-bottom: .75em;
@@ -519,13 +554,17 @@ table {
 .sub-nav-content {
   padding-left: 1.75rem;
   padding-right: 1.75rem;
-  padding-top: 1rem;
+  padding-top: .5rem;
   padding-bottom: 1rem;
   border-left: 1px solid $accent;
   flex: 1;
   &:last-child {
     padding-right: 0;
   }
+}
+
+.list-view {
+  max-width: 555px;
 }
 
 .test-row {

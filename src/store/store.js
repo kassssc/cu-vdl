@@ -1,13 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import auth from './auth'
 import sampleSubmission from './samplesubmission'
 
 Vue.use(Vuex)
 
 const modules = {
-  auth,
   sampleSubmission
 }
 

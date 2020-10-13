@@ -1,12 +1,13 @@
 <template>
 <div v-if="!$apollo.loading">
   <template>
-    <div class="d-flex align-items-center mb-3">
-      <h3 class="mr-3">
+    <div class="d-block d-lg-flex align-items-center mb-3">
+      <h3 class="mr-3 d-block d-lg-inline-block mb-lg-0 mb-3">
         <i class="fas fa-user icon-lg"></i>
         {{ userFullName }}
       </h3>
       <ColorTag
+        class="d-block d-lg-inline-block"
         size="lg"
         :label="userTypeLabel[user.account_type]"
         :color="userTypeCSS[user.account_type]" />
@@ -14,17 +15,17 @@
   
     <div class="form-row font-chatthai pb-2 border-b">
       <FormInput
-        class="col-6"
+        class="col-12 col-lg-6"
         label="อีเมล"
         disabled
         :value="user.email" />
       <FormInput
-        class="col-4"
+        class="col-12 col-lg-6"
         label="หมายเลขโทรศัพท์"
         disabled
         :value="user.phone" />
       <FileView
-        class="col-6"
+        class="col-12 col-lg-6"
         label="สำเนาบัตรประชาชน"
         file-name="national_id.pdf"
         icon-class="fa-address-card" />
@@ -83,15 +84,15 @@
     
       <div class="form-row font-chatthai pt-4">
         <template v-if="user.account_active">
-          <div class="form-group col-6">
-            <button class="btn btn-primary btn-block"
+          <div class="form-group col-12 col-lg-6">
+            <button class="btn btn-secondary btn-block"
                     @click="showUpdateSubmissionPermissionModal()">
               <i class="fas fa-user-plus btn-inner-icon"></i>
               ให้สิทธิในการเป็นตัวแทนองค์กร
             </button>
           </div>
           <div class="w-100"></div>
-          <div class="form-group col-6">
+          <div class="form-group col-12 col-lg-6">
             <button class="btn btn-danger btn-block"
                     @click="showDeactivateAccountModal()">
               <i class="fas fa-ban btn-inner-icon"></i>
@@ -99,7 +100,7 @@
             </button>
           </div>
         </template>
-        <div v-else class="form-group col-6">
+        <div v-else class="form-group col-12 col-lg-6">
           <button class="btn btn-success btn-block"
                   @click="showReactivateAccountModal()">
             <i class="fas fa-check btn-inner-icon"></i>

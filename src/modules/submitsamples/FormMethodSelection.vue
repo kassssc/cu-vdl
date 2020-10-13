@@ -8,16 +8,16 @@
     </div>
     <div class="col-10">
       <div  v-for="test of tests"
-            :key="test.BestLIMS_key"
+            :key="test.test_key"
             class="test-row form-row align-items-end">
         <div class="form-group mb-0 col-6">
-          <checkbox :label="test.front_key.test_name"
-                    :secondary-label="'constraint'"
+          <checkbox :label="test.display_name"
+                    :secondary-label="test.constraint_label"
                     :disabled="
-                      (test.front_key.min && sampleCount < test.front_key.min) ||
-                      (test.front_key.max && sampleCount > test.front_key.max)
+                      (test.min && sampleCount < test.min) ||
+                      (test.max && sampleCount > test.max)
                     "
-                    v-model="tests[test.BestLIMS_key]"
+                    v-model="testSelection[test.test_key]"
                     :color="color"
                     @change="emitInput()" />
         </div>
@@ -25,7 +25,7 @@
           <h5>{{ `${test.price}฿` }}</h5>
         </div>
         <div class="form-group col-1 mb-0 text-right text-muted">
-          <div  v-if="tests[test.BestLIMS_key] && sampleCount"
+          <div  v-if="testSelection[test.test_key] && sampleCount"
                 class="nowrap">
             <i class="fas fa-times icon-sm d-inline"></i>
             <h5 class="mx-1 d-inline">{{ sampleCount }}</h5>
@@ -33,7 +33,7 @@
           </div>
         </div>
         <div class="form-group col-2 mb-0 text-right">
-          <div v-if="tests[test.BestLIMS_key] && sampleCount">
+          <div v-if="testSelection[test.test_key] && sampleCount">
             <h5>{{ `${(test.price * sampleCount).toLocaleString()}฿` }}</h5>
           </div>
         </div>
@@ -54,16 +54,17 @@
                 class="form-group d-block mb-2 position-relative">
               <input
                 v-focus-on-create
-                class="form-control form-control-sm"
+                class="form-control form-control-sm input-pink"
                 type="text"
-                v-model="customBacteriaTests[idx]" />
+                v-model.lazy="customBacteriaTests[idx]"
+                @blur="emitInput()" />
               <a  class="btn btn-sm btn-x custom-test"
                 @click="deleteCustomBacteriaTest(idx)">
               <i class="fas fa-times" />
             </a>
           </div>
           <div class="d-flex justify-content-between align-items-center">
-            <button class="btn btn-primary btn-sm"
+            <button class="btn btn-pink btn-sm"
                     :disabled="customBacteriaTests.length >= 5"
                     @click="addCustomBacteriaTest()">
               เพิ่มรายการแบคทีเรีย
@@ -86,15 +87,23 @@
       </div>
     </div>
   </div>
-  <FormAntibioticsSensitivity
-    v-if="includesSensitivityTest"
-    :options="testMethods.sensitivityTestOptions"
-    v-model="sensitivityTests" />
+  <div  v-if="includesSensitivityTest"
+        class="row no-gutters pt-3 border-t">
+    <div class="col-12 px-2">
+      <FormAntibioticsSensitivity
+        v-if="!$apollo.loading"
+        :options="sensitivityTestOptions"
+        :color="color"
+        v-model="sensitivityTests"
+        @change="emitInput()" />
+    </div>
+  </div>
 </div>
 </template>
 
 <script>
 import groupBy from 'lodash/groupBy'
+import { BACTERIA_ANTIBIOTICS } from '@/graphql/tests'
 
 export default {
   name: 'form-method-selection',
@@ -105,15 +114,26 @@ export default {
   },
   computed: {
     testMethodsByCategory () {
-      return groupBy(this.testMethods, t => t.front_key.category_name)
+      const processed = this.testMethods.map( test => {
+        let constraint_label = ''
+        if (test.min && test.max) {
+          constraint_label = `(${test.min}-${test.max} ต.ย.)`
+        } else if (test.min) {
+          constraint_label = `(≥ ${test.min} ต.ย.)`
+        } else if (test.max) {
+          constraint_label = `(≤ ${test.max} ต.ย.)`
+        }
+        return {...test, constraint_label}
+      })
+      return groupBy(processed, 'category')
     },
     formValue () {
       let testList = []
-      for (const [test, active] of Object.entries(this.tests)) {
+      for (const [test, active] of Object.entries(this.testSelection)) {
         if (active) testList.push(test)
       }
       let price = this.testMethods.reduce( (totalPrice, test) => {
-        if (this.tests[test.BestLIMS_key]) {
+        if (this.testSelection[test.test_key]) {
           return totalPrice + (test.price * this.sampleCount)
         } else {
           return totalPrice
@@ -125,23 +145,22 @@ export default {
       let val = { testList, price }
       if (this.isBacteriaTest) {
         const customBacteriaTests = [...this.customBacteriaTests]
-
-        val = {...val, customBacteriaTests}
+        const sensitivityTests = this.sensitivityTests
+        val = {...val, customBacteriaTests, sensitivityTests}
       }
       return val
     },
     isBacteriaTest () {
-      return this.department === 'bacteria'
+      return this.department === 'แบคทีเรียวิทยา'
     },
     customBacteriaTestPrice () {
       return this.customBacteriaTests.length * 500
     },
     includesSensitivityTest () {
-      /* if (!this.isBacteriaTest) return false
-      const sensitivityTestActive = this.sensitivityTestIds()
-        .reduce( (includes, testId) => includes || !!this.tests[testId], false)
-      return sensitivityTestActive || this.customBacteriaTests.length > 0 */
-      return false
+      if (!this.isBacteriaTest) return false
+      const sensitivityTestActive = this.testMethodsByCategory['Sensitivity Test']
+        .reduce( (includes, test) => includes || !!this.testSelection[test.test_key], false)
+      return sensitivityTestActive || this.customBacteriaTests.length > 0
     },
   },
   props: {
@@ -163,7 +182,7 @@ export default {
   },
   data () {
     return {
-      tests: {},
+      testSelection: {},
       sensitivityTests: null,
       customBacteriaTests: []
     }
@@ -185,27 +204,43 @@ export default {
     sampleCount (newSampleCount) {
       this.testMethods.forEach( test => {
         const violatesConstraint = (
-          (!!test.front_key.max && (newSampleCount > test.front_key.max)) ||
-          (!!test.front_key.min && (newSampleCount < test.front_key.min))
+          (!!test.max && (newSampleCount > test.max)) ||
+          (!!test.min && (newSampleCount < test.min))
         )
-        if (this.tests[test.BestLIMS_key] && violatesConstraint) {
-          this.tests[test.BestLIMS_key] = false
+        if (this.testSelection[test.test_key] && violatesConstraint) {
+          this.testSelection[test.test_key] = false
         }
       })
       this.emitInput()
-    }
+    },
+    /* includesSensitivityTest (newIncludesSensitivityTest) {
+      if (!newIncludesSensitivityTest) {
+        this.sensitivityTests = null
+      } else {
+        this.sensitivityTests = ''
+      }
+      this.emitInput()
+    } */
   },
   mounted () {
     const newTests = {}
     for (const test of this.testMethods) {
-      newTests[test.BestLIMS_key] = false
+      newTests[test.test_key] = false
     }
     for (const activeTest of this.$attrs.value.testList) {
       newTests[activeTest] = true
     }
-    this.tests = {...newTests}
+    this.testSelection = {...newTests}
     if (this.$attrs.value.customBacteriaTests) {
       this.customBacteriaTests = this.$attrs.value.customBacteriaTests
+    }
+    this.sensitivityTests = this.$attrs.value.sensitivityTests
+  },
+  apollo: {
+    sensitivityTestOptions: {
+      query: BACTERIA_ANTIBIOTICS,
+      update: data => JSON.parse(data.test_method_bacteria_antibiotic_get.result.json),
+      skip () { return !this.isBacteriaTest }
     }
   }
 }
@@ -221,5 +256,15 @@ export default {
   right: -25px;
   width: 25px;
   height: 1.5em;
+  &:hover {
+    color: $pink;
+  }
+}
+button.btn.btn-pink {
+  background: $pink;
+  color: $light;
+}
+input.form-control.input-pink:focus {
+  box-shadow: 0 0 0 .2rem $pink;
 }
 </style>

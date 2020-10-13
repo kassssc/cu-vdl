@@ -10,11 +10,11 @@
       <i class="fas fa-paper-plane btn-inner-icon-lg text-left mr-0" />
       {{ isEditMode? 'ยืนยันและบันทึก' : 'ยืนยันและส่งตัวอย่าง' }}
     </button>
-    <button class="submit btn btn-lg btn-secondary btn-block"
+    <!-- <button class="submit btn btn-lg btn-secondary btn-block"
             @click="download()">
       <i class="fas fa-file-pdf btn-inner-icon-lg text-left mr-0" />
       ดาวน์โหลดไฟล์ PDF
-    </button>
+    </button> -->
   </div>
   <div class="d-flex flex-column w-100 align-items-center pt-3 fill-height scroll-container">
 
@@ -23,7 +23,7 @@
         <div class="page-header page-item">
           <div class="logo mr-3"></div>
           <div class="d-flex flex-column justify-content-between">
-            <h2>{{ `ใบรับตัวอย่าง${submission.type === 1? 'งานตรวจทั่วไป' : 'ส่งตรวจน้ำยาฆ่าเชื้อ'}` }}</h2>
+            <h2>{{ `ใบรับตัวอย่าง${submission.submissionType}` }}</h2>
             <h5>หน่วยชันสูตรโรคสัตว์กลาง คณะสัตวแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h5>
             <h6>ถนนอังรีดูนังต์ แขวงวังใหม่ เขตพญาไท กทม. 10330 โทร.02-218-9606-6 email: cuvdl.thailand@gmail.com</h6>
           </div>
@@ -32,7 +32,7 @@
           <div class="col-6 border-r">
             <div class="row no-gutters border-b">
               <h5 class="col-3">ชื่อผู้ส่ง</h5>
-              <h5 class="col-9 ink">{{ `${user.title}${user.firstName} ${user.lastName}` }}</h5>
+              <h5 class="col-9 ink">{{ `${user.title}${user.first_name} ${user.last_name}` }}</h5>
             </div>
             <div class="row no-gutters border-b">
               <h5 class="col-3">โทรศัพท์</h5>
@@ -61,22 +61,22 @@
           <div class="col-6 border-r">
             <div class="row no-gutters border-b">
               <h5 class="col-3">องค์กรเจ้าของ</h5>
-              <h5 class="col-9 ink">{{ org.name }}</h5>
+              <h5 class="col-9 ink">{{ submission.sampleOwnerOrgName }}</h5>
             </div>
             <div class="row no-gutters no-border-b">
               <h5 class="col-3">ที่อยู่</h5>
-              <h5 class="col-9 ink pre-line">{{ org.addr }}</h5>
+              <!-- <h5 class="col-9 ink pre-line">{{ org.addr }}</h5> -->
             </div>
             <div class="row no-gutters">
               
             </div>
           </div>
-          <div v-if="submission.type === 1" class="col-6">
+          <div v-if="submission.submissionType === 'การตรวจทั่วไป'" class="col-6">
             <div class="row no-gutters border-b">
               <h5 class="col-6 border-r">
                 วันที่เก็บตัวอย่าง
                 <span class="ink ml-1">
-                  {{ getDate(submission.sampleInfo.sampleTakenDate) }}
+                  {{ getDate(submission.submissionData.submissionDetails.sampleTakenDate) }}
                 </span>
               </h5>
               <h5 class="col-6">จำนวนตัวอย่าง</h5>
@@ -84,33 +84,33 @@
             <div class="row no-gutters border-b">
               <h5 class="col-6 border-r">
                 ชนิดตัวอย่าง
-                <span class="ink ml-1">{{ submission.sampleInfo.sampleType }}</span>
+                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.sampleType }}</span>
               </h5>
               <h5 class="col-6">
                 ชนิดสัตว์
-                <span class="ink ml-1">{{ submission.sampleInfo.animalType }}</span>
+                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.animalType }}</span>
               </h5>
             </div>
             <div class="row no-gutters border-b">
               <h5 class="col-6 border-r">
                 พันธุ์
-                <span class="ink ml-1">{{ submission.sampleInfo.animalSpecies }}</span>
+                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.animalSpecies }}</span>
               </h5>
               <h5 class="col-6">
                 อายุ
-                <span class="ink ml-1">{{ submission.sampleInfo.animalAge }}</span>
+                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.animalAge }}</span>
               </h5>
             </div>
             <div class="row no-gutters border-b">
               <h5 class="col-12">
                 ประวัติการป่วย
-                <span class="ink ml-1">{{ submission.sampleInfo.illness }}</span>
+                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.illness }}</span>
               </h5>
             </div>
             <div class="row no-gutters">
               <h5 class="col-12">
                 ประวัติการทำวัคซีน
-                <span class="ink ml-1">{{ submission.sampleInfo.vaccinations }}</span>
+                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.vaccinations }}</span>
               </h5>
             </div>
           </div>
@@ -122,7 +122,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import moment from 'moment/src/moment'
 //import jsPDF from 'jspdf'
 
@@ -133,13 +132,14 @@ export default {
       type: Object,
       required: true
     },
+    user: {
+      type: Object,
+      required: true
+    },
     isEditMode: {
       type: Boolean,
       required: true
     }
-  },
-  computed: {
-    ...mapGetters(['user', 'org'])
   },
   methods: {
     getDate(iso) {

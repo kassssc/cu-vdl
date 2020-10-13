@@ -1,6 +1,6 @@
 <template>
-<div class="checkbox position-relative">
-  <div class="box d-flex justify-content-center align-items-center my-1"
+<div class="checkbox position-relative d-flex align-items-center pointer">
+  <div class="box d-flex justify-content-center align-items-center"
        :class="[
           {
             'checked': value,
@@ -22,6 +22,7 @@
       {{ secondaryLabel }}
     </label>
   </div>
+  <slot name="label"></slot>
   <input type="checkbox"
          :checked="value"
          @input="onChange($event.target.checked)"
@@ -77,26 +78,25 @@ export default {
   cursor: pointer;
 }
 .checkbox {
-  display: flex;
-  cursor: pointer;
+  padding: .3em 0;
   .box {
-    min-width: 20px;
-    height: 20px;
-    border-radius: 3px;
+    min-width: 1.35em;
+    height: 1.35em;
+    border-radius: .2em;
     background: $accent;
     transition: all 100ms ease-in-out;
     i {
-      font-size: 0.8em;
+      font-size: .85em;
       color: $light;
       opacity: 0;
       visibility: hidden;
     }
     &.checked {
       background: $primary;
-      &.pink { background: $pink; }
-      &.red { background: $red; }
-      &.orange { background: $orange; }
-      &.yellow { background: $yellow; }
+      &.pink    { background: $pink; }
+      &.red     { background: $red; }
+      &.orange  { background: $orange; }
+      &.yellow  { background: $yellow; }
       i {
         opacity: 1;
         visibility: visible;
@@ -107,18 +107,14 @@ export default {
     }
   }
   label {
-    cursor: pointer;
-    margin-top: 0.27em;
-    margin-bottom: 0.2em;
-    font-size: 1.15rem;
+    margin: 0;
+    font-size: 1.2em;
     color: $dark;
     &.label-lg {
-      font-size: 1.3rem;
-      margin-top: .2em;
+      font-size: 1.35em;
     }
     &.label-xl {
-      font-size: 1.5rem;
-      margin-top: .1em;
+      font-size: 1.55em;
     }
     @include unselectable;
     &.disabled {

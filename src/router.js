@@ -82,7 +82,7 @@ const routes = [
         meta: { requiresLogin: true, requiresAdmin: true },
         children: [
           {
-            path: 'users/:id?',
+            path: 'users/:filter?/:query?/:id?',
             name: 'admin-users-list',
             component: () => import(/* webpackChunkName: "group-admin" */
               '@/modules/admin/AdminUsersList'

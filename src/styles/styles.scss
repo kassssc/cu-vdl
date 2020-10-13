@@ -34,12 +34,12 @@
 }
 
 html {
-  font-size: 14px;
+  font-size: 13px;
   @include media-breakpoint-up(lg) {
-    font-size: 15px;
+    font-size: 14px;
   }
   @include media-breakpoint-up(xl) {
-    font-size: 16px;
+    font-size: 15px;
   }
 }
 
@@ -65,16 +65,15 @@ input {
 
 button.btn, a.btn {
   @include unselectable;
-  &[disabled] {
-    cursor: default;
-    pointer-events: none;
-  }
   &:focus,
   &:active {
     box-shadow: none !important;
   }
-  &.loading[disabled] {
+  &[disabled] {
+    cursor: default;
     pointer-events: none;
+  }
+  &.loading[disabled] {
     opacity: 1;
   }
   &.btn-transparent:hover {
@@ -86,8 +85,8 @@ button.btn, a.btn {
       background: $accent;
     }
     &.btn-icon-danger:hover {
-        color: $danger;
-        background: $accent;
+      color: $danger;
+      background: $accent;
     }
   }
   &.radio-btn {
@@ -95,20 +94,20 @@ button.btn, a.btn {
     display: flex;
     align-items: center;
     padding: 0;
-    font-size: 1.4em;
+    font-size: 1.4rem;
     .box {
-      min-width: 23px;
-      height: 23px;
-      border-radius: 3px;
+      min-width: 1em;
+      height: 1em;
+      border-radius: .15em;
       background: $accent;
       display: flex;
       justify-content: center;
       align-items: center;
       margin-right: .3em;
       .box-chosen {
-        min-width: 11px;
-        height: 11px;
-        border-radius: 2px;
+        min-width: .5em;
+        height: .5em;
+        border-radius: .1em;
         background: $primary;
         transition: all 100ms ease-in-out;
         visibility: hidden;
@@ -124,11 +123,15 @@ button.btn, a.btn {
     color: $default;
     background: $secondary;
     position: relative;
+    font-size: 1rem;
     padding-top: .2em;
     padding-bottom: .2em;
     justify-content: flex-start;
     &[disabled] {
       opacity: 1;
+    }
+    @include media-breakpoint-up(xl) {
+      font-size: 1.15rem;
     }
     &:not(.active):hover {
       background: $accent-dark;
@@ -137,13 +140,13 @@ button.btn, a.btn {
       color: $light;
       cursor: default;
       &.primary { background: $primary; }
-      &.pink { background: $pink; }
-      &.orange { background: $orange; }
-      &.green { background: $green; }
-      &.teal { background: $teal; }
-      &.purple { background: $purple; }
-      &.grey { background: $medium; }
-      &.red { background: $red; }
+      &.pink    { background: $pink; }
+      &.orange  { background: $orange; }
+      &.green   { background: $green; }
+      &.teal    { background: $teal; }
+      &.purple  { background: $purple; }
+      &.grey    { background: $medium; }
+      &.red     { background: $red; }
     }
   }
   &.btn-x {
@@ -177,13 +180,14 @@ button.btn, a.btn {
   i {
     vertical-align: middle;
     &.btn-inner-icon {
-      margin-right: .2em;
+      margin-right: .5em;
       font-size: .8em;
     }
     &.btn-inner-icon-lg {
       font-size: .9em;
-      margin-right: .3em;
-      width: 30px;
+      margin-right: .2em;
+      width: 1.75em;
+      text-align: center;
     }
   }
   &.scrollactive-active,
@@ -193,6 +197,24 @@ button.btn, a.btn {
     color: $primary;
     background: $accent;  
   }
+  &.btn-wide {
+    width: 30rem;
+  }
+}
+
+.form-control.is-invalid {
+  &:focus {
+    box-shadow: 0 0 0 .2rem $danger;
+  }
+  &::selection {
+    background: rgba($danger, .99); /* WebKit/Blink Browsers */
+    color: $body-bg;
+  }
+}
+
+.pagination {
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 i {
@@ -200,38 +222,44 @@ i {
     font-size: .8rem;
   }
   &.icon-md {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
   }
   &.icon-lg {
     font-size: 1.5rem;
     width: 1.25em;
   }
+  &.icon-huge {
+    font-size: 2.75rem;
+  }
 }
 
 ul.item-list {
   list-style: none;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   padding: 0 .5em;
   margin: 0;
   li {
     font-weight: bold;
     border-bottom: 1px solid $accent;
     padding: .3em .6em;
+    position: relative;
     &:first-child {
       border-top: 1px solid $accent;
     }
     &.clickable {
+      z-index: 1;
       cursor: pointer;
       transition: box-shadow 150ms ease-in-out,
                   border-radius 150ms ease-in-out;
       &:not(.active):hover {
         background: $accent;
-        border-radius: $border-radius-lg;
+        border-radius: $border-radius-sm;
       }
       &.active {
+        z-index: 2;
         cursor: default;
-        box-shadow: 0 0 0 .14em $primary inset;
-        border-radius: $border-radius-lg;
+        box-shadow: 0 0 0 .14em $primary;
+        border-radius: $border-radius-sm;
         background: rgba($primary, .15);
       }
     }
@@ -241,8 +269,13 @@ ul.item-list {
   }
 }
 
+.row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 table {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-family: 'CS ChatThai';
   font-weight: bold;
   width: 100%;
@@ -255,7 +288,7 @@ table {
       position: sticky;
       z-index: 100;
       top: 0px;
-      height: 50px;
+      height: 40px;
       background: $light;
       padding-left: 0.4em;
       padding-right: 0.4em;
@@ -277,9 +310,9 @@ table {
       }
       td {
         color: $dark;
-        padding: 0.3em 0.55em;
+        padding: 0.2em .55em;
         &.small-font {
-          font-size: .9em;
+          font-size: .95em;
         }
       }
     }
@@ -319,7 +352,7 @@ table {
   &.page-sm  { max-width: 800px;  }
   &.page-md  { max-width: 1300px; }
   &.page-lg  { max-width: 1500px; }
-  &.page-xl  { max-width: 1650px; }
+  &.page-xl  { max-width: 1600px; }
   &.page-xxl { max-width: 2000px; }
 }
 .flex-1 {
@@ -466,9 +499,10 @@ table {
 
 .error-box {
   @include unselectable;
+  @include input-btn-padding;
   border-radius: $border-radius;
-  padding: .4em .8em;
   background: rgba($red, .2);
+  font-size: 1.3rem;
 }
 
 .sidebar {
@@ -501,6 +535,8 @@ table {
   width: 25px;
   padding-top: 3px;
   position: absolute;
+  top: 0; bottom: 0;
+  margin: auto;
   right: 0.5em;
   top: 26px;
   cursor: pointer;
@@ -544,18 +580,25 @@ table {
 
 .sub-nav {
   height: $content-height;
-  padding: .5rem 1.75rem 1rem 0;
-  width: 275px;
+  padding: 0 1rem 1rem 0;
+  width: 5.25rem;
+  @include media-breakpoint-up(xl) {
+    padding: 0 1.75rem 1rem 0;
+    width: 275px;
+  }
   a, button {
     text-align: left;
     margin-bottom: .75em;
   }
 }
 .sub-nav-content {
-  padding-left: 1.75rem;
-  padding-right: 1.75rem;
-  padding-top: .5rem;
   padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  @include media-breakpoint-up(xl) {
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+  }
   border-left: 1px solid $accent;
   flex: 1;
   &:last-child {
@@ -564,33 +607,40 @@ table {
 }
 
 .list-view {
-  max-width: 555px;
+  max-width: 425px;
+  @include media-breakpoint-up(xl) {
+    max-width: 500px;
+  }
 }
 
 .test-row {
   &:not(:last-child) {
     border-bottom: 1px solid $accent;
-    padding-bottom: 5px;
+    padding-bottom: .2em;
   }
   &:not(:first-child) {
-    padding-top: 5px;
+    padding-top: .2em;
   }
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 100ms linear;
 }
 .fade-enter-active {
   transition-delay: 100ms;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 
-.fade-no-delay-enter-active, .fade-no-delay-leave-active {
+.fade-no-delay-enter-active,
+.fade-no-delay-leave-active {
   transition: opacity 150ms linear;
 }
-.fade-no-delay-enter, .fade-no-delay-leave-to {
+.fade-no-delay-enter,
+.fade-no-delay-leave-to {
   opacity: 0;
 }
 

@@ -1,11 +1,12 @@
 <template>
-<div v-if="!$apollo.loading" class="batch w-100 position-relative border-b-md py-5">
+<div  v-if="!$apollo.loading"
+      class="batch w-100 position-relative border-b-md py-5">
   <a  v-if="hasMultipleBatches"
       class="btn btn-x batch-section"
       @click="$emit('delete-batch')">
     <i class="fas fa-times" />
   </a>
-  <div class="row w-100">
+  <div class="row w-100 border-b pb-4 m-0">
     <div class="col-xl-2 col-12">
       <h3 class="mb-2">
         {{ batchLabel }}
@@ -29,9 +30,9 @@
           @blur="updateSampleCount($event.target.value)" />
       </div>
 
-      <div class="form-row">
+      <div class="form-row border-b mb-2">
         <div class="col-12">
-          <h4 class="mb-3 text-dark">เลือกการทดสอบ</h4>
+          <h4 class="mb-1 text-dark">เลือกการทดสอบ</h4>
         </div>
       </div>
 
@@ -41,12 +42,13 @@
             
         <div class="form-row no-gutters border-b pb-1">
           <div class="form-group col-2 mb-0 text-dark d-flex overflow-visible nowrap">
-            <checkbox
-              label-class="label-xl"
-              :label="`งาน${department}`"
-              :value="!!batch.tests[department]"
-              :color="departmentColors[department]"
-              @input="onTestCategoryToggle(department, $event)" />
+            <checkbox :value="!!batch.tests[department]"
+                      :color="departmentColors[department]"
+                      @input="onTestCategoryToggle(department, $event)">
+              <template #label>
+                <h3 class="ml-2">{{`งาน${department}`}}</h3>
+              </template>
+            </checkbox>
           </div>
           <div v-if="batch.tests[department]" class="col-10">
             <div class="form-row mt-2">
@@ -88,7 +90,7 @@
             </div>
             <div class="col-2 text-right">
               <h2 class="text-primary">
-                {{ activeTestCount + (batch.tests['bacteria']? batch.tests['bacteria'].customBacteriaTests.length : 0) }}
+                {{ activeTestCount }}
               </h2>
               <h5 class="text-medium">รายการทดสอบ</h5>
             </div>
@@ -100,7 +102,7 @@
                 {{ totalPriceLabel }}
               </h2>
               <h5 class="text-medium">ค่าบริการ</h5>
-              <h6 v-if="batch.customTests.length > 0"
+              <h6 v-if="customTestCount > 0"
                   class="text-muted">
                 *เป็นราคาโดยประมานเท่านั้น
               </h6>
@@ -112,7 +114,7 @@
     </div>
   </div>
 
-  <div class="row w-100 mt-5">
+  <div class="row w-100 pt-5 m-0">
     <div class="col-xl-2 col-12">
       <h4 class="mb-2">รายละเอียดตัวอย่าง</h4>
     </div>
@@ -137,11 +139,11 @@
         <div class="form-group mb-2 px-1 col-1 text-right mr-3">
           <h5>หมายเลข</h5>
         </div>
-        <div class="form-group mb-2 px-1 col-5">
+        <div class="form-group mb-2 px-1 col-4">
           <h5 class="d-inline">ID ตัวอย่าง</h5>
           <i class="fas fa-star-of-life text-primary icon-sm ml-1" />
         </div>
-        <div class="form-group mb-2 px-1 col-5">
+        <div class="form-group mb-2 px-1 col-6">
           <h5>ข้อมูลเพิ่มเติม</h5>
         </div>
       </div>
@@ -154,12 +156,12 @@
           <h5 class="text-medium">{{ idxSample+1 }}</h5>
         </div>
         <FormInput
-          class="col-5 mb-2 px-1"
+          class="col-4 mb-2 px-1"
           input-class="form-control-sm"
           type="text"
           v-model="sample.sampleId" />
         <FormInput
-          class="col-5 mb-2 px-1"
+          class="col-6 mb-2 px-1"
           input-class="form-control-sm"
           type="text"
           v-model="sample.extraInfo" />
@@ -187,7 +189,7 @@ export default {
   props: {
     batch: {
       type: Object,
-      default: () => {}
+      required: true
     },
     hasMultipleBatches: {
       type: Boolean,
@@ -204,17 +206,17 @@ export default {
   },
   computed: {
     testMethods () {
-      return groupBy(this.testMethodsRaw, 'department_name')
+      return groupBy(this.testMethodsRaw, 'department')
     },
     batchLabel () {
       return this.hasMultipleBatches? `กลุ่มการทดสอบ ${this.idx+1}` : 'รายการทดสอบ'
     },
     totalPriceLabel () {
-      const shouldDisplayPrice = (this.activeTestCount > 0 || this.customTestCount.length > 0) && !!this.batch.sampleCount
-      return shouldDisplayPrice? `${this.customTestCount.length > 0? '~':''}${this.batch.totalPrice.toLocaleString()}฿` : 'N/A'
+      const shouldDisplayPrice = (this.activeTestCount > 0 || this.customTestCount > 0) && !!this.batch.sampleCount
+      return shouldDisplayPrice? `${this.customTestCount > 0? '~':''}${this.batch.totalPrice.toLocaleString()}฿` : 'N/A'
     },
     includesBacteriaTest () {
-      return !!this.batch.tests[4]
+      return !!this.batch.tests['แบคทีเรียวิทยา']
     },
     activeTestCount () {
       let testCount = Object.values(this.batch.tests).reduce( (count, category) => {
@@ -231,7 +233,7 @@ export default {
     },
     customTestCount () {
       if (!this.includesBacteriaTest) return 0
-      return this.batch.tests[4].customBacteriaTests.length
+      return this.batch.tests['แบคทีเรียวิทยา'].customBacteriaTests.length
     },
     totalPrice () {
       return Object.values(this.batch.tests).reduce( (batchPrice, category) => {
@@ -239,31 +241,36 @@ export default {
         return batchPrice
       }, 0)
     },
-    hasInfo () {
-      return this.activeTestCount > 0 || this.customTestCount > 0 || !!this.batch.sampleCount
-    }
   },
   data () {
     return {
       departmentColors: {
-        bacteria: 'pink',
-        molecular: 'red',
-        serum: 'orange',
-        virus: 'yellow'
+        แบคทีเรียวิทยา: 'pink',
+        อณูชีววิทยา: 'red',
+        ซีรั่มวิทยา: 'orange',
+        ไวรัสวิทยา: 'yellow'
+      },
+      departmentIcons: {
+        แบคทีเรียวิทยา: 'fas fa-bacterium',
+        อณูชีววิทยา: 'fas fa-atom',
+        ซีรั่มวิทยา: 'fas fa-eye-dropper',
+        ไวรัสวิทยา: 'fas fa-virus'
       }
     }
   },
   watch: {
     totalPrice (val) {
       this.batch.totalPrice = val
-    },
-    hasInfo (val) {
-      this.batch.hasInfo = val
     }
   },
   methods: {
-    onTestCategoryToggle (categoryId, active) {
-      this.batch.tests[categoryId] = active? { testList: [], price: 0 } : null
+    onTestCategoryToggle (category, active) {
+      if (active) {
+        this.batch.tests[category] = category === 'แบคทีเรียวิทยา'?
+        { testList: [], price: 0, customBacteriaTests: [], sensitivityTests: null } : { testList: [], price: 0 }
+      } else {
+        this.batch.tests[category] = null
+      }
     },
     updateSampleCount (val) {
       // Floor to not allow decimals
@@ -304,11 +311,13 @@ export default {
       query: GENERAL_TEST_METHODS,
       update: data => data.test_method_general_get.result,
       result () {
-        const newTests = {}
-        for (let department of Object.keys(this.testMethods)) {
-          newTests[department] = null
+        if (!this.isEditMode) {
+          const newTests = {}
+          for (let department of Object.keys(this.testMethods)) {
+            newTests[department] = null
+          }
+          this.batch.tests = { ...newTests }
         }
-        this.batch.tests = { ...newTests }
       }
     }
   }

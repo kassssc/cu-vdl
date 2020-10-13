@@ -7,9 +7,9 @@
     </h3>
     <SearchInput class="mb-2" @search="setSearchQuery($event)" />
     <div class="d-flex mb-2">
-      <button class="filter-btn btn btn-sm primary w-100"
+      <button class="filter-btn btn primary w-100"
               :class="{'active': activeUserTypeFilter === null && userActiveFilter}"
-              :disabled="loading"
+              :disabled="loading || activeUserTypeFilter === null"
               @click="setUserTypeFilter(null)">
         <i  v-if="activeUserTypeFilter === null && userActiveFilter"
             class="fas fa-check btn-inner-icon" />
@@ -17,12 +17,12 @@
       </button>
       <button v-for="filter of userTypeFilters"
               :key="filter.id"
-              class="filter-btn btn btn-sm w-100 ml-2 px-2"
+              class="filter-btn btn w-100 ml-2 px-2"
               :class="[
                 userTypeCSS[filter.id],
                 {'active': activeUserTypeFilter === filter.id}
               ]"
-              :disabled="loading"
+              :disabled="loading || activeUserTypeFilter === filter.id"
               @click="setUserTypeFilter(filter.id)">
         <i  v-if="activeUserTypeFilter === filter.id"
             class="fas fa-check btn-inner-icon" />
@@ -31,9 +31,9 @@
               :class="userTypeCSS[filter.id]" />
         {{ filter.name }}
       </button>
-      <button class="filter-btn btn btn-sm ml-2 w-100 grey"
+      <button class="filter-btn btn ml-2 w-100 grey"
               :class="{'active': !userActiveFilter}"
-              :disabled="loading"
+              :disabled="loading || !userActiveFilter"
               @click="setDeactivatedUserFilter()">
         <i class="fas fa-ban btn-inner-icon" />
         ถูกระงับ
@@ -41,11 +41,11 @@
     </div>
 
     <transition name="fade">
-      <div  v-if="!loading"
+      <div  v-if="!loading && users"
             key="list" 
             class="scroll-container">
         <div class="fade-gradient-top"></div>
-        <ul class="item-list font-chatthai">
+        <ul v-if="users.length > 0" class="item-list font-chatthai">
           <router-link  :to="{
                           name: 'admin-users-list',
                           params: { id: user.index }
@@ -56,11 +56,11 @@
                         class="clickable"
                         :class="{
                           'active': $route.params.id == user.index,
-                          'faded': activeUserTypeFilter === -1
+                          'faded': !userActiveFilter
                         }">
             <div class="row no-gutters">
               <div class="col-8 d-flex align-items-center">
-                <i  v-if="activeUserTypeFilter === -1"
+                <i  v-if="!userActiveFilter"
                     class="fas fa-ban btn-inner-icon mr-2" />
                 <h4>{{ `${user.title}${user.first_name} ${user.last_name}` }}</h4>
               </div>
@@ -72,6 +72,11 @@
             </div>
           </router-link>
         </ul>
+        <div  v-else class="w-100 py-3 text-center">
+          <h4 class="text-muted">
+            <i class="far fa-frown mr-2"></i>ไม่มี User Account ที่จะแสดง
+          </h4>
+        </div>
         <div class="fade-gradient-bottom" />
       </div>
       <div v-else key="loading" class="w-100 pt-5 text-center">
@@ -94,7 +99,7 @@
 <script>
 import AdminUserInfo from './AdminUserInfo'
 import { getJWT } from '@/vue-apollo'
-import { USERS_LIST, DEACTIVATED_USERS_LIST } from '@/graphql/user'
+import { USERS_LIST } from '@/graphql/user'
 
 export default {
   name: 'admin-users-list',

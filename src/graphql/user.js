@@ -25,27 +25,6 @@ export const USERS_LIST = gql`
   }
 `
 
-export const DEACTIVATED_USERS_LIST = gql`
-  query (
-    $jwt: String!,
-    $searchQuery: String
-  ) {
-    search_backuser (
-      jwt_token: $jwt,
-      search_query: $searchQuery,
-      account_active: false
-    ) {
-      result {
-        index
-        account_type
-        title
-        first_name
-        last_name
-      }
-    }
-  }
-`
-
 // Get user by ID
 export const USER_DETAIL = gql`
   query (
@@ -101,7 +80,7 @@ export const CREATE_USER = gql`
   mutation (
     $jwt: String!,
     $password: String!,
-    $submitterOf: [Int],
+    $submitterOf: [Int]!,
     $title: String!,
     $firstName: String!,
     $lastName: String!,

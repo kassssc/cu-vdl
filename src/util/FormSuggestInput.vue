@@ -44,6 +44,7 @@ export default {
 .vue-simple-suggest {
   position: relative;
   .input-wrapper input {
+    @include input-btn-padding;
     border-radius: $border-radius;
     background: $input-bg;
     font-size: $input-btn-font-size;
@@ -51,7 +52,6 @@ export default {
     color: $default;
     border-width: 0px;
     width: 100%;
-    padding: 0.25rem 0.75rem;
     transition: all 150ms ease-in-out;
     &:focus {
       box-shadow: $input-focus-box-shadow;

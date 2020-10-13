@@ -69,16 +69,16 @@ export default {
   }
   button.btn-clear {
     position: absolute;
-    right: .5em;
+    right: .7em;
     top: 0;
     bottom: 0;
     margin-top: auto;
     margin-bottom: auto;
-    font-size: 1.2em;
     padding: 0;
-    color: $muted;
+    font-size: 1.1em;
+    color: $placeholder;
     &:hover {
-      color: $pink;
+      color: $red;
     }
   }
 }

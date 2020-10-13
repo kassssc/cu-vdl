@@ -33,11 +33,11 @@ export default {
   border-radius: $border-radius;
   padding: 0 .4em;
   display: inline-block;
-  font-size: .9em;
+  font-size: .95em;
   font-weight: bold;
   &.lg {
     font-size: 1.3em;
-    padding: .1em .6em;
+    @include input-btn-padding;
   }
   .small-square { vertical-align: middle; }
   &.primary { background: rgba($primary, .2); }

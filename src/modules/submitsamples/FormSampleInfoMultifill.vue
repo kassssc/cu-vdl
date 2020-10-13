@@ -12,7 +12,7 @@
     </button>
   </div>
   <div class="form-row">
-    <div class="form-group col-4 mb-2">
+    <div class="form-group col-5 mb-2">
       <label>หมายเลขตัวอย่าง</label>
       <input  type="text"
               class="form-control"
@@ -41,17 +41,17 @@
   </div>
   <div class="form-row">
     <FormInput
-      class="col-6"
+      class="col-5"
       label="ID ตัวอย่าง"
       v-model="sampleId" />
     <FormInput
-      class="col-6"
+      class="col-7"
       label="ข้อมูลเพิ่มเติม"
       @keyup.enter="submit()"
       v-model="extraInfo" />
   </div>
   <div class="form-row">
-    <div class="form-group mb-0 col-4">
+    <div class="form-group mb-0 col-5">
       <button class="btn btn-primary btn-block"
               @click="submit()">
         เพิ่มข้อมูล
@@ -114,9 +114,9 @@ export default {
   transition: height 125ms linear;
   overflow: hidden;
   &.folded {
-    height: 70px;
+    height: 65px;
   }
-  height: 310px;
+  height: 260px;
 }
 .fold-section {
   cursor: pointer;

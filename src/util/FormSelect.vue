@@ -15,6 +15,9 @@
         ไม่มีรายการที่จะแสดง...
       </div>
     </template>
+    <template #open-indicator="{ attributes }">
+      <i v-bind="attributes" class="fas fa-chevron-down"></i>
+    </template>
   </vSelect>
 </div>
 </template>
@@ -38,7 +41,7 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    },
+    }
   },
   computed: {
     listeners () {
@@ -76,7 +79,7 @@ export default {
     }
   }
   .vs__dropdown-toggle {
-    padding: 0.25rem 0.75rem;
+    @include input-btn-padding;
     border-style: none;
   }
   input.vs__search,
@@ -117,8 +120,9 @@ export default {
       width: 100%;
     }
   }
-  svg.vs__open-indicator {
-    fill: $placeholder;
+  .vs__open-indicator {
+    color: $placeholder;
+    font-size: .9em;
   }
   .vs__clear {
     margin: 0;
@@ -126,7 +130,7 @@ export default {
     svg { fill: $placeholder; }
     &:focus, &:hover {
       outline: none;
-      svg { fill: $pink; }
+      svg { fill: $red; }
     }
   }
   .vs__dropdown-menu {

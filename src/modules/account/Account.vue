@@ -1,6 +1,6 @@
 <template>
 <div class="page page-md d-flex flex-column">
-  <div class="p-2 content-height-min">
+  <div class="pb-2 content-height-min">
     <div class="row">
       <div class="col-12">
         <h3 class="mb-3">
@@ -13,12 +13,12 @@
     <div  v-if="!$apollo.loading"
           class="font-chatthai">
       <div class="border-b row w-100 py-3 mb-3">
-        <div class="col-xl-2 col-12">
+        <div class="col-3 col-sm-2">
           <h4>ข้อมูลผู้ใช้</h4>
         </div>
-        <div class="col-xl-10 col-12">
+        <div class="col-7 col-xl-6">
           <div class="form-row">
-            <div class="form-group col-5">
+            <div class="form-group col-8">
               <label>ประเภท Account</label>
               <ColorTag
                 class="d-block"
@@ -26,16 +26,14 @@
                 :label="userTypeLabel[user.account_type]"
                 :color="userTypeCSS[user.account_type]" />
             </div>
-            <div class="w-100"></div>
             <FormInput
-              class="col-5"
+              class="col-8"
               label="ชื่อ-นามสกุล"
               :value="`${user.title}${user.first_name} ${user.last_name}`"
               disabled />
-            <div class="w-100"></div>
             <FileView
               v-if="!isAdmin"
-              class="col-5"
+              class="col-8"
               label="สำเนาบัตรประชาชน"
               file-name="somkuan_id.pdf"
               icon-class="fa-address-card" />
@@ -44,21 +42,20 @@
       </div>
     
       <div class="border-b row w-100 py-3 mb-3">
-        <div class="col-xl-2 col-12">
+        <div class="col-3 col-sm-2">
           <h4>ข้อมูลการติดต่อ</h4>
         </div>
-        <div class="col-xl-10 col-12">
+        <div class="col-7 col-xl-6">
           <div class="form-row">
             <FormInput
-              class="col-5"
+              class="col-8"
               label="อีเมล"
               disabled
               :value="user.email" />
-            <div class="w-100"></div>
             <FormInput
               v-if="editingPhone"
               ref="phoneNumber"
-              class="col-5"
+              class="col-8"
               label="หมายเลขโทรศัพท์"
               :invalid="phoneError"
               @focus="onPhoneInputFocus($event)"
@@ -66,21 +63,21 @@
               v-model="phoneInput" />
             <FormInput
               v-else
-              class="col-5"
+              class="col-8"
               disabled
               label="หมายเลขโทรศัพท์"
               :value="user.phone" />
             <div  v-if="!editingPhone"
-                  class="form-group col-2 d-flex align-items-end">
+                  class="form-group col-3 d-flex align-items-end">
               <button v-if="!editingPhone"
-                      class="btn btn-block btn-primary"
+                      class="btn btn-block btn-secondary"
                       @click="changePhoneNumber()">
                 <i class="fas fa-wrench btn-inner-icon" />
                 แก้ไข
               </button>
             </div>
             <template v-else>
-              <div class="form-group col-2 d-flex align-items-end">
+              <div class="form-group col-3 d-flex align-items-end">
                 <button class="btn btn-success btn-block"
                         @click="submitChangePhoneNumber()">
                   <i class="fas fa-check btn-inner-icon" />
@@ -95,7 +92,7 @@
               </div>
             </template>
             <div  v-if="phoneError && editingPhone"
-                  class="form-group col-5">
+                  class="form-group col-8">
               <div class="error-box">
                 <h5 class="text-danger"><i class="fas fa-exclamation mr-2 icon-sm" />หมายเลขโทรศัพท์ ไม่ถูกรูปแบบ</h5>
               </div>
@@ -105,19 +102,18 @@
       </div>
 
       <div class="border-b row w-100 py-3 mb-3">
-        <div class="col-xl-2 col-12"></div>
-        <div class="col-xl-10 col-12">
+        <div class="col-3 col-sm-2"></div>
+        <div class="col-7 col-xl-6">
           <div class="form-row">
-            <div class="form-group col-5">
-              <button class="btn btn-block btn-primary"
+            <div class="form-group col-8">
+              <button class="btn btn-block btn-secondary"
                       @click="showChangePasswordModal()">
                 <i class="fas fa-key btn-inner-icon" />
                 เปลี่ยนรหัสผ่าน
               </button>
             </div>
-            <div class="w-100 mb-2"></div>
             <div  v-if="!isAdmin"
-                  class="form-group col-5">
+                  class="form-group col-8">
               <button class="btn btn-block btn-danger"
                       @click="showDeactivateAccountModal()">
                 <i class="fas fa-ban btn-inner-icon" />
@@ -153,7 +149,6 @@
                   <div class="shadow-th"></div>
                 </th>
                 <th>
-                  <h5 class="text-right text-medium">ถอนตัวจากการเป็นตัวแทน</h5>
                   <div class="shadow-th"></div>
                 </th>
               </tr>

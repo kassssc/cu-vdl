@@ -58,7 +58,7 @@ textarea.form-control {
   line-height: 1.2em;
   padding: 0.5em;
   resize: none;
-  min-height: 3.25em;
+  min-height: 3.35em;
   &.resize {
     resize: vertical;
   }

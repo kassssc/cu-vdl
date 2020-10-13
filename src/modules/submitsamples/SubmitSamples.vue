@@ -1,9 +1,9 @@
 <template>
 <div class="page page-md d-flex flex-column content-height-min">
-  <template v-if="!$apollo.loading">
+  <template v-if="!$apollo.queries.auth.loading">
     
     <div class="my-2 position-relative">
-      <button v-if="isEditMode"
+      <button v-if="isEditMode || auth.isAdmin"
               class="btn back-btn btn-transparent"
               @click="$router.go(-1)">
         <i class="fas fa-chevron-left mr-2" />กลับไป
@@ -30,7 +30,7 @@
           รายงาน
         </a>
         <i class="fas fa-long-arrow-alt-right mx-1" />
-        <div  v-for="(section, idx) of submission.batches"
+        <div  v-for="(section, idx) of submission.submissionData.batches"
               :key="idx"
               class="d-flex align-items-center">
           <a  :href="'#batch' + (idx+1)"
@@ -55,11 +55,22 @@
         </div>
         <div class="col-12 col-xl-10">
           <div class="form-row mb-4">
-            <FormInput
+            <FormSelect
+              v-if="auth.isAdmin && !isEditMode"
               class="col-4"
-              label="ชื่อผู้ส่ง"
+              form-label="ผู้ส่งตัวอย่าง"
+              :clearable="false"
+              :reduce="option => option.index"
+              :get-option-label="o => `${o.title}${o.first_name} ${o.last_name}`"
+              :options="submitters"
+              required
+              v-model="submission.submitter" />
+            <FormInput
+              v-else-if="submitterDetail"
+              class="col-4"
+              label="ผู้ส่งตัวอย่าง"
               disabled  
-              :value="submitterNameValue" />
+              :value="submitterFullName" />
             <FormDateInput
               class="col-2"
               label="วันที่ส่งตัวอย่าง"
@@ -70,21 +81,23 @@
           <div class="form-row mb-4">
             <FormSelect
               class="col-6"
-              label="name"
-              form-label="องค์กร/ฟาร์ม เจ้าของตัวอย่าง"
+              form-label="เจ้าของตัวอย่าง/ฟาร์ม"
               :clearable="false"
               :reduce="option => option.index"
               :get-option-label="option => option.name"
-              :options="selectSampleOwner"
+              :options="ownerOrgs"
+              :disabled="!submission.submitter"
               @input="onOwnerOrgChange($event)"
               required
               v-model="submission.sampleOwnerOrg" />
-            <FormInput
-              v-if="submission.sampleOwnerOrg === null"
-              class="col-6"
-              label="ระบุชื่อ องค์กร/ฟาร์ม"
-              required
-              v-model="submission.sampleOwnerOrgName" />
+            <transition name="fade">
+              <FormInput
+                v-if="submission.sampleOwnerOrg === null"
+                class="col-6"
+                label="ระบุชื่อ องค์กร/ฟาร์ม"
+                required
+                v-model="submission.sampleOwnerName" />
+            </transition>
             <div class="w-100"></div>
             <div class="form-group mb-0 pb-4 col-6">
               <label>Invoice ไปที่
@@ -92,43 +105,47 @@
               </label>
               <div class="d-flex justify-content-between">
                 <button class="btn radio-btn"
-                        :disabled="submission.sampleOwnerOrg === null"
+                        :disabled="!submission.sampleOwnerOrg || !submission.submitter"
                         @click="invoiceToOwner()">
                   <div  class="box"
-                        :class="{'chosen': invoiceTo === 1}">
+                        :class="{'chosen': invoiceToChoice === 'owner'}">
                     <div class="box-chosen"></div>
                   </div>
-                  องค์กร/ฟาร์ม เจ้าของตัวอย่าง
+                  เจ้าของตัวอย่าง/ฟาร์ม
                 </button>
                 <button class="btn radio-btn"
-                        @click="invoiceToSelf()">
+                        @click="invoiceToSelf()"
+                        :disabled="!submission.submitter">
                   <div  class="box"
-                        :class="{'chosen': invoiceTo === 2}">
+                        :class="{'chosen': invoiceToChoice === 'self'}">
                     <div class="box-chosen"></div>
                   </div>
                   ตนเอง
                 </button>
                 <button class="btn radio-btn"
-                        @click="invoiceToCompany()">
+                        @click="invoiceToCompany()"
+                        :disabled="!submission.submitter">
                   <div  class="box"
-                        :class="{'chosen': invoiceTo === 3}">
+                        :class="{'chosen': invoiceToChoice === 'company'}">
                     <div class="box-chosen"></div>
                   </div>
                   บริษัท
                 </button>
               </div>
             </div>
-            <FormSelect
-              v-if="invoiceTo === 3"
-              class="col-6"
-              label="name"
-              form-label="เลือกบริษัท"
-              :clearable="false"
-              :reduce="option => option.index"
-              :get-option-label="option => option.name"
-              :options="companyOrgs"
-              required
-              v-model="submission.invoiceTo" />
+            <transition name="fade">
+              <FormSelect
+                v-if="invoiceToChoice === 'company'"
+                class="col-6"
+                label="name"
+                form-label="เลือกบริษัท"
+                :clearable="false"
+                :reduce="option => option.index"
+                :get-option-label="option => option.name"
+                :options="companyOrgs"
+                required
+                v-model="submission.invoiceTo" />
+            </transition>
           </div>
           <div class="form-row mb-4">
             <FormInlineSelect
@@ -136,12 +153,12 @@
               label="ประเภทการตรวจ"
               label-class="label-lg"
               :btn-class-list="['teal', 'blue']"
-              v-model="submission.type"
-              :options="reportTypes"
+              v-model="submission.submissionType"
+              :options="submissionTypes"
               :disabled="isEditMode"
               :warn-before-change="wholeFormHasInformation()"
               warning-msg="ข้อมูลที่ถูกกรอกไว้แล้วด้านล่างจะหายไปถ้าท่านเปลี่ยนตัวเลือกนี้"
-              @change="onReportTypeChange()" />
+              @change="onSubmissionTypeChange()" />
           </div>
   
   
@@ -153,50 +170,50 @@
                 label="ประเภทตัวอย่าง"
                 :list="['เลือด', 'เสมหะ', 'นํ้าลาย', 'เนื้อ']"
                 filter-by-query
-                v-model="submission.submissionDetails.sampleType" />
+                v-model="submission.submissionData.submissionDetails.sampleType" />
               <FormDateInput
                 v-if="isGeneralSubmission"
                 class="col-2"
                 label="วันที่เก็บตัวอย่าง"
                 format="dd/MM/yy"
                 required
-                v-model="submission.submissionDetails.sampleTakenDate" />
+                v-model="submission.submissionData.submissionDetails.sampleTakenDate" />
               <div class="w-100"></div>
               <FormSuggestInput
                 class="col-3"
                 label="ชนิดสัตว์"
                 :list="['สุกร', 'สุนัข', 'กระต่าย', 'ม้า']"
                 filter-by-query
-                v-model="submission.submissionDetails.animalType" />
+                v-model="submission.submissionData.submissionDetails.animalType" />
               <FormInput
                 class="col-3"
                 type="text"
                 label="พันธุ์"
-                v-model="submission.submissionDetails.animalSpecies" />
+                v-model="submission.submissionData.submissionDetails.animalSpecies" />
               <FormInput
                 class="col-4"
                 type="text"
                 label="อายุสัตว์"
-                v-model="submission.submissionDetails.animalAge" />
+                v-model="submission.submissionData.submissionDetails.animalAge" />
               <FormInput
                 class="col-2"
                 type="number"
                 label="จำนวนที่เลี้ยง"
-                v-model.number="submission.submissionDetails.animalCount" />
+                v-model.number="submission.submissionData.submissionDetails.animalCount" />
               <FormTextarea 
                 class="col-6"
                 type="text"
                 label="ประวัติการป่วย"
-                resizable
                 rows="2"
-                v-model="submission.submissionDetails.illness" />
+                resizable
+                v-model="submission.submissionData.submissionDetails.illness" />
               <FormTextarea
                 class="col-6"
                 type="text"
                 label="ประวัติการทำวัคซีน"
-                resizable
                 rows="2"
-                v-model="submission.submissionDetails.vaccinations" />
+                resizable
+                v-model="submission.submissionData.submissionDetails.vaccinations" />
             </div>
           </transition>
         </div>
@@ -213,23 +230,27 @@
           
           <div class="form-row mb-3 mt-1">
             <div class="form-group col-4">
-              <checkbox label="อีเมล"
+              <checkbox class="mb-1"
+                        label="อีเมล"
                         label-class="label-lg"
-                        v-model="submission.reportNotifications.email" />
+                        :disabled="!submitterDetail"
+                        v-model="submission.notificationEmail" />
               <input  type="text"
                       class="form-control"
-                      :class="{'text-muted': !submission.reportNotifications.email}"
-                      :value="user.email"
+                      :class="{'text-muted': !submission.notificationEmail}"
+                      :value="submitterDetail? submitterDetail.email : ''"
                       disabled >
             </div>
             <div class="form-group col-4">
-              <checkbox label="โทรศัพท์"
+              <checkbox class="mb-1"
+                        label="โทรศัพท์"
                         label-class="label-lg"
-                        v-model="submission.reportNotifications.phone" />
+                        :disabled="!submitterDetail"
+                        v-model="submission.notificationPhone" />
               <input  type="text"
                       class="form-control"
-                      :class="{'text-muted': !submission.reportNotifications.phone}"
-                      :value="user.phone"
+                      :class="{'text-muted': !submission.notificationPhone}"
+                      :value="submitterDetail? submitterDetail.phone : ''"
                       disabled >
             </div>
           </div>
@@ -242,10 +263,10 @@
                 <checkbox label="ไทย"
                           class="mr-4"
                           label-class="label-lg"
-                          v-model="submission.reportLang.thai" />
+                          v-model="submission.submissionData.reportLang.thai" />
                 <checkbox label="English"
                           label-class="label-lg"
-                          v-model="submission.reportLang.eng" />
+                          v-model="submission.submissionData.reportLang.eng" />
               </div>
               <div  v-if="noLang"
                     class="form-group d-flex align-items-center">
@@ -262,7 +283,7 @@
     
       <template v-if="isGeneralSubmission">
         <GeneralBatch
-          v-for="(batch, idxBatch) of submission.batches"
+          v-for="(batch, idxBatch) of submission.submissionData.batches"
           :key="idxBatch"
           :id="`batch${idxBatch+1}`"
           :idx="idxBatch"
@@ -273,26 +294,26 @@
       </template>
       <template v-else-if="!isGeneralSubmission && !noLang">
         <DisinfectantBatch
-          v-for="(batch, idxBatch) of submission.batches"
+          v-for="(batch, idxBatch) of submission.submissionData.batches"
           :key="idxBatch"
           :id="`batch${idxBatch+1}`"
           :idx="idxBatch"
           :has-multiple-batches="hasMultipleBatches"
           :batch="batch"
-          :report-lang="submission.reportLang"
+          :report-lang="submission.submissionData.reportLang"
           :is-edit-mode="isEditMode"
           @delete-batch="deleteBatch(idxBatch)" />
       </template>
     </div>
   
-    <button class="btn btn-secondary align-self-center mt-4 font-chatthai"
-            :disabled="!submission.batches[submission.batches.length-1].hasInfo"
+    <button class="btn btn-secondary align-self-center mt-4 font-chatthai btn-wide"
+            :disabled="!batchHasInfo(submission.submissionData.batches[submission.submissionData.batches.length-1])"
             @click="addBatch()">
         <i class="fas fa-plus btn-inner-icon" />
       {{ addBatchLabel }}
     </button>
   
-    <button class="btn btn-primary align-self-center px-5 my-5 btn-lg"
+    <button class="btn btn-success align-self-center px-5 my-5 btn-lg btn-wide"
             @click="inReviewMode = true">
       <i class="fas fa-check btn-inner-icon" />
       {{ reviewAndSubmitLabel }}
@@ -302,29 +323,36 @@
       <ReviewSubmission
         v-if="inReviewMode"
         :submission="submission"
+        :user="submitterDetail"
         :is-edit-mode="isEditMode"
         @back="inReviewMode = false"
-        @submit="submit()" />
+        @submit="sendSubmission()" />
     </transition>
   
     <Modal  modal-id="submittedModal"
             data-backdrop="static">
-      <template #modal-header>
-        <h3 class="text-primary">
-          <i class="fas fa-check icon-lg mr-2" />
-          {{ isEditMode? 'การแก้ไขถูกบันทึกเรียบร้อยแล้ว' : 'การส่งแบบฟอร์มสำเร็จเรียบร้อย' }}
-        </h3>
-      </template>
-      <template #modal-footer>
-        <div class="d-flex flex-nowrap w-100">
-          <button class="btn btn-secondary w-100 mr-3"
-                  @click="goToSubmissionsList()">
-            ไปหน้ารายการการส่งตัวอย่าง
-          </button>
-          <button class="btn btn-primary w-100"
-                  @click="goToViewSubmission()">
-            ไปดูข้อมูลการส่งตัวอย่าง
-          </button>
+      <template #modal-body>
+        <div class="d-flex flex-column align-items-center justify-content-center w-100 px-3">
+          <template v-if="!submitting">
+            <h3 class="text-dark text-center mb-4">
+              {{ isEditMode? 'การแก้ไขถูกบันทึกเรียบร้อยแล้ว' : 'การส่งแบบฟอร์มเสร็จเรียบร้อย' }}
+            </h3>
+            <i class="fas fa-check icon-huge text-success mb-4" />
+            <h4 class="text-medium text-center mx-5 px-4">
+              กรุณาปริ้นสลิปการส่งตัวอย่างลงกระดาษ และแนบมากับตัวอย่างที่ส่งมาเพื่อตรวจ
+            </h4>
+            <button class="btn btn-primary w-100 mt-4">
+              <i class="fas fa-print btn-inner-icon"></i>ปริ้นสลิปการส่งตัวอย่าง
+            </button>
+            <button class="btn btn-secondary w-100 mt-3"
+                    @click="goToSubmissionsList()">
+              เรียบร้อย
+            </button>
+          </template>
+          <template v-else>
+            <h3 class="mb-4 text-dark">กำลังส่งข้อมูลเข้าระบบ</h3>
+            <LoadingAnimation color="primary" size="lg" />
+          </template>
         </div>
       </template>
     </Modal>
@@ -348,10 +376,11 @@
 
 <script>
 import $ from 'jquery'
-import smoothReflow from 'vue-smooth-reflow'
+//import smoothReflow from 'vue-smooth-reflow'
 import { getJWT } from '@/vue-apollo'
-import { USER_INDEX } from '@/graphql/local'
-import { USER_DETAIL } from '@/graphql/user'
+import { SEND_SUBMISSION, SUBMISSION_FORM_DATA } from '@/graphql/submission'
+import { AUTH_DATA } from '@/graphql/local'
+import { USERS_LIST, USER_DETAIL } from '@/graphql/user'
 
 export default {
   name: 'submit-samples',
@@ -370,60 +399,61 @@ export default {
   data () {
     return {
       submission: {
-        type: 'general',
+        submissionType: 'การตรวจทั่วไป',
         submitter: null,
         submitDate: null,
         sampleOwnerOrg: undefined,
-        sampleOwnerOrgName: null,
+        sampleOwnerName: null,
         invoiceTo: null,
-        reportNotifications: {},
-        submissionDetails: {},
-        reportLang: null,
-        batches: [{}]
+        notificationEmail: true,
+        notificationPhone: false,
+        submissionData: {
+          batches: [{}]
+        },
       },
-      invoiceTo: null,
+      submitting: false,
+      invoiceToChoice: null,
       inReviewMode: false,
-      reportTypes: [
-        { id: 'general',      name: 'การตรวจทั่วไป' },
-        { id: 'disinfectant', name: 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ' }
+      submissionTypes: [
+        { id: 'การตรวจทั่วไป',            name: 'การตรวจทั่วไป' },
+        { id: 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ',  name: 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ' }
       ],
       DEV_VIEW_JSON: false
     }
   },
   computed: {
     isGeneralSubmission () {
-      return this.submission.type === 'general'
+      return this.submission.submissionType === 'การตรวจทั่วไป'
     },
     isDisinfectantSubmission () {
-      return this.submission.type === 'disinfectant'
+      return this.submission.submissionType === 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ'
     },
     hasMultipleBatches () {
-      return this.submission.batches.length > 1
+      return this.submission.submissionData.batches.length > 1
     },
     noLang () {
-      return this.isDisinfectantSubmission && !this.submission.reportLang.thai && !this.submission.reportLang.eng
+      return this.isDisinfectantSubmission && !this.submission.submissionData.reportLang.thai && !this.submission.submissionData.reportLang.eng
     },
     isEditMode () {
       return !!this.$route.params.id
     },
     addBatchLabel () {
       return  this.isGeneralSubmission? 'เพิ่มกลุ่มการทดสอบ' :
-              this.isDisinfectantSubmission? 'เพิ่มรายการนํ้ายาฆ่าเชื้อ' : ''
+              this.isDisinfectantSubmission? 'เพิ่มรายการยาฆ่าเชื้อ' : ''
     },
     reviewAndSubmitLabel () {
       return `สรุปและ${this.isEditMode? 'บันทึก' : 'ส่ง'}`
     },
-    submitterNameValue () {
-      return this.isEditMode? this.submission.submitterName : `${this.user.title}${this.user.first_name} ${this.user.last_name}`
+    submitterFullName () {
+      return this.isEditMode? this.submission.submitterName : `${this.submitterDetail.title}${this.submitterDetail.first_name} ${this.submitterDetail.last_name}`
     },
     ownerOrgs () {
-      return this.user.submitter_of.filter(org => org.org_type == 1)
+      if (!this.submitterDetail) return []
+      return [ ...this.submitterDetail.submitter_of.filter(org => org.org_type == 1), { index: null, name: '* องค์กร/ฟาร์ม อื่นๆที่ไม่มีชื่อในระบบ *'} ]
     },
     companyOrgs () {
-      return this.user.submitter_of.filter(org => org.org_type == 2)
-    },
-    selectSampleOwner () {
-      return [...this.ownerOrgs, { index: null, name: '* องค์กร/ฟาร์ม อื่นๆที่ไม่มีชื่อในระบบ *'}]
+      if (!this.submitterDetail) return []
+      return this.submitterDetail.submitter_of.filter(org => org.org_type == 2)
     }
   },
   watch: {
@@ -436,44 +466,78 @@ export default {
     }
   },
   mounted () {
-    if (this.isEditMode) {
-      this.submission = this.mockSubmission
-    } else {
+    if (!this.isEditMode) {
       this.submission.submitDate = new Date().toISOString()
-      this.onReportTypeChange()
+      this.onSubmissionTypeChange()
     }
     //this.$smoothReflow({el: '#info'})
     //this.$smoothReflow({el: '#report'})
   },
   methods: {
-    onReportTypeChange () {
+    async sendSubmission () {
+      this.inReviewMode = false
+      this.submitting = true
+      $('#submittedModal').modal('toggle')
+      const {
+        submissionType,
+        submitter,
+        sampleOwnerName,
+        sampleOwnerOrg,
+        invoiceTo,
+        notificationEmail,
+        notificationPhone
+      } = this.submission
+      const submissionData = JSON.stringify(this.submission.submissionData)
+      try {
+        let res = await this.$apollo.mutate({
+          mutation: SEND_SUBMISSION,
+          variables: {
+            jwt: getJWT(),
+            submissionType,
+            submitter,
+            sampleOwnerName,
+            sampleOwnerOrg,
+            invoiceTo,
+            notificationEmail,
+            notificationPhone,
+            submissionData
+          }
+        })
+        console.log(res)
+        this.submitting = false
+      } catch (err) {
+        console.log(err)
+        this.submitting = false
+      }
+    },
+
+    onSubmissionTypeChange () {
       // General type
       if (this.isGeneralSubmission) {
-        this.submission.submissionDetails = {
-          sampleTakenDate: null,
-          sampleType: null,
-          animalType: null,
-          animalSpecies: null,
-          animalAge: null,
-          animalCount: null,
-          illness: null,
-          vaccinations: null,
+        this.submission.submissionData = {
+          batches: [],
+          submissionDetails: {
+            sampleTakenDate: null,
+            sampleType: null,
+            animalType: null,
+            animalSpecies: null,
+            animalAge: null,
+            animalCount: null,
+            illness: null,
+            vaccinations: null,
+          }
         }
-        this.submission.reportLang = null
       // Disinfectant Type
       } else if (this.isDisinfectantSubmission) {
-        this.submission.submissionDetails = null
-        this.submission.reportLang = {
-          thai: true,
-          eng: false
+        this.submission.submissionData = {
+          batches: [],
+          reportLang: {
+            thai: true,
+            eng: false
+          }
         }
       }
-      this.submission.reportNotifications = {
-        email: true,
-        phone: false
-      }
-      this.submission.batches = []
-      this.submission.batches.push(this.generateNewBatch())
+      this.submission.submissionData.batches.push(this.generateNewBatch())
     },
 
     generateNewBatch () {
@@ -483,11 +547,13 @@ export default {
         newBatch = {
           sampleCount: null,
           totalPrice: 0,
-          tests: {},
-          samples: [],
-          customTests: [],
-          sensitivityTests: null,
-          hasInfo: false
+          tests: {
+            'แบคทีเรียวิทยา': null,
+            'อณูชีววิทยา': null,
+            'ซีรั่มวิทยา': null,
+            'ไวรัสวิทยา': null
+          },
+          samples: []
         }
       // Disinfectant Type
       } else if (this.isDisinfectantSubmission) {
@@ -498,22 +564,21 @@ export default {
           totalPrice: 0,
           toxicityTestCost: 0,
           uniqueCells: {},
-          tests: {},
-          hasInfo: false
+          tests: {}
         }
       }
       return newBatch
     },
 
     addBatch () {
-      this.submission.batches.push(this.generateNewBatch())
+      this.submission.submissionData.batches.push(this.generateNewBatch())
       this.$nextTick( () => {
         setTimeout( () => {
-          const batch = document.getElementById(`${this.submission.batches.length}`)
+          const batch = document.getElementById(`${this.submission.submissionData.batches.length}`)
           if (batch) batch.classList.remove('expand-in-batch')
         }, 400)
         this.$scrollTo(
-          `#batch${this.submission.batches.length}`,
+          `#batch${this.submission.submissionData.batches.length}`,
           500,
           { offset: -200 }
         )
@@ -526,7 +591,7 @@ export default {
         batch.classList.add('shrink-out-batch')
         setTimeout( () => {
           batch.classList.remove('shrink-out-batch')
-          this.submission.batches.splice(idx, 1)
+          this.submission.submissionData.batches.splice(idx, 1)
         }, 400)
         this.$nextTick( () => {
           this.$scrollTo(
@@ -544,42 +609,40 @@ export default {
               (this.isDisinfectantSubmission)? `นํ้ายาฆ่าเชื้อ ${number}` : '???'
     },
     wholeFormHasInformation () {
-      const sampleInfoSectionHasInfo = this.isGeneralSubmission && 
-        Object.values(this.submission.submissionDetails).reduce( (hasInfo, info) => hasInfo || !!info, false)
-      const batchesHaveInfo = this.submission.batches
-        .reduce( (hasInfo, b) => hasInfo || b.hasInfo, false)
-      return sampleInfoSectionHasInfo || batchesHaveInfo
+      const submissionDetailSectionHasInfo = this.isGeneralSubmission && 
+        Object.values(this.submission.submissionData.submissionDetails).reduce( (hasInfo, info) => hasInfo || !!info, false)
+      const batchesHaveInfo = this.submission.submissionData.batches
+        .reduce( (hasInfo, batch) => hasInfo || this.batchHasInfo(batch), false)
+      return submissionDetailSectionHasInfo || batchesHaveInfo
     },
-    submit () {
-      this.inReviewMode = false
-      $('#submittedModal').modal('toggle')
+    batchHasInfo (batch) {
+      return !!batch.sampleCount || batch.totalPrice > 0
     },
     goToSubmissionsList () {
       $('#submittedModal').modal('toggle')
       this.$router.push({ name: 'submissionslist' })
     },
-    goToViewSubmission () {
+    goToViewSubmission (submissionKey) {
       $('#submittedModal').modal('toggle')
-      this.$router.push({ name: 'viewsubmission', params: { id: 123456 } })
+      this.$router.push({ name: 'viewsubmission', params: { id: submissionKey } })
     },
     invoiceToOwner () {
-      this.invoiceTo = 1
+      this.invoiceToChoice = 'owner'
       this.submission.invoiceTo = this.submission.sampleOwnerOrg
     },
     invoiceToSelf () {
-      this.invoiceTo = 2
+      this.invoiceToChoice = 'self'
       this.submission.invoiceTo = null
     },
     invoiceToCompany () {
-      this.invoiceTo = 3
+      this.invoiceToChoice = 'company'
       this.submission.invoiceTo = null
     },
     onOwnerOrgChange (newOwnerOrg) {
       // Invoice to owner
-      if (this.invoiceTo === 1) {
-        // Deselect invoice option, null invoiced org
+      if (this.invoiceToChoice === 'owner') {
         if (newOwnerOrg === null) {
-          this.invoiceTo = null
+          this.invoiceToChoice = null
           this.submission.invoiceTo = null
         } else {
           this.submission.invoiceTo = newOwnerOrg
@@ -587,29 +650,92 @@ export default {
       }
 
       if (newOwnerOrg === null) {
-        this.submission.sampleOwnerOrgName = ''
+        this.submission.sampleOwnerName = ''
       } else {
-        this.submission.sampleOwnerOrgName = this.ownerOrgs.find(o => o.index === newOwnerOrg).name
+        this.submission.sampleOwnerName = this.ownerOrgs.find(o => o.index === newOwnerOrg).name
       }
     }
   },
   apollo: {
-    userIndex: {
-      query: USER_INDEX,
-      update: data => data.auth.userIndex,
-      result (res, key) {
-        this.submission.submitter = res.data.auth.userIndex
+    auth: {
+      query: AUTH_DATA,
+      update: data => data.auth,
+      result (res) {
+        if (!res.data.auth.isAdmin) {
+          this.submission.submitter = res.data.auth.userIndex
+        }
       }
     },
-    user: {
+    submitterDetail: {
       query: USER_DETAIL,
       variables () {
         return {
           jwt: getJWT(),
-          index: this.userIndex
+          index: this.submission.submitter
         }
       },
-      update: data => data.get_backuser.result[0]
+      update: data => data.get_backuser.result[0],
+      skip () {
+        return !this.submission.submitter
+      }
+    },
+    submitters: {
+      query: USERS_LIST,
+      variables () {
+        return {
+          jwt: getJWT(),
+          searchQuery: '',
+          accountActive: true,
+          accountType: 201
+        }
+      },
+      update: data => data.search_backuser.result,
+      skip () {
+        return !this.auth || !this.auth.isAdmin
+      }
+    },
+    submissionRaw: {
+      query: SUBMISSION_FORM_DATA,
+      variables () {
+        return {
+          jwt: getJWT(),
+          key: [this.$route.params.id]
+        }
+      },
+      update: data => data.get_submission.result[0],
+      result (res) {
+        const {
+          submission_type,
+          submitter,
+          submit_date,
+          sample_owner_org,
+          sample_owner_name,
+          invoice_to,
+          notification_email,
+          notification_phone,
+          submission_data
+        } = res.data.get_submission.result[0]
+        this.submission = {
+          submissionType: submission_type,
+          submitter: submitter.index,
+          submitDate: new Date(parseInt(submit_date)),
+          sampleOwnerOrg: sample_owner_org[0].index,
+          sampleOwnerName: sample_owner_name,
+          invoiceTo: invoice_to[0].index,
+          notificationEmail: notification_email,
+          notificationPhone: notification_phone,
+          submissionData: JSON.parse(submission_data)
+        }
+
+        if (this.submission.sampleOwnerOrg == this.submission.invoiceTo) {
+          this.invoiceToChoice = 'owner'
+        } else if (this.submission.invoiceTo) {
+          this.invoiceToChoice = 'company'
+        } else {
+          this.invoiceToChoice = 'self'
+        }
+      },
+      skip () { return !this.isEditMode }
     }
   }
 }

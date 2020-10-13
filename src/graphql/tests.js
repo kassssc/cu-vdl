@@ -4,14 +4,12 @@ export const GENERAL_TEST_METHODS = gql`
   query {
     test_method_general_get {
       result {
-        department_name
-        front_key {
-          test_name
-          category_name
-          min
-          max
-        }
-        BestLIMS_key
+        test_key
+        department
+        category
+        display_name
+        min
+        max
         price
       }
     }
@@ -29,12 +27,12 @@ export const BACTERIA_ANTIBIOTICS = gql`
 
 export const DISINFECTANT_TEST_METHODS = gql`
   query {
-    test_method_disinfectant_get {
+    test_method_disinfectant_virus_get {
       result {
-        department_name
-        microbe
-        dilution
-        toxic
+        test_key
+        display_name
+        cell_name
+        price
       }
     }
   }

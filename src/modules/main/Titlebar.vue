@@ -10,6 +10,9 @@
     <h4 class="text-primary d-none d-lg-block d-xl-none">
       หน่วยชันสูตรโรคสัตว์กลาง จุฬาฯ
     </h4>
+    <h4 class="text-primary d-lg-none">
+      CU VDL
+    </h4>
   </div>
   <nav  v-if="auth.loggedIn" class="d-flex">
     <router-link  :to="{name: 'home'}"
@@ -42,13 +45,14 @@
         <i class="fas fa-file-invoice btn-inner-icon"></i>
         ติดตามผลการทดสอบ
       </router-link>
-      <router-link  :to="{name: 'submit-samples'}"
-                    tag="a"
-                    class="btn btn-transparent mr-2">
-        <i class="fas fa-vial btn-inner-icon"></i>
-        ส่งตัวอย่าง
-      </router-link>
     </template>
+
+    <router-link  :to="{name: 'submit-samples'}"
+                  tag="a"
+                  class="btn btn-transparent mr-2">
+      <i class="fas fa-vial btn-inner-icon"></i>
+      {{ auth.isAdmin? 'สร้างการส่งตัวอย่าง' : 'ส่งตัวอย่าง' }}
+    </router-link>
 
     <router-link  :to="{name: 'account'}"
                   tag="a"
@@ -131,13 +135,13 @@ export default {
   top: 0; left: 0;
   width: 100vw; 
   height: $titlebar-height;
-  backdrop-filter: blur(20px);
   border-bottom: 1px solid transparent;
   transition: all 100ms ease-in-out;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   padding-left: $outer-padding-sm;
   padding-right: $outer-padding-sm;
+  backdrop-filter: blur(20px);
   @include media-breakpoint-up(lg) {
     padding-left: $outer-padding;
     padding-right: $outer-padding;

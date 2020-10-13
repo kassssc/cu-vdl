@@ -12,59 +12,62 @@
     <div class="font-chatthai">
       <div class="row py-3 border-b">
         <div class="col-xl-2 col-12">
-          <h4>ประเภทองค์กร</h4>
+          <h4>ข้อมูลองค์กร</h4>
         </div>
-        <div class="col-xl-8 col-12">
+        <div class="col-xl-7 col-12">
           <div class="form-row">
             <FormInlineSelect
-              class="col-10"
+              class="col-12"
+              label="ประเภทองค์กร"
               :btn-class-list="['orange', 'red']"
               v-model="orgFormData.orgType"
-              :options="org_typeOptions" />
+              :options="orgTypeOptions" />
+            <FormInput
+              class="col-12"
+              label="ชื่อองค์กร"
+              type="text"
+              required
+              v-model="orgFormData.name" />
           </div>
         </div>
       </div>
 
       <div class="row py-3 border-b">
         <div class="col-xl-2 col-12">
-          <h4>ข้อมูลองค์กร</h4>
+          <h4>ที่อยู่องค์กร</h4>
         </div>
-        <div class="col-xl-8 col-12">
+        <div class="col-xl-7 col-12">
           <div class="form-row">
+            
             <FormInput
-              class="col-10 mb-4"
-              label="ชื่อองค์กร"
-              type="text"
-              required
-              v-model="orgFormData.name" />
-            <FormInput
-              class="col-10 mb-2"
+              class="col-12 mb-2"
               label="เลขที่ ซอย ถนน"
               type="text"
               required
               v-model="orgFormData.addr1" />
             <FormInput
-              class="col-10 mb-2"
+              class="col-12 mb-2"
               label="แขวง เขต / ตำบล อำเภอ"
               type="text"
               required
               v-model="orgFormData.addr2" />
             <FormInput
-              class="col-4 mb-2"
+              class="col-4"
               label="เมือง"
               type="text"
               v-model="orgFormData.city" />
             <FormSelect
-              class="col-4 mb-2"
+              class="col-4"
               form-label="จังหวัด"
               :clearable="false"
               required
               :options="provinces"
               v-model="orgFormData.province" />
             <FormInput
-              class="col-2 mb-2"
+              class="col-4"
               label="รหัสไปรษณีย์"
-              type="number"
+              type="text"
+              maxlength="5"
               required
               v-model="orgFormData.zip" />
           </div>
@@ -75,14 +78,14 @@
         <div class="col-xl-2 col-12">
           <h4>อัพโหลดเอกสาร</h4>
         </div>
-        <div class="col-xl-8 col-12">
+        <div class="col-xl-7 col-12">
           <div class="form-row">
             <FormFileUpload
-              class="col-5"
+              class="col"
               label="ภ.พ.20"
               required />
             <FormFileUpload
-              class="col-5"
+              class="col"
               label="ใบจดทะเบียนบริษัท"
               required />
           </div>
@@ -92,13 +95,19 @@
       <div class="row py-3">
         <div class="col-xl-2 col-12">
         </div>
-        <div class="col-xl-8 col-12">
+        <div class="col-xl-7 col-12">
           <div class="form-row">
-            <div class="form-group col-5">
-              <button class="btn btn-primary btn-block"
-                      @click="createOrg()">
-                <i class="fas fa-plus btn-inner-icon" />
-                สร้างองค์กร
+            <div class="form-group col-6">
+              <button class="btn btn-primary btn-block loading"
+                      @click="createOrg()"
+                      :disabled="submitting">
+                <template v-if="submitting">
+                  <LoadingAnimation />
+                </template>
+                <template v-else>
+                  <i class="fas fa-plus btn-inner-icon" />
+                  สร้างองค์กร
+                </template>
               </button>
             </div>
           </div>
@@ -117,6 +126,7 @@ export default {
   name: 'admin-create-org',
   data () {
     return {
+      submitting: false,
       orgFormData: {
         orgType: null,
         name: '',
@@ -126,7 +136,7 @@ export default {
         province: '',
         zip: ''
       },
-      org_typeOptions: [
+      orgTypeOptions: [
         { name: 'ฟาร์ม', id: 1 },
         { name: 'บริษัทสัตวแพทย์', id: 2 }
       ],
@@ -213,6 +223,7 @@ export default {
   },
   methods: {
     async createOrg () {
+      this.submitting = true
       const {
         orgType, addr1, addr2, city, province, zip, name
       } = this.orgFormData
@@ -234,6 +245,7 @@ export default {
         })
       } catch (err) {
         console.log(err)
+        this.submitting = false
       }
     }
   }

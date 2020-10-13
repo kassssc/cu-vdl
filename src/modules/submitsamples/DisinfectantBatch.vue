@@ -41,8 +41,8 @@
           label="ทดสอบประสิทธิภาพยาฆ่าเชื้อต่อ"
           label-class="label-lg"
           :options="disinfectantTests"
-          v-model="batch.testType"
-          @change="onBatchTestTypeChange()" />
+          @change="onBatchTestTypeChange()"
+          v-model="batch.testType" />
       </div>
 
       <h3 class="mt-3 mb-1">รายการทดสอบ</h3>
@@ -80,7 +80,8 @@
         </a>
 
         <div class="col-4 pr-5">
-          <h4 class="d-inline">{{ test }}</h4>
+          <h4 class="mb-1">{{ info.displayName }}</h4>
+          <h5 v-if="isVirusTest" class="text-muted">[{{ info.cellName }}]</h5>
         </div>
 
         <div class="col-6">
@@ -149,7 +150,7 @@
       <div class="form-row mt-4">
         <div class="col-9 d-flex justify-content-end align-items-end">
           <template v-if="Object.keys(batch.tests).length > 0">
-            <div  v-if="batch.testType === 5"
+            <div  v-if="isVirusTest"
                   class="text-right position-relative cost-container">
               <h4 class="text-primary">
                 <i class="fas fa-plus icon-sm"></i>
@@ -196,6 +197,7 @@
         v-if="batch.testType"
         class="mt-4"
         :test-type="batch.testType"
+        :test-count="Object.keys(batch.tests).length"
         @add="addDisinfectantTest($event)" />
 
     </div>
@@ -237,7 +239,7 @@ export default {
   },
   computed: {
     isVirusTest () {
-      return this.batch.testType === 'virus'
+      return this.batch.testType === 'ไวรัส'
     },
     isCP () {
       return this.batch.testType === 'CP'
@@ -259,7 +261,7 @@ export default {
     totalPrice () {
       let testsPrice = Object.values(this.batch.tests)
         .reduce( (acc, curr) => acc + curr.totalPrice, 0)
-      if (!this.isVirusTest) {
+      if (this.isVirusTest) {
         testsPrice += this.toxicityTestCost
       }
       return 3000 + testsPrice
@@ -277,9 +279,9 @@ export default {
   data () {
     return {
       disinfectantTests: [
-        { id: 'virus',    name: 'ไวรัส'},
-        { id: 'bacteria', name: 'แบคทีเรีย'},
-        { id: 'CP',       name: 'แบคทีเรีย (CP Protocol)'}
+        { id: 'ไวรัส',    name: 'ไวรัส'},
+        { id: 'แบคทีเรีย', name: 'แบคทีเรีย'},
+        { id: 'CP',      name: 'แบคทีเรีย (CP Protocol)'}
       ]
     }
   },

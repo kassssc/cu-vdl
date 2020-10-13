@@ -1,344 +1,382 @@
 <template>
-<div class="page page-lg d-flex align-items-start">
-  <div class="sub-nav overflow-visible sticky pl-4">
-    <router-link  :to="{name: 'submissionslist'}"
-                  tag="button"
-                  exact
-                  class="btn btn-transparent back-btn mb-3">
-      <i class="fas fa-chevron-left mr-2" />กลับไป
-    </router-link>
-    <h3 class="mb-4 ml-2">ติดตามการส่งตัวอย่าง</h3>
-    <scrollactive active-class="scrollactive-active"
-                  :offset="200"
-                  :modify-url="false"
-                  highlight-first-item>
-      <a  href="#info"
-          class="btn btn-transparent btn-block btn-lg scrollactive-item">
-        <i class="fas fa-file-alt btn-inner-icon-lg" />
-        ข้อมูลเบื้องต้น
-      </a>
-      <a  href="#reports"
-          class="btn btn-transparent btn-block btn-lg scrollactive-item">
-        <i class="fas fa-file-invoice btn-inner-icon-lg" />
-        รายงาน
-      </a>
-      <a  href="#payment"
-          class="btn btn-transparent btn-block btn-lg scrollactive-item">
-        <i class="fas fa-file-invoice-dollar btn-inner-icon-lg" />
-        การชำระเงิน
-      </a>
-      <a  href="#contact"
-          class="btn btn-transparent btn-block btn-lg scrollactive-item">
-        <i class="fas fa-address-book btn-inner-icon-lg" />
-        ข้อมูลการติดต่อ
-      </a>
-      <template v-if="userIsAdmin">
-        <div class="w-100 border-b mb-3"></div>
-        <h3 class="mb-3">Admin</h3>
-        <router-link  :to="{ name: 'editsubmission', params: { id: 123456 } }"
-                      tag="a"
-                      class="btn btn-transparent btn-block btn-lg">
-          <i class="fas fa-edit btn-inner-icon-lg" />
-          แก้ไขการส่งตัวอย่าง          
-        </router-link>
-        <a  class="btn btn-transparent btn-block btn-lg"
-            @click="showCancelSubmissionModal()">
-          <i class="fas fa-window-close btn-inner-icon-lg" />
-          ยกเลิก
+<div class="page page-md d-flex align-items-start content-height-min">
+  <template v-if="!$apollo.loading">
+    <div class="sub-nav overflow-visible sticky pl-4">
+      <router-link  :to="{name: 'submissionslist'}"
+                    tag="button"
+                    exact
+                    class="btn btn-transparent back-btn mb-3">
+        <i class="fas fa-chevron-left mr-2" />กลับไป
+      </router-link>
+      <h3 class="mb-4 ml-2">ติดตามการส่งตัวอย่าง</h3>
+      <scrollactive active-class="scrollactive-active"
+                    :offset="200"
+                    :modify-url="false"
+                    highlight-first-item >
+        <a  href="#info"
+            class="btn btn-transparent btn-block btn-lg scrollactive-item">
+          <i class="fas fa-file-alt btn-inner-icon-lg" />
+          ข้อมูลเบื้องต้น
         </a>
-      </template>
-    </scrollactive>
-  </div>
+        <a  href="#reports"
+            class="btn btn-transparent btn-block btn-lg scrollactive-item">
+          <i class="fas fa-file-invoice btn-inner-icon-lg" />
+          รายงาน
+        </a>
+        <a  href="#payment"
+            class="btn btn-transparent btn-block btn-lg scrollactive-item">
+          <i class="fas fa-file-invoice-dollar btn-inner-icon-lg" />
+          การชำระเงิน
+        </a>
+        <a  href="#contact"
+            class="btn btn-transparent btn-block btn-lg scrollactive-item">
+          <i class="fas fa-address-book btn-inner-icon-lg" />
+          ข้อมูลการติดต่อ
+        </a>
+        <template v-if="isAdmin">
+          <h3 class="mb-3 border-t pt-4">แอดมิน</h3>
+          <router-link  :to="{
+                          name: 'editsubmission',
+                          params: { id: submission.backend_key }
+                        }"
+                        tag="a"
+                        class="btn btn-transparent btn-block btn-lg">
+            <i class="fas fa-edit btn-inner-icon-lg" />
+            แก้ไขการส่งตัวอย่าง          
+          </router-link>
+          <a  class="btn btn-transparent btn-block btn-lg"
+              @click="showCancelSubmissionModal()">
+            <i class="fas fa-window-close btn-inner-icon-lg" />
+            ยกเลิก
+          </a>
+        </template>
+      </scrollactive>
+    </div>
+    
+    <div class="sub-nav-content">
+      <div id="info"
+            class="section">
+        <h2 class="mb-4 font-cu">
+          <i class="fas fa-file-alt icon-lg" />
+          การส่งตัวอย่างหมายเลข #<span class="text-primary">{{ $route.params.id }}</span>
+        </h2>
   
-  <div class="sub-nav-content">
-    <div id="info"
-         class="section">
-      <h2 class="mb-4">
-        <i class="fas fa-file-alt icon-lg" />
-        การส่งตัวอย่างหมายเลข <span class="text-primary">{{ `${$route.params.id}` }}</span>
-      </h2>
-
-      <div class="row">
-        <div class="col-2">
-          <h4>สถานะ</h4>
+        <div class="row">
+          <div class="col-3">
+            <h4>สถานะ</h4>
+          </div>
+          <div class="col pt-1">
+            <div class="form-row">
+              <div class="form-group col-8">
+                <ColorTag
+                  class="d-block"
+                  :color="submissionStatusColor[submission.submission_status]"
+                  :label="submission.submission_status"
+                  size="lg" />
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-10 pt-1">
-          <div class="form-row">
-            <div class="form-group col-6">
-              <ColorTag
-                class="d-block"
-                :color="submissionStatusData[submission.status].color"
-                :label="submissionStatusData[submission.status].label"
-                size="lg" />
+  
+        <div class="row mb-4">
+          <div class="col-3">
+            <h4>ใบส่งตัวอย่าง</h4>
+          </div>
+          <div class="col pt-1">
+            <div class="form-row">
+              <FileView
+                class="col-8"
+                btn-class="btn-secondary"
+                :file-name="`${$route.params.id}_submission_form.pdf`"
+                icon-class="fa-file-alt" />
+              <div class="col-8 form-group">
+                <button class="btn btn-secondary btn-block">
+                  <i class="fas fa-print btn-inner-icon"></i> ปริ้นสลิปการส่งตัวอย่าง
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="row mb-4">
+          <div class="col-3">
+            <h4>ข้อมูลการส่งตัวอย่าง</h4>
+          </div>
+          <div class="col pt-1">
+            <div class="form-row">
+              <div class="col-8 form-group">
+                <label>ประเภทการส่งตัวอย่าง</label>
+                <ColorTag
+                  class="d-block"
+                  :color="submissionTypeColor[submission.submission_type]"
+                  :label="submission.submission_type"
+                  size="lg" />
+              </div>
+              <div class="w-100"></div>
+              <FormDateInput
+                class="col-4"
+                label="วันที่ส่งตัวอย่าง"
+                format="dd/MM/yy"
+                disabled
+                :value="epochToDate(submission.submit_date)" />
+              <FormDateInput  
+                v-if="submission.sample_received_date"
+                class="col-4"
+                label="วันที่รับตัวอย่าง"
+                format="dd/MM/yy"
+                disabled
+                :value="epochToDate(submission.sample_received_date)" />
+              <FormInput
+                v-else
+                class="col-4"
+                label="วันที่รับตัวอย่าง"
+                type="text"
+                disabled
+                value="ยังไม่ได้รับตัวอย่าง" />
+              <FormInput
+                class="col-8"
+                label="หมายเลขการส่งตัวอย่าง"
+                :value="submission.backend_key"
+                disabled />
+              <div class="w-100"></div>
+  
+              <FormInput
+                class="col-8"
+                label="ชื่อผู้ส่ง"
+                disabled
+                :value="submitterFullName" />
+              <FormInput
+                class="col-8"
+                label="องค์กรเจ้าของตัวอย่าง"
+                disabled
+                :value="submission.sample_owner_name" />
             </div>
           </div>
         </div>
       </div>
-
-      <div class="row mb-4">
-        <div class="col-2">
-          <h4>ใบส่งตัวอย่าง</h4>
-        </div>
-        <div class="col-10 pt-1">
-          <div class="form-row">
-            <FileView
-              class="col-6"
-              btn-class="btn-secondary"
-              :file-name="`${$route.params.id}_submission_form.pdf`"
-              icon-class="fa-file-alt" />
-          </div>
-        </div>
-      </div>
-
-      <div class="row mb-4">
-        <div class="col-2">
-          <h4>ข้อมูลการส่งตัวอย่าง</h4>
-        </div>
-        <div class="col-10 pt-1">
-          <div class="form-row">
-            <div class="col-6 mb-3">
-              <ColorTag
-                class="d-block"
-                :color="submissionTypeData[submission.type].color"
-                :label="submissionTypeData[submission.type].label"
-                size="lg" />
+  
+      <div id="reports"
+            class="section">
+        <h2 class="mb-4 font-cu">
+          <i class="fas fa-file-invoice icon-lg" />
+          รายงาน
+        </h2>
+        <div class="download-reports mb-2 p-3 flex-grow-1">
+          <div class="row color-dark-grey border-b py-2">
+            <div class="col-2">
+              <h4 class="mb-0">เลขที่รายงาน</h4>
             </div>
-            <div class="w-100"></div>
-            <FormInput
-              class="col-4"
-              label="หมายเลขการส่งตัวอย่าง"
-              :value="submission.id"
-              disabled />
-            <FormInput
-              class="col-4"
-              label="หมายเลขรับตัวอย่าง"
-              :value="submission.receptionNum"
-              disabled />
-            <div class="w-100"></div>
-            <FormDateInput
-              class="col-4"
-              label="วันที่ส่งตัวอย่าง"
-              format="dd/MM/yy"
-              disabled
-              :value="submission.submitDate" />
-            <FormDateInput  
-              class="col-4"
-              label="วันที่รับตัวอย่าง"
-              format="dd/MM/yy"
-              disabled
-              :value="submission.receivedDate" />
-
-            <FormInput
-              class="col-8"
-              label="ชื่อผู้ส่ง"
-              disabled
-              :value="`${submission.submitter.title}${submission.submitter.firstName} ${submission.submitter.lastName}`" />
-            <FormInput
-              class="col-8"
-              label="องค์กรเจ้าของตัวอย่าง"
-              disabled
-              :value="submission.org.name" />
+            <div class="col-1">
+              <h4 class="mb-0">สถานะ</h4>
+            </div>
+            <div class="col-2">
+              <h4 class="mb-0">วันที่</h4>
+            </div>
+            <div class="col-4">
+              <h4 class="mb-0">รายละเอียด</h4>
+            </div>
+            <div class="col-1">
+              <h4 class="mb-0">ดูไฟล์</h4>
+            </div>
+            <div class="col-2">
+              <h4 class="mb-0">ดาวน์โหลด</h4>
+            </div>
+          </div>
+  
+          <!-- <div  v-for="(report, idx) in submission.reports"
+                :key="idx"
+                class="row py-1 border-b">
+            <div class="col-2 d-flex align-items-center">
+              <h5 class="mb-0">{{ report.id }}</h5>
+            </div>
+            <div class="col-1 d-flex align-items-center">
+              <h5 class="mb-0">{{ report.status }}</h5>
+            </div>
+            <div class="col-2 d-flex align-items-center">
+              <h5 class="mb-0">{{ report.date }}</h5>
+            </div>
+            <div class="col-4 d-flex align-items-center">
+              <h5 class="mb-0">{{ report.details }}</h5>
+            </div>
+            <div class="col-1">
+              <button class="btn btn-icon">
+                <i class="fas fa-file-invoice"></i>
+              </button>
+            </div>
+            <div class="col-2">
+              <button class="btn btn-icon">
+                <i class="fas fa-file-download"></i>
+              </button>
+            </div>
+          </div> -->
+          
+          <div class="row mt-3">
+            <div class="col-12 d-flex justify-content-end">
+              <button class="btn btn-primary"
+                      @click="downloadAllReports()">
+                <i class="fas fa-download btn-inner-icon" />
+                ดาวน์โหลดทั้งหมด (เป็น zip)
+              </button>
+            </div>  
           </div>
         </div>
-      </div>
-    </div>
-
-    <div id="reports"
-         class="section">
-      <h2 class="mb-4">
-        <i class="fas fa-file-invoice icon-lg" />
-        รายงาน
-      </h2>
-      <div class="download-reports mb-2 p-3 flex-grow-1">
-        <div class="row color-dark-grey border-b py-2">
-          <div class="col-2">
-            <h4 class="mb-0">เลขที่รายงาน</h4>
+  
+        <div class="row mt-4">
+          <div class="col-3">
+            <h4 class="mb-2 mt-3">ช่องทางการแจ้งผล</h4>
           </div>
-          <div class="col-1">
-            <h4 class="mb-0">สถานะ</h4>
-          </div>
-          <div class="col-2">
-            <h4 class="mb-0">วันที่</h4>
-          </div>
-          <div class="col-4">
-            <h4 class="mb-0">รายละเอียด</h4>
-          </div>
-          <div class="col-1">
-            <h4 class="mb-0">ดูไฟล์</h4>
-          </div>
-          <div class="col-2">
-            <h4 class="mb-0">ดาวน์โหลด</h4>
-          </div>
-        </div>
-
-        <div  v-for="(report, idx) in submission.reports"
-              :key="idx"
-              class="row py-1 border-b">
-          <div class="col-2 d-flex align-items-center">
-            <h5 class="mb-0">{{ report.id }}</h5>
-          </div>
-          <div class="col-1 d-flex align-items-center">
-            <h5 class="mb-0">{{ report.status }}</h5>
-          </div>
-          <div class="col-2 d-flex align-items-center">
-            <h5 class="mb-0">{{ report.date }}</h5>
-          </div>
-          <div class="col-4 d-flex align-items-center">
-            <h5 class="mb-0">{{ report.details }}</h5>
-          </div>
-          <div class="col-1">
-            <button class="btn btn-icon">
-              <i class="fas fa-file-invoice"></i>
-            </button>
-          </div>
-          <div class="col-2">
-            <button class="btn btn-icon">
-              <i class="fas fa-file-download"></i>
-            </button>
-          </div>
-        </div>
-        
-        <div class="row mt-3">
-          <div class="col-12 d-flex justify-content-end">
-            <button class="btn btn-primary"
-                    @click="downloadAllReports()">
-              <i class="fas fa-download btn-inner-icon" />
-              ดาวน์โหลดทั้งหมด (เป็น zip)
-            </button>
-          </div>  
-        </div>
-      </div>
-
-      <div class="row mt-4">
-        <div class="col-2">
-          <h4 class="mb-2 mt-3">ช่องทางการแจ้งผล</h4>
-        </div>
-        <div class="col-10">
-          <div class="form-row">
-            <FormInput
-              class="col-4"
-              label="อีเมล"
-              disabled
-              :value="submission.submitter.email" />
-            <FormInput
-              class="col-4"
-              label="หมายเลขโทรศัพท์"
-              disabled
-              :value="submission.submitter.phone" />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="payment"
-         class="section">
-      <h2 class="mb-4">
-        <i class="fas fa-file-invoice-dollar icon-lg" />
-        การชำระเงิน
-      </h2>
-
-      <div class="row">
-        <div class="col-2">
-          <h4>สถานะ</h4>
-        </div>
-        <div class="col-10 pt-1">
-          <div class="form-row">
-            <div class="form-group col-6">
-              <ColorTag
-                class="d-block"
-                :color="submissionInvoiceStatusData[submission.invoiceStatus].color"
-                :label="submissionInvoiceStatusData[submission.invoiceStatus].label"
-                size="lg" />
+          <div class="col">
+            <div class="form-row">
+              <FormInput
+                v-if="submission.notification_email"
+                class="col-8"
+                label="อีเมล"
+                disabled
+                :value="submission.submitter[0].email" />
+              <FormInput
+                v-if="submission.notification_phone"
+                class="col-8"
+                label="หมายเลขโทรศัพท์"
+                disabled
+                :value="submission.submitter[0].phone" />
             </div>
           </div>
         </div>
       </div>
-
-      <div class="row mb-4">
-        <div class="col-2">
-          <h4>Invoice</h4>
-        </div>
-        <div class="col-10 pt-1">
-          <div class="form-row">
-            <FileView
-              class="col-6"
-              btn-class="btn-secondary"
-              :file-name="`${$route.params.id}_invoice.pdf`"
-              icon-class="fa-file-invoice-dollar" />
+  
+      <div  id="payment"
+            class="section">
+        <h2 class="mb-4 font-cu">
+          <i class="fas fa-file-invoice-dollar icon-lg" />
+          การชำระเงิน
+        </h2>
+  
+        <div class="row">
+          <div class="col-3">
+            <h4>สถานะ Invoice</h4>
+          </div>
+          <div class="col pt-1">
+            <div class="form-row">
+              <div class="form-group col-8">
+                <!-- <ColorTag
+                  class="d-block"
+                  :color="submissionInvoiceStatusData[submission.invoiceStatus].color"
+                  :label="submissionInvoiceStatusData[submission.invoiceStatus].label"
+                  size="lg" /> -->
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="row mb-4">
-        <div class="col-2">
-          <h4>ค่าบริการ</h4>
+  
+        <div class="row mb-4">
+          <div class="col-3">
+            <h4>Invoice ไปที่</h4>
+          </div>
+          <div class="col pt-1">
+            <div class="form-row">
+              <FormInput
+                class="col-8"
+                type="text"
+                disabled
+                :value="submission.invoice_to? submission.invoice_to[0].name : submitterFullName" />
+              <FormTextarea
+                class="col-8"
+                type="text"
+                rows="3"
+                disabled
+                :value="submission.invoice_to? submission.invoice_to[0].address : ''" />
+            </div>
+          </div>
         </div>
-        <div class="col-10 pt-1">
-          <div class="form-row">
-            <div class="form-group col-3 text-right">
-              <h1 class="text-primary">
-                {{ `${submission.finalPrice.toLocaleString()}฿` }}
-              </h1>
-              <h4 class="text-medium">*ค่าบริการโดยประมาน</h4>
+
+        <div class="row mb-4">
+          <div class="col-3">
+            <h4>ใบ Invoice</h4>
+          </div>
+          <div class="col pt-1">
+            <div class="form-row">
+              <FileView
+                class="col-8"
+                btn-class="btn-secondary"
+                :file-name="`${$route.params.id}_invoice.pdf`"
+                icon-class="fa-file-invoice-dollar" />
+            </div>
+          </div>
+        </div>
+  
+        <div class="row mb-4">
+          <div class="col-3">
+            <h4>ค่าบริการ</h4>
+          </div>
+          <div class="col pt-1">
+            <div class="form-row">
+              <div class="form-group col-6 text-right">
+                <!-- <h1 class="text-primary">
+                  {{ `${submission.finalPrice.toLocaleString()}฿` }}
+                </h1> -->
+                <h4 class="text-medium">*ค่าบริการโดยประมาน</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+  
+      <div id="contact" class="section">
+        <h2 class="mb-4 font-cu">
+          <i class="fas fa-address-book icon-lg" />
+          ข้อมูลการติดต่อ
+        </h2>
+        <div class="row mb-4">
+          <div class="col-3">
+            <h4>ผู้ส่งตัวอย่าง</h4>
+          </div>
+          <div class="col pt-1">
+            <div class="form-row">
+              <FormInput
+                class="col-8"
+                label="ชื่อ-นามสกุล"
+                disabled
+                :value="submitterFullName" />
+              <div class="w-100"></div>
+              <FormInput
+                class="col-4"
+                label="อีเมล"
+                disabled
+                :value="submission.submitter[0].email" />
+              <FormInput
+                class="col-4"
+                label="หมายเลขโทรศัพท์"
+                disabled
+                :value="submission.submitter[0].phone" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-3">
+            <h4>เจ้าของตัวอย่าง/ฟาร์ม</h4>
+          </div>
+          <div  v-if="submission.sample_owner_org"
+                class="col">
+            <div class="form-row">
+              <FormInput
+                class="col-8"
+                label="ชื่อองค์กร"
+                disabled
+                :value="submission.sample_owner_org[0].name" />
+              <FormTextarea
+                class="col-8"
+                label="ที่อยู่"
+                rows="3"
+                disabled
+                :value="submission.sample_owner_org[0].address" />
             </div>
           </div>
         </div>
       </div>
-
+    
     </div>
-
-    <div id="contact" class="section">
-      <h2 class="mb-4">
-        <i class="fas fa-address-book icon-lg" />
-        ข้อมูลการติดต่อ
-      </h2>
-      <div class="row mb-4">
-        <div class="col-2">
-          <h4>ติดต่อผู้ส่ง</h4>
-        </div>
-        <div class="col-10 pt-1">
-          <div class="form-row">
-            <FormInput
-              class="col-8"
-              label="ชื่อ-นามสกุล"
-              disabled
-              :value="`${submission.submitter.title}${submission.submitter.firstName} ${submission.submitter.lastName}`" />
-            <div class="w-100"></div>
-            <FormInput
-              class="col-4"
-              label="อีเมล"
-              disabled
-              :value="submission.submitter.email" />
-            <FormInput
-              class="col-4"
-              label="หมายเลขโทรศัพท์"
-              disabled
-              :value="submission.submitter.phone" />
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-2">
-          <h4>ติดต่อองค์กร</h4>
-        </div>
-        <div class="col-10">
-          <div class="form-row">
-            <FormInput
-              class="col-8"
-              label="ชื่อองค์กร"
-              disabled
-              :value="submission.org.name" />
-            <FormTextarea
-              class="col-8"
-              label="ที่อยู่"
-              rows="3"
-              disabled
-              :value="submission.org.addr" />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  </template>
 
   <Modal  modal-id="cancelSubmissionModal"
           modal-dialog-class="modal-sm modal-dialog-centered"
@@ -372,82 +410,91 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import $ from 'jquery'
+import { getJWT } from '@/vue-apollo'
+import { IS_ADMIN } from '@/graphql/local'
+import { SUBMISSION_DETAIL } from '@/graphql/submission'
 
 export default {
   name: 'view-submission',
   computed: {
-    ...mapGetters([
-      'userIsAdmin',
-      'submissionTypeData',
-      'submissionStatusData',
-      'submissionInvoiceStatusData'
-    ])
+    submitterFullName () {
+      return `${this.submission.submitter[0].title}${this.submission.submitter[0].first_name} ${this.submission.submitter[0].last_name}`
+    }
   },
   data () {
     return {
-      submission: {
-        id: 44556677,
-        org: {
-          id: 1,
-          name: 'ฟาร์มสมควร',
-          phone: '087-654-3210',
-          addr: '123 ทองหล่อ ซ.12 ถนนสุขุมวิท\nแขวงคลองตันเหนือ เขตวัฒนา\nกรุงเทพฯ 10110',
-        },
-        submitter: {
-          id: 1,
-          accountType: 1,
-          org: 1,
-          customerList: [],
-          title: 'นาย',
-          firstName: 'สมควร',
-          lastName: 'สมสกุล',
-          email: 'mr.somkuan@gmail.com',
-          phone: '081-234-5678',
-          nationalId: null
-        },
-        type: 1,
-        status: 3,
-        invoiceStatus: 2,
-        finalPrice: 85000,
-        submitDate: '01/05/2020',
-        bestLimsSubmissionNum: '',
-        receivedDate: '04/05/2020',
-        receptionNum: '04052020',
-        submissionForm: '', // PDF of form data
-        reports: [
-          {
-            id: '2000-1001-001',
-            date: '01/02/2020',
-            details: 'ตัวอย่างที่ 11-20',
-            status: 0,
-            link: 'https://backend/report-link-pdf'
-          },
-          {
-            id: '2000-1001-002',
-            date: '01/02/2020',
-            details: 'ตัวอย่างที่ 11-20',
-            status: 0,
-            link: 'https://backend/report-link-pdf'
-          },
-          {
-            id: '2000-1001-003',
-            date: '01/02/2020',
-            details: 'ตัวอย่างที่ 11-20',
-            status: 0,
-            link: 'https://backend/report-link-pdf'
-          },
-          {
-            id: '2000-1001-004',
-            date: '01/02/2020',
-            details: 'ตัวอย่างที่ 11-20',
-            status: 0,
-            link: 'https://backend/report-link-pdf'
-          },
-  
-        ]
+      submissionStatusColor: {
+        ส่งแล้ว: 'grey',
+        กำลังดำเนินการ: 'orange',
+        เสร็จสิ้น: 'green',
+        ยกเลิก: 'red',
       },
+      submissionTypeColor: {
+        การตรวจทั่วไป: 'teal',
+        ทดสอบประสิทธิภาพยาฆ่าเชื้อ: 'blue'
+      },
+      // submission: {
+      //   id: 44556677,
+      //   org: {
+      //     id: 1,
+      //     name: 'ฟาร์มสมควร',
+      //     phone: '087-654-3210',
+      //     addr: '123 ทองหล่อ ซ.12 ถนนสุขุมวิท\nแขวงคลองตันเหนือ เขตวัฒนา\nกรุงเทพฯ 10110',
+      //   },
+      //   submitter: {
+      //     id: 1,
+      //     accountType: 1,
+      //     org: 1,
+      //     customerList: [],
+      //     title: 'นาย',
+      //     firstName: 'สมควร',
+      //     lastName: 'สมสกุล',
+      //     email: 'mr.somkuan@gmail.com',
+      //     phone: '081-234-5678',
+      //     nationalId: null
+      //   },
+      //   type: 1,
+      //   status: 3,
+      //   invoiceStatus: 2,
+      //   finalPrice: 85000,
+      //   submitDate: '01/05/2020',
+      //   bestLimsSubmissionNum: '',
+      //   receivedDate: '04/05/2020',
+      //   receptionNum: '04052020',
+      //   submissionForm: '', // PDF of form data
+      //   reports: [
+      //     {
+      //       id: '2000-1001-001',
+      //       date: '01/02/2020',
+      //       details: 'ตัวอย่างที่ 11-20',
+      //       status: 0,
+      //       link: 'https://backend/report-link-pdf'
+      //     },
+      //     {
+      //       id: '2000-1001-002',
+      //       date: '01/02/2020',
+      //       details: 'ตัวอย่างที่ 11-20',
+      //       status: 0,
+      //       link: 'https://backend/report-link-pdf'
+      //     },
+      //     {
+      //       id: '2000-1001-003',
+      //       date: '01/02/2020',
+      //       details: 'ตัวอย่างที่ 11-20',
+      //       status: 0,
+      //       link: 'https://backend/report-link-pdf'
+      //     },
+      //     {
+      //       id: '2000-1001-004',
+      //       date: '01/02/2020',
+      //       details: 'ตัวอย่างที่ 11-20',
+      //       status: 0,
+      //       link: 'https://backend/report-link-pdf'
+      //     },
+  
+      //   ]
+      // },
     }
   },
   methods: {
@@ -458,6 +505,22 @@ export default {
     },
     showCancelSubmissionModal () {
       $('#cancelSubmissionModal').modal('show')
+    }
+  },
+  apollo: {
+    isAdmin: {
+      query: IS_ADMIN,
+      update: data => data.auth.isAdmin
+    },
+    submission: {
+      query: SUBMISSION_DETAIL,
+      variables () {
+        return {
+          jwt: getJWT(),
+          key: this.$route.params.id
+        }
+      },
+      update: data => data.get_submission.result[0]
     }
   }
 }
@@ -478,7 +541,7 @@ export default {
 .btn.back-btn {
   @include media-breakpoint-up(xl) {
     position: absolute;
-    top: 15px;
+    top: 0;
     left: -100px;
   }
 }

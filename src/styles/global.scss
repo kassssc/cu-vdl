@@ -15,7 +15,8 @@ $accent:        #eae6e3;
 $accent-light:  #f7f3f1;
 
 // Theme Colors
-$primary:       #5A9BAD;
+//$primary:       #5A9BAD;
+$primary:       #83A6B5;
 $secondary:     $accent;
 $light:         #fefdfc;
 $medium:        #75716E;
@@ -127,6 +128,33 @@ $modal-footer-margin-between: 0;
 $modal-sm:                    350px;
 $modal-md:                    550px;
 
+$pagination-padding-y:              .3rem;
+$pagination-padding-x:              .6rem;
+
+$pagination-color:                  $dark;
+$pagination-bg:                     $accent-light;
+$pagination-border-width:           1px;
+$pagination-border-radius:          $border-radius;
+$pagination-margin-left:            $pagination-border-width;
+$pagination-border-color:           $accent-dark;
+
+$pagination-focus-color:            $light;
+$pagination-focus-bg:               $primary;
+$pagination-focus-box-shadow:       0;
+//$pagination-focus-outline:          0;
+
+$pagination-hover-color:            $pagination-color;
+$pagination-hover-bg:               $accent;
+$pagination-hover-border-color:     $pagination-border-color;
+
+// $pagination-active-color:           $component-active-color;
+// $pagination-active-bg:              $component-active-bg;
+// $pagination-active-border-color:    $pagination-active-bg;
+
+// $pagination-disabled-color:         $gray-600;
+// $pagination-disabled-bg:            $white;
+// $pagination-disabled-border-color:  $gray-300;
+
 $grid-breakpoints: (
   xs: 0,
   sm: 576px,
@@ -141,9 +169,9 @@ $grid-breakpoints: (
 @import "~bootstrap/scss/_mixins.scss";
 
 // Other Variables
-$titlebar-height: 80px;
+$titlebar-height: 5.5rem;
 $titlebar-height-scrolled: 60px;
-$footer-height: 50px;
+$footer-height: 40px;
 $outer-padding: 30px;
 $outer-padding-sm: 15px;
 $content-height: calc(100vh - #{$titlebar-height} - #{$footer-height});
@@ -180,9 +208,13 @@ $drop-shadow: 0px 4px 8px 0 $medium;
   max-height: 500px;
 }
 
-@mixin dropdown-option {
-  cursor: pointer;
+@mixin input-btn-padding {
   padding: 0.25rem 0.75rem;
+}
+
+@mixin dropdown-option {
+  @include input-btn-padding;
+  cursor: pointer;
   font-weight: bold;
   color: $default;
   font-size: $input-btn-font-size;

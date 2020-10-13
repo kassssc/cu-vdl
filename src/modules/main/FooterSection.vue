@@ -21,6 +21,7 @@ export default {
   display: flex;
   align-items: center;
   padding-left: 2em;
+  font-size: .8rem;
   background: linear-gradient(to right, $primary, $placeholder);
 }
 </style>

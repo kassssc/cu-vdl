@@ -9,6 +9,7 @@
     <div class="d-flex mb-2">
       <button class="filter-btn btn btn-sm primary w-100"
               :class="{'active': activeOrgTypeFilter === null}"
+              :disabled="loading || activeOrgTypeFilter === null"
               @click="setOrgTypeFilter(null)">
         <i  v-if="activeOrgTypeFilter === null"
             class="fas fa-check btn-inner-icon" />
@@ -21,6 +22,7 @@
                 orgTypeCSS[filter.id],
                 {'active': activeOrgTypeFilter === filter.id}
               ]"
+              :disabled="loading || activeOrgTypeFilter === filter.id"
               @click="setOrgTypeFilter(filter.id)">
         <i  v-if="activeOrgTypeFilter === filter.id"
             class="fas fa-check btn-inner-icon" />
@@ -70,9 +72,10 @@
   <div class="col-7 sub-nav-content content-height d-flex flex-column">
     <transition name="fade">
       <div v-if="selectedOrg">
-        <div class="d-flex align-items-center mb-3">
-          <h3 class="mr-3">{{ selectedOrg.name }}</h3>
+        <div class="d-block d-lg-flex align-items-center mb-3">
+          <h3 class="mr-3 d-block d-lg-inline-block mb-lg-0 mb-3">{{ selectedOrg.name }}</h3>
           <ColorTag
+            class="d-block d-lg-inline-block"
             size="lg"
             :label="orgTypeLabel[selectedOrg.org_type]"
             :color="orgTypeCSS[selectedOrg.org_type]" />
@@ -81,12 +84,12 @@
         <div class="font-chatthai">
           <div class="form-row border-b pb-3">
             <FormTextarea
-              class="col-6"
+              class="col-12 col-lg-6"
               label="ที่อยู่"
               rows="3"
               disabled
               :value="selectedOrg.address" />
-            <div class="col-6">
+            <div class="col-12 col-lg-6">
               <div class="form-row">
                 <FileView
                   class="col-12 mb-2"

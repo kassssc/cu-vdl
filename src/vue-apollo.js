@@ -151,12 +151,19 @@ export function getJWT () {
 }
 
 function decodeJWT (jwt) {
-  const data = jwt_decode(jwt)
+  const {
+    exp,
+    index,
+    account_type,
+    first_name,
+    last_name
+  } = jwt_decode(jwt)
+  
   return {
     loggedIn: true,
-    isAdmin: data.account_type === 101,
-    userIndex: data.index,
-    userFullName: `${data.first_name} ${data.last_name}`
+    isAdmin: account_type === 101,
+    userIndex: index,
+    userFullName: `${first_name} ${last_name}`
   }
 }
 

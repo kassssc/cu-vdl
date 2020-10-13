@@ -73,6 +73,12 @@ Vue.directive('focus-on-create', {
   inserted: el => el.focus()
 })
 
+Vue.mixin({
+  methods: {
+    epochToDate: epoch => new Date(parseInt(epoch)),
+  }
+})
+
 new Vue({
   router,
   store,

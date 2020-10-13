@@ -10,73 +10,137 @@
   </div>
 
   <div class="font-chatthai">
-    <div class="row py-3">
-      <div class="col-xl-3 col-12">
-        <h4>ข้อมูลตัวแทนส่งตัวอย่าง</h4>
+    <div class="row py-3 border-b">
+      <div class="col-lg-2 col-10">
+        <h4>ข้อมูลส่วนตัว</h4>
       </div>
-      <div class="col-xl-8 col-12">
+      <div class="col-lg-7 col-10">
         <div class="form-row">
           <FormSelect
-            class="col-2 d-flex align-items-end"
+            class="col-2"
+            form-label="คำนำหน้า"
             :clearable="false"
             :searchable="false"
             required
             :options="nameTitles"
             v-model="userFormData.title" />
           <FormInput
-            class="col-3"
+            class="col-4"
             label="ชื่อจริง"
-            type="Text"
+            type="text"
             required
             v-model="userFormData.firstName" />
           <FormInput
-            class="col-5"
+            class="col-6"
             label="นามสกุล"
-            type="Text"
+            type="text"
             required
             v-model="userFormData.lastName" />
-          <FormInput
-            class="col-5"
-            label="อีเมล"
-            type="Text"
-            required
-            v-model="userFormData.email" />
-          <FormInput
-            class="col-5"
-            label="หมายเลขโทรศัพท์"
-            type="Text"
-            required
-            v-model="userFormData.phone"
-            @focus="unformatPhone()"
-            @blur="formatPhone()" />
-          <FormInput
-            class="col-5"
-            label="รหัสผ่าน"
-            type="Text"
-            required
-            v-model="userFormData.password" />
-          <FormInput
-            class="col-5"
-            label="ยืนยันรหัสผ่าน"
-            type="Text"
-            required
-            v-model="userFormData.confirmPassword" />
           <FormFileUpload
-            class="col-5"
+            class="col-12"
             label="สำเนาบัตรประชาชน"
             required />
         </div>
       </div>
     </div>
 
-    <div class="row pt-4 pb-3 border-t">
-      <div class="col-xl-3 col-12">
+    <div class="row py-3 border-b">
+      <div class="col-lg-2 col-10">
+        <h4>ที่อยู่</h4>
+      </div>
+      <div class="col-lg-7 col-10">
+        <div class="form-row">
+          <FormInput
+            class="col-12 mb-2"
+            label="เลขที่ ซอย ถนน"
+            type="text"
+            required
+            v-model="userFormData.addr1" />
+          <FormInput
+            class="col-12 mb-2"
+            label="แขวง เขต / ตำบล อำเภอ"
+            type="text"
+            required
+            v-model="userFormData.addr2" />
+          <FormInput
+            class="col-4"
+            label="เมือง"
+            type="text"
+            v-model="userFormData.city" />
+          <FormSelect
+            class="col-4"
+            form-label="จังหวัด"
+            :clearable="false"
+            required
+            :options="provinces"
+            v-model="userFormData.province" />
+          <FormInput
+            class="col-4"
+            label="รหัสไปรษณีย์"
+            type="text"
+            maxlength="5"
+            required
+            v-model="userFormData.zip" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row py-3 border-b">
+      <div class="col-lg-2 col-10">
+        <h4>ข้อมูลติดต่อ</h4>
+      </div>
+      <div class="col-lg-7 col-10">
+        <div class="form-row">
+          <FormInput
+            class="col"
+            label="อีเมล"
+            type="text"
+            required
+            v-model="userFormData.email" />
+          <FormInput
+            class="col"
+            label="หมายเลขโทรศัพท์"
+            type="text"
+            maxlength="10"
+            required
+            v-model="userFormData.phone"
+            @focus="unformatPhone()"
+            @blur="formatPhone()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="row py-3 border-b">
+      <div class="col-lg-2 col-10">
+        <h4>ตั้งรหัสผ่านชั่วคราว</h4>
+      </div>
+      <div class="col-lg-7 col-10">
+        <div class="form-row">
+          <FormInput
+            class="col"
+            label="รหัสผ่าน"
+            type="text"
+            required
+            v-model="userFormData.password" />
+          <FormInput
+            class="col"
+            label="ยืนยันรหัสผ่าน"
+            type="text"
+            required
+            v-model="userFormData.confirmPassword" />
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="row py-3 border-b">
+      <div class="col-lg-2 col-10">
         <h4>องค์กรที่เป็นตัวแทน</h4>
       </div>
-      <div class="col-xl-8 col-12">
+      <div class="col-lg-7 col-10">
         <div class="form-row">
           <FormSelect
-            class="col-10"
+            class="col"
             form-label="เลือกอย่างน้อย 1 องค์กร"
             label="name"
             placeholder="ค้นหาและเลือกได้หลายองค์กร..."
@@ -92,15 +156,21 @@
 
     </div>
 
-    <div class="row py-4 border-t">
-      <div class="col-xl-3 col-12"></div>
-      <div class="col-xl-8 col-12">
+    <div class="row py-3">
+      <div class="col-lg-2 col-12"></div>
+      <div class="col-lg-7 col-12">
         <div class="form-row">
-          <div class="form-group col-5">
-            <button class="btn btn-primary btn-lg btn-block"
-                    @click="createUser()">
-              <i class="fas fa-user-plus btn-inner-icon"></i>
-              สร้าง Account
+          <div class="form-group col-6">
+            <button class="btn btn-primary btn-block loading"
+                    @click="createUser()"
+                    :disabled="submitting">
+              <template v-if="submitting">
+                <LoadingAnimation />
+              </template>
+              <template v-else>
+                <i class="fas fa-user-plus btn-inner-icon"></i>
+                สร้าง Account
+              </template>
             </button>
           </div>
         </div>
@@ -120,6 +190,7 @@ export default {
   name: 'admin-create-user',
   data () {
     return {
+      submitting: false,
       userFormData: {
         submitterOf: [],
         title: '',
@@ -146,6 +217,7 @@ export default {
   },
   methods: {
     async createUser () {
+      this.submitting = true
       // form validation
       const {
         password,
@@ -177,6 +249,7 @@ export default {
         })
       } catch (err) {
         console.log(err)
+        this.submitting = false
       }
     },
     formatPhone () {

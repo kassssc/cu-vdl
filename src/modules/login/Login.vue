@@ -1,50 +1,50 @@
 <template>
 <div class="d-flex flex-column justify-content-center align-items-center fill-height">
   <div class="login-form">
-    <button class="btn btn-transparent mb-3 align-self-start"
+    <button class="btn btn-transparent mb-3"
             @click="$router.go(-1)">
       <i class="fas fa-chevron-left mr-2" />กลับไป
     </button>
-    <div class="login-logo" />
-    <div class="form-row w-100">
+    <div class="d-flex w-100 justify-content-center">
+      <div class="login-logo" />
+    </div>
+    <div class="form-row">
       <FormInput
         class="col-12"
         input-class="form-control-lg"
         type="text"
         label="อีเมล"
-        v-model="loginForm.email"
-        @keyup.enter="onLogin()" />
+        v-model="login_form.email"
+        @keyup.enter="on_login()" />
       <FormInput
         class="col-12"
         input-class="form-control-lg"
         type="password"
         label="รหัสผ่าน"
-        v-model="loginForm.password"
-        @keyup.enter="onLogin()" />
+        v-model="login_form.password"
+        @keyup.enter="on_login()" />
     </div>
-    <div class="form-row w-100">
-      <div class="form-group col-12 d-flex justify-content-between">
-        <checkbox v-model="loginForm.stayLoggedIn"
+    <div class="form-row">
+      <div class="form-group col-12 d-flex justify-content-end">
+        <!-- <checkbox v-model="login_form.stay_logged_in"
                   class="mt-1"
-                  label="จำไว้ในระบบ" />
+                  label="จำไว้ในระบบ" /> -->
         <button class="btn btn-transparent btn-sm text-muted"
-                @click="forgotPassword()">
+                @click="forgot_password()">
           ลืมรหัสผ่าน
         </button>
       </div>
     </div>
-    <div v-if="error" class="form-row w-100">
+    <div v-if="error" class="form-row">
       <div class="form-group col-12">
-        <div class="error-box">
-          <h5 class="text-danger"><i class="fas fa-exclamation mr-2" />รหัสผ่าน หรือ อีเมล ไม่ถูกต้อง</h5>
-        </div>
+        <ErrorBox msg="รหัสผ่าน หรือ อีเมล ไม่ถูกต้อง" />
       </div>
     </div>
-    <div class="form-row w-100">
+    <div class="form-row">
       <div class="form-group col-12">
         <button class="btn btn-primary btn-lg btn-block loading"
                 :disabled="loading"
-                @click="onLogin()">
+                @click="on_login()">
           <template v-if="loading">
             <LoadingAnimation />
           </template>
@@ -63,47 +63,39 @@
     </div>
   </div>
 
-  <Modal  modal-id="forgotPasswordModal"
+  <Modal  modal-id="forgot-password-modal"
           x-close>
     <template #modal-header>
-      <h3 class="text-primary">
-        <i class="fas fa-question icon-md mr-1" />
+      <h4 class="text-primary">
+        <i class="fas fa-question mr-1" />
         ลืมรหัสผ่าน
-      </h3>
+      </h4>
     </template>
     <template #modal-body>
-      <div class="form-row d-flex justify-content-center">
-        <div class="col-10">
-          <h4 class="text-medium mb-3">
-            กรุณากรอกข้อมูลเพื่อยืนยันตัวตน หากข้อมูลถูกต้อง ท่านจะได้รับลิ้งค์เปลี่ยนรหัสผ่านทางอีเมล
-          </h4>
-        </div>
+      <h5 class="text-dark mb-3">
+        กรุณากรอกข้อมูลเพื่อยืนยันตัวตน หากข้อมูลถูกต้อง ท่านจะได้รับลิ้งค์เปลี่ยนรหัสผ่านทางอีเมล
+      </h5>
+      <div class="form-row">
         <FormInput
-          class="col-9"
-          input-class="form-control-lg"
+          class="col-12"
           type="text"
-          label="อีเมลที่ใช้ login" />
-        <FormInput
-          class="col-9"
-          input-class="form-control-lg"
-          type="text"
-          label="ชื่อจริง" />
-        <FormInput
-          class="col-9"
-          input-class="form-control-lg"
-          type="text"
-          label="นามสกุล" />
+          label="อีเมลที่ใช้ login"
+          v-model="forgot_pass_email" />
       </div>
-    </template>
-    <template #modal-footer>
-      <div class="w-100 d-flex flex-nowrap">
-        <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
-          ยกเลิก
-        </button>
-        <button type="button" class="btn btn-primary ml-2 w-100"
-                @click="submitForgotPasswordForm()">
-          ส่งลิ้งค์เปลี่ยนรหัสผ่านทางอีเมล
-        </button>
+      <div class="form-row mt-3">
+        <div class="form-group col-4 mb-0">
+          <button type="button"
+                  class="btn btn-secondary btn-block"
+                  data-dismiss="modal">
+            ยกเลิก
+          </button>
+        </div>
+        <div class="form-group col-8 mb-0">
+          <button type="button" class="btn btn-primary btn-block"
+                  @click="submit_forgot_password()">
+            <i class="fa fa-envelope btn-inner-icon"></i>ส่งลิ้งค์เปลี่ยนรหัสผ่านทางอีเมล
+          </button>
+        </div>
       </div>
     </template>
   </Modal>
@@ -113,8 +105,8 @@
 
 <script>
 import $ from 'jquery'
-import { onLogin } from '@/vue-apollo'
-import { LOGIN } from '@/graphql/login'
+import { on_login } from '@/vue-apollo'
+import { LOGIN, FORGOT_PASSWORD } from '@/graphql/login'
 
 export default {
   name: 'login',
@@ -122,16 +114,21 @@ export default {
     return {
       loading: false,
       error: false,
-      loginForm: {
-        email: '',
-        password: '',
-        stayLoggedIn: true
-      }
+      login_form: {
+        email: null,
+        password: null,
+        stay_logged_in: true
+      },
+      forgot_pass_email: null
     }
   },
   methods: {
-    async onLogin () {
-      const { email, password } = this.loginForm
+    async on_login () {
+      const { email, password } = this.login_form
+      if (!email || !password) {
+        this.error = true
+        return
+      }
       try {
         this.loading = true
         const res = await this.$apollo.mutate({
@@ -143,38 +140,49 @@ export default {
         })
         if (res.data.login.statuscode == 200) {
           const jwt = res.data.login.result.jwt
-          await onLogin(
+          await on_login(
             this.$apollo.provider.defaultClient,
             jwt,
-            this.loginForm.stayLoggedIn
+            this.login_form.stay_logged_in
           )
-          this.$router.push({ name: 'submissionslist' })
+          this.$router.push({ name: 'submissions-list' })
         } else {
           this.error = true
           this.loading = false
-          this.loginForm.email = ''
-          this.loginForm.password = ''
+          this.login_form.email = null
+          this.login_form.password = null
         }
       } catch (err) {
         console.log(err)
       }
     },
-    forgotPassword () {
-      $('#forgotPasswordModal').modal('show')
+    forgot_password () {
+      $('#add-english-info-modal').on('hidden.bs.modal', () => {
+        this.forgot_pass_email = null
+      })
+      $('#forgot-password-modal').modal('show')
     },
-    submitForgotPasswordForm () {
-      $('#forgotPasswordModal').modal('hide')
+    async submit_forgot_password () {
+      if (this.forgot_pass_email) {
+        return
+      }
+      try {
+        const res = await this.$apollo.mutate({
+          mutation: FORGOT_PASSWORD,
+          variables: {
+            email: this.forgot_pass_email
+          }
+        })
+        $('#forgot-password-modal').modal('hide')
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.__dev-panel {
-  right: 20px;
-  margin: auto;
-  width: 400px;
-}
 .login-logo {
   @include logo;
   width: 250px;
@@ -183,8 +191,5 @@ export default {
 }
 .login-form {
   width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 </style>

@@ -1,19 +1,19 @@
 <template>
 <div  v-if="!$apollo.loading"
-      class="batch w-100 position-relative border-b-md py-5">
-  <a  v-if="hasMultipleBatches"
+      class="batch w-100 position-relative border-b pt-5">
+  <a  v-if="multiple_batches"
       class="btn btn-x batch-section"
       @click="$emit('delete-batch')">
     <i class="fas fa-times" />
   </a>
-  <div class="row w-100 border-b pb-4 m-0">
+  <div class="row w-100 pb-5">
     <div class="col-xl-2 col-12">
       <h3 class="mb-2">
-        {{ batchLabel }}
+        {{ batch_label }}
       </h3>
-      <h5 v-if="batch.sampleCount"
+      <h5 v-if="batch.sample_count"
           class="ml-3 text-medium d-xl-block d-none">
-        {{ `${batch.sampleCount} ตัวอย่าง` }}
+        {{ batch.sample_count }} ตัวอย่าง
       </h5>
     </div>
     <div class="col-xl-10 col-12">
@@ -25,28 +25,29 @@
           label="จำนวนตัวอย่าง"
           label-class="label-lg"
           required
-          :value="batch.sampleCount"
+          :value="batch.sample_count"
+          :invalid="is_validated && !batch.sample_count"
+          error-msg="จำเป็นต้องใส่"
           @focus="$event.target.select()"
-          @blur="updateSampleCount($event.target.value)" />
+          @blur="update_sample_count($event.target.value)" />
       </div>
 
-      <div class="form-row border-b mb-2">
+      <div class="form-row border-b">
         <div class="col-12">
-          <h4 class="mb-1 text-dark">เลือกการทดสอบ</h4>
+          <h4 class="mb-1 text-dark">เลือกรายการทดสอบ</h4>
         </div>
       </div>
 
-      <div  v-for="(tests, department) in testMethods"
-            :key="department"
-            class="pb-2">
+      <div  v-for="(tests, department) in test_methods"
+            :key="department">
             
-        <div class="form-row no-gutters border-b pb-1">
+        <div class="form-row no-gutters border-b py-1">
           <div class="form-group col-2 mb-0 text-dark d-flex overflow-visible nowrap">
             <checkbox :value="!!batch.tests[department]"
-                      :color="departmentColors[department]"
-                      @input="onTestCategoryToggle(department, $event)">
+                      :color="department_colors[department]"
+                      @input="on_department_toggle(department, $event)">
               <template #label>
-                <h3 class="ml-2">{{`งาน${department}`}}</h3>
+                <h3 class="ml-2">งาน{{ department }}</h3>
               </template>
             </checkbox>
           </div>
@@ -68,29 +69,29 @@
           <FormMethodSelection
             v-if="batch.tests[department]"
             :department="department"
-            :test-methods="tests"
-            :sample-count="batch.sampleCount"
-            :color="departmentColors[department]"
+            :test_methods="tests"
+            :sample_count="batch.sample_count"
+            :color="department_colors[department]"
+            :is_validated="is_validated"
             v-model="batch.tests[department]" />
         </transition>
 
       </div>
 
-      <div  v-if="activeTestCount > 0 && !!batch.sampleCount"
-            class="form-row no-gutters pt-2 pb-4 border-b">
+      <div class="form-row py-3 border-b">
         <div class="col-2"></div>
         <div class="col-10">
           <div class="form-row">
             <div class="col-5"></div>
             <div class="col-1 text-right">
               <h2 class="text-primary">
-                {{ batch.sampleCount? batch.sampleCount : 'N/A' }}
+                {{ batch.sample_count? batch.sample_count : 'N/A' }}
               </h2>
               <h5 class="text-medium">ตัวอย่าง</h5>
             </div>
             <div class="col-2 text-right">
               <h2 class="text-primary">
-                {{ activeTestCount }}
+                {{ batch.test_count }}
               </h2>
               <h5 class="text-medium">รายการทดสอบ</h5>
             </div>
@@ -99,10 +100,10 @@
             </div>
             <div class="col-2 text-right">
               <h2 class="text-primary">
-                {{ totalPriceLabel }}
+                {{ batch.sample_count? to_display_price(batch.price) : 'N/A' }}
               </h2>
               <h5 class="text-medium">ค่าบริการ</h5>
-              <h6 v-if="customTestCount > 0"
+              <h6 v-if="custom_bacteria_test_count > 0"
                   class="text-muted">
                 *เป็นราคาโดยประมานเท่านั้น
               </h6>
@@ -111,70 +112,83 @@
         </div>
       </div>
 
-    </div>
-  </div>
-
-  <div class="row w-100 pt-5 m-0">
-    <div class="col-xl-2 col-12">
-      <h4 class="mb-2">รายละเอียดตัวอย่าง</h4>
-    </div>
-
-    <div v-show="batch.sampleCount <= 0" class="col-10 mt-1">
-      <i class="fas fa-exclamation-triangle mr-2 text-primary d-inline" />
-      <h5 class="text-primary d-inline">กรุณาใส่จำนวนตัวอย่างก่อน</h5>
-    </div>
-
-    <div v-show="batch.sampleCount > 0" class="col-xl-10 col-12">
-
-      <div v-show="batch.sampleCount > 1" class="form-row w-100 mb-3">
-        <div class="col-1 mr-3"></div>
-        <div class="col-10 p-0">
-          <FormSampleInfoMultifill
-            :max-samples="batch.sampleCount"
-            @add="updateSampleDetails($event)" />
+      <div  v-if="is_validated && (test_count <= 0)"
+            class="form-row py-2">
+        <div class="form-group col-12 mb-0">
+          <ErrorBox msg="จำเป็นต้องเลือกอย่างน้อย 1 รายการทดสอบ" />
         </div>
       </div>
 
-      <div class="form-row w-100 text-medium">
-        <div class="form-group mb-2 px-1 col-1 text-right mr-3">
+    </div>
+  </div>
+
+  <div v-if="batch.sample_count > 0" class="row pb-5">
+    <div class="col-xl-2 col-12">
+      <h4 class="text-medium mb-2">รายละเอียดตัวอย่าง</h4>
+    </div>
+    <div class="col-xl-10 col-12">
+      <div class="form-row text-medium">
+        <div class="form-group mb-2 col-1 text-right">
           <h5>หมายเลข</h5>
         </div>
-        <div class="form-group mb-2 px-1 col-4">
+        <div class="form-group col-4 mb-2 pl-3 pr-1">
           <h5 class="d-inline">ID ตัวอย่าง</h5>
           <i class="fas fa-star-of-life text-primary icon-sm ml-1" />
         </div>
-        <div class="form-group mb-2 px-1 col-6">
+        <div class="form-group col-7 mb-2 px-1">
           <h5>ข้อมูลเพิ่มเติม</h5>
         </div>
       </div>
 
-      <div  v-for="(sample, idxSample) of batch.samples"
-            :key="idxSample"
-            :id="`batch${idx+1}-set${idxSample+1}`"
-            class="form-row w-100">
-        <div class="form-group mb-2 px-1 col-1 text-right mr-3">
-          <h5 class="text-medium">{{ idxSample+1 }}</h5>
+      <div  v-for="(sample, idx_sample) of batch.samples"
+            :key="idx_sample"
+            :id="`batch${idx+1}-set${idx_sample+1}`"
+            class="form-row">
+        <div class="form-group mb-2 col-1 text-right">
+          <h5 class="text-medium">{{ idx_sample+1 }}</h5>
         </div>
         <FormInput
-          class="col-4 mb-2 px-1"
+          class="col-4 mb-2 pl-3 pr-1"
           input-class="form-control-sm"
           type="text"
-          v-model="sample.sampleId" />
+          v-model="sample.sample_id" />
         <FormInput
-          class="col-6 mb-2 px-1"
+          class="col-7 mb-2 px-1"
           input-class="form-control-sm"
           type="text"
-          v-model="sample.extraInfo" />
+          v-model="sample.extra_info" />
+      </div>
+      <div  v-if="is_validated && !all_sample_id_filled"
+            class="form-row">
+        <div class="col-1 form-group"></div>
+        <div class="col-4 form-group mb-0 pl-3 pr-1">
+          <ErrorBox msg="จำเป็นต้องใส่ ID ให้ครบ" />
+        </div>
+      </div>
+
+      <div class="form-row mt-3">
+        <div class="col-1"></div>
+        <div class="form-group col-4 mb-2 pl-3 pr-1">
+          <button class="btn font-cu btn-secondary btn-block"
+                  @click="show_sample_info_multifill_modal()">
+            <i class="fas fa-list-ol btn-inner-icon"></i>เติมข้อมูลทีละหลายช่อง
+          </button>
+        </div>
       </div>
 
     </div>
   </div>
+
+  <FormSampleInfoMultifillModal
+    :max_samples="batch.sample_count"
+    @add="update_sample_info($event)" />
 </div>
 </template>
 
 <script>
-import { GENERAL_TEST_METHODS } from '@/graphql/tests'
+import $ from 'jquery'
 import groupBy from 'lodash/groupBy'
+import { GENERAL_TEST_METHODS } from '@/graphql/tests'
 
 export default {
   name: 'general-batch',
@@ -182,8 +196,8 @@ export default {
     FormMethodSelection: () => import(/* webpackChunkName: "group-submitsamples" */
       './FormMethodSelection'
     ),
-    FormSampleInfoMultifill: () => import(/* webpackChunkName: "group-submitsamples" */
-      './FormSampleInfoMultifill'
+    FormSampleInfoMultifillModal: () => import(/* webpackChunkName: "group-submitsamples" */
+      './FormSampleInfoMultifillModal'
     ),
   },
   props: {
@@ -191,132 +205,142 @@ export default {
       type: Object,
       required: true
     },
-    hasMultipleBatches: {
+    multiple_batches: {
       type: Boolean,
-      default: false
+      required: true
     },
     idx: {
       type: Number,
-      default: 0
+      required: true
     },
-    isEditMode: {
+    edit_mode: {
+      type: Boolean,
+      required: true
+    },
+    is_validated: {
       type: Boolean,
       required: true
     }
   },
   computed: {
-    testMethods () {
-      return groupBy(this.testMethodsRaw, 'department')
+    test_methods () {
+      return groupBy(this.test_methods_raw, 'department')
     },
-    batchLabel () {
-      return this.hasMultipleBatches? `กลุ่มการทดสอบ ${this.idx+1}` : 'รายการทดสอบ'
+    batch_label () {
+      return this.multiple_batches? `กลุ่มการทดสอบ ${this.idx+1}` : 'การทดสอบ'
     },
-    totalPriceLabel () {
-      const shouldDisplayPrice = (this.activeTestCount > 0 || this.customTestCount > 0) && !!this.batch.sampleCount
-      return shouldDisplayPrice? `${this.customTestCount > 0? '~':''}${this.batch.totalPrice.toLocaleString()}฿` : 'N/A'
-    },
-    includesBacteriaTest () {
+    includes_bacteria_test () {
       return !!this.batch.tests['แบคทีเรียวิทยา']
     },
-    activeTestCount () {
-      let testCount = Object.values(this.batch.tests).reduce( (count, category) => {
+    test_count () {
+      let test_count = Object.values(this.batch.tests).reduce( (count, category) => {
         if (category) {
-          let currCount = category.testList.length
-          if (category.customBacteriaTests) {
-            currCount += category.customBacteriaTests.length
+          let curr_count = category.test_list.length
+          if (category.custom_bacteria_tests) {
+            curr_count += category.custom_bacteria_tests.length
           }
-          return currCount
+          return count += curr_count
         }
         return count
       }, 0)
-      return testCount
+      return test_count
     },
-    customTestCount () {
-      if (!this.includesBacteriaTest) return 0
-      return this.batch.tests['แบคทีเรียวิทยา'].customBacteriaTests.length
+    custom_bacteria_test_count () {
+      if (!this.includes_bacteria_test) return 0
+      return this.batch.tests['แบคทีเรียวิทยา'].custom_bacteria_tests.length
     },
-    totalPrice () {
-      return Object.values(this.batch.tests).reduce( (batchPrice, category) => {
-        if (category) return batchPrice += category.price
-        return batchPrice
+    price () {
+      return Object.values(this.batch.tests).reduce( (price, category) => {
+        if (category) return price += category.price
+        return price
       }, 0)
     },
+    all_sample_id_filled () {
+      return this.batch.samples.reduce( (has_id, sample) => has_id && !!sample.sample_id, true)
+    }
   },
   data () {
     return {
-      departmentColors: {
-        แบคทีเรียวิทยา: 'pink',
-        อณูชีววิทยา: 'red',
-        ซีรั่มวิทยา: 'orange',
-        ไวรัสวิทยา: 'yellow'
+      department_colors: {
+        'แบคทีเรียวิทยา': 'pink',
+        'อณูชีววิทยา': 'red',
+        'ซีรั่มวิทยา': 'orange',
+        'ไวรัสวิทยา': 'yellow'
       },
-      departmentIcons: {
-        แบคทีเรียวิทยา: 'fas fa-bacterium',
-        อณูชีววิทยา: 'fas fa-atom',
-        ซีรั่มวิทยา: 'fas fa-eye-dropper',
-        ไวรัสวิทยา: 'fas fa-virus'
-      }
+      // department_icons: {
+      //   แบคทีเรียวิทยา: 'fas fa-bacterium',
+      //   อณูชีววิทยา: 'fas fa-atom',
+      //   ซีรั่มวิทยา: 'fas fa-eye-dropper',
+      //   ไวรัสวิทยา: 'fas fa-virus'
+      // }
     }
   },
   watch: {
-    totalPrice (val) {
-      this.batch.totalPrice = val
+    price (val) {
+      this.batch.price = val
+    },
+    test_count (val) {
+      this.batch.test_count = val
     }
   },
   methods: {
-    onTestCategoryToggle (category, active) {
+    on_department_toggle (category, active) {
       if (active) {
         this.batch.tests[category] = category === 'แบคทีเรียวิทยา'?
-        { testList: [], price: 0, customBacteriaTests: [], sensitivityTests: null } : { testList: [], price: 0 }
+        { test_list: [], price: 0, custom_bacteria_tests: [], sensitivity_tests: null } : { test_list: [], price: 0 }
       } else {
         this.batch.tests[category] = null
       }
     },
-    updateSampleCount (val) {
+    update_sample_count (val) {
       // Floor to not allow decimals
-      this.batch.sampleCount = Math.floor(val)
+      this.batch.sample_count = Math.floor(val)
       // Set to null if left empty or negative or 0
-      if (!this.batch.sampleCount || this.batch.sampleCount <= 0) {
-        this.batch.sampleCount = null
+      if (!this.batch.sample_count || this.batch.sample_count <= 0) {
+        this.batch.sample_count = null
       // Set to 100 if larger than 100
-      } else if (this.batch.sampleCount > 100) {
-        this.batch.sampleCount = 100
+      } else if (this.batch.sample_count > 100) {
+        this.batch.sample_count = 100
       }
       
       // Update batch samples list
-      const diff = Math.abs(this.batch.sampleCount - this.batch.samples.length)
-      if (this.batch.sampleCount > this.batch.samples.length) {
-        for (let i = this.batch.samples.length; i < this.batch.sampleCount; i++) {
-          this.batch.samples[i] = { sampleId: null, extraInfo: null }
+      const diff = Math.abs(this.batch.sample_count - this.batch.samples.length)
+      if (this.batch.sample_count > this.batch.samples.length) {
+        for (let i = this.batch.samples.length; i < this.batch.sample_count; i++) {
+          this.batch.samples.splice(i, 1, { sample_id: null, extra_info: null })
         }
-      } else if (this.batch.sampleCount < this.batch.samples.length) {
+      } else if (this.batch.sample_count < this.batch.samples.length) {
         this.batch.samples.splice(this.batch.samples.length - diff, diff)
       }
     },
-    updateSampleDetails ({ ranges, sampleId, extraInfo }) {
+    update_sample_info ({ ranges, sample_id, extra_info }) {
       for (const range of ranges) {
         const start = range[0] - 1
         const end = range.length > 1? range[1] : range[0]
         for (let i = start; i < end; i++) {
           this.batch.samples.splice(i, 1, {
-            sampleId: sampleId? sampleId : this.batch.samples[i].sampleId,
-            extraInfo: extraInfo? extraInfo : this.batch.samples[i].extraInfo
+            sample_id: sample_id? sample_id : this.batch.samples[i].sample_id,
+            extra_info: extra_info? extra_info : this.batch.samples[i].extra_info
           })
         }
       }
+      $('#sample-info-multifill-modal').modal('hide')
     },
+    show_sample_info_multifill_modal () {
+      $('#sample-info-multifill-modal').modal('show')
+    }
   },
   apollo: {
-    testMethodsRaw: {
+    test_methods_raw: {
       query: GENERAL_TEST_METHODS,
       update: data => data.test_method_general_get.result,
       result () {
-        if (!this.isEditMode) {
-          const newTests = {}
-          for (let department of Object.keys(this.testMethods)) {
-            newTests[department] = null
+        if (!this.edit_mode) {
+          const new_tests = {}
+          for (let department of Object.keys(this.test_methods)) {
+            new_tests[department] = null
           }
-          this.batch.tests = { ...newTests }
+          this.batch.tests = { ...new_tests }
         }
       }
     }

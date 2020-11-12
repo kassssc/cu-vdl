@@ -9,12 +9,13 @@
   <input  :class="[
             'form-control',
             inputClass,
-            {'is-invalid': invalid}
+            { 'is-invalid': is_invalid }
           ]"
-          ref="inputbox"
+          ref="Inputbox"
           v-bind="$attrs"
           v-on="listeners"
           :disabled="disabled">
+  <ErrorBox v-if="invalid" :msg="errorMsg" />
 </div>
 </template>
 
@@ -46,6 +47,10 @@ export default {
     invalid: {
       type: Boolean,
       default: false
+    },
+    errorMsg: {
+      type: String,
+      default: null
     }
   },
   computed: {
@@ -54,7 +59,34 @@ export default {
         ...this.$listeners,
         input: ev => this.$emit('input', ev.target.value),
       }
+    },
+    /* noValue () {
+      return !this.$attrs.value
+    }, */
+    is_invalid () {
+      return this.invalid // || (this.required && this.noValue)
+    },
+    /* errorMessageDisplay () {
+      if (this.formTouched) {
+        if (this.invalid) {
+          return this.errorMsg
+        } else if (this.required && this.noValue) {
+          return 'จำเป็นต้องใส่ข้อมูล'
+        }
+      }
+      return null
+    } */
+  },
+  data () {
+    return {
+      formTouched: false
     }
   }
 }
 </script>
+
+<style lang="scss">
+input.form-control.input-pink:focus {
+  box-shadow: 0 0 0 .2rem $pink;
+}
+</style>

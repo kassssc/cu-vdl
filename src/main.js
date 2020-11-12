@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import App from '@/App'
 import router from '@/router'
-import store from '@/store/store'
 
 Vue.config.productionTip = false
 
@@ -36,6 +35,15 @@ const FormInlineSelect = () => import(/* webpackChunkName: "group-form" */
 const FormFileUpload = () => import(/* webpackChunkName: "group-form" */
   '@/util/FormFileUpload'
 )
+const FormPhoneInput = () => import(/* webpackChunkName: "group-form" */
+  '@/util/FormPhoneInput'
+)
+const FormAddressInput = () => import(/* webpackChunkName: "group-form" */
+  '@/util/FormAddressInput'
+)
+const FormContactNameInput = () => import(/* webpackChunkName: "group-form" */
+  '@/util/FormContactNameInput'
+)
 const FormDateInput = () => import(/* webpackChunkName: "group-form" */
   '@/util/FormDateInput'
 )
@@ -54,6 +62,9 @@ const ColorTag = () => import(/* webpackChunkName: "group-util" */
 const LoadingAnimation = () => import(/* webpackChunkName: "group-util" */
   '@/util/LoadingAnimation'
 )
+const ErrorBox = () => import(/* webpackChunkName: "group-util" */
+  '@/util/ErrorBox'
+)
 
 Vue.component('checkbox', FormCheckbox)
 Vue.component('FormInput', FormInput)
@@ -63,11 +74,15 @@ Vue.component('FormTextarea', FormTextarea)
 Vue.component('FormInlineSelect', FormInlineSelect)
 Vue.component('FormFileUpload', FormFileUpload)
 Vue.component('FormDateInput', FormDateInput)
+Vue.component('FormAddressInput', FormAddressInput)
+Vue.component('FormContactNameInput', FormContactNameInput)
+Vue.component('FormPhoneInput', FormPhoneInput)
 Vue.component('FileView', FileView)
 Vue.component('SearchInput', SearchInput)
 Vue.component('Modal', Modal)
 Vue.component('ColorTag', ColorTag)
 Vue.component('LoadingAnimation', LoadingAnimation)
+Vue.component('ErrorBox', ErrorBox)
 
 Vue.directive('focus-on-create', {
   inserted: el => el.focus()
@@ -75,13 +90,14 @@ Vue.directive('focus-on-create', {
 
 Vue.mixin({
   methods: {
-    epochToDate: epoch => new Date(parseInt(epoch)),
+    to_display_price: raw => `${raw.toLocaleString()}฿`,
+    to_display_date: raw => new Date(parseInt(raw)).toLocaleDateString('en-GB'),
+    to_date_object: raw => new Date(parseInt(raw))
   }
 })
 
 new Vue({
   router,
-  store,
   apollo: {
     // apollo config
   },

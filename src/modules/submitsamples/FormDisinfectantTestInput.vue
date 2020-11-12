@@ -1,87 +1,38 @@
 <template>
-<div class="form-row subcontainer">
-  <template v-if="isVirus || testCount < maxBacteria">
-    <div class="col-12 d-flex justify-content-between mb-1">
-      <h4 class="mr-3">{{ `เพิ่ม${isVirus? 'ไวรัส' : 'แบคทีเรีย'}เพื่อทดสอบ`}}</h4>
-      <button v-if="isCP"
-              class="btn btn-success"
-              @click="useCP()">
+<div class="form-row subcontainer py-4 font-cu">
+  <template v-if="is_virus || test_count < max_bacteria">
+    <div class="col-12 d-flex justify-content-between">
+      <h4 class="mr-3 mb-3">{{ `เพิ่ม${is_virus? 'ไวรัส' : 'แบคทีเรีย'}เพื่อทดสอบ`}}</h4>
+      <button v-if="is_CP"
+              class="btn btn-success btn-sm"
+              @click="use_CP()">
         ใช้ Default CP Protocol
       </button>
     </div>
     <FormSelect
-      v-if="isVirus"
-      class="mb-0 col"
+      v-if="is_virus"
+      class="mb-0 col-3"
       label="name"
       form-label="เลือกไวรัส"
       placeholder="เลือก..."
       :clearable="false"
       :searchable="false"
-      :options="disinfectantVirusList"
+      :options="disinfectant_virus_list"
       :get-option-label="option => option.display_name"
       v-model="virus" />
     <FormInput
       v-else
-      class="mb-0 col"
+      class="col-12"
       label="ชื่อแบคทีเรีย"
       type="text"
-      v-model.trim="bacteriaName" />
-    <!-- <div class="col">
-      <div class="form-group mb-0">
-        <label>ระดับความเข้มข้น</label>
-      </div>
-      <FormInput
-        v-for="(dilution, idx) of dilutions"
-        :key="idx"
-        class="mb-2"
-        placeholder="undiluted, 1:200, 1:400, 20%"
-        type="text"
-        @focus="$event.target.select()"
-        v-model="dilutions[idx]" />
-      <button class="btn btn-block btn-sm btn-primary">
-        เพิ่มระดับความเข้มข้น
-      </button>
-    </div>
-    <div class="col">
-      <div class="form-group mb-0">
-        <label>ระยะสัมผัสเชื้อ</label>
-      </div>
-      <div  v-for="(contactTime, idx) of contactTimes"
-            :key="idx"
-            class="form-row">
-        <FormInput
-          class="col-8 mb-2"
-          input-class="text-right"
-          type="text"
-          @focus="$event.target.select()"
-          v-model="contactTimes[idx]" />
-        <FormSelect
-          class="col-4 pl-0 mb-2"
-          label="name"
-          placeholder="เลือก..."
-          :clearable="false"
-          :searchable="false"
-          :options="contactTimeUnitOptions"
-          v-model="virus" />
-      </div>
-      <button class="btn btn-block btn-sm btn-primary">
-        เพิ่มระยะสัมผัสเชื้อ
-      </button>        
-    </div>
-    <div class="col-12 mt-3">
-      <button class="btn btn-block btn-success">
-        เพิ่มรายการทดสอบ
-      </button>
-    </div> -->
-    <div v-if="isCP" class="w-100 mb-3"></div>
-    <div class="form-group col">
+      v-model.trim="bacteria_name" />
+    <div class="form-group col-5">
       <label>ระดับความเข้มข้น</label>
       <input type="text"
               class="form-control pr-4"
               placeholder="ex. undiluted, 1:200, 1:400, 20%"
               v-model="dilutions"
-              @blur="onDilutionsBlur()"
-              @keyup.enter="parseOutput()">
+              @blur="process_dilutions()">
       <div class="hint">
         <i class="fas fa-question color-text-light"></i>
         <div class="hint-box">
@@ -104,15 +55,14 @@
         </div>
       </div>
     </div>
-    <div  v-if="isCP"
+    <div  v-if="is_CP"
           class="form-group col">
       <label>ระยะหลังการเจือจาง (วัน)</label>
       <input  type="text"
               placeholder="ex. 3, 7, 10"
               class="form-control pr-4"
-              v-model.lazy="dilutionTimes"
-              @blur="onDilutionTimesBlur()"
-              @keyup.enter="parseOutput()">
+              v-model.lazy="dilution_times"
+              @blur="process_dilution_times()">
       <div class="hint">
         <i class="fas fa-question color-text-light"></i>
         <div class="hint-box">
@@ -134,9 +84,8 @@
       <input  type="text"
               class="form-control pr-4"
               placeholder="ex. 0.5, 5, 10"
-              v-model.lazy="contactTimes"
-              @blur="oncontactTimesBlur()"
-              @keyup.enter="parseOutput()">
+              v-model.lazy="contact_times"
+              @blur="process_contact_times()">
       <div class="hint">
         <i class="fas fa-question color-text-light"></i>
         <div class="hint-box">
@@ -153,95 +102,122 @@
         </div>
       </div>
     </div>
-    <div class="form-group col-1 align-items-end d-flex">
+    <div class="form-group col-1">
+      <label></label>
       <button class="btn btn-primary btn-block"
-              :disabled="isVirus && !validFormVirus() || isCP && !validFormBacteria()"
-              @click="parseOutput()">
+              :disabled="is_virus && !valid_form_virus() || is_CP && !valid_form_bacteria()"
+              @click="parse_output()">
         เพิ่ม
       </button>
     </div>
-    <div v-if="!isVirus" class="form-group col-12 d-flex mb-0">
-      <h4 class="text-medium">
+    <div v-if="!is_virus" class="form-group col-12 d-flex mb-0">
+      <h5 class="text-medium">
         (สามารถเพิ่มแบคทีเรียได้อีก
-        <span class="text-primary mx-1">{{ maxBacteria - testCount }}</span>
+        <span class="text-primary mx-1">{{ max_bacteria - test_count }}</span>
         รายการ)
-      </h4>
+      </h5>
     </div>
   </template>
   <div v-else class="form-group col-12 mb-0">
-    <h3 class="text-medium">ท่านได้เพิ่มรายการแบคทีเรียครบถึง 5 รายการแล้ว</h3>
+    <h5 class="text-medium">ท่านได้เพิ่มรายการแบคทีเรียครบถึง 5 รายการแล้ว</h5>
   </div>
+
+  <Modal  modal-id="invalid-input-modal"
+          modal-dialog-class="modal-sm modal-dialog-centered"
+          x-close>
+    <template #modal-header>
+      <h5 class="pr-4">ข้อมูลดังนี้ไม่ตรงตามรูปแบบ และจะถูกระบบลบออก</h5>
+    </template>
+    <template #modal-body>
+      <div class="form-row">
+        <div class="form-group col-12 text-center mb-0">
+          <h4 v-for="invalid of invalid_inputs"
+              :key="invalid">
+            {{ invalid }}
+          </h4>
+        </div>
+      </div>
+      <div class="form-row mt-4">
+        <div class="form-group col-12 mb-0">
+          <button type="button"
+                  class="btn btn-primary btn-block"
+                  data-dismiss="modal">
+            รับทราบ
+          </button>
+        </div>
+      </div>
+    </template>
+  </Modal>
 </div>
 </template>
 
 <script>
+import $ from 'jquery'
 import uniq from 'lodash/uniq'
+import pullAll from 'lodash/pullAll'
 import { DISINFECTANT_TEST_METHODS } from '@/graphql/tests'
 
 export default {
   name: 'form-disinfectant-test-input',
   props: {
-    testType: {
+    test_type: {
       type: String,
       required: true
     },
-    testCount: {
+    test_count: {
       type: Number,
       default: 0
     }
   },
   watch: {
-    testType () {
+    test_type () {
       this.virus = ''
-      this.bacteriaName = ''
+      this.bacteria_name = ''
       this.dilutions = ''
-      this.contactTimes = ''
-      this.dilutionTimes = ''
+      this.contact_times = ''
+      this.dilution_times = ''
     }
   },
   data () {
     return {
       virus: '',
-      bacteriaName: '',
+      bacteria_name: '',
       dilutions: '',
-      contactTimes: '',
-      dilutionTimes: '',
-      maxBacteria: 5,
-      // dilutions: ['', '', ''],
-      // contactTimes: [''],
-      // contactTimeUnits: [''],
-      // dilutionTimes: [''],
-      // contactTimeUnitOptions: [
-      //   'วินาที', 'นาที', 'ชั่วโมง'
-      // ]
+      contact_times: '',
+      dilution_times: '',
+      dilution_arr: [],
+      contact_time_arr: [],
+      dilution_time_arr: [],
+      max_bacteria: 5,
+      invalid_inputs: []
     }
   },
   computed: {
-    isVirus () {
-      return this.testType === 'ไวรัส'
+    is_virus () {
+      return this.test_type === 'ไวรัส'
     },
-    isCP () {
-      return this.testType === 'CP'
+    is_CP () {
+      return this.test_type === 'แบคทีเรีย (CP Protocol)'
     },
-    dilutionArr () {
-      return this.process(this.dilutions.toLowerCase())
+    /* dilution_arr () {
+      return this.clean_and_split(this.dilutions.toLowerCase())
         .filter( s => /^([1-9]\d*:(0|[1-9]\d*)|([1-9][0-9]?|100)%|undiluted)$/.test(s) )
         // Matches x:y, z%, or undiluted, no 0s, no leading 0s
     },
-    contactTimeArr () {
-      return this.process(this.contactTimes)
+    contact_time_arr () {
+      return this.clean_and_split(this.contact_times)
         .filter( s => /^((0|[1-9]\d*)(\.\d*[1-9])?)$/.test(s) )
         //.filter( s => /^((0|[1-9]\d*)(\.\d*[1-9])?(วินาที|นาที))$/.test(s) )
         // Matches x, x.y, no leading and trailing 0s
     },
-    dilutionTimeArr () {
-      return this.process(this.dilutionTimes)
+    dilution_time_arr () {
+      return this.clean_and_split(this.dilution_times)
         .filter( s => /^[1-9]\d*$/.test(s) )
         // Matches x, no leading 0s
-    }
+    } */
   },
   methods: {
-    process (str) {
+    clean_and_split (str) {
       return uniq(str
         .split(',')
         .map(s => s.trim())
@@ -249,134 +225,163 @@ export default {
       )
     },
 
-    onDilutionsBlur () {
-      this.dilutions = this.dilutionArr.join(', ')
+    process_dilutions () {
+      this.dilution_arr = this.clean_and_split(this.dilutions)
+      for (const dilution of this.dilution_arr) {
+        if (! /^([1-9]\d*:(0|[1-9]\d*)|([1-9][0-9]?|100)%|undiluted)$/.test(dilution))
+        this.invalid_inputs.push(dilution)
+      }
+      if (this.invalid_inputs.length > 0) {
+        pullAll(this.dilution_arr, this.invalid_inputs)
+        $('#invalid-input-modal').on('hidden.bs.modal', () => this.invalid_inputs = [] )
+        $('#invalid-input-modal').modal('show')
+      }
+      this.dilutions = this.dilution_arr.join(', ')
     },
-    oncontactTimesBlur () {
-      this.contactTimes = this.contactTimeArr.join(', ')
+    process_contact_times () {
+      this.contact_time_arr = this.clean_and_split(this.contact_times)
+      for (const contact_time of this.contact_time_arr) {
+        if (! /^((0|[1-9]\d*)(\.\d*[1-9])?)$/.test(contact_time))
+        this.invalid_inputs.push(contact_time)
+      }
+      if (this.invalid_inputs.length > 0) {
+        pullAll(this.contact_time_arr, this.invalid_inputs)
+        $('#invalid-input-modal').on('hidden.bs.modal', () => this.invalid_inputs = [] )
+        $('#invalid-input-modal').modal('show')
+      }
+      this.contact_times = this.contact_time_arr.join(', ')
     },
-    onDilutionTimesBlur () {
-      this.dilutionTimes = this.dilutionTimeArr.join(', ')
+    process_dilution_times () {
+      this.dilution_time_arr = this.clean_and_split(this.dilution_times)
+      for (const dilution_time of this.dilution_time_arr) {
+        if (! /^[1-9]\d*$/.test(dilution_time))
+        this.invalid_inputs.push(dilution_time)
+      }
+      if (this.invalid_inputs.length > 0) {
+        pullAll(this.dilution_time_arr, this.invalid_inputs)
+        $('#invalid-input-modal').on('hidden.bs.modal', () => this.invalid_inputs = [] )
+        $('#invalid-input-modal').modal('show')
+      }
+      this.dilution_times = this.dilution_time_arr.join(', ')
     },
 
-    parseOutput () {
-      if (this.testType === 'ไวรัส') {
-        this.parseOutputVirus()
-      } else if (this.testType === 'แบคทีเรีย') {
-        this.parseOutputBacteria()
-      } else if (this.testType === 'CP') {
-        this.parseOutputCP()
+    parse_output () {
+      if (this.is_virus) {
+        this.parse_output_virus()
+      } else if (this.is_CP) {
+        this.parse_output_CP()
+      } else {
+        this.parse_output_bacteria()
       }
     },
 
-    parseOutputVirus () {
-      if (!this.validFormVirus()) return
+    parse_output_virus () {
+      if (!this.valid_form_virus()) return
 
-      const numTests = this.dilutionArr.length * this.contactTimeArr.length
-      const price = this.virus.price
-      const totalPrice = price * numTests
+      const test_count = this.dilution_arr.length * this.contact_time_arr.length
+      const price = this.virus.price * test_count
 
-      const parsedOutput = {}
-      parsedOutput[this.virus.test_key] = {
-        displayName: this.virus.display_name,
-        dilutions: this.dilutionArr,
-        contactTimes: this.contactTimeArr,
-        cellName: this.virus.cell_name,
+      const parsed_output = {}
+      parsed_output[this.virus.test_key] = {
+        display_name: this.virus.display_name,
+        dilutions: this.dilution_arr,
+        contact_times: this.contact_time_arr,
+        cell_name: this.virus.cell_name,
         price: price,
-        totalPrice: totalPrice,
-        numTests: numTests
+        test_count: test_count
       }
       this.virus = null
-      this.$emit('add', parsedOutput)
+      this.$emit('add', parsed_output)
     },
-    parseOutputBacteria () {
-      if (!this.validFormBacteria()) return
+    parse_output_bacteria () {
+      if (!this.valid_form_bacteria()) return
 
-      const numTests = this.dilutionArr.length * this.contactTimeArr.length
-      const price = 3000
-      const totalPrice = price * numTests
+      const test_count = this.dilution_arr.length * this.contact_time_arr.length
+      const price = 3000 * test_count
 
-      const parsedOutput = {}
-      parsedOutput[this.bacteriaName] = {
-        displayName: this.bacteriaName,
-        dilutions: this.dilutionArr,
-        contactTimes: this.contactTimeArr,
+      const parsed_output = {}
+      parsed_output[this.bacteria_name] = {
+        display_name: this.bacteria_name,
+        dilutions: this.dilution_arr,
+        contact_times: this.contact_time_arr,
         price: price,
-        totalPrice: totalPrice,
-        numTests: numTests
+        test_count: test_count
       }
-      this.$emit('add', parsedOutput)
-      this.bacteriaName = ''
+      this.$emit('add', parsed_output)
+      this.bacteria_name = ''
     },
-    parseOutputCP () {
+    parse_output_CP () {
       if (!this.validFormCP()) return
 
-      const numTests = this.dilutionArr.length * this.contactTimeArr.length * this.dilutionTimeArr.length
-      const price = 3000
-      const totalPrice = price * numTests
+      const test_count = this.dilution_arr.length * this.contact_time_arr.length * this.dilution_time_arr.length
+      const price = 3000 * test_count
 
-      const parsedOutput = {}
-      parsedOutput[this.bacteriaName] = {
-        displayName: this.bacteriaName,
-        dilutions: this.dilutionArr,
-        contactTimes: this.contactTimeArr,
-        dilutionTimes: this.dilutionTimeArr,
+      const parsed_output = {}
+      parsed_output[this.bacteria_name] = {
+        display_name: this.bacteria_name,
+        dilutions: this.dilution_arr,
+        contact_times: this.contact_time_arr,
+        dilution_times: this.dilution_time_arr,
         price: price,
-        totalPrice: totalPrice,
-        numTests: numTests
+        test_count: test_count
       }
-      this.$emit('add', parsedOutput)
-      this.bacteriaName = ''
+      this.$emit('add', parsed_output)
+      this.bacteria_name = ''
     },
 
-    validFormVirus () {
+    valid_form_virus () {
       return (
         this.virus &&
         this.dilutions &&
-        this.contactTimes &&
-        this.dilutionArr.length > 0 &&
-        this.contactTimeArr.length > 0
+        this.contact_times &&
+        this.dilution_arr.length > 0 &&
+        this.contact_time_arr.length > 0
       )
     },
-    validFormBacteria () {
+    valid_form_bacteria () {
       return (
-        this.bacteriaName &&
+        this.bacteria_name &&
         this.dilutions &&
-        this.contactTimes &&
-        this.dilutionArr.length > 0 &&
-        this.contactTimeArr.length > 0
+        this.contact_times &&
+        this.dilution_arr.length > 0 &&
+        this.contact_time_arr.length > 0
       )
     },
     validFormCP () {
       return (
-        this.bacteriaName &&
+        this.bacteria_name &&
         this.dilutions &&
-        this.contactTimes &&
-        this.dilutionTimes &&
-        this.dilutionArr.length > 0 &&
-        this.contactTimeArr.length > 0 &&
-        this.dilutionTimeArr.length > 0
+        this.contact_times &&
+        this.dilution_times &&
+        this.dilution_arr.length > 0 &&
+        this.contact_time_arr.length > 0 &&
+        this.dilution_time_arr.length > 0
       )
     },
-    useCP () {
+    use_CP () {
       this.dilutions = '1:200, 1:400'
-      this.dilutionTimes = '1, 2, 7'
-      this.contactTimes = '0.5, 2, 60'
-      this.bacteriaName = 'E.Coli'
-      this.parseOutput()
-      this.bacteriaName = 'Salmonella'
-      this.parseOutput()
+      this.dilution_times = '1, 2, 7'
+      this.contact_times = '0.5, 2, 60'
+      this.process_dilutions()
+      this.process_dilution_times()
+      this.process_contact_times()
+
+      this.bacteria_name = 'E.Coli'
+      this.parse_output()
+      this.bacteria_name = 'Salmonella'
+      this.parse_output()
+      
       this.dilutions = ''
-      this.dilutionTimes = ''
-      this.contactTimes = ''
+      this.dilution_times = ''
+      this.contact_times = ''
     }
   },
   apollo: {
-    disinfectantVirusList: {
+    disinfectant_virus_list: {
       query: DISINFECTANT_TEST_METHODS,
       update: data => data.test_method_disinfectant_virus_get.result,
       skip () {
-        return !this.isVirus
+        return !this.is_virus
       }
     }
   }

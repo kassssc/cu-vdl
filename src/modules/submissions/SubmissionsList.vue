@@ -1,163 +1,165 @@
 <template>                                                            
-<div v-if="currUser" class="page page-xxl d-flex align-items-start">
+<div v-if="auth" class="page page-xxl d-flex align-items-start">
   <div class="sidebar content-height"
-       :class="{'folded': sidebarFolded}">
+       :class="{'folded': sidebar_folded}">
     <button class="btn btn-transparent fold-btn align-self-end"
-            @click="toggleSidebar()">
+            @click="toggle_sidebar()">
       <i class="fas fa-chevron-left"
-         :class="{'flip-x': sidebarFolded}"/>
+         :class="{'flip-x': sidebar_folded}"/>
     </button>
     <div class="content">
       <h6 class="mb-1 text-medium">ค้นหาด้วยหมายเลขการส่ง</h6>
       <SearchInput
         class="d-block"
         placeholder="ใส่หมายเลขการส่ง..."
-        @debounced-search="search($event)" />
-      <template v-if="currUser.isAdmin">
+        @search="search($event)" />
+      <!-- <template v-if="auth.is_admin">
         <h6 class="mb-1 mt-3 text-medium">กรองโดยผู้ส่ง</h6>
         <FormSelect
           class="mb-2"
-          v-model="activeSubmitterFilter"
+          v-model="active_submitter_filter"
           label="name"
           placeholder="ค้นหาผู้ส่ง..."
-          :reduce="opt => opt.index"
-          :get-option-label="opt => `${opt.title}${opt.first_name} ${opt.last_name}`"
+          :reduce="o => o.index"
+          :get-option-label="o => o.default_contact.name"
           :options="users"
-          @input="filterBySubmitter($event)" />
-      </template>
+          @input="filter_by_submitter($event)" />
+      </template> -->
       <template>
-        <h6 class="mb-1 mt-3 text-medium">กรองโดยองค์กรเจ้าของ</h6>
+        <h6 class="mb-1 mt-3 text-medium">กรองโดยบุคคล/องค์กรที่เกี่ยวข้อง</h6>
         <FormSelect
           class="mb-2"
           label="name"
-          placeholder="ค้นหาองค์กร..."
-          :reduce="option => option.index"
-          :get-option-label="option => option.name"
-          :options="selectOrgs"
-          v-model="activeOrgFilter"
-          @input="filterByOrg($event)" />
+          placeholder="ค้นหา..."
+          :reduce="o => o.index"
+          :options="contact_list"
+          v-model="active_contact_filter"
+          @input="filter_by_contact($event)" />
       </template>
       <h6 class="mb-1 mt-4 text-medium">สถานะการส่งตัวอย่าง</h6>
       <div class="d-flex flex-column">
         <button class="filter-btn btn btn-sm btn-block text-left primary"
-                :class="{'active': activeStatusFilter === 0}"
-                @click="filterByStatus(0)">
-          <i  v-if="activeStatusFilter === 0"
+                :class="{'active': active_status_filter === null}"
+                :disabled="active_status_filter === null"
+                @click="filter_by_status(null)">
+          <i  v-if="active_status_filter === null"
               class="fas fa-check btn-inner-icon" />
           <div v-else class="small-square mr-1" />
           ทั้งหมด
         </button>
-        <!-- <button v-for="filter of submissionStatuses"
-                :key="filter.id"
+        <button v-for="filter of submission_statuses"
+                :key="filter"
                 class="filter-btn btn btn-sm btn-block text-left"
                 :class="[
-                  submissionStatusColor[filter.id].color,
-                  {'active': activeStatusFilter === filter.id}
+                  submission_status_colors[filter],
+                  {'active': active_status_filter === filter}
                 ]"
-                @click="filterByStatus(filter.id)">
-          <i  v-if="activeStatusFilter === filter.id"
+                :disabled="active_status_filter === filter"
+                @click="filter_by_status(filter)">
+          <i  v-if="active_status_filter === filter"
               class="fas fa-check btn-inner-icon" />
           <div  v-else
                 class="small-square mr-1"
-                :class="submissionStatusColor[filter.id].color" />
-          {{ filter.label }}
-        </button> -->
+                :class="submission_status_colors[filter]" />
+          {{ filter }}
+        </button>
       </div>
-      <h6 class="mb-1 mt-4 text-medium">สถานะการชำระค่าใช่จ่าย</h6>
+      <!-- <h6 class="mb-1 mt-4 text-medium">สถานะการชำระค่าใช่จ่าย</h6>
       <div class="d-flex flex-column">
         <button class="filter-btn btn btn-sm btn-block text-left primary"
-                :class="{'active': activeInvoiceStatusFilter === 0}"
-                @click="filterByInvoiceStatus(0)">
-          <i  v-if="activeInvoiceStatusFilter === 0"
+                :class="{'active': active_invoice_status_filter === 0}"
+                @click="filter_by_invoice_status(0)">
+          <i  v-if="active_invoice_status_filter === 0"
               class="fas fa-check btn-inner-icon" />
           <div v-else class="small-square mr-1" />
           ทั้งหมด
         </button>
-        <!-- <button v-for="filter of submissionInvoiceStatuses"
-                :key="filter.id"
+        <button v-for="filter of invoice_statuses"
+                :key="filter"
                 class="filter-btn btn btn-sm btn-block text-left"
                 :class="[
-                  submissionInvoiceStatusData[filter.id].color,
-                  {'active': activeInvoiceStatusFilter === filter.id}
+                  invoice_status_colors[filter],
+                  {'active': active_invoice_status_filter === filter}
                 ]"
-                @click="filterByInvoiceStatus(filter.id)">
-          <i  v-if="activeInvoiceStatusFilter === filter.id"
+                @click="filter_by_invoice_status(filter)">
+          <i  v-if="active_invoice_status_filter === filter"
             class="fas fa-check btn-inner-icon" />
           <div  v-else
                 class="small-square mr-1"
-                :class="submissionInvoiceStatusData[filter.id].color" />
-          {{ filter.label }}
-        </button> -->
-      </div>
+                :class="invoice_status_colors[filter]" />
+          {{ filter }}
+        </button>
+      </div> -->
     </div>
   </div>
 
   <div class="flex-1 d-flex flex-column align-items-center content-height pl-4 border-l">
     <div id="table-container" class="w-100 scroll-container">
       <transition name="fade">
-        <table  v-if="!$apollo.queries.submissions.loading"
+        <table  v-if="!loading"
                 key="submissions">
           <thead>
             <tr>
               <th>
+                เลขที่ส่ง<div class="shadow-th"></div>
+              </th>
+              <th>
                 สถานะ<div class="shadow-th"></div>
               </th>
               <th>
-                Invoice<div class="shadow-th"></div>
-              </th>
-              <th>
-                เลขที่ส่ง<div class="shadow-th"></div>
+                สถานะ Invoice<div class="shadow-th"></div>
               </th>
               <th>
                 วันที่ส่ง<div class="shadow-th"></div>
               </th>
-              <th v-if="currUser.isAdmin">
-                ชื่อผู้ส่ง<div class="shadow-th"></div>
+              <th v-if="auth.is_admin">
+                ผู้ส่งตัวอย่าง<div class="shadow-th"></div>
               </th>
               <th>
-                องค์กรเจ้าของ<div class="shadow-th"></div>
+                เจ้าของตัวอย่าง<div class="shadow-th"></div>
               </th>
               <th>
-                ประเภทการตรวจ<div class="shadow-th"></div>
+                ประเภทการทดสอบ<div class="shadow-th"></div>
               </th>
               <th>
-                ใบส่งตัวอย่าง<div class="shadow-th"></div>
+                จำนวน Report<div class="shadow-th"></div>
               </th>
             </tr>
           </thead>
           <tbody>
             <router-link  :to="{
-                            name: 'viewsubmission',
-                            params: { id: submission.backend_key }
+                            name: 'view-submission',
+                            params: {
+                              id: resolve_key(submission)
+                            }
                           }"
                           tag="tr"
                           class="clickable"
                           v-for="submission of submissions"
                           :key="submission.backend_key">
               <td>
+                <div class="my-1">{{ resolve_key(submission) }}</div>
+              </td>
+              <td>
                 <ColorTag
-                  :color="submissionStatusColor[submission.submission_status]"
+                  :color="submission_status_colors[submission.submission_status]"
                   :label="submission.submission_status" />
               </td>
               <td>
-                <!-- <ColorTag
-                  :color="submissionInvoiceStatusData[row.invoiceStatus].color"
-                  :label="submissionInvoiceStatusData[row.invoiceStatus].label" /> -->
+                <ColorTag
+                  :color="invoice_status_colors[submission.invoice.invoice_status] || 'grey'"
+                  :label="submission.invoice.invoice_status || 'ยังไม่ออก Invoice'" />
               </td>
-              <td>{{ submission.backend_key }}</td>
-              <td>{{ parseDate(submission.submit_date) }}</td>
-              <td v-if="currUser.isAdmin">{{ `${submission.submitter[0].title}${submission.submitter[0].first_name} ${submission.submitter[0].last_name}` }}</td>
-              <td>{{ submission.sample_owner_name }}</td>
+              <td>{{ to_display_date(submission.submission_submit_date) }}</td> 
+              <td v-if="auth.is_admin">{{ submission.submitter? submission.submitter.name : '' }}</td>
+              <td>{{ submission.sample_owner? submission.sample_owner.name : '' }}</td>
               <td>
                 <ColorTag
-                  :color="submissionTypeColor[submission.submission_type]"
+                  :color="submission_type_colors[submission.submission_type]"
                   :label="submission.submission_type" />
               </td>
               <td>
-                <button class="btn btn-transparent btn-icon"
-                        @click.stop="download()">
-                  <i class="fas fa-file-pdf"></i>
-                </button>
+                <h5>{{ submission.reports.length > 0? submission.reports.length : '-' }}</h5>
               </td>
             </router-link>
           </tbody>
@@ -195,129 +197,150 @@
 </template>
 
 <script>
-import moment from 'moment/src/moment'
-import { getJWT } from '@/vue-apollo'
+import { get_jwt } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
 import { SUBMISSION_LIST } from '@/graphql/submission'
-import { USERS_LIST, USER_ORGS } from '@/graphql/user'
-import { ORGS_LIST } from '@/graphql/org'
+import { USERS_LIST, USER_DETAIL } from '@/graphql/user'
+import { CONTACTS_LIST } from '@/graphql/contact'
 
 export default {
   name: 'submissions-list',
   computed: {
-    selectOrgs () {
-      return this.currUser.isAdmin? this.allOrgs : this.submitterOrgs
+    contact_list () {
+      if (this.auth.is_admin) {
+        return this.all_contacts
+      } else if (this.user_detail) {
+        return [...this.user_detail.contact_list, this.user_detail.default_contact ]
+      }
+      return []
     }
   },
   data () {
     return {
-      activeStatusFilter: 0,
-      activeInvoiceStatusFilter: 0,
-      activeSubmitterFilter: null,
-      activeOrgFilter: null,
-      sidebarFolded: false,
-      submissionTypeColor: {
-        'การตรวจทั่วไป': 'teal',
+      loading: true,
+      search_query: null,
+      active_status_filter: null,
+      active_invoice_status_filter: null,
+      active_submitter_filter: null,
+      active_contact_filter: null,
+      sidebar_folded: false,
+      submission_type_colors: {
+        'การตรวจทั่วไป': 'primary',
         'ทดสอบประสิทธิภาพยาฆ่าเชื้อ': 'blue'
       },
-      submissionStatusColor: {
+      submission_status_colors: {
         'ส่งแล้ว': 'grey',
-        'กำลังดำเนินการ': 'orange',
+        'กำลังดำเนินการ': 'yellow',
         'เสร็จสิ้น': 'green',
         'ยกเลิก': 'red',
       },
-      table: {
-        head: [
-          'สถานะ',
-          'การชำระเงิน',
-          'เลขที่ส่ง',
-          'วันที่ส่ง',
-          'ประเภทการตรวจ',
-          'ผู้จัดส่ง',
-          'องค์กร',
-          'ใบส่งตัวอย่าง',
-        ]
-      }
+      submission_statuses: [
+        'ส่งแล้ว',
+        'กำลังดำเนินการ',
+        'เสร็จสิ้น',
+        'ยกเลิก',
+      ],
+      invoice_statuses: [
+        'ยังไม่ออก Invoice',
+        'รอการชำระเงิน',
+        'ชำระเงินแล้ว',
+      ],
+      invoice_status_colors: {
+        'ยังไม่ออก Invoice': 'grey',
+        'รอการชำระเงิน': 'yellow',
+        'ชำระเงินแล้ว': 'green'
+      },
     }
   },
   methods: {
-    filterByStatus (filterId) {
-      this.activeStatusFilter = filterId
+    resolve_key (submission) {
+      if (submission.BestLIMS_key) {
+        return submission.BestLIMS_key
+      }
+      return submission.backend_key
     },
-    filterByInvoiceStatus (filterId) {
-      this.activeInvoiceStatusFilter = filterId
+    filter_by_status (filter) {
+      this.loading = true
+      this.active_status_filter = filter
     },
-    filterBySubmitter (filterId) {
+    filter_by_invoice_status (filter) {
+      this.active_invoice_status_filter = filter
     },
-    filterByOrg (filterId) {
+    filter_by_submitter (filter) {
+    },
+    filter_by_contact (filter) {
+      this.loading = true
+      this.active_contact_filter = filter
     },
     search (query) {
+      this.loading = true
+      this.search_query = query
     },
-    toggleSidebar () {
-      this.sidebarFolded = !this.sidebarFolded
+    toggle_sidebar () {
+      this.sidebar_folded = !this.sidebar_folded
     },
     download () {
 
     },
-    parseDate(epoch) {
-      return moment(new Date(parseInt(epoch))).format("DD/MM/YY")
-    },
   },
   apollo: {
-    currUser: {
+    auth: {
       query: AUTH_DATA,
-      update: data => data.auth
+      update: data => data.auth,
+    },
+    user_detail: {
+      query: USER_DETAIL,
+      variables () {
+        return {
+          jwt: get_jwt()
+        }
+      },
+      update: data => data.get_backuser.result
     },
     users: {
       query: USERS_LIST,
       variables () {
         return {
-          jwt: getJWT(),
-          searchQuery: '',
+          jwt: get_jwt(),
+          search_query: '',
           accountActive: true
         }
       },
       update: data => data.search_backuser.result,
       skip () {
-        return !this.currUser || !this.currUser.isAdmin
+        return !this.auth || !this.auth.is_admin
       }
     },
     submissions: {
       query: SUBMISSION_LIST,
       variables () {
         return {
-          jwt: getJWT(),
-          pageNumber: 1,
-          nPerPage: 20
+          jwt: get_jwt(),
+          search_query: this.search_query,
+          contact: this.active_contact_filter,
+          submission_status: this.active_status_filter
         }
       },
-      update: data => data.search_submission.result
-    },
-    allOrgs: {
-      query: ORGS_LIST,
-      variables () {
-        return {
-          jwt: getJWT(),
-          searchQuery: '',
-          orgType: null
-        }
+      update: data => data.search_submission.result,
+      debounce: 200,
+      result () {
+        this.loading = false
       },
-      update: data => data.search_org.result,
       skip () {
-        return !this.currUser || !this.currUser.isAdmin
+        return !this.user_detail
       }
     },
-    submitterOrgs: {
-      query: USER_ORGS,
+    all_contacts: {
+      query: CONTACTS_LIST,
       variables () {
         return {
-          jwt: getJWT(),
-          index: [this.currUser.index]
+          jwt: get_jwt(),
+          search_query: ''
         }
       },
-      update: data => data.get_backuser.result[0].submitter_of,
+      update: data => data.search_contact.result,
       skip () {
-        return !this.currUser || this.currUser.isAdmin
+        return !this.auth || !this.auth.is_admin
       }
     }
   }

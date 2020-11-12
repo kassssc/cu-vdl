@@ -1,168 +1,122 @@
 <template>
-<div class="sub-nav-content content-height">
-  <div class="row">
+<div class="page page-sm py-4 pl-0 pr-3 content-height-with-subnav scroll-container">
+  <div class="row mb-2">
     <div class="col-12">
-      <h3 class="mb-4">
-        <i class="fas fa-user-plus icon-lg mr-1"></i>
-        สร้าง Account ตัวแทนส่งตัวอย่าง
-      </h3>
+      <h4>
+        <i class="fas fa-user-plus mr-1"></i>
+        สร้าง Account
+      </h4>
     </div>
   </div>
 
   <div class="font-chatthai">
     <div class="row py-3 border-b">
-      <div class="col-lg-2 col-10">
-        <h4>ข้อมูลส่วนตัว</h4>
+      <div class="col-md-3 col-12">
+        <h4>ประเภท Account</h4>
       </div>
-      <div class="col-lg-7 col-10">
+      <div class="col-md-9 col-lg-8 col-12">
         <div class="form-row">
-          <FormSelect
-            class="col-2"
-            form-label="คำนำหน้า"
-            :clearable="false"
-            :searchable="false"
-            required
-            :options="nameTitles"
-            v-model="userFormData.title" />
-          <FormInput
-            class="col-4"
-            label="ชื่อจริง"
-            type="text"
-            required
-            v-model="userFormData.firstName" />
-          <FormInput
-            class="col-6"
-            label="นามสกุล"
-            type="text"
-            required
-            v-model="userFormData.lastName" />
-          <FormFileUpload
+          <FormInlineSelect
             class="col-12"
-            label="สำเนาบัตรประชาชน"
-            required />
+            :btn-class-list="['purple', 'pink']"
+            :options="['ผู้ส่งตัวอย่าง', 'แอดมิน']"
+            @change="on_account_type_change()"
+            v-model="account_type" />
         </div>
       </div>
     </div>
+
+    <transition name="fade-no-delay">
+      <div v-if="!creating_admin" class="row py-3 border-b">
+        <div class="col-md-3 col-12">
+          <h4>ข้อมูลเบื้องต้น</h4>
+        </div>
+        <div class="col-md-9 col-lg-8 col-12">
+          <div class="form-row">
+            <FormInlineSelect
+              class="col-12"
+              label="ประเภท Contact"
+              :btn-class-list="['orange', 'red']"
+              :options="['บุคคล', 'องค์กร']"
+              v-model="form.contact_type" />
+            <FormContactNameInput
+              class="col-12 p-0"
+              :contact-type="form.contact_type"
+              v-model="form.name" />
+            <FormAddressInput
+              class="col-12 p-0"
+              v-model="form.address" />
+          </div>
+        </div>
+      </div>
+    </transition>
+
+    <transition name="fade-no-delay">
+      <div v-if="!creating_admin" class="row py-3 border-b">
+        <div class="col-md-3 col-12">
+          <h4>ข้อมูลภาษาอังกฤษ</h4>
+        </div>
+        <div class="col-md-9 col-lg-8 col-12">
+          <div class="form-row">
+            <div class="form-group col-9">
+              <checkbox
+                label="เพิ่มข้อมูลภาษาอังกฤษ"
+                label-class="label-lg"
+                secondary-label="(ใช้เมื่อต้องการออกรายงานเป็นภาษาอังกฤษ)"
+                @input="on_english_toggle($event)"
+                v-model="include_english" />
+            </div>
+          </div>
+          <div  v-if="include_english"
+                class="form-row">
+            <FormContactNameInput
+              class="col-12 p-0"
+              :contact-type="form.contact_type"
+              english
+              v-model="form.name_eng" />
+            <FormAddressInput
+              class="col-12 p-0"
+              english
+              v-model="form.address_eng" />
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <div class="row py-3 border-b">
-      <div class="col-lg-2 col-10">
-        <h4>ที่อยู่</h4>
+      <div class="col-md-3 col-12">
+        <h4>{{ creating_admin? 'ข้อมูลแอดมิน' : 'ข้อมูลติดต่อ' }}</h4>
       </div>
-      <div class="col-lg-7 col-10">
+      <div class="col-md-9 col-lg-8 col-12">
         <div class="form-row">
           <FormInput
-            class="col-12 mb-2"
-            label="เลขที่ ซอย ถนน"
+            v-if="creating_admin"
+            class="col-12"
+            label="ชื่อ Account"
             type="text"
             required
-            v-model="userFormData.addr1" />
+            v-model="form.name" />
           <FormInput
-            class="col-12 mb-2"
-            label="แขวง เขต / ตำบล อำเภอ"
+            class="col"
+            label="อีเมล (ใช้สำหรับ login)"
             type="text"
             required
-            v-model="userFormData.addr2" />
-          <FormInput
-            class="col-4"
-            label="เมือง"
-            type="text"
-            v-model="userFormData.city" />
-          <FormSelect
-            class="col-4"
-            form-label="จังหวัด"
-            :clearable="false"
+            v-model="form.email" />
+          <FormPhoneInput
+            class="col"
             required
-            :options="provinces"
-            v-model="userFormData.province" />
-          <FormInput
-            class="col-4"
-            label="รหัสไปรษณีย์"
-            type="text"
-            maxlength="5"
-            required
-            v-model="userFormData.zip" />
+            v-model="form.phone" />
         </div>
       </div>
     </div>
 
-    <div class="row py-3 border-b">
-      <div class="col-lg-2 col-10">
-        <h4>ข้อมูลติดต่อ</h4>
-      </div>
-      <div class="col-lg-7 col-10">
+    <div class="row py-4 font-cu">
+      <div class="col-md-3 col-12"></div>
+      <div class="col-md-9 col-lg-8 col-12">
         <div class="form-row">
-          <FormInput
-            class="col"
-            label="อีเมล"
-            type="text"
-            required
-            v-model="userFormData.email" />
-          <FormInput
-            class="col"
-            label="หมายเลขโทรศัพท์"
-            type="text"
-            maxlength="10"
-            required
-            v-model="userFormData.phone"
-            @focus="unformatPhone()"
-            @blur="formatPhone()" />
-        </div>
-      </div>
-    </div>
-
-    <div class="row py-3 border-b">
-      <div class="col-lg-2 col-10">
-        <h4>ตั้งรหัสผ่านชั่วคราว</h4>
-      </div>
-      <div class="col-lg-7 col-10">
-        <div class="form-row">
-          <FormInput
-            class="col"
-            label="รหัสผ่าน"
-            type="text"
-            required
-            v-model="userFormData.password" />
-          <FormInput
-            class="col"
-            label="ยืนยันรหัสผ่าน"
-            type="text"
-            required
-            v-model="userFormData.confirmPassword" />
-          
-        </div>
-      </div>
-    </div>
-
-    <div class="row py-3 border-b">
-      <div class="col-lg-2 col-10">
-        <h4>องค์กรที่เป็นตัวแทน</h4>
-      </div>
-      <div class="col-lg-7 col-10">
-        <div class="form-row">
-          <FormSelect
-            class="col"
-            form-label="เลือกอย่างน้อย 1 องค์กร"
-            label="name"
-            placeholder="ค้นหาและเลือกได้หลายองค์กร..."
-            :multiple="true"
-            :close-on-select="false"
-            :reduce="option => option.index"
-            :get-option-label="option => option.name"
-            :options="orgSelect"
-            required
-            v-model="userFormData.submitterOf" />
-        </div>
-      </div>
-
-    </div>
-
-    <div class="row py-3">
-      <div class="col-lg-2 col-12"></div>
-      <div class="col-lg-7 col-12">
-        <div class="form-row">
-          <div class="form-group col-6">
-            <button class="btn btn-primary btn-block loading"
-                    @click="createUser()"
+          <div class="form-group col-12 mb-0">
+            <button class="btn btn-primary btn-block loading btn-lg"
+                    @click="submit_create_user()"
                     :disabled="submitting">
               <template v-if="submitting">
                 <LoadingAnimation />
@@ -172,109 +126,91 @@
                 สร้าง Account
               </template>
             </button>
+            <ErrorBox v-if="form_error" :msg="form_error" />
           </div>
         </div>
       </div>
     </div>
+    
   </div>
 
 </div>
 </template>
 
 <script>
-import { getJWT } from '@/vue-apollo'
+import { get_jwt } from '@/vue-apollo'
 import { CREATE_USER } from '@/graphql/user'
-import { ORGS_LIST } from '@/graphql/org'
 
 export default {
   name: 'admin-create-user',
+  computed: {
+    creating_admin () {
+      return this.account_type === 'แอดมิน'
+    }
+  },
   data () {
     return {
+      form_error: null,
       submitting: false,
-      userFormData: {
-        submitterOf: [],
-        title: '',
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        password: '',
-        confirmPassword: '',
-        //nationalId: null
+      account_type: 'ผู้ส่งตัวอย่าง',
+      include_english: false,
+      form: {
+        contact_type: 'บุคคล',
+        email: null,
+        phone: null,
+        name: null,
+        address: null,
+        name_eng: null,
+        address_eng: null,
       },
-      nameTitles: [
-        'นาย',
-        'นาง',
-        'น.ส.',
-        'น.สพ.',
-        'สพ.ญ.',
-        'ดร.',
-        'ผศ.',
-        'รศ.',
-        'ศ.'
-      ]
+      account_type_map: {
+        'ผู้ส่งตัวอย่าง': 201,
+        'แอดมิน': 101
+      }
     }
   },
   methods: {
-    async createUser () {
+    on_english_toggle (english) {
+      if (!english) {
+        this.form.name_eng = ''
+        this.form.nameAddress = ''
+      }
+    },
+    on_account_type_change () {
+      this.form.name = null
+    },
+    valid_form () {
+      const form_filled = this.form.email && this.form.phone && this.form.name && this.form.address
+      const english_info_valid = !this.include_english || (this.form.name_eng && this.form.address_eng)
+      return form_filled && english_info_valid
+    },
+    async submit_create_user () {
+      if (!this.valid_form()) {
+        this.form_error = 'กรุณากรอกข้อมูลให้ครบ'
+        return
+      }
       this.submitting = true
-      // form validation
-      const {
-        password,
-        submitterOf,
-        title,
-        firstName,
-        lastName,
-        email,
-        phone,
-      } = this.userFormData
+      const account_type = this.account_type_map[this.account_type]
       try {
         let res = await this.$apollo.mutate({
           mutation: CREATE_USER,
           variables: {
-            jwt: getJWT(),
-            password,
-            submitterOf,
-            title,
-            firstName,
-            lastName,
-            email,
-            phone,
+            jwt: get_jwt(),
+            account_type,
+            ...this.form
           }
         })
-        const newUserIndex = res.data.create_backuser.result.index
+        const new_user_index = res.data.create_backuser.result.index
         this.$router.push({
           name: 'admin-users-list',
-          params: { id: newUserIndex }
+          params: { id: new_user_index }
         })
       } catch (err) {
         console.log(err)
         this.submitting = false
+        this.form_error = 'ระบบขัดข้อง กรุณาลองใหม่ในภายหลัง'
       }
-    },
-    formatPhone () {
-      let cleaned = ('' + this.userFormData.phone).replace(/\D/g, '')
-      let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-      if (match) {
-        this.userFormData.phone = match[1] + '-' + match[2] + '-' + match[3]
-      }
-      return null
-    },
-    unformatPhone () {
-      this.userFormData.phone = this.userFormData.phone.replace(/-/g, '')
     }
   },
-  apollo: {
-    orgSelect: {
-      query: ORGS_LIST,
-      variables () {
-        return {
-          jwt: getJWT(),
-          searchQuery: ''
-        }
-      },
-      update: data => data.search_org.result
-    }
-  }
 }
 </script>

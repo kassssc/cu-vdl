@@ -25,7 +25,7 @@
   <slot name="label"></slot>
   <input type="checkbox"
          :checked="value"
-         @input="onChange($event.target.checked)"
+         @input="on_change($event.target.checked)"
          class="hidden-input"
          :disabled="disabled" >
 </div>
@@ -61,8 +61,8 @@ export default {
     }
   },
   methods: {
-    onChange (newVal) {
-      this.$emit('input', newVal)
+    on_change (new_val) {
+      this.$emit('input', new_val)
       this.$emit('change')
     }
   }

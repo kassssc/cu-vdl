@@ -1,6 +1,6 @@
 <template>
-<div class="method-selection-box border-b py-2 mb-4">
-  <div  v-for="(tests, category) in testMethodsByCategory"
+<div class="border-b py-2 mb-4">
+  <div  v-for="(tests, category) in test_methods_by_category"
         :key="category"
         class="row no-gutters test-row">
     <div class="col-2 px-2 text-dark">
@@ -14,34 +14,34 @@
           <checkbox :label="test.display_name"
                     :secondary-label="test.constraint_label"
                     :disabled="
-                      (test.min && sampleCount < test.min) ||
-                      (test.max && sampleCount > test.max)
+                      (test.min && sample_count < test.min) ||
+                      (test.max && sample_count > test.max)
                     "
-                    v-model="testSelection[test.test_key]"
+                    v-model="test_selection[test.test_key]"
                     :color="color"
-                    @change="emitInput()" />
+                    @change="emit_input()" />
         </div>
         <div class="form-group text-right mb-0 col-2">
-          <h5>{{ `${test.price}฿` }}</h5>
+          <h5>{{ to_display_price(test.price) }}</h5>
         </div>
         <div class="form-group col-1 mb-0 text-right text-muted">
-          <div  v-if="testSelection[test.test_key] && sampleCount"
+          <div  v-if="test_selection[test.test_key] && sample_count"
                 class="nowrap">
             <i class="fas fa-times icon-sm d-inline"></i>
-            <h5 class="mx-1 d-inline">{{ sampleCount }}</h5>
+            <h5 class="mx-1 d-inline">{{ sample_count }}</h5>
             <i class="fas fa-equals icon-sm d-inline"></i>
           </div>
         </div>
         <div class="form-group col-2 mb-0 text-right">
-          <div v-if="testSelection[test.test_key] && sampleCount">
-            <h5>{{ `${(test.price * sampleCount).toLocaleString()}฿` }}</h5>
+          <div v-if="test_selection[test.test_key] && sample_count">
+            <h5>{{ to_display_price(test.price * sample_count) }}</h5>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div  v-if="isBacteriaTest"
+  <div  v-if="is_bacteria_test"
         class="row no-gutters py-3">
     <div class="col-2 px-2">
       <h5 class="text-dark">รายการแบคทีเรียอื่นๆ</h5>
@@ -49,53 +49,49 @@
     <div class="col-10">
       <div class="form-row">
         <div class="col-8">
-          <div  v-for="(customTest, idx) of customBacteriaTests"
+          <div  v-for="(custom_test, idx) of custom_bacteria_tests"
                 :key="idx"
                 class="form-group d-block mb-2 position-relative">
               <input
-                v-focus-on-create
+                :ref="`CustomBacteria${idx}`"
                 class="form-control form-control-sm input-pink"
                 type="text"
-                v-model.lazy="customBacteriaTests[idx]"
-                @blur="emitInput()" />
+                v-model.lazy="custom_bacteria_tests[idx]"
+                @blur="emit_input()" />
               <a  class="btn btn-sm btn-x custom-test"
-                @click="deleteCustomBacteriaTest(idx)">
+                @click="delete_custom_bacteria_test(idx)">
               <i class="fas fa-times" />
             </a>
           </div>
+          <div  v-if="is_validated && !all_custom_bacteria_filled"
+                class="form-group d-block mb-3">
+            <ErrorBox msg="จำเป็นต้องใส่ชื่อแบคทีเรียให้ครบ" />
+          </div>
           <div class="d-flex justify-content-between align-items-center">
             <button class="btn btn-pink btn-sm"
-                    :disabled="customBacteriaTests.length >= 5"
-                    @click="addCustomBacteriaTest()">
+                    :disabled="custom_bacteria_tests.length >= 5"
+                    @click="add_custom_bacteria_test()">
               เพิ่มรายการแบคทีเรีย
             </button>
             <h5>รอประเมินราคา (ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h5>
           </div>
         </div>
-        <div  v-if="customBacteriaTests.length > 0 && sampleCount > 0"
+        <div  v-if="custom_bacteria_tests.length > 0 && sample_count > 0"
               class="col-4 d-flex align-items-end justify-content-end pt-2">
-          <!-- <h5>~500฿</h5>
-          <h5><i class="fas fa-times icon-sm" /> {{ batch.sampleCount }}</h5>
-          <h6 class="text-muted squeeze-up">ตัวอย่าง</h6>
-          <h5><i class="fas fa-times icon-sm" /> {{ customBacteriaTests.length }}</h5>
-          <h6 class="text-muted squeeze-up">รายการอื่นๆ</h6> -->
-          <h4>
-            <!-- <i class="fas fa-equals icon-sm" /> -->
-            {{ `~${customBacteriaTestPrice}฿` }}
-          </h4>
+          <h4>~{{ to_display_price(custom_bacteria_test_price) }}</h4>
         </div>
       </div>
     </div>
   </div>
-  <div  v-if="includesSensitivityTest"
+  <div  v-if="includes_sensitivity_test"
         class="row no-gutters pt-3 border-t">
     <div class="col-12 px-2">
       <FormAntibioticsSensitivity
         v-if="!$apollo.loading"
-        :options="sensitivityTestOptions"
+        :options="sensitivity_test_options"
         :color="color"
-        v-model="sensitivityTests"
-        @change="emitInput()" />
+        v-model="sensitivity_tests"
+        @change="emit_input()" />
     </div>
   </div>
 </div>
@@ -113,8 +109,8 @@ export default {
     )
   },
   computed: {
-    testMethodsByCategory () {
-      const processed = this.testMethods.map( test => {
+    test_methods_by_category () {
+      const processed = this.test_methods.map( test => {
         let constraint_label = ''
         if (test.min && test.max) {
           constraint_label = `(${test.min}-${test.max} ต.ย.)`
@@ -127,120 +123,123 @@ export default {
       })
       return groupBy(processed, 'category')
     },
-    formValue () {
-      let testList = []
-      for (const [test, active] of Object.entries(this.testSelection)) {
-        if (active) testList.push(test)
+    form_value () {
+      let test_list = []
+      for (const [test, active] of Object.entries(this.test_selection)) {
+        if (active) test_list.push(test)
       }
-      let price = this.testMethods.reduce( (totalPrice, test) => {
-        if (this.testSelection[test.test_key]) {
-          return totalPrice + (test.price * this.sampleCount)
+      let price = this.test_methods.reduce( (price, test) => {
+        if (this.test_selection[test.test_key]) {
+          return price + (test.price * this.sample_count)
         } else {
-          return totalPrice
+          return price
         }
       }, 0)
-      if (this.isBacteriaTest) {
-        price += this.customBacteriaTestPrice
+      if (this.is_bacteria_test) {
+        price += this.custom_bacteria_test_price
       }
-      let val = { testList, price }
-      if (this.isBacteriaTest) {
-        const customBacteriaTests = [...this.customBacteriaTests]
-        const sensitivityTests = this.sensitivityTests
-        val = {...val, customBacteriaTests, sensitivityTests}
+      let val = { test_list, price }
+      if (this.is_bacteria_test) {
+        const custom_bacteria_tests = [...this.custom_bacteria_tests]
+        const sensitivity_tests = this.sensitivity_tests
+        val = {...val, custom_bacteria_tests, sensitivity_tests}
       }
       return val
     },
-    isBacteriaTest () {
+    is_bacteria_test () {
       return this.department === 'แบคทีเรียวิทยา'
     },
-    customBacteriaTestPrice () {
-      return this.customBacteriaTests.length * 500
+    custom_bacteria_test_price () {
+      return this.custom_bacteria_tests.length * 500
     },
-    includesSensitivityTest () {
-      if (!this.isBacteriaTest) return false
-      const sensitivityTestActive = this.testMethodsByCategory['Sensitivity Test']
-        .reduce( (includes, test) => includes || !!this.testSelection[test.test_key], false)
-      return sensitivityTestActive || this.customBacteriaTests.length > 0
+    includes_sensitivity_test () {
+      if (!this.is_bacteria_test) return false
+      const sensitivity_test_active = this.test_methods_by_category['Bacterial Identification + Sensitivity Test']
+        .reduce( (includes, test) => includes || !!this.test_selection[test.test_key], false)
+      return sensitivity_test_active || this.custom_bacteria_tests.length > 0
     },
+    all_custom_bacteria_filled () {
+      if (!this.is_bacteria_test) return true
+      return this.custom_bacteria_tests.reduce( (all_filled, bacteria) => all_filled && bacteria, true)
+    }
   },
   props: {
-    sampleCount: {
+    sample_count: {
       required: true
     },
     department: {
       required: true,
       type: String
     },
-    testMethods: {
+    test_methods: {
       type: Array,
       required: true
     },
     color: {
       type: String,
       required: true
+    },
+    is_validated: {
+      type: Boolean,
+      required: true
     }
   },
   data () {
     return {
-      testSelection: {},
-      sensitivityTests: null,
-      customBacteriaTests: []
+      test_selection: {},
+      sensitivity_tests: null,
+      custom_bacteria_tests: []
     }
   },
   methods: {
-    emitInput () {
-      this.$emit('input', this.formValue)
+    emit_input () {
+      this.$emit('input', this.form_value)
     },
-    addCustomBacteriaTest () {
-      this.customBacteriaTests.push('')
-      this.emitInput()
+    add_custom_bacteria_test () {
+      this.custom_bacteria_tests.push('')
+      this.emit_input()
+      this.$nextTick( () => {
+        this.$refs[`CustomBacteria${this.custom_bacteria_tests.length-1}`][0].focus()
+      })
     },
-    deleteCustomBacteriaTest (idx) {
-      this.customBacteriaTests.splice(idx, 1)
-      this.emitInput()
+    delete_custom_bacteria_test (idx) {
+      this.custom_bacteria_tests.splice(idx, 1)
+      this.emit_input()
     },
   },
   watch: {
-    sampleCount (newSampleCount) {
-      this.testMethods.forEach( test => {
-        const violatesConstraint = (
-          (!!test.max && (newSampleCount > test.max)) ||
-          (!!test.min && (newSampleCount < test.min))
+    sample_count (new_sample_count) {
+      this.test_methods.forEach( test => {
+        const violates_constraint = (
+          (!!test.max && (new_sample_count > test.max)) ||
+          (!!test.min && (new_sample_count < test.min))
         )
-        if (this.testSelection[test.test_key] && violatesConstraint) {
-          this.testSelection[test.test_key] = false
+        if (this.test_selection[test.test_key] && violates_constraint) {
+          this.test_selection[test.test_key] = false
         }
       })
-      this.emitInput()
+      this.emit_input()
     },
-    /* includesSensitivityTest (newIncludesSensitivityTest) {
-      if (!newIncludesSensitivityTest) {
-        this.sensitivityTests = null
-      } else {
-        this.sensitivityTests = ''
-      }
-      this.emitInput()
-    } */
   },
   mounted () {
-    const newTests = {}
-    for (const test of this.testMethods) {
-      newTests[test.test_key] = false
+    const new_tests = {}
+    for (const test of this.test_methods) {
+      new_tests[test.test_key] = false
     }
-    for (const activeTest of this.$attrs.value.testList) {
-      newTests[activeTest] = true
+    for (const active_test of this.$attrs.value.test_list) {
+      new_tests[active_test] = true
     }
-    this.testSelection = {...newTests}
-    if (this.$attrs.value.customBacteriaTests) {
-      this.customBacteriaTests = this.$attrs.value.customBacteriaTests
+    this.test_selection = {...new_tests}
+    if (this.$attrs.value.custom_bacteria_tests) {
+      this.custom_bacteria_tests = this.$attrs.value.custom_bacteria_tests
     }
-    this.sensitivityTests = this.$attrs.value.sensitivityTests
+    this.sensitivity_tests = this.$attrs.value.sensitivity_tests
   },
   apollo: {
-    sensitivityTestOptions: {
+    sensitivity_test_options: {
       query: BACTERIA_ANTIBIOTICS,
-      update: data => JSON.parse(data.test_method_bacteria_antibiotic_get.result.json),
-      skip () { return !this.isBacteriaTest }
+      update: data => data.test_method_bacteria_antibiotic_get.result,
+      skip () { return !this.is_bacteria_test }
     }
   }
 }

@@ -8,7 +8,7 @@
     <button class="submit btn btn-lg btn-success btn-block mb-4"
             @click="$emit('submit')">
       <i class="fas fa-paper-plane btn-inner-icon-lg text-left mr-0" />
-      {{ isEditMode? 'ยืนยันและบันทึก' : 'ยืนยันและส่งตัวอย่าง' }}
+      {{ edit_mode? 'ยืนยันและบันทึก' : 'ยืนยันและส่งตัวอย่าง' }}
     </button>
     <!-- <button class="submit btn btn-lg btn-secondary btn-block"
             @click="download()">
@@ -23,7 +23,7 @@
         <div class="page-header page-item">
           <div class="logo mr-3"></div>
           <div class="d-flex flex-column justify-content-between">
-            <h2>{{ `ใบรับตัวอย่าง${submission.submissionType}` }}</h2>
+            <h2>{{ `ใบรับตัวอย่าง${submission.submission_type}` }}</h2>
             <h5>หน่วยชันสูตรโรคสัตว์กลาง คณะสัตวแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</h5>
             <h6>ถนนอังรีดูนังต์ แขวงวังใหม่ เขตพญาไท กทม. 10330 โทร.02-218-9606-6 email: cuvdl.thailand@gmail.com</h6>
           </div>
@@ -31,16 +31,20 @@
         <div class="page-item box row no-gutters">
           <div class="col-6 border-r">
             <div class="row no-gutters border-b">
-              <h5 class="col-3">ชื่อผู้ส่ง</h5>
-              <h5 class="col-9 ink">{{ `${user.title}${user.first_name} ${user.last_name}` }}</h5>
+              <h5 class="col-3">ผู้ส่งตัวอย่าง</h5>
+              <h5 class="col ink">{{ user.name }}</h5>
+            </div>
+            <div class="row no-gutters tall border-b">
+              <h5 class="col-3">ที่อยู่</h5>
+              <h5 class="col ink pre-line">{{ sample_owner.address }}</h5>
             </div>
             <div class="row no-gutters border-b">
-              <h5 class="col-3">โทรศัพท์</h5>
-              <h5 class="col-9 ink">{{ user.phone }}</h5>
+              <h5 class="col-3">อีเมล</h5>
+              <h5 class="col ink">{{ user.email }}</h5>
             </div>
             <div class="row no-gutters">
-              <h5 class="col-3">อีเมล</h5>
-              <h5 class="col-9 ink">{{ user.email }}</h5>
+              <h5 class="col-3">โทรศัพท์</h5>
+              <h5 class="col ink">{{ user.phone }}</h5>
             </div>
           </div>
           <div class="col-6">
@@ -48,73 +52,164 @@
               <h5 class="col-12 text-center">สำหรับเจ้าหน้าที่</h5>
             </div>
             <div class="row no-gutters border-b">
-              <h5 class="col-6 border-r">เลขที่รับ</h5>
-              <h5 class="col-6">วันที่รับ</h5>
+              <h5 class="col-6 border-r">วันที่ส่ง</h5>
+              <h5 class="col">วันที่รับ</h5>
+            </div>
+            <div class="row no-gutters border-b">
+              <h5 class="col-3">เลขที่ส่งตัวอย่าง</h5>
+              <h5 class="col"></h5>
             </div>
             <div class="row no-gutters">
-              <h5 class="col-6 border-r">ผู้รับ</h5>
-              <h5 class="col-6">เวลา</h5>
+              <h5 class="col-12 border-b">ผู้รับ</h5>
             </div>
           </div>
         </div>
+
         <div class="page-item box row no-gutters">
           <div class="col-6 border-r">
             <div class="row no-gutters border-b">
-              <h5 class="col-3">องค์กรเจ้าของ</h5>
-              <h5 class="col-9 ink">{{ submission.sampleOwnerOrgName }}</h5>
+              <h5 class="col-3">เจ้าของตัวอย่าง</h5>
+              <h5 class="col-9 ink">{{ sample_owner.name }}</h5>
             </div>
-            <div class="row no-gutters no-border-b">
+            <div class="row no-gutters no-border-b tall">
               <h5 class="col-3">ที่อยู่</h5>
-              <!-- <h5 class="col-9 ink pre-line">{{ org.addr }}</h5> -->
-            </div>
-            <div class="row no-gutters">
-              
+              <h5 class="col-9 ink pre-line">{{ sample_owner.address }}</h5>
             </div>
           </div>
-          <div v-if="submission.submissionType === 'การตรวจทั่วไป'" class="col-6">
+          <div class="col-6">
             <div class="row no-gutters border-b">
-              <h5 class="col-6 border-r">
-                วันที่เก็บตัวอย่าง
-                <span class="ink ml-1">
-                  {{ getDate(submission.submissionData.submissionDetails.sampleTakenDate) }}
-                </span>
-              </h5>
-              <h5 class="col-6">จำนวนตัวอย่าง</h5>
+              <h5 class="col-3">Invoice ไปที่</h5>
+              <h5 class="col-9 ink">{{ invoice_to.name }}</h5>
             </div>
-            <div class="row no-gutters border-b">
-              <h5 class="col-6 border-r">
-                ชนิดตัวอย่าง
-                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.sampleType }}</span>
-              </h5>
-              <h5 class="col-6">
-                ชนิดสัตว์
-                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.animalType }}</span>
-              </h5>
-            </div>
-            <div class="row no-gutters border-b">
-              <h5 class="col-6 border-r">
-                พันธุ์
-                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.animalSpecies }}</span>
-              </h5>
-              <h5 class="col-6">
-                อายุ
-                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.animalAge }}</span>
-              </h5>
-            </div>
-            <div class="row no-gutters border-b">
-              <h5 class="col-12">
-                ประวัติการป่วย
-                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.illness }}</span>
-              </h5>
-            </div>
-            <div class="row no-gutters">
-              <h5 class="col-12">
-                ประวัติการทำวัคซีน
-                <span class="ink ml-1">{{ submission.submissionData.submissionDetails.vaccinations }}</span>
-              </h5>
+            <div class="row no-gutters tall">
+              <h5 class="col-3">ที่อยู่</h5>
+              <h5 class="col-9 ink pre-line">{{ invoice_to.address }}</h5>
             </div>
           </div>
         </div>
+
+        <div class="page-item box row no-gutters">
+          <div class="col-6 border-r">
+            <div class="row no-gutters">
+              <h5 class="col-3 border-r">แจ้งผลโดย</h5>
+              <h5 class="col-2">โทรศัพท์</h5>
+              <h5 class="col-7 ink">{{ submission.notify_to_phone }}</h5>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="row no-gutters">
+              <h5 class="col-3">อีเมล</h5>
+              <h5 class="col ink">{{ submission.notify_to_email }}</h5>
+            </div>
+          </div>
+        </div>
+
+        <div  v-if="submission.submission_type === 'การตรวจทั่วไป'"
+              class="page-item box row no-gutters">
+          <div  class="col-12">
+            <div class="row no-gutters border-b">
+              <h5 class="col-2">
+                ชนิดตัวอย่าง
+              </h5>
+              <h5 class="col-2 ink border-r">
+                {{ submission.submission_data.sample_details.sample_type }}
+              </h5>
+              <h5 class="col-2">
+                จำนวนตัวอย่าง
+              </h5>
+              <h5 class="col-2 ink border-r">
+                {{ 20 }}
+              </h5>
+              <h5 class="col-2">
+                วันที่เก็บตัวอย่าง
+              </h5>
+              <h5 class="col-2 ink">
+                {{ to_display_date(submission.submission_data.sample_details.sample_taken_date) }}
+              </h5>
+            </div>
+            <div class="row no-gutters border-b">
+              <h5 class="col-2">
+                ชนิดสัตว์
+              </h5>
+              <h5 class="col-2 border-r">
+                {{ submission.submission_data.sample_details.animal_type }}
+              </h5>
+              <h5 class="col-2">
+                พันธุ์
+              </h5>
+              <h5 class="col-2 border-r">
+                {{ submission.submission_data.sample_details.animal_species }}
+              </h5>
+              <h5 class="col-2">
+                อายุ
+              </h5>
+              <h5 class="col-2">
+                {{ submission.submission_data.sample_details.animal_age }}
+              </h5>
+            </div>
+            <div class="row no-gutters tall">
+              <div class="col-6 border-r">
+                <div class="row no-gutters">
+                  <h5 class="col-3">
+                    ประวัติการป่วย
+                  </h5>
+                  <h5 class="ink col pre-line">
+                    {{ submission.submission_data.sample_details.illness }}
+                  </h5>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row no-gutters">
+                  <h5 class="col-3">
+                    ประวัติวัคซีน
+                  </h5>
+                  <h5 class="ink col pre-line">
+                    {{ submission.submission_data.sample_details.vaccinations }}
+                  </h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-item box row no-gutters">
+          <div class="col-12">
+            <div class="row no-gutters border-b">
+              <h5 class="col-2">รายการตรวจวิเคราะห์</h5>
+              <div class="col">
+                <div class="row no-gutters">
+                  <h5 class="col-2"></h5>
+                  <div class="col">
+                    <div class="row no-gutters">
+                      <h5 class="col-7"></h5>
+                      <h5 class="col-3">ราคาต่อตัวอย่าง</h5>
+                      <h5 class="col-2">ค่าบริการ</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <div class="col-12">
+            <div class="row no-gutters border-b">
+              <h5 class="col-2">งานไวรัสวิทยา</h5>
+              <div class="col">
+                <div class="row no-gutters">
+                  <h5 class="col-2">Serum Neutralization</h5>
+                  <div class="col">
+                    <div class="row no-gutters">
+                      <h5 class="col-7">TEST METHOD NAME</h5>
+                      <h5 class="col-3">300฿</h5>
+                      <h5 class="col-2">4000฿</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -122,7 +217,6 @@
 </template>
 
 <script>
-import moment from 'moment/src/moment'
 //import jsPDF from 'jspdf'
 
 export default {
@@ -136,15 +230,20 @@ export default {
       type: Object,
       required: true
     },
-    isEditMode: {
+    sample_owner: {
+      type: Object,
+      required: true
+    },
+    invoice_to: {
+      type: Object,
+      required: true
+    },
+    edit_mode: {
       type: Boolean,
       required: true
     }
   },
   methods: {
-    getDate(iso) {
-      return moment(iso).format("DD/MM/YY")
-    },
     download () {
       
     }
@@ -159,6 +258,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$ink: #455280;
+$row-height: 28px;
+
 .preview-bg {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -180,10 +282,6 @@ export default {
   position: fixed;
   right: 90px;
   top: 90px;
-}
-$ink: #455280;
-.ink {
-  color: $ink;
 }
 .border-b {
   border-bottom: 1px solid $medium;
@@ -212,8 +310,10 @@ $ink: #455280;
   // width: 595px;
   // height: 842px;
   // scale by 1.5 for readability
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
   background: $white;
-  font-size: 1rem;
   width: 893px;
   height: 1263px;
   padding: 2.5em;
@@ -224,11 +324,24 @@ $ink: #455280;
   h1, h2, h3, h4, h5, h6 {
     padding: 2px 4px;
   }
+  h5 {
+    font-size: 19px;
+  }
+  h5.ink {
+    color: $ink;
+    font-size: 20px;
+  }
   &:not(:last-child) {
-    margin-bottom: 1.5em;
+    margin-bottom: $row-height;
   }
   &.box {
     border: 2px solid $default;
+  }
+  .row {
+    height: $row-height;
+    &.tall {
+      height: calc(#{$row-height}*3);
+    }
   }
 }
 .page-header {

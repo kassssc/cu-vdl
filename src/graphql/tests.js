@@ -3,6 +3,9 @@ import gql from 'graphql-tag'
 export const GENERAL_TEST_METHODS = gql`
   query {
     test_method_general_get {
+      status
+      statuscode
+      message
       result {
         test_key
         department
@@ -18,8 +21,12 @@ export const GENERAL_TEST_METHODS = gql`
 export const BACTERIA_ANTIBIOTICS = gql`
   query {
     test_method_bacteria_antibiotic_get {
+      status
+      statuscode
+      message
       result {
-        json
+        group_name
+        antibiotics
       }
     }
   }
@@ -28,6 +35,9 @@ export const BACTERIA_ANTIBIOTICS = gql`
 export const DISINFECTANT_TEST_METHODS = gql`
   query {
     test_method_disinfectant_virus_get {
+      status
+      statuscode
+      message
       result {
         test_key
         display_name

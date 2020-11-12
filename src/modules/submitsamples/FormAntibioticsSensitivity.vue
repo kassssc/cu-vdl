@@ -6,17 +6,17 @@
   </div>
   <div class="col-10">
     <div class="items-container">
-      <div v-for="(antibiotics, category) in options"
-          :key="category"
+      <div v-for="group of options"
+          :key="group.group_name"
           class="category-container mr-3 d-flex flex-column">
-        <h5 class="w-100 mb-2 border-b">{{ category }}</h5>
+        <h5 class="w-100 mb-2 border-b">{{ group.group_name }}</h5>
         <div class="form-group">
-          <checkbox v-for="antibiotic of antibiotics"
+          <checkbox v-for="antibiotic of group.antibiotics"
                     :key="antibiotic"
                     :label="antibiotic"
                     :color="color"
-                    :disabled="maxSelected"
-                    v-model="antibioticSelection[antibiotic]"
+                    :disabled="max_selected && !antibiotic_selection[antibiotic]"
+                    v-model="antibiotic_selection[antibiotic]"
                     @change="onCheckboxChange()" />
         </div>
       </div>
@@ -35,40 +35,38 @@ export default {
   ],
   data () {
     return {
-      antibioticSelection: undefined,
-      maxSelection: 8
+      antibiotic_selection: undefined,
+      max_selection: 8
     }
   },
   beforeMount () {
     const selections = {}
-    for (const [category, antibiotics] of Object.entries(this.options)) {
-      antibiotics.forEach( antibiotic => 
-        selections[antibiotic] = false
-      )
+    for (const group of this.options) {
+      group.antibiotics.forEach( antibiotic => selections[antibiotic] = false )
     }
     if (this.$attrs.value) {
-      for (const chosenAntibiotic of this.$attrs.value.split(',')) {
-        selections[chosenAntibiotic] = true
+      for (const chosen_antibiotic of this.$attrs.value.split(',')) {
+        selections[chosen_antibiotic] = true
       }
     }
-    this.antibioticSelection = { ...selections }
+    this.antibiotic_selection = { ...selections }
   },
   computed: {
-    parsedValue () {
-      return Object.keys(this.antibioticSelection).filter( antibiotic =>
-        this.antibioticSelection[antibiotic]
+    parsed_value () {
+      return Object.keys(this.antibiotic_selection).filter(antibiotic =>
+        this.antibiotic_selection[antibiotic]
       ).join(',')
     },
-    numSelected () {
-      return Object.values(this.antibioticSelection).reduce( (count, selected) => count + (selected? 1:0), 0)
+    num_selected () {
+      return Object.values(this.antibiotic_selection).reduce( (count, selected) => count + (selected? 1:0), 0)
     },
-    maxSelected () {
-      return this.numSelected >= this.maxSelection
+    max_selected () {
+      return this.num_selected >= this.max_selection
     }
   },
   methods: {
     onCheckboxChange () {
-      this.$emit('input', this.parsedValue)
+      this.$emit('input', this.parsed_value)
       this.$emit('change')
     }
   }

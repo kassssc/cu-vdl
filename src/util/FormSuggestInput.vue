@@ -28,6 +28,10 @@ export default {
       type: Boolean,
       default: false
     },
+    phone: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     listeners () {

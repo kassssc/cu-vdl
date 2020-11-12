@@ -9,7 +9,7 @@
       <div class="form-group row">
         <div class="col-sm-2 col-form-label" />
         <div class="col-sm-10">
-          <h2 class="mb-0">แบบฟอร์มติดต่อ</h2>
+          <h2 class="mb-0 font-cu">แบบฟอร์มติดต่อ</h2>
         </div>
       </div>
       <div class="form-group row">
@@ -70,35 +70,57 @@
       </div>
       <div class="form-group row">
         <div class="col-sm-2 col-form-label" />
-        <div class="col-sm-5">
-          <button type="submit" class="btn btn-primary btn-block">
+        <div class="col-sm-10">
+          <button type="submit" class="btn btn-primary btn-lg btn-block font-cu">
             <i class="fas fa-paper-plane btn-inner-icon"></i> ส่งข้อความ
           </button>
         </div>
       </div>
     </div>
-    <div class="col-4 pl-5">
-      <h2 class="mb-2">ที่อยู่</h2>
-      <h4 class="mb-1">ถนนอังรีดูนังต์</h4>
-      <h4 class="mb-1">แขวงวังใหม่ เขตพญาไท</h4>
-      <h4 class="mb-4">กรุงเทพฯ 10330</h4>
-      <div class="mb-4 d-flex">
-        <div class="d-flex flex-column justify-content-between mr-3">
-          <div class="d-flex align-items-center">
-            <i class="fas fa-phone mr-3 icon-md"></i><h4>โทร:</h4>
-          </div>
-          <div class="d-flex align-items-center">
-            <i class="fas fa-fax mr-3 icon-md"></i><h4>แฟ็กซ์:</h4>
-          </div>
+    <div class="col-4 pl-4">
+      <h2 class="mb-3 font-cu">ข้อมูลการติดต่อ</h2>
+      <div class="row no-gutters mb-3">
+        <div class="col-4">
+          <h4>
+            <i class="fas fa-map-marked-alt mr-3"></i>ที่อยู่:
+          </h4>
         </div>
-        <div class="d-flex flex-column justify-content-between">
+        <div class="col pl-2">
+          <h4 class="mb-1">ถนนอังรีดูนังต์</h4>
+          <h4 class="mb-1">แขวงวังใหม่ เขตพญาไท</h4>
+          <h4>กรุงเทพฯ 10330</h4>
+        </div>
+      </div>
+      <div class="row no-gutters mb-3">
+        <div class="col-4">
+          <h4>
+            <i class="fas fa-phone mr-3"></i>โทร:
+          </h4>
+        </div>
+        <div class="col pl-2">
           <h4 class="mb-1">02-218-9604</h4>
-          <h4 class="mb-3">02-218-9606</h4>
+          <h4>02-218-9606</h4>
+        </div>
+      </div>
+      <div class="row no-gutters mb-3">
+        <div class="col-4">
+          <h4>
+            <i class="fas fa-fax mr-3"></i>แฟ็กซ์:
+          </h4>
+        </div>
+        <div class="col pl-2">
           <h4>02-218-9532</h4>
         </div>
       </div>
-      <div class="d-flex align-items-center">
-        <i class="fas fa-envelope mr-3 icon-md"></i><h4>อีเมล: cuvdl.thailand@gmail.com</h4>
+      <div class="row no-gutters mb-3">
+        <div class="col-4">
+          <h4>
+             <i class="fas fa-envelope mr-3"></i>อีเมล:
+          </h4>
+        </div>
+        <div class="col pl-2">
+          <h4>cuvdl.thailand@gmail.com</h4>
+        </div>
       </div>
     </div>
   </div>

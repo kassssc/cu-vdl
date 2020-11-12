@@ -15,8 +15,8 @@ import FooterSection from './FooterSection'
 export default {
   name: 'main-content',
   components: {
-    'Titlebar': Titlebar,
-    'FooterSection': FooterSection
+    Titlebar,
+    FooterSection
   }
 }
 </script>

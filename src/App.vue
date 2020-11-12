@@ -10,7 +10,7 @@
 export default {
   name: 'app',
   methods: {
-    onScroll () {
+    on_scroll () {
       const navbar = document.getElementById('titlebar')
       if (window.pageYOffset > 20) {
         navbar.classList.add('scrolled')   
@@ -20,7 +20,7 @@ export default {
     }
   },
   mounted () {
-    window.onscroll = () => { this.onScroll() }
+    window.onscroll = () => { this.on_scroll() }
   }
 }
 </script>

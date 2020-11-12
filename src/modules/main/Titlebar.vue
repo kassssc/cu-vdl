@@ -14,7 +14,7 @@
       CU VDL
     </h4>
   </div>
-  <nav  v-if="auth.loggedIn" class="d-flex">
+  <nav  v-if="auth.logged_in" class="d-flex">
     <router-link  :to="{name: 'home'}"
                   tag="a"
                   class="btn btn-transparent mr-2"
@@ -23,8 +23,8 @@
       หน้าหลัก
     </router-link>
 
-    <template v-if="auth.isAdmin">
-      <router-link  :to="{name: 'submissionslist'}"
+    <template v-if="auth.is_admin">
+      <router-link  :to="{name: 'submissions-list'}"
                     tag="a"
                     class="btn btn-transparent mr-2">
         <i class="fas fa-list btn-inner-icon"></i>
@@ -39,11 +39,16 @@
     </template>
 
     <template v-else>
-      <router-link :to="{name: 'submissionslist'}"
+      <router-link :to="{name: 'submissions-list'}"
                   tag="a"
                   class="btn btn-transparent mr-2">
         <i class="fas fa-file-invoice btn-inner-icon"></i>
         ติดตามผลการทดสอบ
+      </router-link>
+      <router-link :to="{name: 'invoice-list'}"
+                  tag="a"
+                  class="btn btn-transparent mr-2">
+        ฿ รายการ Invoice
       </router-link>
     </template>
 
@@ -51,17 +56,17 @@
                   tag="a"
                   class="btn btn-transparent mr-2">
       <i class="fas fa-vial btn-inner-icon"></i>
-      {{ auth.isAdmin? 'สร้างการส่งตัวอย่าง' : 'ส่งตัวอย่าง' }}
+      {{ auth.is_admin? 'สร้างการส่งตัวอย่าง' : 'ส่งตัวอย่าง' }}
     </router-link>
 
     <router-link  :to="{name: 'account'}"
                   tag="a"
                   class="btn btn-transparent mr-2">
-      <span class="mr-2">{{ auth.userFullName }}</span>
+      <span class="mr-2">{{ auth.name }}</span>
       <i class="fas fa-cog btn-inner-icon mr-0"></i>
     </router-link>
     <button class="btn btn-transparent btn-icon"
-            @click="logoutAndNavigateToHome()">
+            @click="logout_and_go_to_home()">
       <i class="fas fa-sign-out-alt" />
     </button>
     
@@ -95,7 +100,7 @@
       </a>
     </scrollactive>
     <router-link  :to="{name: 'login'}"
-                  tag="button"
+                  tag="a"
                   class="btn btn-primary ml-3 px-4">
       <i class="fas fa-sign-in-alt btn-inner-icon" />
       เข้าสู่ระบบ
@@ -106,14 +111,14 @@
 </template>
 
 <script>
-import { onLogout } from '@/vue-apollo'
+import { on_logout } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
 
 export default {
   name: 'title-bar',
   methods: {
-    async logoutAndNavigateToHome () {
-      await onLogout(this.$apollo.provider.defaultClient)
+    async logout_and_go_to_home () {
+      await on_logout(this.$apollo.provider.defaultClient)
       if (this.$route.name !== 'home') {
         this.$router.push('/')
       }
@@ -133,7 +138,7 @@ export default {
   z-index: 999;
   position: fixed;
   top: 0; left: 0;
-  width: 100vw; 
+  width: 100vw;
   height: $titlebar-height;
   border-bottom: 1px solid transparent;
   transition: all 100ms ease-in-out;

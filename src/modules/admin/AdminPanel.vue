@@ -1,48 +1,34 @@
 <template>
-<div class="page page-xl d-flex align-items-start">
-  <div class="sub-nav">
-    <h3 class="mb-3 ml-3 d-none d-xl-inline-block">บริหารระบบ</h3>
-    <router-link  :to="{name: 'admin-users-list' }"
-                  class="btn btn-transparent btn-block btn-lg">
-      <i class="fas fa-users btn-inner-icon-lg"></i>
-      <div class="d-none d-xl-inline-block">
-        รายการ Account
-      </div>
-    </router-link>
-    <router-link  :to="{ name: 'admin-orgs-list' }"
-                  class="btn btn-transparent btn-block btn-lg">
-      <i class="fas fa-sitemap btn-inner-icon-lg"></i>
-      <div class="d-none d-xl-inline-block">
-        รายการ องค์กร
-      </div>
-    </router-link>
-    <router-link  :to="{ name: 'admin-create-user' }"
-                  class="btn btn-transparent btn-block btn-lg"
-                  exact>
-      <i class="fas fa-user-plus btn-inner-icon-lg"></i>
-      <div class="d-none d-xl-inline-block">
+<div class="page page-lg">
+  <div class="content-height">
+    <div class="sticky-submenu admin-panel d-flex align-items-center px-2 pb-2">
+      <router-link  :to="{name: 'admin-users-list' }"
+                    class="btn btn-transparent mr-2">
+        <i class="fas fa-users btn-inner-icon"></i>
+        รายชื่อ Account
+      </router-link>
+      <router-link  :to="{ name: 'admin-contacts-list' }"
+                    class="btn btn-transparent mr-2">
+        <i class="fas fa-address-book btn-inner-icon"></i>
+        รายชื่อ Contact
+      </router-link>
+      <router-link  :to="{ name: 'admin-invoice-list' }"
+                    class="btn btn-transparent mr-2">
+        ฿ รายการ Invoice
+      </router-link>
+      <router-link  :to="{ name: 'admin-create-user' }"
+                    class="btn btn-transparent mr-2"
+                    exact>
+        <i class="fas fa-user-plus btn-inner-icon"></i>
         สร้าง Account
-      </div>
-    </router-link>
-    <router-link  :to="{ name: 'admin-create-org' }"
-                  class="btn btn-transparent btn-block btn-lg"
-                  exact>
-      <i class="fas fa-plus-square btn-inner-icon-lg"></i>
-      <div class="d-none d-xl-inline-block">
-        สร้างองค์กร
-      </div>
-    </router-link>
-    <!-- <router-link  :to="{ name: 'submit-samples' }"
-                  class="btn btn-transparent btn-block btn-lg"
-                  exact>
-      <i class="fas fa-vial btn-inner-icon-lg"></i>
-      <div class="d-none d-xl-inline-block">
-        สร้างการส่งตัวอย่าง
-      </div>
-    </router-link> -->
-
-  </div>
-  <div class="flex-1">
+      </router-link>
+      <router-link  :to="{ name: 'admin-create-contact' }"
+                    class="btn btn-transparent mr-2"
+                    exact>
+        <i class="fas fa-id-card btn-inner-icon"></i>
+        สร้าง Contact
+      </router-link>
+    </div>
     <transition name="fade">
       <router-view />
     </transition>
@@ -55,3 +41,9 @@ export default {
   name: 'admin-panel'
 }
 </script>
+
+<style lang="scss" scoped>
+.admin-panel {
+  height: $subnav-height;
+}
+</style>

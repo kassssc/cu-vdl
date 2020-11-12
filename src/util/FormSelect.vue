@@ -1,6 +1,7 @@
 <template>
 <div class="form-group">
-  <label v-if="formLabel">
+  <label  v-if="formLabel"
+          :class="labelClass">
     {{ formLabel }}
     <i  v-if="required && !disabled"
         class="fas fa-star-of-life" />
@@ -19,6 +20,7 @@
       <i v-bind="attributes" class="fas fa-chevron-down"></i>
     </template>
   </vSelect>
+  <ErrorBox v-if="invalid" :msg="errorMsg" />
 </div>
 </template>
 
@@ -34,11 +36,23 @@ export default {
       type: String,
       default: null
     },
+    labelClass: {
+      type: String,
+      default: ''
+    },
     required: {
       type: Boolean,
       default: false
     },
     disabled: {
+      type: Boolean,
+      default: false
+    },
+    errorMsg: {
+      type: String,
+      default: null
+    },
+    invalid: {
       type: Boolean,
       default: false
     }
@@ -122,11 +136,11 @@ export default {
   }
   .vs__open-indicator {
     color: $placeholder;
-    font-size: .9em;
+    font-size: .8em;
   }
   .vs__clear {
     margin: 0;
-    padding: 0 .5em;
+    padding: 0 .4em;
     svg { fill: $placeholder; }
     &:focus, &:hover {
       outline: none;

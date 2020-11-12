@@ -1,9 +1,10 @@
 <template>
 <div class="search-input">
-  <i class="fas fa-search icon-search text-muted" />
+  <i class="fas fa-search icon-search text-placeholder" />
   <input  :class="['form-control', inputClass]"
           :placeholder="placeholder"
           v-model="query"
+          ref="searchInput"
           @input="search($event)"
           @focus="$event.target.select()">
   <button v-show="query"

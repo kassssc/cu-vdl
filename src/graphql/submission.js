@@ -3,21 +3,19 @@ import gql from 'graphql-tag'
 export const SUBMISSION_LIST = gql`
   query (
     $jwt: String!,
-    $submissionStatus: String,
-    $submitter: Int,
-    $sampleOwnerOrg: Int,
-    $searchQuery: String,
-    $pageNumber: Int,
-    $nPerPage: Int
+    $submission_status: String,
+    $search_query: String,
+    $contact: Int,
+    $page_number: Int,
+    $n_per_page: Int
   ) {
     search_submission (
-      jwt_token: $jwt,
-      submission_status: $submissionStatus,
-      submitter: $submitter,
-      sample_owner_org: $sampleOwnerOrg,
-      search_query: $searchQuery,
-      page_number: $pageNumber,
-      n_per_page: $nPerPage
+      jwt: $jwt,
+      submission_status: $submission_status,
+      search_by_contact_index: $contact,
+      search_query: $search_query,
+      page_number: $page_number,
+      n_per_page: $n_per_page
     ) {
       status
       statuscode
@@ -27,14 +25,22 @@ export const SUBMISSION_LIST = gql`
         BestLIMS_key
         submission_type
         submission_status
-        submit_date
-        submitter {
-          title
-          first_name
-          last_name
+        submission_submit_date
+        backuser {
+          name
         }
-        sample_owner_name
-        submission_form_URL
+        submitter {
+          name
+        }
+        sample_owner {
+          name
+        }
+        invoice {
+          invoice_status
+        }
+        reports {
+          report_no
+        }
       }
     }
   }
@@ -43,11 +49,11 @@ export const SUBMISSION_LIST = gql`
 export const SUBMISSION_DETAIL = gql`
   query (
     $jwt: String!,
-    $key: [String!]!
+    $key: String!
   ) {
     get_submission (
-      jwt_token: $jwt,
-      which_backend_keys: $key
+      jwt: $jwt,
+      key: $key
     ) {
       status
       statuscode
@@ -57,34 +63,45 @@ export const SUBMISSION_DETAIL = gql`
         BestLIMS_key
         submission_type
         submission_status
-        submit_date
-        submitter {
-          title
-          first_name
-          last_name
-          phone
-          email
-        }
-        sample_owner_name
-        sample_owner_org {
-          index
-          name
-          address
-        }
+        submission_submit_date
         sample_received_date
-        submission_form_URL
-        invoice {
-          invoice_ID
+        remarks
+        backuser {
+          index
+        }
+        submitter {
+          index
+        }
+        sample_owner {
+          index
         }
         invoice_to {
           index
-          name
-          address
         }
+        invoice {
+          index
+          invoice_ID
+          invoice_status
+          file_URL
+        }
+        reports {
+          report_no
+          report_version
+          report_status
+          date
+          file_URL
+        }
+        on_sent_record_submitter_name
+        on_sent_record_submitter_address
+        on_sent_record_owner_name
+        on_sent_record_owner_address
+        on_sent_record_invoice_to_name
+        on_sent_record_invoice_to_address
         final_price
-        notification_email
-        notification_phone
+        notify_to_email
+        notify_to_phone
         submission_sent_to_BestLIMS
+        submission_data
       }
     }
   }
@@ -93,32 +110,16 @@ export const SUBMISSION_DETAIL = gql`
 export const SUBMISSION_FORM_DATA = gql`
   query (
     $jwt: String!,
-    $key: [String!]!
+    $key: String!
   ) {
     get_submission (
-      jwt_token: $jwt,
-      which_backend_keys: $key
+      jwt: $jwt,
+      key: $key
     ) {
       status
       statuscode
       message
       result {
-        backend_key
-        BestLIMS_key
-        submission_type
-        submitter {
-          index
-        }
-        submit_date
-        sample_owner_name
-        sample_owner_org {
-          index
-        }
-        invoice_to {
-          index
-        }
-        notification_email
-        notification_phone
         submission_data
       }
     }
@@ -128,25 +129,29 @@ export const SUBMISSION_FORM_DATA = gql`
 export const SEND_SUBMISSION = gql`
   mutation (
     $jwt: String!,
-    $submissionType: String!,
-    $submitter: Int,
-    $notificationEmail: Boolean!,
-    $notificationPhone: Boolean!,
-    $sampleOwnerName: String!,
-    $sampleOwnerOrg: Int,
-    $invoiceTo: Int,
-    $submissionData: String!
+    $backuser: Int,
+    $submission_type: String!,
+    $english_report: Boolean!,
+    $submitter: Int!,
+    $sample_owner: Int!,
+    $invoice_to: Int!,
+    $notify_to_email: String,
+    $notify_to_phone: String,
+    $remarks: String,
+    $submission_data: String!
   ) {
     send_submission (
-      jwt_token: $jwt,
-      submission_type: $submissionType,
-      on_behalf_of_backuser_index: $submitter,
-      notification_email: $notificationEmail,
-      notification_phone: $notificationPhone,
-      sample_owner_name: $sampleOwnerName,
-      sample_owner_org: $sampleOwnerOrg,
-      invoice_to: $invoiceTo,
-      submission_data: $submissionData
+      jwt: $jwt,
+      backuser_index: $backuser,
+      submission_type: $submission_type,
+      english_report: $english_report,
+      submitter: $submitter,
+      sample_owner: $sample_owner,
+      invoice_to: $invoice_to,
+      notify_to_email: $notify_to_email,
+      notify_to_phone: $notify_to_phone,
+      remarks: $remarks,
+      submission_data: $submission_data
     ) {
       statuscode
       status

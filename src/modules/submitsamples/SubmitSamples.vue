@@ -3,18 +3,18 @@
   <template v-if="!$apollo.queries.auth.loading">
     
     <div class="my-2 position-relative">
-      <button v-if="isEditMode || auth.isAdmin"
+      <button v-if="edit_mode && auth.is_admin"
               class="btn back-btn btn-transparent"
               @click="$router.go(-1)">
-        <i class="fas fa-chevron-left mr-2" />กลับไป
+        <i class="fas fa-chevron-left mr-2" />ยกเลิก
       </button>
       <i class="fas fa-vial icon-lg"></i>
       <h3 class="d-inline">
-        {{ isEditMode? `แก้ไขการส่งตัวอย่าง #${$route.params.id}` : 'ส่งตัวอย่าง'}}
+        {{ edit_mode? `แก้ไขการส่งตัวอย่าง #${$route.params.id}` : 'ส่งตัวอย่าง'}}
       </h3>
     </div>
   
-    <div class="submit-samples-nav d-flex align-items-center p-2">
+    <div class="sticky-submenu d-flex align-items-center p-2">
       <scrollactive active-class="scrollactive-active"
                     :offset="250"
                     :modify-url="false"
@@ -25,24 +25,24 @@
           ข้อมูลเบื้องต้น
         </a>
         <i class="fas fa-long-arrow-alt-right mx-1" />
-        <a  href="#report"
+        <a  href="#submission_type"
             class="btn btn-transparent btn-sm scrollactive-item">
-          รายงาน
+          ประเภทการทดสอบ
         </a>
         <i class="fas fa-long-arrow-alt-right mx-1" />
-        <div  v-for="(section, idx) of submission.submissionData.batches"
+        <div  v-for="(section, idx) of submission.submission_data.batches"
               :key="idx"
               class="d-flex align-items-center">
           <a  :href="'#batch' + (idx+1)"
               class="btn btn-transparent btn-sm scrollactive-item">
-            {{ getBatchNavLabel(idx + 1) }}
+            {{ get_batch_label(idx + 1) }}
           </a>
           <i class="fas fa-long-arrow-alt-right mx-1" />
         </div>
       </scrollactive>
       <button class="btn btn-transparent btn-sm"
-              @click="inReviewMode = true">
-        {{ reviewAndSubmitLabel }}
+              @click="enter_review_mode()">
+        {{ review_and_submit_label }}
       </button>
     </div>
   
@@ -53,289 +53,533 @@
         <div class="col-xl-2 col-12">
           <h3 class="mb-2">ข้อมูลเบื้องต้น</h3>
         </div>
-        <div class="col-12 col-xl-10">
-          <div class="form-row mb-4">
+        <div class="col-12 col-xl-10 border-b mb-4 pb-4">
+          <div class="form-row mb-2">
             <FormSelect
-              v-if="auth.isAdmin && !isEditMode"
-              class="col-4"
+              v-if="auth.is_admin && !edit_mode"
+              class="col-4 mb-2"
               form-label="ผู้ส่งตัวอย่าง"
+              label="name"
+              :reduce="o => o.index"
+              :get-option-label="o => o.default_contact.name"
+              :options="all_users"
               :clearable="false"
-              :reduce="option => option.index"
-              :get-option-label="o => `${o.title}${o.first_name} ${o.last_name}`"
-              :options="submitters"
+              :invalid="is_validated && !submission.backuser"
+              error-msg="จำเป็นต้องเลือก"
+              @input="on_submitter_change($event)"
               required
-              v-model="submission.submitter" />
+              v-model="submission.backuser" />
             <FormInput
-              v-else-if="submitterDetail"
-              class="col-4"
+              v-else-if="selected_submitter"
+              class="col-4 mb-2"
               label="ผู้ส่งตัวอย่าง"
-              disabled  
-              :value="submitterFullName" />
+              disabled
+              :value="submission.english_report? selected_submitter.name_eng : selected_submitter.name" />
             <FormDateInput
-              class="col-2"
+              class="col-2 mb-2"
               label="วันที่ส่งตัวอย่าง"
               format="dd/MM/yy"
               disabled
-              :value="submission.submitDate" />
-          </div>
-          <div class="form-row mb-4">
-            <FormSelect
-              class="col-6"
-              form-label="เจ้าของตัวอย่าง/ฟาร์ม"
-              :clearable="false"
-              :reduce="option => option.index"
-              :get-option-label="option => option.name"
-              :options="ownerOrgs"
-              :disabled="!submission.submitter"
-              @input="onOwnerOrgChange($event)"
-              required
-              v-model="submission.sampleOwnerOrg" />
-            <transition name="fade">
-              <FormInput
-                v-if="submission.sampleOwnerOrg === null"
-                class="col-6"
-                label="ระบุชื่อ องค์กร/ฟาร์ม"
-                required
-                v-model="submission.sampleOwnerName" />
-            </transition>
+              :value="submission.submit_date" />
             <div class="w-100"></div>
-            <div class="form-group mb-0 pb-4 col-6">
-              <label>Invoice ไปที่
+            <FormTextarea
+              v-if="selected_submitter"
+              class="col-4"
+              disabled
+              :value="submission.english_report? selected_submitter.address_eng : selected_submitter.address" />
+          </div>
+
+          <div class="form-row mb-2">
+            <div class="form-group col-6">
+              <label class="label-lg text-medium">
+                รายงานเป็นภาษา <i class="fas fa-star-of-life" />
+              </label>
+              <div class="row no-gutters">
+                <button class="btn radio-btn col-4"
+                        :class="{'chosen': !submission.english_report}"
+                        @click="submission.english_report = false">
+                  <div  class="box">
+                    <div class="box-chosen"></div>
+                  </div>
+                  ไทย
+                </button>
+                <button class="btn radio-btn col-4"
+                        :class="{'chosen': submission.english_report}"
+                        :disabled="!has_english_info_submitter"
+                        @click="submission.english_report = true">
+                  <div  class="box">
+                    <div class="box-chosen"></div>
+                  </div>
+                  English
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row mb-4">
+            <div class="form-group mb-0 col-6">
+              <label class="label-lg text-medium">เจ้าของตัวอย่าง/ฟาร์ม
                 <i class="fas fa-star-of-life" />
               </label>
-              <div class="d-flex justify-content-between">
-                <button class="btn radio-btn"
-                        :disabled="!submission.sampleOwnerOrg || !submission.submitter"
-                        @click="invoiceToOwner()">
-                  <div  class="box"
-                        :class="{'chosen': invoiceToChoice === 'owner'}">
+              <div class="row no-gutters">
+                <button class="btn radio-btn col-4"
+                        :class="{'chosen': sample_owner_choice === 'self'}"
+                        @click="sample_owner_self()"
+                        :disabled="!submission.backuser">
+                  <div  class="box">
+                    <div class="box-chosen"></div>
+                  </div>
+                  {{ auth.is_admin? 'ผู้ส่งตัวอย่าง' : 'ตนเอง'}}
+                </button>
+                <button class="btn radio-btn col-4"
+                        :class="{'chosen': sample_owner_choice === 'other'}"
+                        @click="sample_owner_other()"
+                        :disabled="!submission.backuser">
+                  <div  class="box">
+                    <div class="box-chosen"></div>
+                  </div>
+                  อื่นๆ (เลือก)
+                </button>
+              </div>
+              <div  v-if="is_validated && !sample_owner_choice && submission.backuser"
+                    class="row no-gutters">
+                <div class="col-12">
+                  <ErrorBox msg="จำเป็นต้องเลือก" />
+                </div>
+              </div>
+            </div>
+            <template v-if="sample_owner_choice === 'other'">
+              <div class="w-100"></div>
+              <FormSelect
+                class="col-6 my-2"
+                placeholder="เลือก เจ้าของตัวอย่าง/ฟาร์ม..."
+                label="name"
+                :clearable="false"
+                :reduce="o => o.index"
+                :options="select_contacts"
+                :invalid="is_validated && !submission.sample_owner"
+                error-msg="จำเป็นต้องเลือก"
+                @input="on_sample_owner_change($event)"
+                v-model="submission.sample_owner" />
+              <template v-if="submission.sample_owner && submission.sample_owner !== -1">
+                <div class="w-100"></div>
+                <FormTextarea
+                  v-if="!submission.english_report"
+                  class="col-6"
+                  rows="3"
+                  disabled
+                  :value="selected_sample_owner.address" />
+                <template v-else>
+                  <template v-if="needs_english_info_sample_owner">
+                    <div class="form-group col-6 font-cu">
+                      <label class="text-danger">ท่านต้องเพิ่มข้อมูลภาษาอังกฤษให้ Contact นี้</label>
+                      <button   class="btn btn-secondary btn-block"
+                                @click="show_add_english_info_modal(selected_sample_owner)">
+                        <i class="fas fa-globe-americas btn-inner-icon"></i> เพิ่มข้อมูลภาษาอังกฤษ
+                      </button>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <FormInput
+                      class="col-6 mb-2"
+                      disabled
+                      :value="selected_sample_owner.name_eng" />
+                    <div class="col-6"></div>
+                    <FormTextarea
+                      class="col-6"
+                      rows="3"
+                      disabled
+                      :value="selected_sample_owner.address_eng" />
+                  </template>
+                </template>
+              </template>
+            </template>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group mb-0 col-6">
+              <label class="label-lg text-medium">Invoice ไปที่
+                <i class="fas fa-star-of-life" />
+              </label>
+              <div class="row no-gutters">
+                <button class="btn radio-btn col-4"
+                        :class="{'chosen': invoice_to_choice === 'self'}"
+                        @click="invoice_to_self()"
+                        :disabled="!submission.backuser">
+                  <div  class="box">
+                    <div class="box-chosen"></div>
+                  </div>
+                  {{ auth.is_admin? 'ผู้ส่งตัวอย่าง' : 'ตนเอง'}}
+                </button>
+                <button class="btn radio-btn col-5"
+                        :class="{'chosen': invoice_to_choice === 'owner'}"
+                        :disabled="!submission.sample_owner || !submission.backuser || sample_owner_choice === 'self'"
+                        @click="invoice_to_owner()">
+                  <div  class="box">
                     <div class="box-chosen"></div>
                   </div>
                   เจ้าของตัวอย่าง/ฟาร์ม
                 </button>
-                <button class="btn radio-btn"
-                        @click="invoiceToSelf()"
-                        :disabled="!submission.submitter">
-                  <div  class="box"
-                        :class="{'chosen': invoiceToChoice === 'self'}">
+                <button class="btn radio-btn col-3"
+                        :class="{'chosen': invoice_to_choice === 'other'}"
+                        @click="invoice_to_other()"
+                        :disabled="!submission.backuser">
+                  <div  class="box">
                     <div class="box-chosen"></div>
                   </div>
-                  ตนเอง
-                </button>
-                <button class="btn radio-btn"
-                        @click="invoiceToCompany()"
-                        :disabled="!submission.submitter">
-                  <div  class="box"
-                        :class="{'chosen': invoiceToChoice === 'company'}">
-                    <div class="box-chosen"></div>
-                  </div>
-                  บริษัท
+                  อื่นๆ (เลือก)
                 </button>
               </div>
+              <div  v-if="is_validated && !invoice_to_choice && submission.backuser"
+                    class="row no-gutters">
+                <div class="col-12">
+                  <ErrorBox msg="จำเป็นต้องเลือก" />
+                </div>
+              </div>
             </div>
-            <transition name="fade">
+            <div class="w-100"></div>
+            <template v-if="invoice_to_choice === 'other'">
               <FormSelect
-                v-if="invoiceToChoice === 'company'"
-                class="col-6"
+                class="col-6 my-2"
+                placeholder="เลือก Invoice ไปที่..."
                 label="name"
-                form-label="เลือกบริษัท"
                 :clearable="false"
-                :reduce="option => option.index"
-                :get-option-label="option => option.name"
-                :options="companyOrgs"
-                required
-                v-model="submission.invoiceTo" />
-            </transition>
+                :reduce="o => o.index"
+                :options="select_contacts"
+                :invalid="is_validated && !submission.invoice_to"
+                error-msg="จำเป็นต้องเลือก"
+                @input="on_invoice_to_change($event)"
+                v-model="submission.invoice_to" />
+              <template v-if="submission.invoice_to && submission.invoice_to !== -1">
+                <div class="w-100"></div>
+                <FormTextarea
+                  v-if="!submission.english_report"
+                  class="col-6"
+                  rows="3"
+                  disabled
+                  :value="selected_invoice_to.address" />
+                <template v-else>
+                  <template v-if="needs_english_info_invoice_to">
+                    <div class="form-group col-6 font-cu">
+                      <label class="text-danger">ท่านต้องเพิ่มข้อมูลภาษาอังกฤษให้ Contact นี้</label>
+                      <button   class="btn btn-secondary btn-block"
+                                @click="show_add_english_info_modal(selected_invoice_to)">
+                        <i class="fas fa-globe-americas btn-inner-icon"></i> เพิ่มข้อมูลภาษาอังกฤษ
+                      </button>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <FormInput
+                      class="col-6 mb-2"
+                      disabled
+                      :value="selected_invoice_to.name_eng" />
+                    <div class="col-6"></div>
+                    <FormTextarea
+                      class="col-6"
+                      rows="3"
+                      disabled
+                      :value="selected_invoice_to.address_eng" />
+                  </template>
+                </template>
+              </template>
+            </template>
           </div>
-          <div class="form-row mb-4">
-            <FormInlineSelect
-              class="col-8 col-xl-6"
-              label="ประเภทการตรวจ"
-              label-class="label-lg"
-              :btn-class-list="['teal', 'blue']"
-              v-model="submission.submissionType"
-              :options="submissionTypes"
-              :disabled="isEditMode"
-              :warn-before-change="wholeFormHasInformation()"
-              warning-msg="ข้อมูลที่ถูกกรอกไว้แล้วด้านล่างจะหายไปถ้าท่านเปลี่ยนตัวเลือกนี้"
-              @change="onSubmissionTypeChange()" />
+        </div>
+
+        <div class="col-xl-2 col-12">
+          <h4 class="text-medium">การแจ้งเตือน</h4>
+        </div>
+        <div class="col-xl-10 col-12 pb-4">
+          <div class="form-row">
+            <FormSuggestInput
+              class="col-4"
+              label="อีเมล"
+              :min-length="0"
+              :list="email_suggest_list"
+              v-model="submission.notify_to_email" />
+            <FormSuggestInput
+              class="col-2"
+              label="โทรศัพท์"
+              :min-length="0"
+              :list="phone_suggest_list"
+              phone
+              v-model="submission.notify_to_phone" />
           </div>
-  
-  
-          <transition name="fade-no-delay">
-            <div  v-if="isGeneralSubmission"
-                  class="form-row mb-4">
-              <FormSuggestInput
-                class="col-4"
-                label="ประเภทตัวอย่าง"
-                :list="['เลือด', 'เสมหะ', 'นํ้าลาย', 'เนื้อ']"
-                filter-by-query
-                v-model="submission.submissionData.submissionDetails.sampleType" />
-              <FormDateInput
-                v-if="isGeneralSubmission"
-                class="col-2"
-                label="วันที่เก็บตัวอย่าง"
-                format="dd/MM/yy"
-                required
-                v-model="submission.submissionData.submissionDetails.sampleTakenDate" />
-              <div class="w-100"></div>
-              <FormSuggestInput
-                class="col-3"
-                label="ชนิดสัตว์"
-                :list="['สุกร', 'สุนัข', 'กระต่าย', 'ม้า']"
-                filter-by-query
-                v-model="submission.submissionData.submissionDetails.animalType" />
-              <FormInput
-                class="col-3"
-                type="text"
-                label="พันธุ์"
-                v-model="submission.submissionData.submissionDetails.animalSpecies" />
-              <FormInput
-                class="col-4"
-                type="text"
-                label="อายุสัตว์"
-                v-model="submission.submissionData.submissionDetails.animalAge" />
-              <FormInput
-                class="col-2"
-                type="number"
-                label="จำนวนที่เลี้ยง"
-                v-model.number="submission.submissionData.submissionDetails.animalCount" />
-              <FormTextarea 
-                class="col-6"
-                type="text"
-                label="ประวัติการป่วย"
-                rows="2"
-                resizable
-                v-model="submission.submissionData.submissionDetails.illness" />
-              <FormTextarea
-                class="col-6"
-                type="text"
-                label="ประวัติการทำวัคซีน"
-                rows="2"
-                resizable
-                v-model="submission.submissionData.submissionDetails.vaccinations" />
-            </div>
-          </transition>
         </div>
       </div>
       <!-- END INFO SECTION -->
-    
-      <div  id="report"
-            class="row w-100 border-b-md-primary py-4">
+
+      <div  id="submission_type"
+            class="row w-100 border-b py-4">
         <div class="col-xl-2 col-12">
-          <h3 class="mb-2">รายงาน</h3>
+          <h3 class="mb-2">ประเภทการทดสอบ</h3>
         </div>
         <div class="col-xl-10 col-12">
-          <h4 class="text-dark">ช่องทางการแจ้งเตือน</h4>
-          
-          <div class="form-row mb-3 mt-1">
-            <div class="form-group col-4">
-              <checkbox class="mb-1"
-                        label="อีเมล"
-                        label-class="label-lg"
-                        :disabled="!submitterDetail"
-                        v-model="submission.notificationEmail" />
-              <input  type="text"
-                      class="form-control"
-                      :class="{'text-muted': !submission.notificationEmail}"
-                      :value="submitterDetail? submitterDetail.email : ''"
-                      disabled >
+          <div class="form-row">
+            <FormInlineSelect
+              class="col-8 col-xl-6"
+              :btn-class-list="['primary', 'blue']"
+              v-model="submission.submission_type"
+              :options="submission_types"
+              :disabled="edit_mode"
+              :warn-before-change="form_has_information()"
+              warning-msg="ข้อมูลที่ถูกกรอกไว้แล้วด้านล่างจะหายไปถ้าท่านเปลี่ยนตัวเลือกนี้"
+              @change="on_submission_type_change()" />
+          </div>
+        </div>
+        <transition name="fade-no-delay">
+          <div v-if="is_general" class="row">
+            <div class="col-xl-2 col-12 pt-4">
+              <h4 class="mb-2 text-medium">ข้อมูลตัวอย่าง</h4>
             </div>
-            <div class="form-group col-4">
-              <checkbox class="mb-1"
-                        label="โทรศัพท์"
-                        label-class="label-lg"
-                        :disabled="!submitterDetail"
-                        v-model="submission.notificationPhone" />
-              <input  type="text"
-                      class="form-control"
-                      :class="{'text-muted': !submission.notificationPhone}"
-                      :value="submitterDetail? submitterDetail.phone : ''"
-                      disabled >
+            <div class="col-12 col-xl-10 pt-0 pt-xl-4">
+              <div class="form-row">
+                <FormSuggestInput
+                  class="col-4"
+                  label="ประเภทตัวอย่าง"
+                  :min-length="0"
+                  :list="['เลือด', 'เสมหะ', 'นํ้าลาย', 'เนื้อ']"
+                  filter-by-query
+                  v-model="submission.submission_data.sample_details.sample_type" />
+                <FormDateInput
+                  class="col-2"
+                  label="วันที่เก็บตัวอย่าง"
+                  format="dd/MM/yy"
+                  v-model="submission.submission_data.sample_details.sample_taken_date" />
+                <div class="w-100"></div>
+                <FormSuggestInput
+                  class="col-4"
+                  label="ชนิดสัตว์"
+                  :min-length="0"
+                  :list="['สุกร', 'สุนัข', 'กระต่าย', 'ม้า']"
+                  filter-by-query
+                  v-model="submission.submission_data.sample_details.animal_type" />
+                <FormInput
+                  class="col-4"
+                  type="text"
+                  label="พันธุ์"
+                  v-model="submission.submission_data.sample_details.animal_species" />
+                <FormInput
+                  class="col-2"
+                  type="text"
+                  label="อายุสัตว์"
+                  v-model="submission.submission_data.sample_details.animal_age" />
+                <FormInput
+                  class="col-2"
+                  type="number"
+                  label="จำนวนที่เลี้ยง"
+                  v-model.number="submission.submission_data.sample_details.animal_count" />
+                <FormTextarea 
+                  class="col-6"
+                  type="text"
+                  label="ประวัติการป่วย"
+                  rows="2"
+                  resizable
+                  v-model="submission.submission_data.sample_details.illness" />
+                <FormTextarea
+                  class="col-6"
+                  type="text"
+                  label="ประวัติการทำวัคซีน"
+                  rows="2"
+                  resizable
+                  v-model="submission.submission_data.sample_details.vaccinations" />
+              </div>
             </div>
           </div>
-  
-          <div v-if="isDisinfectantSubmission">
-            <h4 class="d-inline">รายงานเป็นภาษา </h4>
-            <i class="fas fa-star-of-life text-primary icon-sm d-inline" />
-            <div class="form-row mt-1">  
-              <div class="form-group d-flex col-4">
-                <checkbox label="ไทย"
-                          class="mr-4"
-                          label-class="label-lg"
-                          v-model="submission.submissionData.reportLang.thai" />
-                <checkbox label="English"
-                          label-class="label-lg"
-                          v-model="submission.submissionData.reportLang.eng" />
-              </div>
-              <div  v-if="noLang"
-                    class="form-group d-flex align-items-center">
-                <i class="fas fa-exclamation-triangle mr-1 text-primary" />
-                <h5 class="text-primary">
-                  กรุณาเลือกภาษารายงานอย่างน้อย 1 ภาษา
-                </h5>              
-              </div>
+        </transition>
+      </div>
+    
+      <template v-if="is_general">
+        <GeneralBatch
+          v-for="(batch, idx_batch) of submission.submission_data.batches"
+          :key="idx_batch"
+          :id="`batch${idx_batch+1}`"
+          :idx="idx_batch"
+          :multiple_batches="multiple_batches"
+          :batch="batch"
+          :edit_mode="edit_mode"
+          :is_validated="is_validated"
+          @delete-batch="delete_batch(idx_batch)" />
+      </template>
+      <template v-else-if="is_disinfectant">
+        <DisinfectantBatch
+          v-for="(batch, idx_batch) of submission.submission_data.batches"
+          :key="idx_batch"
+          :id="`batch${idx_batch+1}`"
+          :idx="idx_batch"
+          :multiple_batches="multiple_batches"
+          :batch="batch"
+          :english_report="submission.english_report"
+          :edit_mode="edit_mode"
+          :is_validated="is_validated"
+          @delete-batch="delete_batch(idx_batch)" />
+      </template>
+
+      <div  id="add_batch"
+            class="row w-100 border-b py-4 font-cu">
+        <div class="col-xl-2 col-12"></div>
+        <div class="col-xl-10 col-12">
+          <div class="form-row">
+            <div class="form-group col-6 mb-0">
+              <button class="btn btn-secondary btn-block"
+                      :disabled="!batch_has_info(submission.submission_data.batches[submission.submission_data.batches.length-1])"
+                      @click="add_batch()">
+                  <i class="fas fa-plus btn-inner-icon" />
+                {{ add_batch_label }}
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <!-- END REPORT SECTION -->
-    
-      <template v-if="isGeneralSubmission">
-        <GeneralBatch
-          v-for="(batch, idxBatch) of submission.submissionData.batches"
-          :key="idxBatch"
-          :id="`batch${idxBatch+1}`"
-          :idx="idxBatch"
-          :has-multiple-batches="hasMultipleBatches"
-          :batch="batch"
-          :is-edit-mode="isEditMode"
-          @delete-batch="deleteBatch(idxBatch)" />
-      </template>
-      <template v-else-if="!isGeneralSubmission && !noLang">
-        <DisinfectantBatch
-          v-for="(batch, idxBatch) of submission.submissionData.batches"
-          :key="idxBatch"
-          :id="`batch${idxBatch+1}`"
-          :idx="idxBatch"
-          :has-multiple-batches="hasMultipleBatches"
-          :batch="batch"
-          :report-lang="submission.submissionData.reportLang"
-          :is-edit-mode="isEditMode"
-          @delete-batch="deleteBatch(idxBatch)" />
-      </template>
+
+      <div  id="remarks"
+            class="row w-100 border-b py-4">
+        <template v-if="multiple_batches">
+          <div class="col-xl-2 col-12">
+            <h3 class="mb-2">ข้อมูลสรุป</h3>
+          </div>
+          <div class="col-xl-10 col-12">
+            <div class="form-row border-b mb-5">
+              <div class="col-1 form-group text-right nowrap">
+                <template v-if="is_general">
+                  <h2 class="text-primary">
+                    {{ submission_sample_count }}
+                  </h2>
+                  <h5 class="text-medium">ตัวอย่าง</h5>
+                </template>
+                <template v-else-if="is_disinfectant">
+                  <h2 class="text-primary">
+                    {{ submission.submission_data.batches.length }}
+                  </h2>
+                  <h5 class="text-medium">นํ้ายาฆ่าเชื้อ</h5>
+                </template>
+              </div>
+              <div class="col-2 form-group text-right">
+                <h2 class="text-primary">
+                  {{ submission_test_count }}
+                </h2>
+                <h5 class="text-medium">รายการทดสอบ</h5>
+              </div>
+              <div class="col-1 form-group text-right nowrap">
+                <h5 class="text-medium mt-2 ml-3">รวมเป็น</h5>
+              </div>
+              <div class="col-2 form-group text-right">
+                <h2 class="text-primary">
+                  {{ to_display_price(submission_price) }}
+                </h2>
+                <h5 class="text-medium">ค่าบริการ</h5>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div class="col-xl-2 col-12">
+          <h3 class="mb-2">หมายเหตุอื่นๆ</h3>
+        </div>
+        <div class="col-xl-10 col-12">
+          <div class="form-row">
+            <FormTextarea
+              class="col-6"
+              type="text"
+              rows="4"
+              resizable
+              v-model="submission.remarks" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row w-100 font-cu py-5">
+        <div class="col-12">
+          <button class="btn btn-primary btn-lg btn-block"
+                  @click="enter_review_mode()">
+            <i class="fas fa-check btn-inner-icon" />
+            {{ review_and_submit_label }}
+          </button>
+        </div>
+        <div  v-if="is_validated && !form_complete()"
+              class="col-12 mt-2">
+          <ErrorBox msg="ข้อมูลในแบบฟอร์มมีปัญหา" />
+        </div>
+      </div>
     </div>
-  
-    <button class="btn btn-secondary align-self-center mt-4 font-chatthai btn-wide"
-            :disabled="!batchHasInfo(submission.submissionData.batches[submission.submissionData.batches.length-1])"
-            @click="addBatch()">
-        <i class="fas fa-plus btn-inner-icon" />
-      {{ addBatchLabel }}
-    </button>
-  
-    <button class="btn btn-success align-self-center px-5 my-5 btn-lg btn-wide"
-            @click="inReviewMode = true">
-      <i class="fas fa-check btn-inner-icon" />
-      {{ reviewAndSubmitLabel }}
-    </button>
   
     <transition name="fade">
       <ReviewSubmission
-        v-if="inReviewMode"
+        v-if="in_review_mode"
         :submission="submission"
-        :user="submitterDetail"
-        :is-edit-mode="isEditMode"
-        @back="inReviewMode = false"
-        @submit="sendSubmission()" />
+        :user="user_detail"
+        :sample_owner="selected_sample_owner"
+        :invoice_to="selected_invoice_to"
+        :edit_mode="edit_mode"
+        @back="in_review_mode = false"
+        @submit="send_submission()" />
     </transition>
   
-    <Modal  modal-id="submittedModal"
+    <ContactModal
+      v-if="show_sample_owner_contact_modal"
+      :user="user_detail"
+      :submitter-contacts="select_contacts"
+      :english-report="submission.english_report"
+      @modal-close="on_sample_owner_contact_modal_close($event)" />
+    <ContactModal
+      v-if="show_invoice_to_contact_modal"
+      :user="user_detail"
+      :submitter-contacts="select_contacts"
+      :english-report="submission.english_report"
+      @modal-close="on_invoice_to_contact_modal_close($event)" />
+
+    <Modal  modal-id="add-english-info-modal"
+            data-backdrop="static"
+            v-if="contact_to_add_english_info"
+            x-close>
+      <template #modal-header>
+        <h3>เพิ่มข้อมูลภาษาอังกฤษ</h3>
+      </template>
+      <template #modal-body>
+        <div class="form-row">
+          <FormInput
+            class="col-12"
+            disabled
+            :value="contact_to_add_english_info.name" />
+          <FormTextarea
+            class="col-12 mb-4"
+            rows="3"
+            disabled
+            :value="contact_to_add_english_info.address" />
+          <FormContactNameInput
+            class="col-12 p-0"
+            :contact-type="contact_to_add_english_info.contact_type"
+            english
+            v-model="add_english_info_modal.name_eng" />
+          <FormAddressInput
+            class="col-12 p-0"
+            english
+            v-model="add_english_info_modal.address_eng" />
+        </div>
+        <div class="form-row mt-4">
+          <div class="form-group col-6 mb-0">
+            <button type="button"
+                    class="btn btn-secondary btn-block"
+                    data-dismiss="modal">
+              ยกเลิก
+            </button>
+          </div>
+          <div class="form-group col-6 mb-0">
+            <button type="button" class="btn btn-primary btn-block"
+                    @click="submit_update_contact_english_info()">
+              <i class="fas fa-check btn-inner-icon"></i>บันทึกข้อมูล
+            </button>
+          </div>
+        </div>
+      </template>
+    </Modal>
+
+    <Modal  modal-id="submitted-modal"
             data-backdrop="static">
       <template #modal-body>
-        <div class="d-flex flex-column align-items-center justify-content-center w-100 px-3">
+        <div class="d-flex flex-column align-items-center justify-content-center w-100">
           <template v-if="!submitting">
             <h3 class="text-dark text-center mb-4">
-              {{ isEditMode? 'การแก้ไขถูกบันทึกเรียบร้อยแล้ว' : 'การส่งแบบฟอร์มเสร็จเรียบร้อย' }}
+              {{ edit_mode? 'การแก้ไขถูกบันทึกเรียบร้อยแล้ว' : 'การส่งแบบฟอร์มเสร็จเรียบร้อย' }}
             </h3>
             <i class="fas fa-check icon-huge text-success mb-4" />
             <h4 class="text-medium text-center mx-5 px-4">
@@ -345,7 +589,7 @@
               <i class="fas fa-print btn-inner-icon"></i>ปริ้นสลิปการส่งตัวอย่าง
             </button>
             <button class="btn btn-secondary w-100 mt-3"
-                    @click="goToSubmissionsList()">
+                    @click="go_to_submissions_list()">
               เรียบร้อย
             </button>
           </template>
@@ -358,16 +602,10 @@
     </Modal>
   
     <div class="font-chatthai">
-      <button class="btn btn-lg mb-4 btn-dark font-chatthai align-self-center"
-              @click="DEV_VIEW_JSON = !DEV_VIEW_JSON">
-        DEV: {{DEV_VIEW_JSON? 'Hide' : 'View'}} JSON Form Data
-      </button>
-      <div v-if="DEV_VIEW_JSON">
-        <h3>JSON Form Data</h3>
-          <h4 class="text-default pre font-chatthai">
-            {{ JSON.stringify(submission, null, '\t') }}
-          </h4>
-      </div>
+      <h3>JSON Form Data</h3>
+      <h4 class="text-default pre font-chatthai">
+        {{ JSON.stringify(submission, null, '\t') }}
+      </h4>
     </div>
   </template>
 
@@ -376,11 +614,13 @@
 
 <script>
 import $ from 'jquery'
+import uniq from 'lodash/uniq'
 //import smoothReflow from 'vue-smooth-reflow'
-import { getJWT } from '@/vue-apollo'
-import { SEND_SUBMISSION, SUBMISSION_FORM_DATA } from '@/graphql/submission'
+import { get_jwt } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
-import { USERS_LIST, USER_DETAIL } from '@/graphql/user'
+import { SEND_SUBMISSION, SUBMISSION_DETAIL } from '@/graphql/submission'
+import { UPDATE_CONTACT_ENG_INFO } from '@/graphql/contact'
+import { USERS_LIST, USER_DETAIL, SUBMITTERS_LIST } from '@/graphql/user'
 
 export default {
   name: 'submit-samples',
@@ -393,72 +633,115 @@ export default {
     ),
     ReviewSubmission: () => import(/* webpackChunkName: "group-submitsamples" */
       './ReviewSubmission'
-    )
+    ),
+    ContactModal: () => import(/* webpackChunkName: "group-submitsamples" */
+      './ContactModal'
+    ),
   },
   //mixins: [smoothReflow],
   data () {
     return {
       submission: {
-        submissionType: 'การตรวจทั่วไป',
+        submission_type: 'การตรวจทั่วไป',
+        backuser: null,
         submitter: null,
-        submitDate: null,
-        sampleOwnerOrg: undefined,
-        sampleOwnerName: null,
-        invoiceTo: null,
-        notificationEmail: true,
-        notificationPhone: false,
-        submissionData: {
+        submit_date: null,
+        english_report: false,
+        sample_owner: null,
+        invoice_to: null,
+        notify_to_email: null,
+        notify_to_phone: null,
+        remarks: null,
+        submission_data: {
           batches: [{}]
         },
       },
+      is_validated: false,
       submitting: false,
-      invoiceToChoice: null,
-      inReviewMode: false,
-      submissionTypes: [
-        { id: 'การตรวจทั่วไป',            name: 'การตรวจทั่วไป' },
-        { id: 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ',  name: 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ' }
-      ],
-      DEV_VIEW_JSON: false
+      sample_owner_choice: null,
+      invoice_to_choice: null,
+      show_sample_owner_contact_modal: false,
+      show_invoice_to_contact_modal: false,
+      in_review_mode: false,
+      contact_to_add_english_info: null,
+      add_english_info_modal: {
+        name_eng: null,
+        address_eng: null
+      },
+      submission_types: ['การตรวจทั่วไป', 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ'],
     }
   },
   computed: {
-    isGeneralSubmission () {
-      return this.submission.submissionType === 'การตรวจทั่วไป'
+    is_general () {
+      return this.submission.submission_type === 'การตรวจทั่วไป'
     },
-    isDisinfectantSubmission () {
-      return this.submission.submissionType === 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ'
+    is_disinfectant () {
+      return this.submission.submission_type === 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ'
     },
-    hasMultipleBatches () {
-      return this.submission.submissionData.batches.length > 1
+    multiple_batches () {
+      return this.submission.submission_data.batches.length > 1
     },
-    noLang () {
-      return this.isDisinfectantSubmission && !this.submission.submissionData.reportLang.thai && !this.submission.submissionData.reportLang.eng
-    },
-    isEditMode () {
+    edit_mode () {
       return !!this.$route.params.id
     },
-    addBatchLabel () {
-      return  this.isGeneralSubmission? 'เพิ่มกลุ่มการทดสอบ' :
-              this.isDisinfectantSubmission? 'เพิ่มรายการยาฆ่าเชื้อ' : ''
+    submission_price () {
+      return this.submission.submission_data.batches.reduce(
+        (price, batch) => price += batch.price, 0
+      )
     },
-    reviewAndSubmitLabel () {
-      return `สรุปและ${this.isEditMode? 'บันทึก' : 'ส่ง'}`
+    submission_test_count () {
+      return this.submission.submission_data.batches.reduce(
+        (test_count, batch) => test_count += batch.test_count, 0
+      )
     },
-    submitterFullName () {
-      return this.isEditMode? this.submission.submitterName : `${this.submitterDetail.title}${this.submitterDetail.first_name} ${this.submitterDetail.last_name}`
+    submission_sample_count () {
+      return this.submission.submission_data.batches.reduce(
+        (sample_count, batch) => sample_count += batch.sample_count || 0, 0
+        )
     },
-    ownerOrgs () {
-      if (!this.submitterDetail) return []
-      return [ ...this.submitterDetail.submitter_of.filter(org => org.org_type == 1), { index: null, name: '* องค์กร/ฟาร์ม อื่นๆที่ไม่มีชื่อในระบบ *'} ]
+    has_english_info_submitter () {
+      if (!this.user_detail) return false
+      return this.user_detail.default_contact.name_eng && this.user_detail.default_contact.address_eng
     },
-    companyOrgs () {
-      if (!this.submitterDetail) return []
-      return this.submitterDetail.submitter_of.filter(org => org.org_type == 2)
-    }
+    needs_english_info_sample_owner () {
+      return this.submission.english_report && !this.contact_has_english_info(this.submission.sample_owner)
+    },
+    needs_english_info_invoice_to () {
+      return this.submission.english_report && !this.contact_has_english_info(this.submission.invoice_to)
+    },
+    select_contacts () {
+      return [ ...this.user_detail.contact_list, { index: -1, name: '* ไม่มีในรายชื่อนี้ *' } ]
+    },
+    selected_submitter () {
+      return this.user_detail && this.user_detail.default_contact
+    },
+    selected_sample_owner () {
+      if (this.submission.sample_owner === this.submission.submitter) return this.user_detail.default_contact
+      return this.user_detail.contact_list.find(c => c.index === this.submission.sample_owner)
+    },
+    selected_invoice_to () {
+      if (this.submission.invoice_to === this.submission.submitter) return this.user_detail.default_contact
+      return this.user_detail.contact_list.find(c => c.index === this.submission.invoice_to)
+    },
+    email_suggest_list () {
+      if (!this.user_detail) return []
+      return [ this.user_detail.email ]
+    },
+    phone_suggest_list () {
+      if (!this.user_detail) return []
+      return [ this.user_detail.phone ]
+    },
+    add_batch_label () {
+      return  this.is_general? 'เพิ่มกลุ่มการทดสอบ' :
+              this.is_disinfectant? 'เพิ่มรายการยาฆ่าเชื้อ' : ''
+    },
+    review_and_submit_label () {
+      return `สรุปและ${this.edit_mode? 'บันทึก' : 'ส่ง'}`
+    },
   },
   watch: {
-    inReviewMode () {
-      if (this.inReviewMode) {
+    in_review_mode () {
+      if (this.in_review_mode) {
         document.body.classList.add('overflow-hidden')
       } else {
         document.body.classList.remove('overflow-hidden')
@@ -466,87 +749,47 @@ export default {
     }
   },
   mounted () {
-    if (!this.isEditMode) {
-      this.submission.submitDate = new Date().toISOString()
-      this.onSubmissionTypeChange()
+    if (!this.edit_mode) {
+      this.submission.submit_date = new Date()
+      this.on_submission_type_change()
     }
     //this.$smoothReflow({el: '#info'})
     //this.$smoothReflow({el: '#report'})
   },
   methods: {
-    async sendSubmission () {
-      this.inReviewMode = false
-      this.submitting = true
-      $('#submittedModal').modal('toggle')
-      const {
-        submissionType,
-        submitter,
-        sampleOwnerName,
-        sampleOwnerOrg,
-        invoiceTo,
-        notificationEmail,
-        notificationPhone
-      } = this.submission
-      const submissionData = JSON.stringify(this.submission.submissionData)
-      try {
-        let res = await this.$apollo.mutate({
-          mutation: SEND_SUBMISSION,
-          variables: {
-            jwt: getJWT(),
-            submissionType,
-            submitter,
-            sampleOwnerName,
-            sampleOwnerOrg,
-            invoiceTo,
-            notificationEmail,
-            notificationPhone,
-            submissionData
-          }
-        })
-        console.log(res)
-        this.submitting = false
-      } catch (err) {
-        console.log(err)
-        this.submitting = false
-      }
-    },
-
-    onSubmissionTypeChange () {
+    on_submission_type_change () {
+      this.is_validated = false
       // General type
-      if (this.isGeneralSubmission) {
-        this.submission.submissionData = {
+      if (this.is_general) {
+        this.submission.submission_data = {
           batches: [],
-          submissionDetails: {
-            sampleTakenDate: null,
-            sampleType: null,
-            animalType: null,
-            animalSpecies: null,
-            animalAge: null,
-            animalCount: null,
+          sample_details: {
+            sample_taken_date: null,
+            sample_type: null,
+            animal_type: null,
+            animal_species: null,
+            animal_age: null,
+            animal_count: null,
             illness: null,
             vaccinations: null,
           }
         }
       // Disinfectant Type
-      } else if (this.isDisinfectantSubmission) {
-        this.submission.submissionData = {
-          batches: [],
-          reportLang: {
-            thai: true,
-            eng: false
-          }
+      } else if (this.is_disinfectant) {
+        this.submission.submission_data = {
+          batches: []
         }
       }
-      this.submission.submissionData.batches.push(this.generateNewBatch())
+      this.submission.submission_data.batches.push(this.generate_new_batch())
     },
-
-    generateNewBatch () {
-      let newBatch
+    generate_new_batch () {
+      let new_batch
       // General type
-      if (this.isGeneralSubmission) {
-        newBatch = {
-          sampleCount: null,
-          totalPrice: 0,
+      if (this.is_general) {
+        new_batch = {
+          sample_count: null,
+          price: 0,
+          test_count: 0,
           tests: {
             'แบคทีเรียวิทยา': null,
             'อณูชีววิทยา': null,
@@ -556,42 +799,40 @@ export default {
           samples: []
         }
       // Disinfectant Type
-      } else if (this.isDisinfectantSubmission) {
-        newBatch = {
-          testType: null,
-          disinfectantName: null,
-          disinfectantNameEng: null,
-          totalPrice: 0,
-          toxicityTestCost: 0,
-          uniqueCells: {},
+      } else if (this.is_disinfectant) {
+        new_batch = {
+          test_type: null,
+          disinfectant_name: null,
+          price: 0,
+          test_count: 0,
+          toxicity_test_cost: 0,
+          unique_cells: {},
           tests: {}
         }
       }
-      return newBatch
+      return new_batch
     },
-
-    addBatch () {
-      this.submission.submissionData.batches.push(this.generateNewBatch())
+    add_batch () {
+      this.submission.submission_data.batches.push(this.generate_new_batch())
       this.$nextTick( () => {
         setTimeout( () => {
-          const batch = document.getElementById(`${this.submission.submissionData.batches.length}`)
+          const batch = document.getElementById(`${this.submission.submission_data.batches.length}`)
           if (batch) batch.classList.remove('expand-in-batch')
         }, 400)
         this.$scrollTo(
-          `#batch${this.submission.submissionData.batches.length}`,
+          `#batch${this.submission.submission_data.batches.length}`,
           500,
           { offset: -200 }
         )
       })
     },
-
-    deleteBatch (idx) {
+    delete_batch (idx) {
       const batch = document.getElementById(`batch${idx+1}`)
       if (batch) {
         batch.classList.add('shrink-out-batch')
         setTimeout( () => {
           batch.classList.remove('shrink-out-batch')
-          this.submission.submissionData.batches.splice(idx, 1)
+          this.submission.submission_data.batches.splice(idx, 1)
         }, 400)
         this.$nextTick( () => {
           this.$scrollTo(
@@ -602,140 +843,307 @@ export default {
         })
       }
     },
-
-    getBatchNavLabel (number) {
-      return  (!this.hasMultipleBatches)? 'รายการทดสอบ' :
-              (this.isGeneralSubmission)? `กลุ่ม ${number}` :
-              (this.isDisinfectantSubmission)? `นํ้ายาฆ่าเชื้อ ${number}` : '???'
+    get_batch_label (number) {
+      return  (!this.multiple_batches)? 'รายการทดสอบ' :
+              (this.is_general)? `กลุ่ม ${number}` :
+              (this.is_disinfectant)? `นํ้ายาฆ่าเชื้อ ${number}` : '???'
     },
-    wholeFormHasInformation () {
-      const submissionDetailSectionHasInfo = this.isGeneralSubmission && 
-        Object.values(this.submission.submissionData.submissionDetails).reduce( (hasInfo, info) => hasInfo || !!info, false)
-      const batchesHaveInfo = this.submission.submissionData.batches
-        .reduce( (hasInfo, batch) => hasInfo || this.batchHasInfo(batch), false)
-      return submissionDetailSectionHasInfo || batchesHaveInfo
+    form_has_information () {
+      const submission_detail_has_info = this.is_general && 
+        Object.values(this.submission.submission_data.sample_details).reduce(
+          (has_info, info) => has_info || !!info, false
+        )
+      const batchesHaveInfo = this.submission.submission_data.batches
+        .reduce( (has_info, batch) => has_info || this.batch_has_info(batch), false)
+      return submission_detail_has_info || batchesHaveInfo
     },
-    batchHasInfo (batch) {
-      return !!batch.sampleCount || batch.totalPrice > 0
+    batch_has_info (batch) {
+      if (this.is_general) {
+        return !!batch.sample_count || batch.price > 0
+      }
+      if (this.is_disinfectant) {
+        return !!batch.disinfectant_name && batch.price > 0
+      }
+      return false
     },
-    goToSubmissionsList () {
-      $('#submittedModal').modal('toggle')
-      this.$router.push({ name: 'submissionslist' })
+    go_to_submissions_list () {
+      $('#submitted-modal').modal('toggle')
+      this.$router.push({ name: 'submissions-list' })
     },
-    goToViewSubmission (submissionKey) {
-      $('#submittedModal').modal('toggle')
-      this.$router.push({ name: 'viewsubmission', params: { id: submissionKey } })
+    go_to_view_submission (submission_key) {
+      $('#submitted-modal').modal('toggle')
+      this.$router.push({ name: 'view-submission', params: { id: submission_key } })
     },
-    invoiceToOwner () {
-      this.invoiceToChoice = 'owner'
-      this.submission.invoiceTo = this.submission.sampleOwnerOrg
+    sample_owner_self () {
+      this.sample_owner_choice = 'self'
+      this.submission.sample_owner = this.user_detail.default_contact.index
+      this.on_sample_owner_change(this.submission.sample_owner)
+      if (this.invoice_to_choice === 'owner') {
+        this.invoice_to_choice = 'self'
+        this.submission.invoice_to = this.user_detail.default_contact.index
+        this.on_invoice_to_change(this.submission.invoice_to)
+      }
     },
-    invoiceToSelf () {
-      this.invoiceToChoice = 'self'
-      this.submission.invoiceTo = null
+    sample_owner_other () {
+      if (this.sample_owner_choice !== 'other') {
+        this.sample_owner_choice = 'other'
+        this.submission.sample_owner = null
+      }
     },
-    invoiceToCompany () {
-      this.invoiceToChoice = 'company'
-      this.submission.invoiceTo = null
+    invoice_to_owner () {
+      this.invoice_to_choice = 'owner'
+      this.submission.invoice_to = this.submission.sample_owner
+      this.on_invoice_to_change(this.submission.invoice_to)
     },
-    onOwnerOrgChange (newOwnerOrg) {
-      // Invoice to owner
-      if (this.invoiceToChoice === 'owner') {
-        if (newOwnerOrg === null) {
-          this.invoiceToChoice = null
-          this.submission.invoiceTo = null
-        } else {
-          this.submission.invoiceTo = newOwnerOrg
+    invoice_to_self () {
+      this.invoice_to_choice = 'self'
+      this.submission.invoice_to = this.user_detail.default_contact.index
+      this.on_invoice_to_change(this.submission.invoice_to)
+    },
+    invoice_to_other () {
+      if (this.invoice_to_choice !== 'other') {
+        this.invoice_to_choice = 'other'
+        this.submission.invoice_to = null
+      }
+    },
+    on_submitter_change (index) {
+      this.submission.sample_owner = null
+      this.submission.invoice_to = null
+      this.sample_owner_choice = null
+      this.invoice_to_choice = null
+      this.submission.english_report = false
+    },
+    on_sample_owner_change (index) {
+      if (this.invoice_to_choice === 'owner') {
+        this.submission.invoice_to = index
+        this.on_invoice_to_change(index)
+      }
+      if (index === this.submission.invoice_to) {
+        this.invoice_to_choice = 'owner'
+      }
+      if (index === -1) {
+        this.show_sample_owner_contact_modal = true
+      }
+    },
+    on_invoice_to_change (index) {
+      if (index === this.submission.sample_owner &&
+          this.sample_owner_choice === 'other') {
+        this.invoice_to_choice = 'owner'
+      }
+      if (index === -1) {
+        this.show_invoice_to_contact_modal = true
+      }
+    },
+    form_complete () {
+      this.is_validated = true
+      const { backuser, submitter, sample_owner, invoice_to } = this.submission
+      const basic_info_complete = !!backuser && !!submitter && !!sample_owner && !!invoice_to
+      let batches_complete
+      if (this.is_general) {
+        batches_complete = this.submission.submission_data.batches.reduce( (batches_complete, batch) => {
+          return batches_complete && !!batch.sample_count && (batch.price > 0)
+        }, true)
+        
+      } else if (this.is_disinfectant) {
+        batches_complete = this.submission.submission_data.batches.reduce( (batches_complete, batch) => {
+          return batches_complete && !!batch.disinfectant_name && (batch.test_count > 0)
+        }, true)
+      }
+      return basic_info_complete && batches_complete
+    },
+    async on_sample_owner_contact_modal_close (contact_index_to_select) {
+      this.submission.sample_owner = contact_index_to_select
+      if (contact_index_to_select) {
+        await this.$apollo.queries.user_detail.refetch()
+        this.on_sample_owner_change(this.submission.sample_owner)
+      }
+      this.show_sample_owner_contact_modal = false
+    },
+    async on_invoice_to_contact_modal_close (contact_index_to_select) {
+      this.submission.invoice_to = contact_index_to_select
+      if (contact_index_to_select) {
+        await this.$apollo.queries.user_detail.refetch()
+        this.on_invoice_to_change(this.submission.invoice_to)
+      }
+      this.show_invoice_to_contact_modal = false
+    },
+    contact_has_english_info (index) {
+      const { name_eng, address_eng } = this.select_contacts.find(e => e.index === index)
+      return name_eng && address_eng
+    },
+    enter_review_mode () {
+      this.clean_form()
+      if (this.form_complete()) {
+        this.in_review_mode = true
+      }
+    },
+    clean_form () {
+      for (const batch of this.submission.submission_data.batches) {
+        if (this.is_general) {
+          for (const [department, tests] of Object.entries(batch.tests)) {
+            if (tests) {
+              if (tests.test_list.length <= 0) {
+                batch.tests[department] = null
+              }
+            }
+          }
         }
       }
-
-      if (newOwnerOrg === null) {
-        this.submission.sampleOwnerName = ''
-      } else {
-        this.submission.sampleOwnerName = this.ownerOrgs.find(o => o.index === newOwnerOrg).name
+    },
+    show_add_english_info_modal (contact) {
+      this.contact_to_add_english_info = contact
+      this.$nextTick( () => $('#add-english-info-modal').modal('show') )
+    },
+    async submit_update_contact_english_info () {
+      try {
+        let res = await this.$apollo.mutate({
+          mutation: UPDATE_CONTACT_ENG_INFO,
+          variables: {
+            jwt: get_jwt(),
+            index: this.contact_to_add_english_info.index,
+            ...this.add_english_info_modal
+          }
+        })
+        await this.$apollo.queries.user_detail.refetch()
+        this.contact_to_add_english_info = null
+        this.add_english_info_modal.name_eng = null
+        this.add_english_info_modal.address_eng = null
+        $('#add-english-info-modal').modal('hide')
+      } catch (err) {
+        console.log(err)
       }
-    }
+    },
+    async send_submission () {
+      this.in_review_mode = false
+      this.submitting = true
+      $('#submitted-modal').modal('toggle')
+      const {
+        backuser,
+        submission_type,
+        english_report,
+        submitter,
+        sample_owner,
+        invoice_to,
+        notify_to_email,
+        notify_to_phone,
+        remarks
+      } = this.submission
+      const submission_data = JSON.stringify(this.submission.submission_data)
+      try {
+        let res = await this.$apollo.mutate({
+          mutation: SEND_SUBMISSION,
+          variables: {
+            jwt: get_jwt(),
+            backuser,
+            submission_type,
+            english_report,
+            submitter,
+            sample_owner,
+            invoice_to,
+            notify_to_email,
+            notify_to_phone,
+            remarks,
+            submission_data
+          }
+        })
+        console.log(res)
+        this.submitting = false
+      } catch (err) {
+        console.log(err)
+        this.submitting = false
+      }
+    },
   },
   apollo: {
     auth: {
       query: AUTH_DATA,
       update: data => data.auth,
       result (res) {
-        if (!res.data.auth.isAdmin) {
-          this.submission.submitter = res.data.auth.userIndex
+        if (!res.data.auth.is_admin) {
+          this.submission.backuser = res.data.auth.index
         }
       }
     },
-    submitterDetail: {
+    user_detail: {
       query: USER_DETAIL,
       variables () {
         return {
-          jwt: getJWT(),
-          index: this.submission.submitter
+          jwt: get_jwt(),
+          index: this.submission.backuser
         }
       },
-      update: data => data.get_backuser.result[0],
+      update: data => data.get_backuser.result,
+      result (res) {
+        if (res.data) {
+          this.submission.submitter = res.data.get_backuser.result.default_contact.index
+        }
+      },
       skip () {
-        return !this.submission.submitter
+        return !this.submission.backuser
       }
     },
-    submitters: {
-      query: USERS_LIST,
+    all_users: {
+      query: SUBMITTERS_LIST,
       variables () {
         return {
-          jwt: getJWT(),
-          searchQuery: '',
-          accountActive: true,
-          accountType: 201
+          jwt: get_jwt()
         }
       },
       update: data => data.search_backuser.result,
       skip () {
-        return !this.auth || !this.auth.isAdmin
+        return !this.auth || !this.auth.is_admin
       }
     },
-    submissionRaw: {
-      query: SUBMISSION_FORM_DATA,
+    submission_raw: {
+      query: SUBMISSION_DETAIL,
       variables () {
         return {
-          jwt: getJWT(),
-          key: [this.$route.params.id]
+          jwt: get_jwt(),
+          key: this.$route.params.id
         }
       },
-      update: data => data.get_submission.result[0],
+      update: data => data.get_submission.result,
       result (res) {
         const {
+          backuser,
           submission_type,
-          submitter,
           submit_date,
-          sample_owner_org,
-          sample_owner_name,
+          submitter,
+          english_report,
+          sample_owner,
           invoice_to,
-          notification_email,
-          notification_phone,
+          notify_to_email,
+          notify_to_phone,
           submission_data
-        } = res.data.get_submission.result[0]
+        } = res.data.get_submission.result
         this.submission = {
-          submissionType: submission_type,
+          submission_type,
+          english_report,
+          notify_to_email,
+          notify_to_phone,
+          backuser: backuser.index,
           submitter: submitter.index,
-          submitDate: new Date(parseInt(submit_date)),
-          sampleOwnerOrg: sample_owner_org[0].index,
-          sampleOwnerName: sample_owner_name,
-          invoiceTo: invoice_to[0].index,
-          notificationEmail: notification_email,
-          notificationPhone: notification_phone,
-          submissionData: JSON.parse(submission_data)
+          submit_date: submit_date? new Date(parseInt(submit_date)) : new Date(),
+          sample_owner: sample_owner.index,
+          invoice_to: invoice_to.index,
+          submission_data: JSON.parse(submission_data)
         }
-
-        if (this.submission.sampleOwnerOrg == this.submission.invoiceTo) {
-          this.invoiceToChoice = 'owner'
-        } else if (this.submission.invoiceTo) {
-          this.invoiceToChoice = 'company'
+        if (this.submission.sample_owner == this.submission.submitter) {
+          this.sample_owner_choice = 'self'
+        } else if (this.submission.sample_owner == this.submission.submitter) {
+          this.sample_owner_choice = 'self'
         } else {
-          this.invoiceToChoice = 'self'
+          this.sample_owner_choice = 'other'
+        }
+        if (this.submission.invoice_to == this.submission.submitter) {
+          this.invoice_to_choice = 'self'
+        } else if (this.submission.invoice_to == this.submission.sample_owner) {
+          this.invoice_to_choice = 'owner'
+        } else {
+          this.invoice_to_choice = 'other'
         }
       },
-      skip () { return !this.isEditMode }
+      skip () { return !this.edit_mode }
     }
   }
 }
@@ -760,15 +1168,6 @@ export default {
   position: absolute;
   top: 0;
   left: -120px;
-}
-
-.submit-samples-nav {
-  position: sticky;
-  top: $titlebar-height-scrolled;
-  background: $light;
-  border-bottom: 1px solid $accent;
-  z-index: 99;
-  box-shadow: 0 5px 5px -5px #333;
 }
 @keyframes expand-in-batch {
   0% {

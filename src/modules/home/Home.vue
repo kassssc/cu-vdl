@@ -1,7 +1,6 @@
 <template>
 <div class="page page-md d-flex flex-column align-items-center">
-  <div  v-once
-        id="home"
+  <div  id="home"
         class="w-100 d-flex flex-column align-items-center pb-5">
     <div class="home-section">
       <div class="faded-logo" />
@@ -77,7 +76,7 @@
       </div>
   
       <div class="d-flex w-100 justify-content-center">
-        <router-link  v-if="loggedIn"
+        <router-link  v-if="logged_in"
                       :to="{name: 'submit-samples'}"
                       tag="button"
                       class="btn btn-primary mt-3 home-section-btn">
@@ -145,7 +144,7 @@
 import Services from './Services'
 import OrgChart from './OrgChart'
 import Contact from './Contact'
-import { LOGGED_IN } from '@/graphql/local'
+import { AUTH_DATA } from '@/graphql/local'
 
 export default {
   name: 'home',
@@ -155,9 +154,9 @@ export default {
     Contact
   },
   apollo: {
-    loggedIn: {
-      query: LOGGED_IN,
-      update: data => data.auth.loggedIn
+    logged_in: {
+      query: AUTH_DATA,
+      update: data => data.auth.logged_in
     }
   }
 }
@@ -217,7 +216,7 @@ ul.info-text {
   width: 640px;
 }
 .mission-img {
-  width: 47vw;
+  width: 43vw;
   border-radius: $border-radius;
   background-image: url('https://i.ibb.co/jvtdL1g/ACT-118.jpg');
   background-repeat: no-repeat;
@@ -229,7 +228,7 @@ ul.info-text {
   margin-right: 5em;
 }
 .personel-img {
-  width: 54vw;
+  width: 52vw;
   border-radius: $border-radius;
   background-image: url('https://i.ibb.co/1ssFNJk/IP3.jpg');
   background-repeat: no-repeat;
@@ -238,7 +237,7 @@ ul.info-text {
   filter: contrast(70%);
 }
 .test {
-  width: 100vw;
+  width: 99vw;
   height: 550px;
   margin: 4em 0;
   background-image: url('https://i.ibb.co/2vcL6NQ/ACT-186-e1505924519238.jpg');

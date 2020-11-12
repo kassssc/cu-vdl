@@ -15,7 +15,6 @@ export default {
 
 <style lang="scss" scoped>
 .footer {
-  width: 100vw;
   height: $footer-height;
   color: $white;
   display: flex;
@@ -23,5 +22,6 @@ export default {
   padding-left: 2em;
   font-size: .8rem;
   background: linear-gradient(to right, $primary, $placeholder);
+  h6 { font-size: 1rem; }
 }
 </style>

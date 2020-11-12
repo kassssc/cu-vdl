@@ -12,13 +12,13 @@
             :class="[
               btnClass,
               btnClassList? btnClassList[idx] : '',
-              { 'selected': value === option.id }
+              { 'selected': value === option }
             ]"
             :disabled="disabled"
-            @click="onOptionClick(option.id)">
-      <i  v-show="value === option.id && tick"
+            @click="onOptionClick(option)">
+      <i  v-show="value === option && tick"
           class="fas fa-check btn-inner-icon" />
-      {{ option.name }}
+      {{ option }}
     </button>
   </div>
 
@@ -27,22 +27,27 @@
           x-close>
     <template #modal-header>
       <h3 class="text-primary">
-        <i class="fas fa-exclamation-triangle icon-md mr-1" />
+        <i class="fas fa-exclamation-triangle mr-1" />
         คำเตือน
       </h3>
     </template>
     <template #modal-body>
       <h4 class="text-dark">{{ warningMsg }}</h4>
-    </template>
-    <template #modal-footer>
-      <div class="w-100 d-flex flex-nowrap">
-        <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
-          ยกเลิก
-        </button>
-        <button type="button" class="btn btn-primary ml-2 w-100"
-                @click="selectOption(optionToBeSelected)">
-          ยืนยันว่าจะเปลี่ยน
-        </button>
+      <div class="form-row mt-4">
+        <div class="form-group col-4 mb-0">
+          <button type="button"
+                  class="btn btn-secondary btn-block"
+                  data-dismiss="modal">
+            ยกเลิก
+          </button>
+        </div>
+        <div class="form-group col-8 mb-0">
+          <button type="button"
+                  class="btn btn-primary btn-block"
+                  @click="selectOption(option_to_be_selected)">
+            ยืนยันว่าจะเปลี่ยน
+          </button>
+        </div>        
       </div>
     </template>
   </Modal>
@@ -96,22 +101,22 @@ export default {
   },
   data () {
     return {
-      optionToBeSelected: null
+      option_to_be_selected: null
     }
   },
   methods: {
-    onOptionClick (optionId) {
+    onOptionClick (option) {
       if (this.warnBeforeChange) {
-        this.optionToBeSelected = optionId
+        this.option_to_be_selected = option
         $('#warnModal').modal('show')
       } else {
-        this.selectOption(optionId)
+        this.selectOption(option)
       }
     },
-    selectOption (optionId) {
+    selectOption (option) {
       $('#warnModal').modal('hide')
-      this.optionToBeSelected = null
-      this.$emit('input', optionId)
+      this.option_to_be_selected = null
+      this.$emit('input', option)
       this.$emit('change')
     }
   }
@@ -132,6 +137,7 @@ button.btn-option {
     &.pink { background: $pink; }
     &.orange { background: $orange; }
     &.red { background: $red; }
+    &.yellow { background: $yellow; }
     &[disabled] {
       opacity: 1
     }

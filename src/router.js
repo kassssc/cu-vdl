@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import store from '@/store/store.js'
 import MainContent from '@/modules/main/MainContent'
 import Home from '@/modules/home/Home'
 
@@ -22,34 +21,34 @@ const routes = [
       },
 
       {
-        path: '/tracksubmissions',
+        path: '/submissions',
         component: () => import(/* webpackChunkName: "group-submissions" */
           '@/modules/submissions/Submissions'
         ),
         children: [
           {
             path: '',
-            name: 'submissionslist',
+            name: 'submissions-list',
             component: () => import(/* webpackChunkName: "group-submissions" */
               '@/modules/submissions/SubmissionsList'
             ),
-            meta: { requiresLogin: true }
+            meta: { requires_login: true }
           },
           {
             path: 'view/:id',
-            name: 'viewsubmission',
+            name: 'view-submission',
             component: () => import(/* webpackChunkName: "group-submissions" */
               '@/modules/submissions/ViewSubmission'
             ),
-            meta: { requiresLogin: true }
+            meta: { requires_login: true }
           },
           {
             path: 'edit/:id',
-            name: 'editsubmission',
+            name: 'edit-submission',
             component: () => import(/* webpackChunkName: "group-submitsamples" */
               '@/modules/submitsamples/SubmitSamples'
             ),
-            meta: { requiresLogin: true, requiresAdmin: true },
+            meta: { requires_login: true, requires_admin: true },
           }
         ]
       },
@@ -60,7 +59,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "group-submitsamples" */
           '@/modules/submitsamples/SubmitSamples'
         ),
-        meta: { requiresLogin: true }
+        meta: { requires_login: true }
       },
       
       {
@@ -69,7 +68,16 @@ const routes = [
         component: () => import(/* webpackChunkName: "group-account" */
           '@/modules/account/Account'
         ),
-        meta: { requiresLogin: true }
+        meta: { requires_login: true }
+      },
+
+      {
+        path: '/invoice/:id?',
+        name: 'invoice-list',
+        component: () => import(/* webpackChunkName: "group-invoice" */
+          '@/modules/invoice/InvoiceList'
+        ),
+        meta: { requires_login: true }
       },
 
       {
@@ -79,23 +87,31 @@ const routes = [
           '@/modules/admin/AdminPanel'
         ),
         redirect: { name: 'admin-users-list' },
-        meta: { requiresLogin: true, requiresAdmin: true },
+        meta: { requires_login: true, requires_admin: true },
         children: [
           {
-            path: 'users/:filter?/:query?/:id?',
+            path: 'users/:id?',
             name: 'admin-users-list',
             component: () => import(/* webpackChunkName: "group-admin" */
               '@/modules/admin/AdminUsersList'
             ),
-            meta: { requiresLogin: true, requiresAdmin: true },
+            meta: { requires_login: true, requires_admin: true },
           },
           {
-            path: 'orgs/:id?',
-            name: 'admin-orgs-list',
+            path: 'contacts/:id?',
+            name: 'admin-contacts-list',
             component: () => import(/* webpackChunkName: "group-admin" */
-              '@/modules/admin/AdminOrgsList'
+              '@/modules/admin/AdminContactsList'
             ),
-            meta: { requiresLogin: true, requiresAdmin: true },
+            meta: { requires_login: true, requires_admin: true },
+          },
+          {
+            path: 'invoice/:id?',
+            name: 'admin-invoice-list',
+            component: () => import(/* webpackChunkName: "group-invoice" */
+              '@/modules/invoice/InvoiceList'
+            ),
+            meta: { requires_login: true, requires_admin: true },
           },
           {
             path: 'create-user',
@@ -103,15 +119,15 @@ const routes = [
             component: () => import(/* webpackChunkName: "group-admin" */
               '@/modules/admin/AdminCreateUser'
             ),
-            meta: { requiresLogin: true, requiresAdmin: true },
+            meta: { requires_login: true, requires_admin: true },
           },
           {
-            path: 'create-org',
-            name: 'admin-create-org',
+            path: 'create-contact',
+            name: 'admin-create-contact',
             component: () => import(/* webpackChunkName: "group-admin" */
-              '@/modules/admin/AdminCreateOrg'
+              '@/modules/admin/AdminCreateContact'
             ),
-            meta: { requiresLogin: true, requiresAdmin: true },
+            meta: { requires_login: true, requires_admin: true },
           },
         ]
       }
@@ -129,6 +145,13 @@ const routes = [
     name: 'signup',
     component: () => import(/* webpackChunkName: "group-login" */
       '@/modules/login/Signup'
+    ),
+  },
+  {
+    path: '/reset',
+    name: 'reset/:token',
+    component: () => import(/* webpackChunkName: "group-login" */
+      '@/modules/login/ResetPassword'
     ),
   },
   {
@@ -153,10 +176,10 @@ router.beforeEach(async (to, from, next) => {
     const res = await apolloProvider.defaultClient.query({
       query: AUTH_DATA
     })
-    const { loggedIn, isAdmin } = res.data.auth
+    const { logged_in , is_admin } = res.data.auth
     const unauthorized = (
-      (routeRequiresLogin(to) && !loggedIn) ||
-      (routeRequiresAdmin(to) && !isAdmin)
+      (route_requires_login(to) && !logged_in) ||
+      (route_requires_admin(to) && !is_admin)
     )
   
     if (unauthorized) {
@@ -170,11 +193,11 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
-const routeRequiresLogin = route => {
-  return route.matched.some(record => record.meta.requiresLogin)
+const route_requires_login = route => {
+  return route.matched.some(record => record.meta.requires_login)
 }
-const routeRequiresAdmin = route => {
-  return route.matched.some(record => record.meta.requiresAdmin)
+const route_requires_admin = route => {
+  return route.matched.some(record => record.meta.requires_admin)
 }
 
 export default router

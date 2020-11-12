@@ -11,8 +11,11 @@
               inputClass,
               { 'resize': resizable }
             ]"
+            :style="{height}"
+            ref="Textarea"
             v-bind="$attrs"
-            v-on="listeners" />
+            v-on="listeners"
+            @input="recompute_height()" />
 </div>
 </template>
 
@@ -48,6 +51,16 @@ export default {
         ...this.$listeners,
         input: ev => this.$emit('input', ev.target.value),
       }
+    }
+  },
+  data () {
+    return {
+      height: '4.5em'
+    }
+  },
+  methods: {
+    recompute_height() {
+      this.height = `${this.$refs.Textarea.scrollHeight}px`
     }
   }
 }

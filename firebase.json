@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "cu-vdl-dev",
     "public": "dist",
     "ignore": [
       "firebase.json",

@@ -9,7 +9,7 @@
     <button class="btn btn-block text-left"
             :class="btnClass">
       <i  v-if="iconClass"
-          class="fas btn-inner-icon mr-2"
+          class="btn-inner-icon mr-2"
           :class="iconClass" />
       {{ fileName }}
     </button>
@@ -43,7 +43,7 @@ export default {
     },
     iconClass: {
       type: String,
-      default: null
+      default: 'fas fa-file-pdf'
     }
   }
 }

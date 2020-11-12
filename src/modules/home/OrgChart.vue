@@ -7,17 +7,17 @@
     <div class="grid-main font-chatthai">
       <div class="d-flex flex-column align-items-center">
         <div class="label-tag gradient-bg">
-          {{ orgChart.left.boss.title }}
+          {{ org_chart.left.boss.title }}
         </div>
         <person-card
-          :name="orgChart.left.boss.name"
-          :img="orgChart.left.boss.img"
+          :name="org_chart.left.boss.name"
+          :img="org_chart.left.boss.img"
         />
         <div class="label-tag mt-3">
-          {{ orgChart.left.vets.title }}
+          {{ org_chart.left.vets.title }}
         </div>
         <person-card
-          v-for="vet of orgChart.left.vets.people"
+          v-for="vet of org_chart.left.vets.people"
           :key="vet.name"
           :name="vet.name"
           :img="vet.img" />
@@ -25,11 +25,11 @@
 
       <div class="d-flex flex-column align-items-center">
         <div class="label-tag">
-          {{ orgChart.middle.title }}
+          {{ org_chart.middle.title }}
         </div>
 
         <div class="grid-2">
-          <div  v-for="person of orgChart.middle.top"
+          <div  v-for="person of org_chart.middle.top"
                 :key="person.name"
                 class="d-flex flex-column justify-content-evenly">
             <div class="label-tag outline">
@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="grid-2">
-          <div  v-for="person of orgChart.middle.middle"
+          <div  v-for="person of org_chart.middle.middle"
                 :key="person.name"
                 class="d-flex flex-column justify-content-evenly">
             <div class="label-tag outline">
@@ -54,7 +54,7 @@
         </div>
 
         <div class="grid-3">
-          <div  v-for="person of orgChart.middle.bottom"
+          <div  v-for="person of org_chart.middle.bottom"
                 :key="person.name"
                 class="d-flex flex-column justify-content-evenly">
             <div class="label-tag outline">
@@ -69,7 +69,7 @@
       </div>
 
       <div class="d-flex flex-column align-items-center">
-        <div  v-for="person of orgChart.right.people"
+        <div  v-for="person of org_chart.right.people"
               :key="person.name" 
               class="d-flex flex-column justify-content-evenly align-items-center mx-2 mb-3">
           <div class="label-tag">
@@ -95,7 +95,7 @@ export default {
   },
   data () {
     return {
-      orgChart: {
+      org_chart: {
 
         left: {
           boss: {

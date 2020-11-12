@@ -1,121 +1,196 @@
 <template>
 <div class="page page-md d-flex flex-column">
-  <div class="pb-2 content-height-min">
-    <div class="row">
+  <div class="pb-5 content-height-min">
+    <div class="row mb-2">
       <div class="col-12">
-        <h3 class="mb-3">
-          <i class="fas fa-address-card icon-lg mr-1"></i>
-          ข้อมูล Account
+        <h3 v-if="!$apollo.loading">
+          <i class="fas fa-user icon-lg mr-1"></i>
+          ข้อมูล Account {{ user.name }}
         </h3>
       </div>
     </div>
 
     <div  v-if="!$apollo.loading"
           class="font-chatthai">
-      <div class="border-b row w-100 py-3 mb-3">
-        <div class="col-3 col-sm-2">
-          <h4>ข้อมูลผู้ใช้</h4>
+      <div class="border-b row w-100 py-4">
+        <div class="col-3 col-md-2">
+          <h4>ข้อมูลผู้ส่งตัวอย่าง</h4>
         </div>
-        <div class="col-7 col-xl-6">
+        <div class="col-9 col-md-10 col-xl-8">
           <div class="form-row">
-            <div class="form-group col-8">
+            <div class="form-group col-5">
               <label>ประเภท Account</label>
               <ColorTag
                 class="d-block"
                 size="lg"
-                :label="userTypeLabel[user.account_type]"
-                :color="userTypeCSS[user.account_type]" />
+                :label="account_type_label[user.account_type]"
+                :color="account_type_colors[user.account_type]" />
             </div>
-            <FormInput
-              class="col-8"
-              label="ชื่อ-นามสกุล"
-              :value="`${user.title}${user.first_name} ${user.last_name}`"
-              disabled />
-            <FileView
-              v-if="!isAdmin"
-              class="col-8"
-              label="สำเนาบัตรประชาชน"
-              file-name="somkuan_id.pdf"
-              icon-class="fa-address-card" />
+            <div class="w-100"></div>
+            <div class="col-5">
+              <div class="form-row">
+                <FormInput
+                  class="col-12"
+                  label="ชื่อ"
+                  :value="user.name"
+                  disabled />
+                <FormTextarea
+                  v-if="!auth.is_admin"
+                  class="col-12"
+                  rows="3"
+                  label="ที่อยู่"
+                  :value="user.default_contact.address"
+                  disabled />
+              </div>
+            </div>
+            <template v-if="!auth.is_admin">
+              <div  v-if="has_english_info"
+                    class="col-5">
+                <div class="form-row">
+                  <FormInput
+                    class="col-12"
+                    label="ชื่อ (ภาษาอังกฤษ)"
+                    :value="user.default_contact.name_eng"
+                    disabled />
+                  <FormTextarea
+                    class="col-12"
+                    rows="3"
+                    label="ที่อยู่ (ภาษาอังกฤษ)"
+                    :value="user.default_contact.address_eng"
+                    disabled />
+                </div>
+              </div>
+              <div v-else class="col">
+                <div class="form-row">
+                  <template v-if="!updating_english_info">
+                    <div class="form-group col-6">
+                      <label></label>
+                      <button class="btn btn-secondary btn-block font-cu"
+                              @click="updating_english_info = true">
+                        <i class="fas fa-globe-americas btn-inner-icon"></i> เพิ่มข้อมูลภาษาอังกฤษ
+                      </button>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <FormContactNameInput
+                      class="col-12 p-0"
+                      :contact-type="user.default_contact.contact_type"
+                      english
+                      v-model="english_info.name_eng" />
+                    <FormAddressInput
+                      class="form-group col-12 p-0"
+                      english
+                      v-model="english_info.address_eng" />
+                    <div class="form-group col-9">
+                      <button class="btn btn-primary btn-block font-cu"
+                              @click="submit_update_default_contact_english_info()">
+                        <i class="fas fa-check btn-inner-icon"></i> บันทึก
+                      </button>
+                    </div>
+                    <div class="form-group col">
+                      <button class="btn btn-secondary btn-block font-cu"
+                                @click="updating_english_info = false">
+                        <i class="fas fa-times btn-inner-icon mr-0" />
+                      </button>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
       </div>
     
-      <div class="border-b row w-100 py-3 mb-3">
-        <div class="col-3 col-sm-2">
+      <div class="border-b row w-100 py-4">
+        <div class="col-3 col-md-2">
           <h4>ข้อมูลการติดต่อ</h4>
         </div>
-        <div class="col-7 col-xl-6">
+        <div class="col-9 col-md-10 col-xl-8">
           <div class="form-row">
             <FormInput
-              class="col-8"
+              class="col-5"
               label="อีเมล"
               disabled
               :value="user.email" />
-            <FormInput
-              v-if="editingPhone"
-              ref="phoneNumber"
-              class="col-8"
-              label="หมายเลขโทรศัพท์"
-              :invalid="phoneError"
-              @focus="onPhoneInputFocus($event)"
-              @blur="formatPhone()"
-              v-model="phoneInput" />
-            <FormInput
-              v-else
-              class="col-8"
-              disabled
-              label="หมายเลขโทรศัพท์"
-              :value="user.phone" />
-            <div  v-if="!editingPhone"
-                  class="form-group col-3 d-flex align-items-end">
-              <button v-if="!editingPhone"
-                      class="btn btn-block btn-secondary"
-                      @click="changePhoneNumber()">
-                <i class="fas fa-wrench btn-inner-icon" />
-                แก้ไข
-              </button>
-            </div>
-            <template v-else>
-              <div class="form-group col-3 d-flex align-items-end">
-                <button class="btn btn-success btn-block"
-                        @click="submitChangePhoneNumber()">
-                  <i class="fas fa-check btn-inner-icon" />
-                  บันทึก
-                </button>
+          </div>
+          <div class="form-row">
+            <template v-if="!editing_phone">
+              <div class="col-5">
+                <div class="form-row">
+                  <FormInput
+                    class="col-12"
+                    disabled
+                    label="หมายเลขโทรศัพท์"
+                    :value="user.phone" />
+                </div>
               </div>
-              <div class="form-group col-1 d-flex align-items-end pl-0">
-                <button class="btn btn-secondary"
-                        @click="cancelChangePhoneNumber()">
-                  <i class="fas fa-times btn-inner-icon mr-0" />
-                </button>
+              <div class="col">
+                <div class="form-row">
+                  <div class="form-group col-6">
+                    <label></label>
+                    <button class="btn btn-block btn-secondary font-cu"
+                            @click="change_phone_number()">
+                      <i class="fas fa-edit btn-inner-icon" />
+                      แก้ไข
+                    </button>
+                  </div>
+                </div>
               </div>
             </template>
-            <div  v-if="phoneError && editingPhone"
-                  class="form-group col-8">
-              <div class="error-box">
-                <h5 class="text-danger"><i class="fas fa-exclamation mr-2 icon-sm" />หมายเลขโทรศัพท์ ไม่ถูกรูปแบบ</h5>
+            <template v-else>
+              <div class="col-5">
+                <div class="form-row">
+                  <FormPhoneInput
+                    ref="Phone"
+                    class="form-group col-12"
+                    v-model="phone_input" />
+                </div>
               </div>
+              <div class="col">
+                <div class="form-row">
+                  <div class="form-group col-6">
+                    <label></label>
+                    <button class="btn btn-primary btn-block font-cu"
+                            @click="submit_change_phone_number()">
+                      <i class="fas fa-check btn-inner-icon" />
+                      บันทึก
+                    </button>
+                  </div>
+                  <div class="form-group col-2 pl-0">
+                    <label></label>
+                    <button class="btn btn-secondary btn-block font-cu"
+                            @click="cancel_change_phone_number()">
+                      <i class="fas fa-times btn-inner-icon mr-0" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </template>
+            <div class="w-100"></div>
+            <div  v-if="phone_error && editing_phone"
+                  class="form-group col-5">
+              <ErrorBox msg="หมายเลขโทรศัพท์ ไม่ถูกรูปแบบ" />
             </div>
           </div>
         </div>
       </div>
 
-      <div class="border-b row w-100 py-3 mb-3">
-        <div class="col-3 col-sm-2"></div>
-        <div class="col-7 col-xl-6">
+      <div class="border-b row w-100 py-4 font-cu">
+        <div class="col-3 col-md-2"></div>
+        <div class="col-9 col-md-10 col-xl-8">
           <div class="form-row">
-            <div class="form-group col-8">
+            <div class="form-group col-5">
               <button class="btn btn-block btn-secondary"
-                      @click="showChangePasswordModal()">
+                      @click="show_change_password_modal()">
                 <i class="fas fa-key btn-inner-icon" />
                 เปลี่ยนรหัสผ่าน
               </button>
             </div>
-            <div  v-if="!isAdmin"
-                  class="form-group col-8">
+            <div class="w-100"></div>
+            <div  v-if="!auth.is_admin"
+                  class="form-group col-5 mb-0">
               <button class="btn btn-block btn-danger"
-                      @click="showDeactivateAccountModal()">
+                      @click="show_deactivate_account_modal()">
                 <i class="fas fa-ban btn-inner-icon" />
                 ระงับการใช้งาน Account
               </button>
@@ -124,54 +199,64 @@
         </div>
       </div>
 
-      <div  v-if="!isAdmin"
-            class="row w-100 py-3 mb-3">
-        <div class="col-12 mb-3">
-          <h3 class="font-cu">
-            <i class="fas fa-sitemap icon-lg mr-1"></i>
-            องค์กรที่เป็นตัวแทน
-          </h3>
-        </div>
-        <div class="col-12 px-4">
+      <div  v-if="!auth.is_admin"
+            class="row w-100 py-5">
+        <h3 class="font-cu">
+          <i class="fas fa-address-book icon-lg mr-1"></i>
+          รายชื่อ Contact
+        </h3>
+        <div class="font-chatthai py-4 col-12">
           <table>
             <thead>
               <tr>
-                <th> 
-                  <h4>ชื่อองค์กร</h4>
-                  <div class="shadow-th"></div>
+                <th class="nowrap"> 
+                  ประเภท
+                  <div class="shadow-th" />
                 </th>
-                <th> 
-                  <h4>ประเภท</h4>
-                  <div class="shadow-th"></div>
+                <th class="nowrap">
+                  ชื่อ
+                  <div class="shadow-th" />
                 </th>
-                <th> 
-                  <h4>ที่อยู่</h4>
-                  <div class="shadow-th"></div>
+                <th class="nowrap">
+                  ที่อยู่
+                  <div class="shadow-th" />
                 </th>
-                <th>
-                  <div class="shadow-th"></div>
+                <th class="nowrap">
+                  ชื่อ (ภาษาอังกฤษ)
+                  <div class="shadow-th" />
+                </th>
+                <th class="nowrap">
+                  ที่อยู่ (ภาษาอังกฤษ)
+                  <div class="shadow-th" />
                 </th>
               </tr>
             </thead>
-            <tbody>
-              <tr v-for="org of user.submitter_of"
-                  :key="org.index">
-                <td class="vertical-align-top">
-                  <h4>{{ org.name }}</h4>
-                </td>
-                <td class="vertical-align-top">
+            <tbody class="border-t">
+              <tr v-for="contact of user.contact_list"
+                  :key="contact.index">
+                <td class="py-1 nowrap">
                   <ColorTag
-                    :label="orgTypeLabel[org.org_type]"
-                    :color="orgTypeCSS[org.org_type]" />
+                    :label="contact.contact_type"
+                    :color="contact_type_colors[contact.contact_type]" />
                 </td>
-                <td class="pre-line squeeze-line small-font">
-                  {{ org.address }}
+                <td class="py-1 nowrap">
+                  <h5>{{ contact.name }}</h5>
                 </td>
-                <td class="text-right">
-                  <button class="btn btn-sm btn-icon btn-icon-danger"
-                          @click="showRemoveSubmissionPermissionModal(org)">
-                    <i class="fa fa-user-slash"></i>
+                <td class="py-1 pre-line squeeze-line small-font">
+                  {{ contact.address }}
+                </td>
+                <td class="py-1 nowrap">
+                  <template v-if="contact_has_english_info(contact)">
+                    {{ contact.name_eng }}
+                  </template>
+                  <button v-else
+                          class="btn btn-secondary btn-sm font-cu"
+                          @click="show_add_english_info_modal(contact)">
+                    <i class="fas fa-globe-americas btn-inner-icon"></i>เพิ่มข้อมูลภาษาอังกฤษ
                   </button>
+                </td>
+                <td class="py-1 pre-line squeeze-line small-font">
+                  {{ contact.address_eng }}
                 </td>
               </tr>
             </tbody>
@@ -181,7 +266,7 @@
     </div>
   </div>
 
-  <Modal  modal-id="changePasswordModal"
+  <Modal  modal-id="change-password-modal"
           x-close>
     <template #modal-header>
       <h3 class="text-primary">
@@ -190,42 +275,45 @@
     </template>
     <template #modal-body>
       <div class="form-row d-flex justify-content-center">
-        <div class="col-9 mb-3">
+        <div class="col-12 mb-3">
           <h5>ท่านจะต้อง login ใหม่หากรหัสผ่านถูกเปลี่ยน</h5>
         </div>
         <FormInput
-          class="col-9"
+          class="col-12"
           label="รหัสผ่านเก่า"
           type="password"
-          v-model="changePasswordModal.oldPass" />
-        <div class="w-100"></div>
+          v-model="change_password_modal.old_pass" />
         <FormInput
-          class="col-9"
+          class="col-12"
           label="รหัสผ่านใหม่"
           type="password"
-          v-model="changePasswordModal.newPass" />
-        <div class="w-100"></div>
+          v-model="change_password_modal.new_pass" />
         <FormInput
-          class="col-9"
+          class="col-12"
           label="ยืนยันรหัสผ่านใหม่"
           type="password"
-          v-model="changePasswordModal.confirmNewPass" />
+          v-model="change_password_modal.confirm_new_pass" />
       </div>
-    </template>
-    <template #modal-footer>
-      <div class="d-flex flex-nowrap w-100">
-        <button type="button" class="btn btn-secondary w-100" data-dismiss="modal">
-          ยกเลิก
-        </button>
-        <button type="button" class="btn btn-primary ml-2 w-100"
-                @click="submitChangePassword()">
+      <div class="form-row mt-4">
+        <div class="form-group col-4 mb-0">
+          <button type="button"
+                  class="btn btn-secondary btn-block"
+                  data-dismiss="modal">
+            ยกเลิก
+          </button>
+        </div>
+        <div class="form-group col mb-0">
+          <button type="button"
+                  class="btn btn-primary btn-block"
+                @click="submit_change_password()">
           เปลี่ยนรหัสผ่าน
         </button>
+        </div>
       </div>
     </template>
   </Modal>
 
-  <Modal  modal-id="deactivateAccountModal"
+  <Modal  modal-id="deactivate-account-modal"
           x-close>
     <template #modal-header>
       <h3 class="text-danger">
@@ -233,41 +321,68 @@
       </h3>
     </template>
     <template #modal-body>
-      <h4 class="my-2">หากท่านต้องการกลับมาใช้ Account นี้ ท่านจะต้องติดต่อ หน่วยชันสูตรโรคสัตว์กลาง โดยตรงเพื่อนำ Account กลับมา</h4>
-    </template>
-    <template #modal-footer>
-      <div class="d-flex flex-nowrap w-100">
-        <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
-          ยกเลิก
-        </button>
-        <button type="button" class="btn btn-danger ml-2 w-100"
-                @click="submitDeactivateAccount()">
-          ยืนยันว่าจะระงับการใช้งาน Account
-        </button>
+      <h4>หากท่านต้องการกลับมาใช้ Account นี้ ท่านจะต้องติดต่อ หน่วยชันสูตรโรคสัตว์กลาง โดยตรงเพื่อนำ Account กลับมาใช้งาน</h4>
+      <div class="form-row mt-4">
+        <div class="form-group col-4 mb-0">
+          <button type="button"
+                  class="btn btn-secondary btn-block"
+                  data-dismiss="modal">
+            กลับไป
+          </button>
+        </div>
+        <div class="form-group col mb-0">
+          <button type="button"
+                  class="btn btn-danger btn-block"
+                @click="submit_deactivate_account()">
+            <i class="fas fa-ban btn-inner-icon" />ยืนยันว่าจะระงับการใช้งาน Account
+          </button>
+        </div>
       </div>
     </template>
   </Modal>
 
-  <Modal  modal-id="removeSubmisssionPermissionModal"
+  <Modal  modal-id="add-english-info-modal"
+          data-backdrop="static"
+          v-if="contact_to_add_english_info"
           x-close>
     <template #modal-header>
-      <h3 class="text-danger">
-        <i class="fas fa-exclamation-triangle icon-lg mr-2" />ท่านกำลังจะถอนตัวจากการเป็นตัวแทนองค์กร
-      </h3>
+      <h3>เพิ่มข้อมูลภาษาอังกฤษ</h3>
     </template>
     <template #modal-body>
-      <h4 class="my-2">ท่านจะสูญเสียสิทธิในการส่งตัวอย่างในนามของ องค์กร:</h4>
-      <h3 v-if="orgToRemove" class="my-2 text-center text-danger">{{ orgToRemove.name }}</h3>
-    </template>
-    <template #modal-footer>
-      <div class="d-flex flex-nowrap w-100">
-        <button type="button" class="btn btn-secondary w-50" data-dismiss="modal">
-          ยกเลิก
-        </button>
-        <button type="button" class="btn btn-danger ml-2 w-100"
-                @click="submitRemoveSubmissionPermission()">
-          ยืนยันว่าจะถอนตัวจากการเป็นตัวแทน
-        </button>
+      <div class="form-row">
+        <FormInput
+          class="col-12"
+          disabled
+          :value="contact_to_add_english_info.name" />
+        <FormTextarea
+          class="col-12 mb-4"
+          rows="3"
+          disabled
+          :value="contact_to_add_english_info.address" />
+        <FormContactNameInput
+          class="col-12 p-0"
+          :contact-type="contact_to_add_english_info.contact_type"
+          english
+          v-model="add_english_info_modal.name_eng" />
+        <FormAddressInput
+          class="col-12 p-0"
+          english
+          v-model="add_english_info_modal.address_eng" />
+      </div>
+      <div class="form-row mt-4">
+        <div class="form-group col-6 mb-0">
+          <button type="button"
+                  class="btn btn-secondary btn-block"
+                  data-dismiss="modal">
+            ยกเลิก
+          </button>
+        </div>
+        <div class="form-group col-6 mb-0">
+          <button type="button" class="btn btn-primary btn-block"
+                  @click="submit_update_contact_english_info()">
+            <i class="fas fa-check btn-inner-icon"></i>บันทึกข้อมูล
+          </button>
+        </div>
       </div>
     </template>
   </Modal>
@@ -276,172 +391,185 @@
 
 <script>
 import $ from 'jquery'
-import { getJWT, onLogout } from '@/vue-apollo'
-import { USER_INDEX } from '@/graphql/local'
+import { get_jwt, on_logout } from '@/vue-apollo'
+import { AUTH_DATA } from '@/graphql/local'
 import {
   USER_DETAIL,
-  USER_CHANGE_PHONE,
+  USER_UPDATE_PHONE,
   USER_CHANGE_PASSWORD,
-  USER_REMOVE_SELF_SUBMISSION_PERMISSION,
   USER_DEACTIVATE_ACCOUNT
 } from '@/graphql/user'
+import { UPDATE_CONTACT_ENG_INFO } from '@/graphql/contact'
 
 export default {
-  name: 'account-info-submitter',
+  name: 'account',
   computed: {
-    isAdmin () {
-      return this.user.account_type === 101
+    has_english_info () {
+      return this.user.default_contact.name_eng && this.user.default_contact.address_eng
     }
   },
   data () {
     return {
-      phoneInput: '',
-      phoneError: false,
-      orgToRemove: null,
-      changePasswordModal: {
-        oldPass: '',
-        newPass: '',
-        confirmNewPass: ''
+      phone_input: '',
+      phone_error: false,
+      updating_english_info: false,
+      english_info: {
+        name_eng: null,
+        address_eng: null,
       },
-      editingPhone: false,
-      userTypeLabel: {
+      change_password_modal: {
+        old_pass: null,
+        new_pass: null,
+        confirm_new_pass: null
+      },
+      editing_phone: false,
+      contact_to_add_english_info: null,
+      add_english_info_modal: {
+        name_eng: null,
+        address_eng: null,
+      },
+      account_type_label: {
         101: 'แอดมิน',
         201: 'ผู้ส่งตัวอย่าง'
       },
-      userTypeCSS: {
+      account_type_colors: {
         101: 'pink',
         201: 'purple'
       },
-      orgTypeCSS: {
-        1: 'orange',
-        2: 'red'
-      },
-      orgTypeLabel: {
-        1: 'ฟาร์ม',
-        2: 'บริษัทสัตวแพทย์'
+      contact_type_colors: {
+        'บุคคล': 'orange',
+        'องค์กร': 'red'
       }
     }
   },
   methods: {
-    changePhoneNumber () {
-      this.editingPhone = true
-      this.phoneInput = this.user.phone
-      this.$nextTick( () => this.$refs.phoneNumber.$refs.inputbox.focus())
+    contact_has_english_info (contact) {
+      return !!contact.name_eng && !!contact.address_eng
     },
-    cancelChangePhoneNumber () {
-      document.getSelection().removeAllRanges()
-      this.editingPhone = false
-      this.phoneError = false
+    change_phone_number () {
+      this.editing_phone = true
+      this.phone_input = this.user.phone
+      setTimeout( () => {
+        this.$nextTick( () => this.$refs.Phone.$refs.PhoneInput.$refs.Inputbox.focus() )
+      }, 5)
     },
-    onPhoneInputFocus (ev) {
-      ev.target.select()
-      this.phoneInput = this.phoneInput.replace(/-/g, '')
+    cancel_change_phone_number () {
+      this.editing_phone = false
+      this.phone_error = false
+      //document.getSelection().removeAllRanges()
     },
-    formatPhone () {
-      let cleaned = ('' + this.phoneInput).replace(/\D/g, '')
-      if (cleaned.length < 9 || cleaned.length > 10) {
-        this.phoneError = true
-      } else {
-        this.phoneError = false
-        let match
-        if (cleaned.length === 10) {
-          match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-        } else if (cleaned.length === 9) {
-          match = cleaned.match(/^(\d{2})(\d{3})(\d{4})$/)
-        }
-        this.phoneInput = match[1] + '-' + match[2] + '-' + match[3]
-      }
-    },
-    async submitChangePhoneNumber () {
-      this.formatPhone()
-      if (this.phoneError) return
+    async submit_update_contact_english_info () {
       try {
         let res = await this.$apollo.mutate({
-          mutation: USER_CHANGE_PHONE,
+          mutation: UPDATE_CONTACT_ENG_INFO,
           variables: {
-            jwt: getJWT(),
-            index: this.user.index,
-            phone: this.phoneInput
+            jwt: get_jwt(),
+            index: this.contact_to_add_english_info.index,
+            ...this.add_english_info_modal
           }
         })
+        console.log(res)
         await this.$apollo.queries.user.refetch()
-        this.$nextTick( () => this.cancelChangePhoneNumber() )
+        this.$nextTick( () => $('#add-english-info-modal').modal('hide') )
       } catch (err) {
         console.log(err)
       }
     },
-    async submitChangePassword () {
+    async submit_update_default_contact_english_info () {
+      try {
+        let res = await this.$apollo.mutate({
+          mutation: UPDATE_CONTACT_ENG_INFO,
+          variables: {
+            jwt: get_jwt(),
+            index: this.user.default_contact.index,
+            ...this.english_info
+          }
+        })
+        this.english_info.name_eng = null
+        this.english_info.address_eng = null
+        await this.$apollo.queries.user.refetch()
+        this.$nextTick( () => this.updating_english_info = false )
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async submit_change_phone_number () {
+      if (this.phone_error) return
+      try {
+        let res = await this.$apollo.mutate({
+          mutation: USER_UPDATE_PHONE,
+          variables: {
+            jwt: get_jwt(),
+            phone: this.phone_input
+          }
+        })
+        await this.$apollo.queries.user.refetch()
+        this.$nextTick( () => this.cancel_change_phone_number() )
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    async submit_change_password () {
       try {
         let res = await this.$apollo.mutate({
           mutation: USER_CHANGE_PASSWORD,
           variables: {
-            jwt: getJWT(),
-            oldPass: this.changePasswordModal.oldPass,
-            newPass: this.changePasswordModal.newPass
+            jwt: get_jwt(),
+            old_pass: this.change_password_modal.old_pass,
+            new_pass: this.change_password_modal.new_pass
           }
         })
       } catch (err) {
         console.log(err)
       }
     },
-    async submitDeactivateAccount () {
+    async submit_deactivate_account () {
       try {
         let res = await this.$apollo.mutate({
           mutation: USER_DEACTIVATE_ACCOUNT,
           variables: {
-            jwt: getJWT(),
+            jwt: get_jwt(),
             index: this.user.index,
-            accountActive: false
+            account_active: false
           }
         })
-        $('#deactivateAccountModal').modal('hide')
-        await onLogout(this.$apollo.provider.defaultClient)
+        $('#deactivate-account-modal').modal('hide')
+        await on_logout(this.$apollo.provider.defaultClient)
         this.$router.push({ name: 'home' })
       } catch (err) {
         console.log(err)
       }
     },
-    async submitRemoveSubmissionPermission () {
-      try {
-        let res = await this.$apollo.mutate({
-          mutation: USER_REMOVE_SELF_SUBMISSION_PERMISSION,
-          variables: {
-            jwt: getJWT(),
-            index: [this.orgToRemove.index]
-          }
-        })
-        this.$apollo.queries.user.refetch()
-        $('#removeSubmisssionPermissionModal').modal('hide')
-        this.orgToRemove = null
-      } catch (err) {
-        console.log(err)
-      }
+    show_change_password_modal () {
+      $('#change-password-modal').modal('show')
     },
-    showChangePasswordModal () {
-      $('#changePasswordModal').modal('show')
+    show_deactivate_account_modal () {
+      $('#deactivate-account-modal').modal('show')
     },
-    showDeactivateAccountModal () {
-      $('#deactivateAccountModal').modal('show')
-    },
-    showRemoveSubmissionPermissionModal (org) {
-      this.orgToRemove = org
-      $('#removeSubmisssionPermissionModal').modal('show')
+    show_add_english_info_modal (contact) {
+      this.contact_to_add_english_info = contact
+      $('#add-english-info-modal').on('hidden.bs.modal', () => {
+        this.contact_to_add_english_info = null
+        this.add_english_info_modal.name_eng = null
+        this.add_english_info_modal.address_eng = null
+        $('#add-english-info-modal').modal('dispose')
+      })
+      this.$nextTick( () => $('#add-english-info-modal').modal('show') )
     }
   },
   apollo: {
-    userIndex: {
-      query: USER_INDEX,
-      update: data => data.auth.userIndex
+    auth: {
+      query: AUTH_DATA,
+      update: data => data.auth
     },
     user: {
       query: USER_DETAIL,
       variables () {
         return {
-          jwt: getJWT(),
-          index: this.userIndex
+          jwt: get_jwt()
         }
       },
-      update: data => data.get_backuser.result[0]
+      update: data => data.get_backuser.result,
     }
   }
 }

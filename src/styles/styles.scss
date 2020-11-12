@@ -39,7 +39,7 @@ html {
     font-size: 14px;
   }
   @include media-breakpoint-up(xl) {
-    font-size: 15px;
+    font-size: 16px;
   }
 }
 
@@ -49,6 +49,10 @@ html {
   -moz-osx-font-smoothing: grayscale;
   width: 100vw;
   //text-shadow: 2px 2px 2px rgba(0,0,0,0.004);
+}
+
+body {
+  overflow-x: hidden;
 }
 
 // Get rid of number spinner
@@ -95,6 +99,13 @@ button.btn, a.btn {
     align-items: center;
     padding: 0;
     font-size: 1.4rem;
+    &.chosen {
+      cursor: default;
+      .box .box-chosen {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
     .box {
       min-width: 1em;
       height: 1em;
@@ -112,10 +123,6 @@ button.btn, a.btn {
         transition: all 100ms ease-in-out;
         visibility: hidden;
         opacity: 0;
-      }
-      &.chosen .box-chosen {
-        visibility: visible;
-        opacity: 1;
       }
     }
   }
@@ -140,6 +147,7 @@ button.btn, a.btn {
       color: $light;
       cursor: default;
       &.primary { background: $primary; }
+      &.yellow    { background: $yellow; }
       &.pink    { background: $pink; }
       &.orange  { background: $orange; }
       &.green   { background: $green; }
@@ -157,7 +165,7 @@ button.btn, a.btn {
     height: 30px;
     i { font-size: 0.9rem; }
     &:hover {
-      color: $primary;
+      color: $red;
       background: transparent;
     }
   }
@@ -180,7 +188,7 @@ button.btn, a.btn {
   i {
     vertical-align: middle;
     &.btn-inner-icon {
-      margin-right: .5em;
+      margin-right: .3em;
       font-size: .8em;
     }
     &.btn-inner-icon-lg {
@@ -222,7 +230,7 @@ i {
     font-size: .8rem;
   }
   &.icon-md {
-    font-size: 1.35rem;
+    font-size: 1rem;
   }
   &.icon-lg {
     font-size: 1.5rem;
@@ -266,6 +274,14 @@ ul.item-list {
     &.faded {
       color: $medium;
     }
+    &.no-top-btm-border {
+      &:first-child {
+        border-top: none;
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 }
 
@@ -275,7 +291,7 @@ ul.item-list {
 }
 
 table {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-family: 'CS ChatThai';
   font-weight: bold;
   width: 100%;
@@ -349,8 +365,8 @@ table {
     padding-left: $outer-padding;
     padding-right: $outer-padding;
   }
-  &.page-sm  { max-width: 800px;  }
-  &.page-md  { max-width: 1300px; }
+  &.page-sm  { max-width: 1000px;  }
+  &.page-md  { max-width: 1350px; }
   &.page-lg  { max-width: 1500px; }
   &.page-xl  { max-width: 1600px; }
   &.page-xxl { max-width: 2000px; }
@@ -409,6 +425,11 @@ table {
   min-height: $content-height;
   max-height: $content-height;
 }
+.content-height-with-subnav {
+  height: $content-height-with-subnav;
+  min-height: $content-height-with-subnav;
+  max-height: $content-height-with-subnav;
+}
 .fill-height {
   height: 100vh;
 }
@@ -428,8 +449,8 @@ table {
 .border-b-md {
   border-bottom: 2px solid $accent;
 }
-.border-b-md-primary {
-  border-bottom: 2px solid $primary;
+.border-b-primary {
+  border-bottom: 1px solid $primary;
 }
 .border-b-gradient {
   position: relative;
@@ -441,6 +462,9 @@ table {
     background: linear-gradient(to right, $primary, $placeholder);
   }
 }
+.text-placeholder {
+  color: $placeholder;
+}
 
 .hover-appear-wrapper {
   position: relative;
@@ -450,6 +474,39 @@ table {
   &:hover .hover-appear {
     visibility: visible;
   }
+}
+
+.dropdown-option {
+  @include dropdown-option;
+  cursor: pointer;
+  &:hover {
+    background: $accent;
+  }
+}
+
+.light-tag {
+  @include unselectable;
+  border-radius: $border-radius;
+  padding: 0 .4em;
+  display: inline-block;
+  font-size: .95em;
+  font-weight: bold;
+  &.lg {
+    font-size: 1.3em;
+    @include input-btn-padding;
+  }
+  .small-square { vertical-align: middle; }
+  &.primary { background: rgba($primary, .2); }
+  &.pink    { background: rgba($pink, .2); }
+  &.purple  { background: rgba($purple, .2); }
+  &.grey    { background: rgba($medium, .2); }
+  &.red     { background: rgba($red, .2); }
+  &.green   { background: rgba($green, .2); }
+  &.blue    { background: rgba($blue, .2); }
+  &.orange  { background: rgba($orange, .2); }
+  &.teal    { background: rgba($teal, .2); }
+  &.blue    { background: rgba($blue, .2); }
+  &.yellow    { background: rgba($yellow, .2); }
 }
 
 .subcontainer {
@@ -476,6 +533,7 @@ table {
   position: sticky;
   top: 0; left: 0; right: 1em;
   height: 20px;
+  z-index: 10;
   background: linear-gradient(
     to bottom,
     rgba($light, 1) 0%,
@@ -488,6 +546,7 @@ table {
   position: sticky;
   bottom: -2px; left: 0; right: 1em;
   height: 25px;
+  z-index: 10;
   background: linear-gradient(
     to top,
     rgba($light, 1) 0%,
@@ -495,14 +554,6 @@ table {
     rgba($light, .9) 30%,
     rgba($light, .1) 100%
   );
-}
-
-.error-box {
-  @include unselectable;
-  @include input-btn-padding;
-  border-radius: $border-radius;
-  background: rgba($red, .2);
-  font-size: 1.3rem;
 }
 
 .sidebar {
@@ -568,6 +619,7 @@ table {
   display: inline-block;
   vertical-align: middle;
   &.primary { background: $primary; }
+  &.yellow { background: $yellow; }
   &.pink { background: $pink; }
   &.orange { background: $orange; }
   &.green { background: $green; }
@@ -580,15 +632,14 @@ table {
 
 .sub-nav {
   height: $content-height;
-  padding: 0 1rem 1rem 0;
-  width: 5.25rem;
-  @include media-breakpoint-up(xl) {
-    padding: 0 1.75rem 1rem 0;
-    width: 275px;
-  }
+  padding-right: 1rem;
+  width: 16rem;
+  /* @include media-breakpoint-up(xl) {
+    width: 265px;
+  } */
   a, button {
     text-align: left;
-    margin-bottom: .75em;
+    margin-bottom: .65em;
   }
 }
 .sub-nav-content {
@@ -606,10 +657,28 @@ table {
   }
 }
 
+.sticky-submenu {
+  position: sticky;
+  top: $titlebar-height-scrolled;
+  background: $light;
+  border-bottom: 1px solid $accent;
+  z-index: 99;
+  box-shadow: 0 5px 5px -5px #333;
+}
+
 .list-view {
-  max-width: 425px;
+  min-width: 325px;
+  /* position: sticky;
+  background: $body-bg;
+  margin-top: 4px;
+  z-index: 99;
+  top: calc(#{$subnav-height} + #{$titlebar-height-scrolled} + 4px);
+  //max-height: calc(100vh - #{$titlebar-height-scrolled - #{$subnav-height}});
+  height: 100px; */
+  display: flex;
+  flex-direction: column;
   @include media-breakpoint-up(xl) {
-    max-width: 500px;
+    min-width: 425px;
   }
 }
 

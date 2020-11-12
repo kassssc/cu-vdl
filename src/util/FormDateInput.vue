@@ -7,6 +7,7 @@
   </label>
   <datepicker v-bind="$attrs"
               v-on="listeners"
+              format="dd/MM/yyyy"
               :language="th"
               :disabled="disabled"
               :highlighted="{ dates: [today] }"

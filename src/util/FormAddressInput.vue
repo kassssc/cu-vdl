@@ -24,6 +24,7 @@
         v-model="city" />
       <FormSelect
         class="col-5 mb-0"
+        short-dropdown
         :placeholder="english? 'Province' : 'จังหวัด'"
         :clearable="false"
         :options="english? provincesEng : provinces"

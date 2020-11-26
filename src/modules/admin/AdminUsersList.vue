@@ -1,6 +1,6 @@
 <template>
-<div class="page page-lg d-flex py-0 content-height-with-subnav pr-2"> 
-  <div class="list-view border-r pt-4 pr-4">
+<div class="page page-lg d-flex py-0 pr-2 position-relative"> 
+  <div class="list-view list-sticky border-r pt-4 pr-4 content-height-with-subnav">
     <SearchInput
       class="mb-2"
       placeholder="ค้นหา User Account..."
@@ -8,7 +8,7 @@
     <div class="d-flex mb-2">
       <button v-for="filter of user_type_filters"
               :key="filter.id"
-              class="filter-btn btn w-100 mr-2 px-2"
+              class="filter-btn filter-btn-sm btn w-100 mr-2 px-2"
               :class="[
                 user_type_colors[filter.id],
                 {'active': active_user_type_filter === filter.id}
@@ -22,7 +22,7 @@
               :class="user_type_colors[filter.id]" />
         {{ filter.name }}
       </button>
-      <button class="filter-btn btn w-100 grey"
+      <button class="filter-btn filter-btn-sm btn w-100 grey"
               :class="{'active': !user_active_filter}"
               :disabled="loading || !user_active_filter"
               @click="set_deactivated_user_filter()">

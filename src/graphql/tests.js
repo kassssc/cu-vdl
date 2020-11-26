@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 
 export const GENERAL_TEST_METHODS = gql`
   query {
-    test_method_general_get {
+    test_method_general {
       status
       statuscode
       message
@@ -20,7 +20,7 @@ export const GENERAL_TEST_METHODS = gql`
 `
 export const BACTERIA_ANTIBIOTICS = gql`
   query {
-    test_method_bacteria_antibiotic_get {
+    test_method_bacteria_antibiotic {
       status
       statuscode
       message
@@ -34,7 +34,7 @@ export const BACTERIA_ANTIBIOTICS = gql`
 
 export const DISINFECTANT_TEST_METHODS = gql`
   query {
-    test_method_disinfectant_virus_get {
+    test_method_disinfectant_virus {
       status
       statuscode
       message

@@ -137,6 +137,7 @@
   <Services v-once class="w-100 py-5" />
   <OrgChart v-once class="w-100 py-5" />
   <Contact class="w-100 py-5" />
+  <FooterSection />
 </div>  
 </template>
 
@@ -144,6 +145,7 @@
 import Services from './Services'
 import OrgChart from './OrgChart'
 import Contact from './Contact'
+import FooterSection from './FooterSection'
 import { AUTH_DATA } from '@/graphql/local'
 
 export default {
@@ -151,7 +153,8 @@ export default {
   components: {
     Services,
     OrgChart,
-    Contact
+    Contact,
+    FooterSection
   },
   apollo: {
     logged_in: {

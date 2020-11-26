@@ -9,19 +9,6 @@
 <script>
 export default {
   name: 'app',
-  methods: {
-    on_scroll () {
-      const navbar = document.getElementById('titlebar')
-      if (window.pageYOffset > 20) {
-        navbar.classList.add('scrolled')   
-      } else {
-        navbar.classList.remove('scrolled')
-      }
-    }
-  },
-  mounted () {
-    window.onscroll = () => { this.on_scroll() }
-  }
 }
 </script>
 

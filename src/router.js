@@ -148,8 +148,8 @@ const routes = [
     ),
   },
   {
-    path: '/reset',
-    name: 'reset/:token',
+    path: '/reset/:token',
+    name: 'reset',
     component: () => import(/* webpackChunkName: "group-login" */
       '@/modules/login/ResetPassword'
     ),

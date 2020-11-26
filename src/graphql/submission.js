@@ -35,6 +35,9 @@ export const SUBMISSION_LIST = gql`
         sample_owner {
           name
         }
+        invoice_to {
+          name
+        }
         invoice {
           invoice_status
         }
@@ -65,6 +68,7 @@ export const SUBMISSION_DETAIL = gql`
         submission_status
         submission_submit_date
         sample_received_date
+        english_report
         remarks
         backuser {
           index
@@ -79,17 +83,23 @@ export const SUBMISSION_DETAIL = gql`
           index
         }
         invoice {
-          index
-          invoice_ID
+          invoice_no
           invoice_status
-          file_URL
+          invoice_amount
+          invoice_file {
+            S3_key
+            file_name
+          }
         }
         reports {
           report_no
           report_version
-          report_status
-          date
-          file_URL
+          report_date
+          report_description
+          report_file {
+            S3_key
+            file_name
+          }
         }
         on_sent_record_submitter_name
         on_sent_record_submitter_address
@@ -101,25 +111,6 @@ export const SUBMISSION_DETAIL = gql`
         notify_to_email
         notify_to_phone
         submission_sent_to_BestLIMS
-        submission_data
-      }
-    }
-  }
-`
-
-export const SUBMISSION_FORM_DATA = gql`
-  query (
-    $jwt: String!,
-    $key: String!
-  ) {
-    get_submission (
-      jwt: $jwt,
-      key: $key
-    ) {
-      status
-      statuscode
-      message
-      result {
         submission_data
       }
     }

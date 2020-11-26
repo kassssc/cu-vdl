@@ -1,30 +1,33 @@
 <template>
   <div id="orgchart" class="no-wrap">
     <h1 class="mb-5 pb-2 text-primary border-b-gradient">
-      บุคลากร
+      <i class="fas fa-user-graduate mr-2"></i> บุคลากร
     </h1>
 
-    <div class="grid-main font-chatthai">
+    <div class="grid-main ">
       <div class="d-flex flex-column align-items-center">
-        <div class="label-tag gradient-bg">
-          {{ org_chart.left.boss.title }}
+        <div class="d-flex flex-column justify-content-evenly align-items-center mx-2 mb-3">
+          <div class="label-tag gradient-bg">
+            {{ org_chart.left.boss.title }}
+          </div>
+          <person-card
+            :name="org_chart.left.boss.name"
+            :img="org_chart.left.boss.img" />
         </div>
-        <person-card
-          :name="org_chart.left.boss.name"
-          :img="org_chart.left.boss.img"
-        />
-        <div class="label-tag mt-3">
-          {{ org_chart.left.vets.title }}
+        <div  v-for="person of org_chart.left.vets"
+              :key="person.name" 
+              class="d-flex flex-column justify-content-evenly align-items-center mx-2 mb-3">
+          <div class="label-tag">
+            {{ person.title }}
+          </div>
+          <person-card
+            :name="person.name"
+            :img="person.img" />
         </div>
-        <person-card
-          v-for="vet of org_chart.left.vets.people"
-          :key="vet.name"
-          :name="vet.name"
-          :img="vet.img" />
       </div>
 
       <div class="d-flex flex-column align-items-center">
-        <div class="label-tag">
+        <div class="label-tag mb-3">
           {{ org_chart.middle.title }}
         </div>
 
@@ -53,7 +56,7 @@
           </div>
         </div>
 
-        <div class="grid-3">
+        <div class="grid-3 pt-3">
           <div  v-for="person of org_chart.middle.bottom"
                 :key="person.name"
                 class="d-flex flex-column justify-content-evenly">
@@ -103,19 +106,18 @@ export default {
             name: 'ผศ.น.สพ.ดร.สว่าง  เกษแดงสกลวุฒิ',
             img: 'https://i.ibb.co/KrcGxKJ/boss.jpg'
           },
-          vets: {
-            title: 'สัตวแพทย์',
-            people: [
-              {
-                name: 'น.สพ.รชฎ ตันติเลิศเจริญ',
-                img: 'https://i.ibb.co/GM8S577/vet1.png'
-              },
-              {
-                name: 'สพ.ญ.นภวัลย์ บรรพพงศ์',
-                img: 'https://i.ibb.co/T0z5kjN/vet2.png'
-              },
-            ]
-          }
+          vets: [
+            {
+              title: 'สัตวแพทย์',
+              name: 'น.สพ.รชฎ ตันติเลิศเจริญ',
+              img: 'https://i.ibb.co/GM8S577/vet1.png'
+            },
+            {
+              title: 'สัตวแพทย์',
+              name: 'สพ.ญ.นภวัลย์ บรรพพงศ์',
+              img: 'https://i.ibb.co/T0z5kjN/vet2.png'
+            },
+          ]
         },
         middle: {
           title: 'เจ้าหน้าที่บริการวิทยาศาสตร์',
@@ -169,7 +171,7 @@ export default {
               img: 'https://i.ibb.co/n3yYwMj/staff.png'
             },
             {
-              title: 'พนักงานบริการทั่วไป',
+              title: 'พนักงานบริการ',
               name: 'นางสาวศศิกานต์ สินโทต้อม',
               img: 'https://i.ibb.co/wYKrPzT/service.png'
             },
@@ -189,20 +191,19 @@ export default {
 <style scoped lang="scss">
 .grid-main {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1.75fr 1fr;
   .grid-2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-column-gap: 3em;
+    grid-column-gap: 4em;
     grid-row-gap: 1em;
     padding: 1em;
   }
   .grid-3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-column-gap: 3em;
+    grid-column-gap: 4em;
     grid-row-gap: 1em;
-    padding-bottom: 3em;
   }
 }
 .label-tag {
@@ -213,7 +214,7 @@ export default {
   font-weight: bold;
   font-size: 1.3rem;
   text-align: center;
-  min-width: 125px;
+  min-width: 140px;
   &.gradient-bg {
     background: linear-gradient(to right, $primary, $placeholder);
     border-width: 0;

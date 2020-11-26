@@ -1,8 +1,8 @@
 <template>
-<div class="form-row no-gutters">
+<div class="row border-t pt-3">
   <div class="col-2">
     <h5 class="mb-2">เลือกยาต้านจุลชีพเพื่อการทดสอบความไว</h5>
-    <h5 class="text-medium">(เลือกได้ถึง 8 รายการ)</h5>
+    <h5 class="text-muted">(เลือกได้ถึง 8 รายการ)</h5>
   </div>
   <div class="col-10">
     <div class="items-container">
@@ -11,13 +11,14 @@
           class="category-container mr-3 d-flex flex-column">
         <h5 class="w-100 mb-2 border-b">{{ group.group_name }}</h5>
         <div class="form-group">
-          <checkbox v-for="antibiotic of group.antibiotics"
-                    :key="antibiotic"
-                    :label="antibiotic"
-                    :color="color"
-                    :disabled="max_selected && !antibiotic_selection[antibiotic]"
-                    v-model="antibiotic_selection[antibiotic]"
-                    @change="onCheckboxChange()" />
+          <checkbox
+            v-for="antibiotic of group.antibiotics"
+            :key="antibiotic"
+            :label="antibiotic"
+            :color="color"
+            :disabled="max_selected && !antibiotic_selection[antibiotic]"
+            v-model="antibiotic_selection[antibiotic]"
+            @change="onCheckboxChange()" />
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ export const INVOICE_LIST = gql`
       statuscode
       message
       result {
-        invoice_ID
+        invoice_no
         invoice_status
       }
     }
@@ -25,31 +25,35 @@ export const INVOICE_LIST = gql`
 export const INVOICE_DETAIL = gql`
   query (
     $jwt: String!,
-    $invoice_ID: String!
+    $invoice_no: String!
   ) {
-    search_invoice (
+    get_invoice (
       jwt: $jwt,
-      invoice_ID: $invoice_ID
+      invoice_no: $invoice_no
     ) {
       status
       statuscode
       message
       result {
-        invoice_ID
+        invoice_no
         invoice_status
         invoice_date
         invoice_amount
-        file_URL
         invoice_to {
           name
           address
         }
-        submssions {
-          backend_key
+        invoice_file {
+          S3_key
+          file_name
+        }
+        submissions {
           BestLIMS_key
-          on_sent_record_invoice_to_name
-          on_sent_record_invoice_to_address
-          submission_type 
+          submission_status
+          submission_submit_date
+          on_sent_record_submitter_name
+          on_sent_record_owner_name
+          submission_type
         }
       }
     }

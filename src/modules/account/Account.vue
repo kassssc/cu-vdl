@@ -1,6 +1,6 @@
 <template>
 <div class="page page-md d-flex flex-column">
-  <div class="pb-5 content-height-min">
+  <div class="py-5">
     <div class="row mb-2">
       <div class="col-12">
         <h3 v-if="!$apollo.loading">
@@ -16,12 +16,11 @@
         <div class="col-3 col-md-2">
           <h4>ข้อมูลผู้ส่งตัวอย่าง</h4>
         </div>
-        <div class="col-9 col-md-10 col-xl-8">
+        <div class="col-9 col-md-9">
           <div class="form-row">
             <div class="form-group col-5">
-              <label>ประเภท Account</label>
               <ColorTag
-                class="d-block"
+                class="d-block font-cu"
                 size="lg"
                 :label="account_type_label[user.account_type]"
                 :color="account_type_colors[user.account_type]" />
@@ -31,7 +30,7 @@
               <div class="form-row">
                 <FormInput
                   class="col-12"
-                  label="ชื่อ"
+                  label="ชื่อของ Account"
                   :value="user.name"
                   disabled />
                 <FormTextarea
@@ -105,7 +104,7 @@
         <div class="col-3 col-md-2">
           <h4>ข้อมูลการติดต่อ</h4>
         </div>
-        <div class="col-9 col-md-10 col-xl-8">
+        <div class="col-9 col-md-9">
           <div class="form-row">
             <FormInput
               class="col-5"
@@ -177,7 +176,7 @@
 
       <div class="border-b row w-100 py-4 font-cu">
         <div class="col-3 col-md-2"></div>
-        <div class="col-9 col-md-10 col-xl-8">
+        <div class="col-9 col-md-9">
           <div class="form-row">
             <div class="form-group col-5">
               <button class="btn btn-block btn-secondary"
@@ -209,43 +208,28 @@
           <table>
             <thead>
               <tr>
-                <th class="nowrap"> 
-                  ประเภท
-                  <div class="shadow-th" />
-                </th>
-                <th class="nowrap">
-                  ชื่อ
-                  <div class="shadow-th" />
-                </th>
-                <th class="nowrap">
-                  ที่อยู่
-                  <div class="shadow-th" />
-                </th>
-                <th class="nowrap">
-                  ชื่อ (ภาษาอังกฤษ)
-                  <div class="shadow-th" />
-                </th>
-                <th class="nowrap">
-                  ที่อยู่ (ภาษาอังกฤษ)
-                  <div class="shadow-th" />
-                </th>
+                <th>ประเภท</th>
+                <th>ชื่อ</th>
+                <th>ที่อยู่</th>
+                <th>ชื่อ (ภาษาอังกฤษ)</th>
+                <th>ที่อยู่ (ภาษาอังกฤษ)</th>
               </tr>
             </thead>
-            <tbody class="border-t">
+            <tbody>
               <tr v-for="contact of user.contact_list"
                   :key="contact.index">
-                <td class="py-1 nowrap">
+                <td class="nowrap">
                   <ColorTag
                     :label="contact.contact_type"
                     :color="contact_type_colors[contact.contact_type]" />
                 </td>
-                <td class="py-1 nowrap">
-                  <h5>{{ contact.name }}</h5>
+                <td>
+                  {{ contact.name }}
                 </td>
-                <td class="py-1 pre-line squeeze-line small-font">
+                <td class="pre-line squeeze-line small-font">
                   {{ contact.address }}
                 </td>
-                <td class="py-1 nowrap">
+                <td>
                   <template v-if="contact_has_english_info(contact)">
                     {{ contact.name_eng }}
                   </template>
@@ -255,8 +239,13 @@
                     <i class="fas fa-globe-americas btn-inner-icon"></i>เพิ่มข้อมูลภาษาอังกฤษ
                   </button>
                 </td>
-                <td class="py-1 pre-line squeeze-line small-font">
+                <td class="pre-line squeeze-line small-font">
                   {{ contact.address_eng }}
+                </td>
+              </tr>
+              <tr v-if="user.contact_list.length <= 0">
+                <td class="text-center text-muted font-cu py-4" colspan="5">
+                  <h5><i class="far fa-frown mr-2"></i>ไม่มี Contact ที่จะแสดง</h5>
                 </td>
               </tr>
             </tbody>

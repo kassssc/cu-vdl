@@ -20,8 +20,7 @@ export default {
   display: flex;
   align-items: center;
   padding-left: 2em;
-  font-size: .8rem;
+  width: 100vw;
   background: linear-gradient(to right, $primary, $placeholder);
-  h6 { font-size: 1rem; }
 }
 </style>

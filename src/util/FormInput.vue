@@ -9,7 +9,7 @@
   <input  :class="[
             'form-control',
             inputClass,
-            { 'is-invalid': is_invalid }
+            { invalid }
           ]"
           ref="Inputbox"
           v-bind="$attrs"

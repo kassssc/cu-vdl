@@ -1,16 +1,17 @@
 <template>
 <div  v-if="!$apollo.loading"
       id="titlebar"
-      class="d-flex justify-content-between align-items-center">
+      class="d-flex justify-content-between align-items-center"
+      :class="{'scrolled': is_in_no_scroll_route }">
   <div class="d-flex align-items-center">
     <div id="logo-img" />
-    <h4 class="text-primary d-none d-xl-block">
+    <h4 class="text-primary d-none d-lg-block">
       หน่วยชันสูตรโรคสัตว์กลาง จุฬาลงกรณ์มหาวิทยาลัย
     </h4>
-    <h4 class="text-primary d-none d-lg-block d-xl-none">
+    <h4 class="text-primary d-none d-md-block d-lg-none">
       หน่วยชันสูตรโรคสัตว์กลาง จุฬาฯ
     </h4>
-    <h4 class="text-primary d-lg-none">
+    <h4 class="text-primary d-md-none">
       CU VDL
     </h4>
   </div>
@@ -116,12 +117,51 @@ import { AUTH_DATA } from '@/graphql/local'
 
 export default {
   name: 'title-bar',
+  data () {
+    return {
+      no_scroll_routes: [
+        'submissions-list',
+        'invoice-list'
+      ]
+    }
+  },
+  computed: {
+    is_in_no_scroll_route () {
+      return /^admin/.test(this.$route.name) || this.no_scroll_routes.includes(this.$route.name)
+    }
+  },
   methods: {
     async logout_and_go_to_home () {
       await on_logout(this.$apollo.provider.defaultClient)
       if (this.$route.name !== 'home') {
         this.$router.push('/')
       }
+    },
+    on_scroll () {
+      const title_bar = document.getElementById('titlebar')
+      if (window.pageYOffset > 20) {
+        title_bar.classList.add('scrolled')   
+      } else {
+        title_bar.classList.remove('scrolled')
+      }
+    },
+    set_titlebar_scroll () {
+      const title_bar = document.getElementById('titlebar')
+      if (this.is_in_no_scroll_route) {
+        title_bar.classList.add('scrolled')
+        window.onscroll = () => { }
+      } else {
+        title_bar.classList.remove('scrolled')
+        window.onscroll = () => { this.on_scroll() }
+      }
+    }
+  },
+  watch: {
+    '$route.name': function () { this.set_titlebar_scroll() }
+  },
+  mounted () {
+    if (!this.is_in_no_scroll_route) {
+      window.onscroll = () => { this.on_scroll() }
     }
   },
   apollo: {
@@ -146,7 +186,7 @@ export default {
   padding-bottom: 0.5em;
   padding-left: $outer-padding-sm;
   padding-right: $outer-padding-sm;
-  backdrop-filter: blur(20px);
+  @include backdrop-blur;
   @include media-breakpoint-up(lg) {
     padding-left: $outer-padding;
     padding-right: $outer-padding;

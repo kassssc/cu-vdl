@@ -1,12 +1,12 @@
 <template>
-<div class="page page-lg d-flex py-0 content-height-with-subnav">
-  <div class="list-view border-r pt-4 pr-4">
+<div class="page page-lg d-flex py-0 position-relative">
+  <div class="list-view list-sticky border-r pt-4 pr-4 content-height-with-subnav">
     <SearchInput
       class="mb-2"
       placeholder="ค้นหา Contact..."
       @search="set_search_query($event)" />
     <div class="d-flex mb-2">
-      <button class="filter-btn btn btn-sm primary w-100"
+      <button class="filter-btn filter-btn-sm btn btn-sm primary w-100"
               :class="{'active': active_contact_type_filter === null}"
               :disabled="loading || active_contact_type_filter === null"
               @click="set_contact_type_filter(null)">
@@ -16,7 +16,7 @@
       </button>
       <button v-for="filter of contact_type_filters"
               :key="filter"
-              class="filter-btn btn btn-sm w-100 ml-2 px-2"
+              class="filter-btn filter-btn-sm btn btn-sm w-100 ml-2 px-2"
               :class="[
                 contact_type_colors[filter],
                 {'active': active_contact_type_filter === filter}
@@ -69,7 +69,9 @@
         </div>
         <div class="fade-gradient-bottom"></div>
       </div>
-      <div v-else key="loading" class="w-100 pt-5 text-center">
+      <div  v-else
+            key="loading"
+            class="w-100 pt-5 text-center">
         <LoadingAnimation color="primary" size="lg" />
       </div>
     </transition>
@@ -79,23 +81,24 @@
   <div class="p-4 w-100 scroll-container">
     <transition name="fade">
       <div v-if="selected_contact">
-        <div class="d-block d-lg-flex align-items-center mb-3">
-          <h3 class="mr-3 d-block d-lg-inline-block mb-lg-0 mb-3">
+        <div class="d-block d-md-flex align-items-center mb-3">
+          <h3 class="mr-3 d-block d-lg-inline-block mb-md-0 mb-3">
             <i class="fas fa-id-card icon-lg mr-2"></i> {{ selected_contact.name }}
           </h3>
           <ColorTag
-            class="d-block d-lg-inline-block"
+            class="d-block d-md-inline-block mb-3 mb-md-0"
             size="lg"
             :label="selected_contact.contact_type"
             :color="contact_type_colors[selected_contact.contact_type]" />
-          <div v-if="selected_contact.default_contact_of" class="d-block d-lg-inline-block light-tag primary lg ml-3">
+          <div  v-if="selected_contact.default_contact_of"
+                class="d-block d-md-inline-block light-tag primary lg ml-md-3 mb-4 mb-md-0">
             <i class="fas fa-star-of-life icon-md text-primary"></i>
             Contact ประจำ Account
           </div>
         </div>
     
         <div class="form-row border-b pb-3 font-chatthai">
-          <div class="form-group col-6 col-xl-5 mb-0">
+          <div class="form-group col-12 col-md-6 col-lg-5 mb-4 mb-md-0">
             <div  v-if="!editing_info"
                   class="form-row">
               <FormInput
@@ -127,14 +130,14 @@
                 label="ที่อยู่"
                 rows="3"
                 v-model="form_info.address" />
-              <div class="form-group col-8 col-lg-10 font-cu">
+              <div class="form-group col-10 font-cu">
                 <button class="btn btn-primary btn-block"
                         @click="submit_edit_info()">
                   <i class="fas fa-check btn-inner-icon"></i>บันทึกข้อมูล
                 </button>
                 <ErrorBox v-if="info_error" :msg="info_error" />
               </div>
-              <div class="form-group col-4 col-lg-2">
+              <div class="form-group col">
                 <button class="btn btn-secondary btn-block font-cu"
                         @click="cancel_edit_info()">
                   <i class="fas fa-times btn-inner-icon mr-0" />
@@ -142,7 +145,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group col-6 col-xl-5 mb-0">
+          <div class="form-group col-12 col-md-6 col-lg-5 mb-0">
             <div  v-if="!editing_english_info"
                   class="form-row">
               <FormInput
@@ -174,14 +177,14 @@
                 label="ที่อยู่ (ภาษาอังกฤษ)"
                 rows="3"
                 v-model="form_english_info.address_eng" />
-              <div class="form-group col-8 col-lg-10 font-cu">
+              <div class="form-group col-10 font-cu">
                 <button class="btn btn-primary btn-block"
                         @click="submit_edit_english_info()">
                   <i class="fas fa-check btn-inner-icon"></i>บันทึกข้อมูล
                 </button>
                 <ErrorBox v-if="english_info_error" :msg="english_info_error" />
               </div>
-              <div class="form-group col-4 col-lg-2">
+              <div class="form-group col">
                 <button class="btn btn-secondary btn-block font-cu"
                         @click="cancel_edit_english_info()">
                   <i class="fas fa-times btn-inner-icon mr-0" />
@@ -193,7 +196,7 @@
 
         <div  v-if="selected_contact.default_contact_of"
               class="form-row border-b py-4">
-          <div class="form-group col-6 col-xl-5 mb-0">
+          <div class="form-group col-12 col-md-6 col-lg-5 mb-0">
             <router-link  :to="{
                             name: 'admin-users-list',
                             params: { id: selected_contact.default_contact_of }

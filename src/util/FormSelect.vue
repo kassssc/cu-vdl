@@ -8,6 +8,7 @@
   </label>
   <vSelect
     class="custom"
+    :class="shortDropdown? 'dropdown-sm': ''"
     v-bind="$attrs"
     v-on="listeners"
     :disabled="disabled">
@@ -53,6 +54,10 @@ export default {
       default: null
     },
     invalid: {
+      type: Boolean,
+      default: false
+    },
+    shortDropdown: {
       type: Boolean,
       default: false
     }
@@ -157,6 +162,11 @@ export default {
     }
     .vs__dropdown-option--selected {
       color: $primary;
+    }
+  }
+  &.dropdown-sm {
+    .vs__dropdown-menu {
+      max-height: 30rem !important;
     }
   }
 }

@@ -68,11 +68,11 @@ export default {
   methods: {
     async submit_reset_password () {
       if (!this.form_filled) {
-        this.error = "กรุณาใส่รหัสผ่าน"
+        this.error = 'กรุณาใส่รหัสผ่าน'
         return
       }
       if (!this.passwords_match) {
-        this.error = "รหัสผ่านไม่ตรงกัน"
+        this.error = 'รหัสผ่านไม่ตรงกัน'
         return
       }
       this.submitting = true

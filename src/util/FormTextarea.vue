@@ -14,8 +14,7 @@
             :style="{height}"
             ref="Textarea"
             v-bind="$attrs"
-            v-on="listeners"
-            @input="recompute_height()" />
+            v-on="listeners" />
 </div>
 </template>
 
@@ -58,8 +57,20 @@ export default {
       height: '4.5em'
     }
   },
+  watch: {
+    '$attrs.value': function () {
+      //console.log(this.$refs.Textarea.scrollHeight)
+      this.recompute_height()
+    }
+  },
+  mounted () {
+    this.recompute_height()
+  },
   methods: {
     recompute_height() {
+      /* if (this.$attrs.disabled == '') {
+        this.height = '4.5rem'
+      } */
       this.height = `${this.$refs.Textarea.scrollHeight}px`
     }
   }

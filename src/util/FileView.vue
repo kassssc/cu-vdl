@@ -4,20 +4,24 @@
           :class="labelSize">
     {{ label }}
   </label>
-  <div class="d-flex hover-appear-wrapper">
-    <h5 class="hover-appear view-file-label">ดูไฟล์</h5>
-    <button class="btn btn-block text-left"
-            :class="btnClass">
+  <div class="d-flex hover-appear-wrapper font-cu">
+    <h6 class="hover-appear view-file-label text-medium">ดูไฟล์</h6>
+    <button class="btn btn-block text-left btn-file"
+            :class="btnClass"
+            @click="view_file()">
       <i  v-if="iconClass"
-          class="btn-inner-icon mr-2"
+          class="mr-2"
           :class="iconClass" />
-      {{ fileName }}
+      {{ file.file_name }}
     </button>
   </div>
 </div>
 </template>
 
 <script>
+import { GET_FILE_URL } from '@/graphql/file';
+import { get_jwt } from '@/vue-apollo';
+
 export default {
   name: 'file-view',
   props: {
@@ -29,13 +33,9 @@ export default {
       type: String,
       default: ''
     },
-    fileLink: {
-      type: String,
-      default: null
-    },
-    fileName: {
-      type: String,
-      default: 'ดูไฟล์'
+    file: {
+      type: Object,
+      required: true
     },
     btnClass: {
       type: String,
@@ -44,6 +44,23 @@ export default {
     iconClass: {
       type: String,
       default: 'fas fa-file-pdf'
+    }
+  },
+  methods: {
+    async view_file () {
+      try {
+        const res = await this.$apollo.query({
+          query: GET_FILE_URL,
+          variables: {
+            jwt: get_jwt(),
+            S3_key: this.file.S3_key
+          }
+        })
+        const url = res.data.get_file_url.result.signed_url
+        window.open(url, '_blank')
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
 }
@@ -59,4 +76,10 @@ export default {
   height: 50%;
   pointer-events: none;
 }
+/* .btn.btn-file {
+  &:hover {
+    background: $primary;
+    color: $light;
+  }
+} */
 </style>

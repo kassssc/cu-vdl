@@ -1,7 +1,7 @@
 <template>
 <div id="contact">
   <h1 class="mb-5 pb-2 text-primary border-b-gradient">
-    ติดต่อสอบถาม
+    <i class="fas fa-phone-volume mr-2"></i>ติดต่อสอบถาม
   </h1>
 
   <div class="row font-chatthai">

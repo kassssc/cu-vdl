@@ -1,5 +1,5 @@
 <template>
-<div class="page page-sm py-4 pl-0 pr-3 content-height-with-subnav scroll-container">
+<div class="page page-sm py-4 pl-0 pr-3">
   <div class="row mb-2">
     <div class="col-12">
       <h4>

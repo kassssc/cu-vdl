@@ -1,8 +1,8 @@
 <template>
 <div v-if="!$apollo.loading">
   <template>
-    <div class="d-block d-lg-flex align-items-center mb-3">
-      <h3 class="mr-3 d-block d-lg-inline-block mb-lg-0 mb-3">
+    <div class="d-block d-md-flex align-items-center mb-3">
+      <h3 class="mr-3 d-block d-md-inline-block mb-md-0 mb-3">
         <i class="fas fa-user icon-lg"></i>
         {{ user.default_contact.name }}
       </h3>
@@ -15,13 +15,13 @@
   
     <div class="form-row font-chatthai pb-4 border-b">
       <FormInput
-        class="col-6 col-lg-5"
+        class="col-12 col-md-6 col-lg-5"
         label="อีเมล"
         disabled
         :value="user.email" />
       <div v-if="user.account_type === 101" class="w-100"></div>
       <FormInput
-        class="col-6 col-lg-5"
+        class="col-12 col-md-6 col-lg-5"
         label="หมายเลขโทรศัพท์"
         disabled
         :value="user.phone" />
@@ -29,8 +29,8 @@
     </div>
 
     <template v-if="user.account_type !== 101">
-      <div class="d-block d-lg-flex align-items-center mt-4 mb-3">
-        <h4 class="mr-3 d-block d-lg-inline-block mb-lg-0 mb-3">
+      <div class="d-block d-md-flex align-items-center mt-4 mb-3">
+        <h4 class="mr-3 d-block d-md-inline-block mb-md-0 mb-3">
           <i class="fas fa-id-card mr-3"></i>Contact ประจำ Account
         </h4>
         <ColorTag
@@ -40,30 +40,37 @@
           :color="contact_type_colors[user.default_contact.contact_type]" />
       </div>
       <div class="form-row font-chatthai pb-4 border-b">
-        <FormInput
-          class="col-6 col-lg-5"
-          label="ชื่อ"
-          disabled
-          :value="user.default_contact.name" />
-        <FormInput
-          class="col-6 col-lg-5"
-          label="ชื่อ (ภาษาอังกฤษ)"
-          disabled
-          :value="user.default_contact.name_eng" />
-        <div class="w-100"></div>
-        <FormTextarea
-          class="col-6 col-lg-5"
-          rows="3"
-          label="ที่อยู่"
-          disabled
-          :value="user.default_contact.address" />      
-        <FormTextarea
-          class="col-6 col-lg-5"
-          rows="3"
-          label="ที่อยู่ (ภาษาอังกฤษ)"
-          disabled
-          :value="user.default_contact.address_eng" />
-        <div class="form-group col-6 col-lg-5 mt-3">
+        <div class="col-12 col-md-6 col-lg-5">
+          <div class="form-row mb-4 mb-md-0">
+            <FormInput
+              class="col-12"
+              label="ชื่อ"
+              disabled
+              :value="user.default_contact.name" />
+            <FormTextarea
+              class="col-12"
+              rows="3"
+              label="ที่อยู่"
+              disabled
+              :value="user.default_contact.address" />
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-5">
+          <div class="form-row">
+            <FormInput
+              class="col-12"
+              label="ชื่อ (ภาษาอังกฤษ)"
+              disabled
+              :value="user.default_contact.name_eng" />
+            <FormTextarea
+              class="col-12"
+              rows="3"
+              label="ที่อยู่ (ภาษาอังกฤษ)"
+              disabled
+              :value="user.default_contact.address_eng" />            
+          </div>
+        </div>
+        <div class="form-group col-12 col-md-6 col-lg-5 mt-3">
           <router-link  :to="{
                           name: 'admin-contacts-list',
                           params: { id: user.default_contact.index }
@@ -77,31 +84,19 @@
     </template>
   
     <template v-if="user.account_type !== 101">
-      <h4 class="mt-4 mb-2"><i class="fas fa-address-book mr-3"></i>รายชื่อ Contact ของ {{ user.default_contact.name }}</h4>
+      <h4 class="mt-4 mb-3">
+        <i class="fas fa-address-book mr-3"></i>
+        รายชื่อ Contact ของ {{ user.default_contact.name }}
+      </h4>
       <div class="font-chatthai">
-        <table>
+        <table class="small-font">
           <thead>
             <tr>
-              <th class="nowrap"> 
-                ประเภท
-                <div class="shadow-th" />
-              </th>
-              <th class="nowrap">
-                ชื่อ
-                <div class="shadow-th" />
-              </th>
-              <th class="nowrap">
-                ที่อยู่
-                <div class="shadow-th" />
-              </th>
-              <th class="nowrap">
-                ชื่อ (ภาษาอังกฤษ)
-                <div class="shadow-th" />
-              </th>
-              <th class="nowrap">
-                ที่อยู่ (ภาษาอังกฤษ)
-                <div class="shadow-th" />
-              </th>
+              <th>ประเภท</th>
+              <th>ชื่อ</th>
+              <th>ที่อยู่</th>
+              <th class="d-none d-md-table-cell">ชื่อ (ภาษาอังกฤษ)</th>
+              <th class="d-none d-md-table-cell">ที่อยู่ (ภาษาอังกฤษ)</th>
             </tr>
           </thead>
           <tbody class="border-t">
@@ -113,21 +108,21 @@
                           }"
                           tag="tr"
                           class="nowrap clickable">
-              <td class="py-1 nowrap">
+              <td class="py-1">
                 <ColorTag
                   :label="contact.contact_type"
                   :color="contact_type_colors[contact.contact_type]" />
               </td>
-              <td class="py-1 nowrap">
+              <td class="py-1">
                 {{ contact.name }}
               </td>
               <td class="py-1 pre-line squeeze-line small-font">
                 {{ contact.address }}
               </td>
-              <td class="py-1 nowrap">
+              <td class="py-1 d-none d-md-table-cell">
                 {{ contact.name_eng }}
               </td>
-              <td class="py-1 pre-line squeeze-line small-font">
+              <td class="py-1 pre-line squeeze-line small-font d-none d-md-table-cell">
                 {{ contact.address_eng }}
               </td>
             </router-link>
@@ -143,7 +138,7 @@
       <div class="form-row border-b py-4 mt-4">
         <template v-if="user.account_active">
           <div class="w-100"></div>
-          <div class="form-group col-6 col-lg-5 mb-0">
+          <div class="form-group col-12 col-md-6 col-lg-5 mb-0">
             <button class="btn btn-danger btn-block"
                     @click="show_deactivate_account_modal()">
               <i class="fas fa-ban btn-inner-icon"></i>
@@ -151,7 +146,7 @@
             </button>
           </div>
         </template>
-        <div v-else class="form-group col-6 col-lg-5 mb-0">
+        <div v-else class="form-group col-12 col-md-6 col-lg-5 mb-0">
           <button class="btn btn-success btn-block"
                   @click="show_reactivate_account_modal()">
             <i class="fas fa-check btn-inner-icon"></i>

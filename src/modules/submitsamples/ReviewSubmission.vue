@@ -10,16 +10,18 @@
       <i class="fas fa-paper-plane btn-inner-icon-lg text-left mr-0" />
       {{ edit_mode? 'ยืนยันและบันทึก' : 'ยืนยันและส่งตัวอย่าง' }}
     </button>
-    <!-- <button class="submit btn btn-lg btn-secondary btn-block"
-            @click="download()">
+    <button class="submit btn btn-lg btn-secondary btn-block"
+            @click="createPDF()">
       <i class="fas fa-file-pdf btn-inner-icon-lg text-left mr-0" />
       ดาวน์โหลดไฟล์ PDF
-    </button> -->
+    </button>
   </div>
   <div class="d-flex flex-column w-100 align-items-center pt-3 fill-height scroll-container">
 
-    <div class="A4-page-wrapper">
-      <div class="A4-page">
+    <div  class="A4-page-wrapper"
+          id="printableArea">
+      <div  class="A4-page"
+            id="page-1">
         <div class="page-header page-item">
           <div class="logo mr-3"></div>
           <div class="d-flex flex-column justify-content-between">
@@ -217,7 +219,8 @@
 </template>
 
 <script>
-//import jsPDF from 'jspdf'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
 
 export default {
   name: 'review-submission',
@@ -246,13 +249,27 @@ export default {
   methods: {
     download () {
       
+    },
+    createPDF () {
+      // const file_name = 'test'
+      // const doc = new jsPDF()
+      // doc.text("Hello World", 10, 10);
+      // doc.save(file_name + '.pdf');
+      // var printContents = document.getElementById('printableArea').innerHTML;
+      // var originalContents = document.body.innerHTML;
+
+      // document.body.innerHTML = printContents;
+
+      // window.print();
+
+      // document.body.innerHTML = originalContents;
+
+      const w = window.open();
+      const content = document.getElementById('printableArea').innerHTML
+      w.document.body.innerHTML = content;
+      w.print();
+      //w.close();
     }
-    /* createPDF () {
-      const fileName = 'test'
-      const doc = new jsPDF()
-      doc.text("Hello World", 10, 10);
-      doc.save(fileName + '.pdf');
-    } */
   }
 }
 </script>
@@ -266,8 +283,8 @@ $row-height: 28px;
   top: 0; left: 0; right: 0; bottom: 0;
   overflow: hidden;
   background: rgba($black, .55);
-  backdrop-filter: blur(20px);
   z-index: 1000;
+  @include backdrop-blur;
 }
 .back-to-form {
   position: fixed;

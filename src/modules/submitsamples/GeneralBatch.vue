@@ -7,16 +7,16 @@
     <i class="fas fa-times" />
   </a>
   <div class="row w-100 pb-5">
-    <div class="col-xl-2 col-12">
+    <div class="col-md-2 col-12">
       <h3 class="mb-2">
         {{ batch_label }}
       </h3>
       <h5 v-if="batch.sample_count"
-          class="ml-3 text-medium d-xl-block d-none">
+          class="ml-3 text-medium d-lg-block d-none">
         {{ batch.sample_count }} ตัวอย่าง
       </h5>
     </div>
-    <div class="col-xl-10 col-12">
+    <div class="col-md-10 col-12">
       <div class="form-row mb-3">
         <FormInput
           class="col-2"
@@ -40,8 +40,9 @@
 
       <div  v-for="(tests, department) in test_methods"
             :key="department">
-            
-        <div class="form-row no-gutters border-b py-1">
+        
+        <div  class="form-row py-1"
+              :class="{'border-b': !batch.tests[department]}">
           <div class="form-group col-2 mb-0 text-dark d-flex overflow-visible nowrap">
             <checkbox :value="!!batch.tests[department]"
                       :color="department_colors[department]"
@@ -51,15 +52,23 @@
               </template>
             </checkbox>
           </div>
-          <div v-if="batch.tests[department]" class="col-10">
-            <div class="form-row mt-2">
-              <div class="col-6"></div>
+        </div>
+        <div  v-if="batch.tests[department]"
+              class="row row-header border-b py-2">
+          <div class="col-2">
+            <h5>กลุ่มย่อย</h5>
+          </div>
+          <div class="col-10">
+            <div class="form-row">
+              <div class="col-7">
+                <h5>รายการทดสอบ</h5>
+              </div>
               <div class="col-2 text-right">
-                <h5 class="text-muted">ราคา/ตัวอย่าง</h5>
+                <h5>ราคา/ตัวอย่าง</h5>
               </div>
               <div class="col-1"></div>
-              <div class="col-2">
-                <h5 class="text-muted text-right">ยอดค่าบริการ</h5>
+              <div class="col-2 text-right">
+                <h5>ยอดค่าบริการ</h5>
               </div>
             </div>
           </div>
@@ -104,7 +113,7 @@
               </h2>
               <h5 class="text-medium">ค่าบริการ</h5>
               <h6 v-if="custom_bacteria_test_count > 0"
-                  class="text-muted">
+                  class="text-medium">
                 *เป็นราคาโดยประมานเท่านั้น
               </h6>
             </div>
@@ -123,10 +132,10 @@
   </div>
 
   <div v-if="batch.sample_count > 0" class="row pb-5">
-    <div class="col-xl-2 col-12">
+    <div class="col-md-2 col-12">
       <h4 class="text-medium mb-2">รายละเอียดตัวอย่าง</h4>
     </div>
-    <div class="col-xl-10 col-12">
+    <div class="col-md-10 col-12">
       <div class="form-row text-medium">
         <div class="form-group mb-2 col-1 text-right">
           <h5>หมายเลข</h5>
@@ -333,7 +342,7 @@ export default {
   apollo: {
     test_methods_raw: {
       query: GENERAL_TEST_METHODS,
-      update: data => data.test_method_general_get.result,
+      update: data => data.test_method_general.result,
       result () {
         if (!this.edit_mode) {
           const new_tests = {}

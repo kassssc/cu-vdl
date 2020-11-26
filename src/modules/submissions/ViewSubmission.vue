@@ -1,9 +1,9 @@
 <template>
-<div class="page page-lg">
+<div class="page page-lg pt-0 position-relative">
   <transition name="fade">
     <div  v-if="!$apollo.loading"
-          class="d-flex align-items-start content-height-min">
-      <div class="sub-nav overflow-visible sticky pl-4">
+          class="d-flex align-items-start">
+      <div class="sidebar-nav overflow-visible sticky content-height-with-scroll">
         <router-link  :to="{name: 'submissions-list'}"
                       tag="button"
                       exact
@@ -51,32 +51,27 @@
               <i class="fas fa-edit btn-inner-icon-lg" />
               แก้ไขข้อมูล         
             </router-link>
-            <!-- <a  class="btn btn-transparent btn-block btn-lg"
-                @click="showCancelSubmissionModal()">
-              <i class="fas fa-window-close btn-inner-icon-lg" />
-              ยกเลิก
-            </a> -->
           </template>
         </scrollactive>
       </div>
       
-      <div class="sub-nav-content">
+      <div class="sidebar-nav-content pt-5 mt-5">
         <div  id="info"
               class="section">
           <h3 class="mb-4 mt-2 font-cu">
             <i class="fas fa-file-alt icon-lg" />
-            การส่งตัวอย่างหมายเลข #<span class="text-primary">{{ $route.params.id }}</span>
+            การส่งตัวอย่างหมายเลข #{{ $route.params.id }}
           </h3>
     
           <div class="row">
-            <div class="col-3">
+            <div class="col-2">
               <h4>สถานะ</h4>
             </div>
             <div class="col pt-1">
               <div class="form-row">
                 <div class="form-group col-6">
                   <ColorTag
-                    class="d-block"
+                    class="d-block font-cu"
                     :color="submission_status_colors[submission.submission_status]"
                     :label="submission.submission_status"
                     size="lg" />
@@ -86,7 +81,7 @@
           </div>
     
           <div class="row mb-4">
-            <div class="col-3">
+            <div class="col-2">
               <h4>ใบส่งตัวอย่าง</h4>
             </div>
             <div class="col pt-1">
@@ -94,7 +89,10 @@
                 <FileView
                   class="col-6"
                   btn-class="btn-secondary"
-                  :file-name="`${$route.params.id}_submission_form.pdf`"
+                  :file="{
+                    file_name: `${$route.params.id}_submission_form.pdf`,
+                    S3_key: 'submission_form.pdf'
+                  }"
                   icon-class="fas fa-file-alt" />
                 <div class="w-100"></div>
                 <div class="col-6 form-group">
@@ -107,7 +105,7 @@
           </div>
     
           <div class="row mb-4">
-            <div class="col-3">
+            <div class="col-2">
               <h4>ข้อมูลการส่งตัวอย่าง</h4>
             </div>
             <div class="col pt-1">
@@ -115,22 +113,11 @@
                 <div class="col-6 form-group">
                   <label>ประเภทการทดสอบ</label>
                   <ColorTag
-                    class="d-block"
+                    class="d-block font-cu"
                     size="lg"
                     :color="submission_type_colors[submission.submission_type]"
                     :label="submission.submission_type" />
                 </div>
-                <div class="w-100"></div>
-                <FormInput
-                  class="col-3"
-                  label="หมายเลขการส่งตัวอย่าง"
-                  :value="submission_key"
-                  disabled />
-                <FormInput
-                  class="col-3"
-                  label="ภาษารายงาน"
-                  disabled
-                  :value="submission.english_report? 'English' : 'ภาษาไทย'" />
                 <div class="w-100"></div>
                 <FormDateInput
                   class="col-3"
@@ -157,28 +144,8 @@
           </div>
   
           <div class="row mb-4">
-            <div class="col-3">
-              <h4>ช่องทางการแจ้งผล</h4>
-            </div>
-            <div class="col">
-              <div class="form-row">
-                <FormInput
-                  class="col-6"
-                  label="อีเมล"
-                  disabled
-                  :value="submission.notify_to_email" />
-                <FormInput
-                  class="col-3"
-                  label="หมายเลขโทรศัพท์"
-                  disabled
-                  :value="submission.notify_to_phone" />
-              </div>
-            </div>
-          </div>
-  
-          <div class="row mb-4">
-            <div class="col-3">
-              <h4>บุคคล/องค์กรที่เกี่ยวข้่อง</h4>
+            <div class="col-2">
+              <h4>บุคคล/องค์กรที่เกี่ยวข้อง</h4>
             </div>
             <div class="col pt-1">
               <div class="form-row">
@@ -216,7 +183,7 @@
           </div>
 
           <div v-if="submission.remarks" class="row mb-4">
-            <div class="col-3">
+            <div class="col-2">
               <h4>หมายเหตุอื่นๆ</h4>
             </div>
             <div class="col pt-1">
@@ -241,67 +208,88 @@
             <i class="fas fa-file-invoice icon-lg" />
             รายงาน
           </h3>
-          <div class="row">
-            <div class="col-10">
-              <div class="download-reports mb-2">
-                <div class="row color-dark-grey border-b py-2">
-                  <div class="col-4">
-                    <h5 class="mb-0">เลขที่รายงาน</h5>
-                  </div>
-                  <div class="col-2">
-                    <h5 class="mb-0">วันที่ออก</h5>
-                  </div>
-                  <div class="col-2">
-                    <h5 class="mb-0">Version</h5>
-                  </div>
-                  <div class="col-2">
-                    <h5 class="mb-0">ดูไฟล์</h5>
-                  </div>
-                  <div class="col-2">
-                    <h5 class="mb-0">ดาวน์โหลด</h5>
-                  </div>
-                </div>
-        
-                <template v-if="submission.reports.length > 0">
-                  <div  v-for="(report, idx) in submission.reports"
-                        :key="idx"
-                        class="row py-1 border-b">
-                    <div class="col-4 d-flex align-items-center">
-                      <h5 class="mb-0">{{ report.report_no }}</h5>
-                    </div>
-                    <div class="col-2 d-flex align-items-center">
-                      <h5 class="mb-0">{{ to_display_date(report.date) }}</h5>
-                    </div>
-                    <div class="col-2 d-flex align-items-center">
-                      <h5 class="mb-0">{{ report.report_version }}</h5>
-                    </div>
-                    <div class="col-2">
-                      <button class="btn btn-icon">
-                        <i class="fas fa-file-invoice"></i>
-                      </button>
-                    </div>
-                    <div class="col-2">
-                      <button class="btn btn-icon">
-                        <i class="fas fa-file-download"></i>
-                      </button>
-                    </div>
-                  </div>
-                </template>
-                <div  v-else
-                      class="py-3 text-center">
-                  <h5 class="text-muted font-cu"><i class="far fa-frown mr-2"></i>ยังไม่มีรายงาน</h5>
-                </div>
+          <div class="row mb-3">
+            <div class="col-12">
+              <table class="mb-4">
+                <thead>
+                  <tr>
+                    <th>หมายเลขรายงาน</th>
+                    <th class="text-right">Version</th>
+                    <th>วันที่ออก</th>
+                    <th>รายละเอียด</th>
+                    <th>ไฟล์รายงาน (PDF)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(report, idx) in submission.reports"
+                      :key="idx">
+                    <td>{{ report.report_no }}</td>
+                    <td class="text-right">{{ report.report_version }}</td>
+                    <td>{{ to_display_date(report.report_date) }}</td>
+                    <td class="small-font pre-line">{{ report.report_description }}</td>
+                    <td>
+                      <div class="form-row">
+                        <FileView
+                          class="col-12 mb-0"
+                          btn-class="btn-secondary btn-sm"
+                          :file="report.report_file"
+                          icon-class="fas fa-file-invoice" />
+                      </div>
+                    </td>
+                  </tr>
+                  <tr v-if="submission.reports.length <= 0">
+                    <td class="text-center" colspan="5">
+                      <h5 class="text-muted font-cu py-2">
+                        <i class="far fa-frown mr-2"></i>ยังไม่มีรายงาน
+                      </h5>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
                 
-                <div  v-if="submission.reports.length > 0"
-                      class="row mt-3">
-                  <div class="col-12 d-flex justify-content-end">
-                    <button class="btn btn-primary font-cu"
-                            @click="download_all_reports()">
-                      <i class="fas fa-file-archive btn-inner-icon"></i>
-                      ดาวน์โหลดทั้งหมด (เป็น zip)
-                    </button>
-                  </div>  
-                </div>
+              <!-- <div  v-if="submission.reports.length > 0"
+                    class="row mt-3">
+                <div class="col-7"></div>
+                <div class="col">
+                  <button class="btn btn-primary btn-block font-cu"
+                          @click="download_all_reports()">
+                    <i class="fas fa-file-archive btn-inner-icon"></i>
+                    ดาวน์โหลดทั้งหมด (เป็น zip)
+                  </button>
+                </div>  
+              </div> -->
+            </div>
+
+          </div>
+          <div class="row mb-3">
+            <div class="col-2">
+              <h4>ภาษารายงาน</h4>
+            </div>
+            <div class="col">
+              <div class="form-row w-100">
+                <FormInput
+                    class="col-3"
+                    disabled
+                    :value="submission.english_report? 'English' : 'ภาษาไทย'" />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-2">
+              <h4>ช่องทางการแจ้งผล</h4>
+            </div>
+            <div class="col">
+              <div class="form-row">
+                <FormInput
+                  class="col-6"
+                  label="อีเมล"
+                  disabled
+                  :value="submission.notify_to_email" />
+                <FormInput
+                  class="col-3"
+                  label="หมายเลขโทรศัพท์"
+                  disabled
+                  :value="submission.notify_to_phone" />
               </div>
             </div>
           </div>
@@ -315,59 +303,45 @@
           </h3>
     
           <div class="row">
-            <div class="col-3">
+            <div class="col-2">
               <h4>สถานะ Invoice</h4>
             </div>
-            <div class="col pt-1">
+            <div class="col">
               <div class="form-row">
                 <div class="form-group col-6">
                   <ColorTag
-                    class="d-block"
+                    class="d-block font-cu"
                     size="lg"
-                    :color="invoice_status_colors[submission.invoice.invoice_status] || 'grey'"
-                    :label="submission.invoice.invoice_status || 'ยังไม่ออก Invoice'" />
+                    :color="submission.invoice? invoice_status_colors[submission.invoice.invoice_status] : 'grey'"
+                    :label="submission.invoice? submission.invoice.invoice_status : 'ยังไม่ออก Invoice'" />
                 </div>
               </div>
             </div>
           </div>
   
-          <div class="row">
-            <div class="col-3">
+          <div  v-if="submission.invoice"
+                class="row">
+            <div class="col-2">
               <h4>หมายเลข Invoice</h4>
             </div>
-            <div class="col pt-1">
+            <div class="col">
               <div class="form-row">
                 <FormInput
                   class="col-6"
                   disabled
-                  :value="submission.invoice.invoice_ID" />
-              </div>
-            </div>
-          </div>
-  
-          <div class="row mb-4">
-            <div class="col-3">
-              <h4>ใบ Invoice</h4>
-            </div>
-            <div class="col pt-1">
-              <div class="form-row">
-                <FileView
-                  class="col-6"
-                  btn-class="btn-secondary"
-                  :file-name="`${$route.params.id}_invoice.pdf`"
-                  icon-class="fas fa-file-invoice-dollar" />
+                  :value="submission.invoice.invoice_no" />
               </div>
             </div>
           </div>
     
           <div class="row mb-4">
-            <div class="col-3">
+            <div class="col-2">
               <h4>Invoice ไปที่</h4>
             </div>
-            <div class="col pt-1">
+            <div class="col">
               <div class="form-row">
                 <FormInput
-                  class="col-6"
+                  class="col-6 mb-2"
                   disabled
                   :value="submission.on_sent_record_invoice_to_name" />
                 <div class="w-100"></div>
@@ -379,18 +353,20 @@
               </div>
             </div>
           </div>
-  
-          <div class="row mb-4">
-            <div class="col-3">
-              <h4>ค่าบริการ</h4>
-            </div>
-            <div class="col pt-1">
+
+          <div v-if="submission.invoice" class="row mb-4">
+            <div class="col-2"></div>
+            <div class="col">
               <div class="form-row">
-                <div class="form-group col-6 text-right pr-4">
-                  <h1 class="text-primary">
-                    {{ to_display_price(estimated_price) }}
-                  </h1>
-                  <h4 class="text-muted">*ค่าบริการโดยประมาน</h4>
+                <div class="form-group col-6 text-right">
+                  <router-link  :to="{
+                                  name: is_admin? 'admin-invoice-list' : 'invoice-list',
+                                  params: { id: submission.invoice.invoice_no }
+                                }"
+                                tag="button"
+                                class="btn btn-secondary btn-block font-cu">
+                    <i class="fas fa-arrow-right btn-inner-icon"></i> ไปดูรายละเอียด Invoice
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -410,51 +386,51 @@
                   class="col-4"
                   label="ประเภทตัวอย่าง"
                   disabled
-                  :value="processed_submission_data.sample_details.sample_type" />
+                  :value="submission.submission_data.sample_details.sample_type" />
                 <FormDateInput
                   class="col-2"
                   label="วันที่เก็บตัวอย่าง"
                   format="dd/MM/yy"
                   disabled
-                  :value="processed_submission_data.sample_details.sample_taken_date" />
+                  :value="submission.submission_data.sample_details.sample_taken_date" />
                 <div class="w-100"></div>
                 <FormInput
                   class="col-4"
                   label="ชนิดสัตว์"
                   disabled
-                  :value="processed_submission_data.sample_details.animal_type" />
+                  :value="submission.submission_data.sample_details.animal_type" />
                 <FormInput
                   class="col-4"
                   type="text"
                   label="พันธุ์"
                   disabled
-                  :value="processed_submission_data.sample_details.animal_species" />
+                  :value="submission.submission_data.sample_details.animal_species" />
                 <FormInput
                   class="col-2"
                   type="text"
                   label="อายุสัตว์"
                   disabled
-                  :value="processed_submission_data.sample_details.animal_age" />
+                  :value="submission.submission_data.sample_details.animal_age" />
                 <FormInput
                   class="col-2"
                   type="number"
                   label="จำนวนที่เลี้ยง"
                   disabled
-                  :value="processed_submission_data.sample_details.animal_count" />
+                  :value="submission.submission_data.sample_details.animal_count" />
                 <FormTextarea 
                   class="col-6"
                   type="text"
                   label="ประวัติการป่วย"
                   rows="3"
                   disabled
-                  :value="processed_submission_data.sample_details.illness" />
+                  :value="submission.submission_data.sample_details.illness" />
                 <FormTextarea
                   class="col-6"
                   type="text"
                   label="ประวัติการทำวัคซีน"
                   rows="3"
                   disabled
-                  :value="processed_submission_data.sample_details.vaccinations" />
+                  :value="submission.submission_data.sample_details.vaccinations" />
               </div>
             </div>
           </div>
@@ -465,14 +441,15 @@
             <i class="fas fa-microscope icon-lg"></i>
             รายละเอียดการทดสอบ
           </h3>
-          <div v-if="processed_submission_data" class="row">
-            <div class="col-12">
-              <div  v-for="(batch, idx) of processed_submission_data.batches"
+          <div v-if="submission.submission_data" class="row">
+            <div class="col-12 px-4">
+              <div  v-for="(batch, idx) of submission.submission_data.batches"
                     :key="idx"
-                    class="mb-3 pb-5 border-b d-flex">
+                    class="mb-3 pb-5 d-flex"
+                    :class="{'border-b': multiple_batches}">
 
                 <template v-if="is_general">
-                  <div v-if="multiple_batches" class="batch-sidebar general">
+                  <div v-if="multiple_batches" class="batch-sidebar general pt-3 px-2">
                     <h3 class="mb-3">กลุ่ม {{ idx+1 }}</h3>
                     <h4 class="text-medium">{{ batch.sample_count }} ตัวอย่าง</h4>
                   </div>
@@ -481,22 +458,29 @@
                       <div  v-if="test_department"
                             :key="department"
                             class="mb-4">
-                        <div class="row test-row border-b py-1">
-                          <div class="col-2 nowrap p-0">
-                            <div  class="light-tag department-tag"
+                        <div class="row no-gutters py-3">
+                          <div class="col-12">
+                            <div  class="light-tag department-tag font-cu"
                                   :class="department_colors[department]">
                               <h4>งาน{{ department }}</h4>
                             </div>
                           </div>
+                        </div>
+                        <div class="row test-row row-header py-2">
+                          <div class="col-2 nowrap">
+                            <h5>กลุ่มย่อย</h5>
+                          </div>
                           <div class="col">
                             <div class="row">
-                              <div class="col-7"></div>
+                              <div class="col-7">
+                                <h5>รายการทดสอบ</h5>
+                              </div>
                               <div class="col-2 text-right">
-                                <h5 class="text-muted mt-3">ราคา/ตัวอย่าง</h5>
+                                <h5>ราคา/ตัวอย่าง</h5>
                               </div>
                               <div class="col-1"></div>
-                              <div class="col-2">
-                                <h5 class="text-muted text-right mt-3">ยอดค่าบริการ</h5>
+                              <div class="col-2 text-right">
+                                <h5>ยอดค่าบริการ</h5>
                               </div>
                             </div>
                           </div>
@@ -524,7 +508,9 @@
                                 <i class="fas fa-equals icon-sm d-inline"></i>
                               </div>
                               <div class="col-2 text-right">
-                                <h5>{{ to_display_price(test.price * batch.sample_count) }}</h5>
+                                <h5>
+                                  {{ to_display_price(test.price * batch.sample_count) }}
+                                </h5>
                               </div>
                             </div>
                           </div>
@@ -592,70 +578,88 @@
                               {{ to_display_price(batch.price) }}
                             </h2>
                             <h5 class="text-medium">ค่าบริการ</h5>
-                            <!-- <h6 class="text-muted">*เป็นราคาโดยประมานเท่านั้น</h6> -->
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div class="row mb-1 mt-4">
+                    <div class="row mb-2 mt-5 no-gutters">
                       <div class="col-12">
                         <h4>รายละเอียดตัวอย่าง</h4>
                       </div>
                     </div>
-                    <div class="row border-b py-1">
+                    <div class="row row-header py-2">
                       <div class="col-3">
-                        <h5 class="text-muted">ID ตัวอย่าง</h5>
+                        <h5>ID ตัวอย่าง</h5>
                       </div>
                       <div class="col-6">
-                        <h5 class="text-muted">ข้อมูลเพิ่มเติม</h5>
+                        <h5>ข้อมูลเพิ่มเติม</h5>
                       </div>
                     </div>
                     <div  v-for="(sample, idx) of batch.samples"
                           :key="idx"
                           class="row py-1 border-b">
                       <div class="col-3">
-                        <h5 class="pl-2">{{ sample.sample_id }}</h5>
+                        <h5>{{ sample.sample_id }}</h5>
                       </div>
                       <div class="col-6">
-                        <h5 class="pl-2">{{ sample.extra_info }}</h5>
+                        <h5>{{ sample.extra_info }}</h5>
                       </div>
                     </div>
                   </div>
                 </template>
 
                 <template v-else-if="is_disinfectant">
-                  <div v-if="multiple_batches" class="batch-sidebar disinfectant">
-                    <h5 class="text-medium mt-2 ">นํ้ายาฆ่าเชื้อ</h5>
+                  <div v-if="multiple_batches" class="batch-sidebar pt-3 px-2 disinfectant">
+                    <h5 class="text-medium">ยาฆ่าเชื้อ</h5>
                     <h4>{{ batch.disinfectant_name }}</h4>
                   </div>
                   <div class="w-100">
-                    <div class="form-row border-b py-2">
-                      <div class="col-12 p-0">
-                        <div  class="light-tag department-tag mb-2"
+                    <div class="form-row py-3">
+                      <FormInput
+                        v-if="!multiple_batches"
+                        class="col-5 px-0"
+                        label="ชื่อยาฆ่าเชื้อ"
+                        disabled
+                        :value="batch.disinfectant_name" />
+                      <div class="w-100"></div>  
+                      <div class="col-5 form-group px-0">
+                        <div  class="light-tag department-tag d-block font-cu"
                               :class="disinfectant_test_type_colors[batch.test_type]">
                           <h4>ทดสอบต่อ {{ batch.test_type  }}</h4>
                         </div>
-                      </div>
+                      </div> 
+                      <!-- <div class="col-12 p-0">
+                        <div v-if="!multiple_batches" class="d-flex">
+                          <h3 class="mb-3">
+                            <span class="text-medium">ชื้อนํ้ายาฆ่าเชื้อ: </span>
+                            {{ batch.disinfectant_name }}
+                          </h3>
+                        </div>
+                        <div  class="light-tag department-tag font-cu"
+                              :class="disinfectant_test_type_colors[batch.test_type]">
+                          <h4>ทดสอบต่อ {{ batch.test_type  }}</h4>
+                        </div>
+                      </div> -->
                     </div>
-                    <div class="form-row border-b px-3 py-2">
+                    <div class="form-row row-header px-3 py-2">
                       <div class="col-4">
-                        <h5 class="text-muted">
+                        <h5>
                           ชื่อ{{ batch.test_type === 'ไวรัส'? 'ไวรัส' : 'แบคทีเรีย'  }}
                         </h5>
                       </div>
                       <div class="col-6">
                         <div class="form-row">
                           <div class="col-4">
-                            <h5 class="text-muted">ความเข้มข้น</h5>
+                            <h5>ความเข้มข้น</h5>
                           </div>
                           <div class="col-8">
                             <div class="form-row">
                               <div v-if="batch.test_type === 'แบคทีเรีย (CP Protocol)'" class="col-6">
-                                <h5 class="text-muted">ระยะหลังการเจือจาง</h5>
+                                <h5>ระยะหลังการเจือจาง</h5>
                               </div>
                               <div class="col-6">
-                                <h5 class="text-muted">ระยะสัมผัสเชื้อ</h5>
+                                <h5>ระยะสัมผัสเชื้อ</h5>
                               </div>
                             </div>
                           </div>
@@ -717,12 +721,12 @@
   
                       <div class="col-2 d-flex flex-column align-items-end justify-content-end pr-4">
                         <h5>3,000฿</h5>
-                        <h6 class="text-muted squeeze-up">ต่อรายการ</h6>
+                        <h6 class="text-medium squeeze-up">ต่อรายการ</h6>
                         <h5 class="mt-1">
                           <i class="fas fa-times icon-sm"></i>
                           {{ test_detail.test_count }}
                         </h5>
-                        <h6 class="text-muted squeeze-up">รายการ</h6>
+                        <h6 class="text-medium squeeze-up">รายการ</h6>
                         <h4 class="mt-1 text-primary">
                           <i class="fas fa-equals mr-1 icon-sm"></i>
                           {{ to_display_price(test_detail.price) }}
@@ -777,13 +781,52 @@
                   </div>
                 </template>
               </div>
+
+              <div v-if="multiple_batches" class="d-flex pt-3 pr-4">
+                <div class="batch-sidebar general px-2">
+                  <h3>ข้อมูลสรุป</h3>
+                </div>
+                <div class="w-100 form-row">
+                  <div class="col"></div>
+                  <div class="col-1 form-group text-right nowrap">
+                    <template v-if="is_general">
+                      <h2 class="text-primary">
+                        {{ submission_sample_count }}
+                      </h2>
+                      <h5 class="text-medium">ตัวอย่าง</h5>
+                    </template>
+                    <template v-else-if="is_disinfectant">
+                      <h2 class="text-primary">
+                        {{ submission.submission_data.batches.length }}
+                      </h2>
+                      <h5 class="text-medium">นํ้ายาฆ่าเชื้อ</h5>
+                    </template>
+                  </div>
+                  <div class="col-2 form-group text-right">
+                    <h2 class="text-primary">
+                      {{ submission_test_count }}
+                    </h2>
+                    <h5 class="text-medium">รายการทดสอบ</h5>
+                  </div>
+                  <div class="col-1 form-group text-right nowrap">
+                    <h5 class="text-medium mt-2 ml-3">รวมเป็น</h5>
+                  </div>
+                  <div class="col-2 form-group text-right">
+                    <h2 class="text-primary">
+                      {{ to_display_price(submission_price) }}
+                    </h2>
+                    <h5 class="text-medium">ค่าบริการ</h5>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
       
       </div>
     </div>
-    <div v-else class="w-100 pt-5 mt-5 text-center content-height-min">
+    <div v-else class="w-100 pt-5 mt-5 text-center content-height-with-scroll">
       <LoadingAnimation color="primary" size="lg" />
     </div>
   </transition>
@@ -793,6 +836,7 @@
 <script>
 import $ from 'jquery'
 import groupBy from 'lodash/groupBy'
+import cloneDeep from 'lodash/cloneDeep'
 import { get_jwt } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
 import { SUBMISSION_DETAIL, SUBMISSION_FORM_DATA } from '@/graphql/submission'
@@ -807,31 +851,6 @@ export default {
       }
       return this.submission.backend_key
     },
-    test_methods_grouped () {
-      const grouped_by_department = groupBy(this.test_methods_raw, 'department')
-      const grouped = {}
-      for (const [department, tests] of Object.entries(grouped_by_department)) {
-        grouped[department] = groupBy(tests, 'category')
-      }
-      return grouped
-    },
-    processed_submission_data () {
-      const processed = JSON.parse(this.submission_data)
-      if (this.is_general) {
-        for (const batch of processed.batches) {
-          for (const test of Object.values(batch.tests)) {
-            if (test) {
-              test.test_list = groupBy(test.test_list.map(
-                test_key => this.test_methods_raw.find(
-                  test => test.test_key == test_key
-                )
-              ), 'category')
-            }
-          }
-        }
-      }
-      return processed
-    },
     is_general () {
       return this.submission.submission_type === 'การตรวจทั่วไป'
     },
@@ -839,12 +858,23 @@ export default {
       return this.submission.submission_type === 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ'
     },
     multiple_batches () {
-      return this.processed_submission_data.batches.length > 1
+      return this.submission.submission_data.batches.length > 1
     },
-    estimated_price () {
-      return this.processed_submission_data.batches
-        .reduce( (total, batch) => total += batch.price, 0)
-    }
+    submission_price () {
+      return this.submission.submission_data.batches.reduce(
+        (price, batch) => price += batch.price, 0
+      )
+    },
+    submission_test_count () {
+      return this.submission.submission_data.batches.reduce(
+        (test_count, batch) => test_count += batch.test_count, 0
+      )
+    },
+    submission_sample_count () {
+      return this.submission.submission_data.batches.reduce(
+        (sample_count, batch) => sample_count += batch.sample_count || 0, 0
+      )
+    },
   },
   data () {
     return {
@@ -885,6 +915,10 @@ export default {
       query: AUTH_DATA,
       update: data => data.auth.is_admin
     },
+    test_methods: {
+      query: GENERAL_TEST_METHODS,
+      update: data => groupBy(data.test_method_general.result, 'department'),
+    },
     submission: {
       query: SUBMISSION_DETAIL,
       variables () {
@@ -893,22 +927,28 @@ export default {
           key: this.$route.params.id
         }
       },
-      update: data => data.get_submission.result
-    },
-    submission_data: {
-      query: SUBMISSION_FORM_DATA,
-      variables () {
-        return {
-          jwt: get_jwt(),
-          key: this.$route.params.id
+      update (data) {
+        const submission = cloneDeep(data.get_submission.result)
+        submission.submission_data = JSON.parse(submission.submission_data)
+        if (submission.submission_type === 'การตรวจทั่วไป') {
+          for (const batch of submission.submission_data.batches) {
+            for (const [department, tests] of Object.entries(batch.tests)) {
+              if (tests) {
+                tests.test_list = groupBy(tests.test_list.map(
+                  test => this.test_methods[department].find(
+                    test_info => test_info.test_key == test
+                  )
+                ), 'category')
+              }
+            }
+          }
         }
+        return submission
       },
-      update: data => data.get_submission.result.submission_data
+      skip () {
+        return !this.test_methods
+      }
     },
-    test_methods_raw: {
-      query: GENERAL_TEST_METHODS,
-      update: data => data.test_method_general_get.result
-    }
   }
 }
 </script>
@@ -933,10 +973,9 @@ export default {
   }
 }
 .batch-sidebar {
-  padding: .5em;
   &.general {
-    min-width: 8rem;
-    max-width: 8rem;
+    min-width: 9rem;
+    max-width: 9rem;
   }
   &.disinfectant {
     min-width: 15rem;

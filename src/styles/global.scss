@@ -10,7 +10,7 @@ $green:   #7AA77D;
 $teal:    #7DB9B9;
 
 //*/
-$accent-dark:   #d6cfcc;
+$accent-dark:   #E1DDD8;
 $accent:        #eae6e3;
 $accent-light:  #f7f3f1;
 
@@ -18,7 +18,7 @@ $accent-light:  #f7f3f1;
 $primary:       #87B8C7;
 $secondary:     $accent;
 $light:         #fefdfd;
-$medium:        #75716E;
+$medium:        #807673;
 $dark:          #605d5b;
 $default:       #555250;
 
@@ -77,7 +77,7 @@ $text-muted:    $muted;
 // Borders
 $border-radius-sm:  .2rem;
 $border-radius:     .25rem;
-$border-radius-lg:  .28rem;
+$border-radius-lg:  .3rem;
 
 // Input & Buttons
 $input-btn-border-width:  0;
@@ -159,10 +159,10 @@ $pagination-hover-border-color:     $pagination-border-color;
 
 $grid-breakpoints: (
   xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1300px
+  sm: 700px,
+  md: 1024px,
+  lg: 1280px,
+  xl: 1920px
 );
 
 // Import Bootstrap variables for override
@@ -171,15 +171,16 @@ $grid-breakpoints: (
 @import "~bootstrap/scss/_mixins.scss";
 
 // Other Variables
-$titlebar-height: 5rem;
-$titlebar-height-scrolled: 60px;
-$footer-height: 2rem;
+$titlebar-height: 6rem;
+$titlebar-height-scrolled: 4rem;
+$footer-height: 3rem;
 $outer-padding: 30px;
 $outer-padding-sm: 15px;
-$content-height: calc(100vh - #{$titlebar-height} - #{$footer-height});
+$content-height: calc(100vh - #{$titlebar-height-scrolled});
+$content-height-with-scroll: calc(100vh - #{$titlebar-height});
 $drop-shadow: 0px 4px 8px 0 $medium;
-$subnav-height: 3rem;
-$content-height-with-subnav: calc(100vh - #{$titlebar-height} - #{$footer-height} - #{$subnav-height});
+$subnav-height: 3.5rem;
+$content-height-with-subnav: calc(100vh - #{$titlebar-height-scrolled} - #{$subnav-height});
 
 @mixin unselectable {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -214,6 +215,10 @@ $content-height-with-subnav: calc(100vh - #{$titlebar-height} - #{$footer-height
 
 @mixin input-btn-padding {
   padding: 0.25rem 0.75rem;
+}
+
+@mixin backdrop-blur {
+  backdrop-filter: blur(25px);
 }
 
 @mixin dropdown-option {

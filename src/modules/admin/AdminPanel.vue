@@ -1,7 +1,7 @@
 <template>
 <div class="page page-lg">
-  <div class="content-height">
-    <div class="sticky-submenu admin-panel d-flex align-items-center px-2 pb-2">
+  <div class="content-height-min">
+    <div class="subnav d-flex align-items-center border-b p-2">
       <router-link  :to="{name: 'admin-users-list' }"
                     class="btn btn-transparent mr-2">
         <i class="fas fa-users btn-inner-icon"></i>
@@ -41,9 +41,3 @@ export default {
   name: 'admin-panel'
 }
 </script>
-
-<style lang="scss" scoped>
-.admin-panel {
-  height: $subnav-height;
-}
-</style>

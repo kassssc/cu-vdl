@@ -108,13 +108,13 @@ export default {
   }
   label {
     margin: 0;
-    font-size: 1.2em;
+    font-size: 1.25em;
     color: $dark;
     &.label-lg {
-      font-size: 1.35em;
+      font-size: 1.4em;
     }
     &.label-xl {
-      font-size: 1.55em;
+      font-size: 1.6em;
     }
     @include unselectable;
     &.disabled {

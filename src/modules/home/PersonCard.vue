@@ -30,7 +30,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 125px;
+  max-width: 140px;
   overflow: visible;
   margin-bottom: 0.5em;
 }
@@ -40,8 +40,8 @@ export default {
   background-position: center;
   background-size: cover;
   border-radius: 5px;
-  width: 125px;
-  height: 150px;
+  width: 140px;
+  height: 180px;
   margin: 0.75em 0;
 }
 </style>

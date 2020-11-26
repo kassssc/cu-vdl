@@ -1,8 +1,8 @@
 <template>
-<div class="page page-md d-flex flex-column content-height-min">
-  <template v-if="!$apollo.queries.auth.loading">
+<div class="page page-md d-flex flex-column">
+  <template v-if="!$apollo.queries.auth.loading && (!edit_mode || (!$apollo.queries.submission_raw.loading && !$apollo.queries.user_detail.loading))">
     
-    <div class="my-2 position-relative">
+    <div class="pt-5 pb-2 position-relative">
       <button v-if="edit_mode && auth.is_admin"
               class="btn back-btn btn-transparent"
               @click="$router.go(-1)">
@@ -24,20 +24,25 @@
             class="btn btn-transparent btn-sm scrollactive-item">
           ข้อมูลเบื้องต้น
         </a>
-        <i class="fas fa-long-arrow-alt-right mx-1" />
+        <i class="fas fa-long-arrow-alt-right mx-2" />
+        <a  href="#report"
+            class="btn btn-transparent btn-sm scrollactive-item">
+          รายงาน
+        </a>
+        <i class="fas fa-long-arrow-alt-right mx-2" />
         <a  href="#submission_type"
             class="btn btn-transparent btn-sm scrollactive-item">
           ประเภทการทดสอบ
         </a>
-        <i class="fas fa-long-arrow-alt-right mx-1" />
+        <i class="fas fa-long-arrow-alt-right mx-2" />
         <div  v-for="(section, idx) of submission.submission_data.batches"
               :key="idx"
               class="d-flex align-items-center">
           <a  :href="'#batch' + (idx+1)"
               class="btn btn-transparent btn-sm scrollactive-item">
-            {{ get_batch_label(idx + 1) }}
+            {{ get_batch_label(idx) }}
           </a>
-          <i class="fas fa-long-arrow-alt-right mx-1" />
+          <i class="fas fa-long-arrow-alt-right mx-2" />
         </div>
       </scrollactive>
       <button class="btn btn-transparent btn-sm"
@@ -47,14 +52,13 @@
     </div>
   
     <div  id="sample-info-form"
-          class="font-chatthai d-flex flex-column align-items-center px-3 py-0 max-width-1250">    
-      
+          class="font-chatthai d-flex flex-column align-items-center px-3 py-0 max-width-1250 position-relative">    
       <div id="info" class="border-b row w-100 pt-4 pt-xl-5">
-        <div class="col-xl-2 col-12">
+        <div class="col-md-2 col-12">
           <h3 class="mb-2">ข้อมูลเบื้องต้น</h3>
         </div>
-        <div class="col-12 col-xl-10 border-b mb-4 pb-4">
-          <div class="form-row mb-2">
+        <div class="col-12 col-md-10 border-b mb-4 pb-4">
+          <div class="form-row mb-3">
             <FormSelect
               v-if="auth.is_admin && !edit_mode"
               class="col-4 mb-2"
@@ -82,6 +86,12 @@
               disabled
               :value="submission.submit_date" />
             <div class="w-100"></div>
+            <FormInput
+              v-if="auth.is_admin && submission.english_report && !edit_mode"
+              class="col-4 mb-2"
+              disabled
+              :value="selected_submitter.name_eng" />
+            <div class="w-100"></div>
             <FormTextarea
               v-if="selected_submitter"
               class="col-4"
@@ -89,36 +99,9 @@
               :value="submission.english_report? selected_submitter.address_eng : selected_submitter.address" />
           </div>
 
-          <div class="form-row mb-2">
-            <div class="form-group col-6">
-              <label class="label-lg text-medium">
-                รายงานเป็นภาษา <i class="fas fa-star-of-life" />
-              </label>
-              <div class="row no-gutters">
-                <button class="btn radio-btn col-4"
-                        :class="{'chosen': !submission.english_report}"
-                        @click="submission.english_report = false">
-                  <div  class="box">
-                    <div class="box-chosen"></div>
-                  </div>
-                  ไทย
-                </button>
-                <button class="btn radio-btn col-4"
-                        :class="{'chosen': submission.english_report}"
-                        :disabled="!has_english_info_submitter"
-                        @click="submission.english_report = true">
-                  <div  class="box">
-                    <div class="box-chosen"></div>
-                  </div>
-                  English
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-row mb-4">
+          <div class="form-row">
             <div class="form-group mb-0 col-6">
-              <label class="label-lg text-medium">เจ้าของตัวอย่าง/ฟาร์ม
+              <label class="text-medium">เจ้าของตัวอย่าง/ฟาร์ม
                 <i class="fas fa-star-of-life" />
               </label>
               <div class="row no-gutters">
@@ -172,11 +155,11 @@
                 <template v-else>
                   <template v-if="needs_english_info_sample_owner">
                     <div class="form-group col-6 font-cu">
-                      <label class="text-danger">ท่านต้องเพิ่มข้อมูลภาษาอังกฤษให้ Contact นี้</label>
                       <button   class="btn btn-secondary btn-block"
                                 @click="show_add_english_info_modal(selected_sample_owner)">
                         <i class="fas fa-globe-americas btn-inner-icon"></i> เพิ่มข้อมูลภาษาอังกฤษ
                       </button>
+                      <ErrorBox msg="ท่านต้องเพิ่มข้อมูลภาษาอังกฤษให้ Contact นี้" />
                     </div>
                   </template>
                   <template v-else>
@@ -195,10 +178,15 @@
               </template>
             </template>
           </div>
+        </div>
 
+        <div class="col-md-2 col-12">
+          <!-- <h4 class="text-medium">Invoice</h4> -->
+        </div>
+        <div class="col-md-10 col-12 pb-4">
           <div class="form-row">
             <div class="form-group mb-0 col-6">
-              <label class="label-lg text-medium">Invoice ไปที่
+              <label class="text-medium">Invoice ไปที่
                 <i class="fas fa-star-of-life" />
               </label>
               <div class="row no-gutters">
@@ -253,43 +241,66 @@
               <template v-if="submission.invoice_to && submission.invoice_to !== -1">
                 <div class="w-100"></div>
                 <FormTextarea
-                  v-if="!submission.english_report"
                   class="col-6"
                   rows="3"
                   disabled
                   :value="selected_invoice_to.address" />
-                <template v-else>
-                  <template v-if="needs_english_info_invoice_to">
-                    <div class="form-group col-6 font-cu">
-                      <label class="text-danger">ท่านต้องเพิ่มข้อมูลภาษาอังกฤษให้ Contact นี้</label>
-                      <button   class="btn btn-secondary btn-block"
-                                @click="show_add_english_info_modal(selected_invoice_to)">
-                        <i class="fas fa-globe-americas btn-inner-icon"></i> เพิ่มข้อมูลภาษาอังกฤษ
-                      </button>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <FormInput
-                      class="col-6 mb-2"
-                      disabled
-                      :value="selected_invoice_to.name_eng" />
-                    <div class="col-6"></div>
-                    <FormTextarea
-                      class="col-6"
-                      rows="3"
-                      disabled
-                      :value="selected_invoice_to.address_eng" />
-                  </template>
-                </template>
               </template>
             </template>
           </div>
-        </div>
 
-        <div class="col-xl-2 col-12">
-          <h4 class="text-medium">การแจ้งเตือน</h4>
+          <div class="form-row mb-2 mt-3">
+            <div class="form-group col-6">
+              <checkbox
+                label="ต้องการรับ Invoice ทางไปรษณีย์ (มีค่าใช้จ่ายเพิ่มเติม)"
+                label-class="label-lg"
+                v-model="submission.paper_invoice" />
+            </div>
+          </div>          
         </div>
-        <div class="col-xl-10 col-12 pb-4">
+      </div>
+
+      <div  id="report"
+            class="row w-100 border-b py-4">
+        <div class="col-md-2 col-12 nowrap">
+          <h3 class="mb-2">รายงาน</h3>
+        </div>
+        <div class="col-md-10 col-12">
+          <div class="form-row mb-2">
+            <div class="form-group col-6">
+              <label class="text-medium">
+                รายงานเป็นภาษา <i class="fas fa-star-of-life" />
+              </label>
+              <div class="row no-gutters">
+                <button class="btn radio-btn col-4"
+                        :class="{'chosen': !submission.english_report}"
+                        @click="submission.english_report = false">
+                  <div  class="box">
+                    <div class="box-chosen"></div>
+                  </div>
+                  ไทย
+                </button>
+                <button class="btn radio-btn col-4"
+                        :class="{'chosen': submission.english_report}"
+                        :disabled="!has_english_info_submitter"
+                        @click="submission.english_report = true">
+                  <div  class="box">
+                    <div class="box-chosen"></div>
+                  </div>
+                  English
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-row mb-2">
+            <div class="form-group col-6">
+              <checkbox
+                label="ต้องการรับรายงานทางไปรษณีย์ (มีค่าใช้จ่ายเพิ่มเติม)"
+                label-class="label-lg"
+                v-model="submission.paper_report" />
+            </div>
+          </div>
+          <h4 class="mb-1">การแจ้งผลรายงาน</h4>
           <div class="form-row">
             <FormSuggestInput
               class="col-4"
@@ -307,17 +318,16 @@
           </div>
         </div>
       </div>
-      <!-- END INFO SECTION -->
 
       <div  id="submission_type"
             class="row w-100 border-b py-4">
-        <div class="col-xl-2 col-12">
+        <div class="col-md-2 col-12 nowrap">
           <h3 class="mb-2">ประเภทการทดสอบ</h3>
         </div>
-        <div class="col-xl-10 col-12">
+        <div class="col-md-10 col-12">
           <div class="form-row">
             <FormInlineSelect
-              class="col-8 col-xl-6"
+              class="col-8 col-lg-6 mb-0"
               :btn-class-list="['primary', 'blue']"
               v-model="submission.submission_type"
               :options="submission_types"
@@ -328,11 +338,11 @@
           </div>
         </div>
         <transition name="fade-no-delay">
-          <div v-if="is_general" class="row">
-            <div class="col-xl-2 col-12 pt-4">
+          <div v-if="is_general" class="row pt-4">
+            <div class="col-md-2 col-12">
               <h4 class="mb-2 text-medium">ข้อมูลตัวอย่าง</h4>
             </div>
-            <div class="col-12 col-xl-10 pt-0 pt-xl-4">
+            <div class="col-12 col-md-10">
               <div class="form-row">
                 <FormSuggestInput
                   class="col-4"
@@ -417,8 +427,8 @@
 
       <div  id="add_batch"
             class="row w-100 border-b py-4 font-cu">
-        <div class="col-xl-2 col-12"></div>
-        <div class="col-xl-10 col-12">
+        <div class="col-md-2 col-12"></div>
+        <div class="col-md-10 col-12">
           <div class="form-row">
             <div class="form-group col-6 mb-0">
               <button class="btn btn-secondary btn-block"
@@ -435,10 +445,10 @@
       <div  id="remarks"
             class="row w-100 border-b py-4">
         <template v-if="multiple_batches">
-          <div class="col-xl-2 col-12">
+          <div class="col-md-2 col-12">
             <h3 class="mb-2">ข้อมูลสรุป</h3>
           </div>
-          <div class="col-xl-10 col-12">
+          <div class="col-md-10 col-12">
             <div class="form-row border-b mb-5">
               <div class="col-1 form-group text-right nowrap">
                 <template v-if="is_general">
@@ -472,10 +482,10 @@
             </div>
           </div>
         </template>
-        <div class="col-xl-2 col-12">
+        <div class="col-md-2 col-12">
           <h3 class="mb-2">หมายเหตุอื่นๆ</h3>
         </div>
-        <div class="col-xl-10 col-12">
+        <div class="col-md-10 col-12">
           <div class="form-row">
             <FormTextarea
               class="col-6"
@@ -697,7 +707,7 @@ export default {
     submission_sample_count () {
       return this.submission.submission_data.batches.reduce(
         (sample_count, batch) => sample_count += batch.sample_count || 0, 0
-        )
+      )
     },
     has_english_info_submitter () {
       if (!this.user_detail) return false
@@ -705,9 +715,6 @@ export default {
     },
     needs_english_info_sample_owner () {
       return this.submission.english_report && !this.contact_has_english_info(this.submission.sample_owner)
-    },
-    needs_english_info_invoice_to () {
-      return this.submission.english_report && !this.contact_has_english_info(this.submission.invoice_to)
     },
     select_contacts () {
       return [ ...this.user_detail.contact_list, { index: -1, name: '* ไม่มีในรายชื่อนี้ *' } ]
@@ -733,7 +740,7 @@ export default {
     },
     add_batch_label () {
       return  this.is_general? 'เพิ่มกลุ่มการทดสอบ' :
-              this.is_disinfectant? 'เพิ่มรายการยาฆ่าเชื้อ' : ''
+              this.is_disinfectant? 'เพิ่มยาฆ่าเชื้อ' : ''
     },
     review_and_submit_label () {
       return `สรุปและ${this.edit_mode? 'บันทึก' : 'ส่ง'}`
@@ -813,6 +820,7 @@ export default {
       return new_batch
     },
     add_batch () {
+      this.is_validated = false
       this.submission.submission_data.batches.push(this.generate_new_batch())
       this.$nextTick( () => {
         setTimeout( () => {
@@ -845,8 +853,8 @@ export default {
     },
     get_batch_label (number) {
       return  (!this.multiple_batches)? 'รายการทดสอบ' :
-              (this.is_general)? `กลุ่ม ${number}` :
-              (this.is_disinfectant)? `นํ้ายาฆ่าเชื้อ ${number}` : '???'
+              (this.is_general)? `กลุ่ม ${number+1}` :
+              (this.is_disinfectant)? this.submission.submission_data.batches[number].disinfectant_name || `ยาฆ่าเชื้อ ${number+1}` : '???'
     },
     form_has_information () {
       const submission_detail_has_info = this.is_general && 
@@ -937,11 +945,17 @@ export default {
     form_complete () {
       this.is_validated = true
       const { backuser, submitter, sample_owner, invoice_to } = this.submission
-      const basic_info_complete = !!backuser && !!submitter && !!sample_owner && !!invoice_to
+      const basic_info_complete = !!backuser && !!submitter && !!sample_owner && !!invoice_to && !this.needs_english_info_sample_owner
       let batches_complete
       if (this.is_general) {
         batches_complete = this.submission.submission_data.batches.reduce( (batches_complete, batch) => {
-          return batches_complete && !!batch.sample_count && (batch.price > 0)
+          let complete = batches_complete && !!batch.sample_count && (batch.price > 0)
+          complete &&= batch.samples.reduce( (has_id, sample) => has_id && !!sample.sample_id, true)
+          if (batch.tests['แบคทีเรียวิทยา']) {
+            complete &&= batch.tests['แบคทีเรียวิทยา'].custom_bacteria_tests
+              .reduce( (all_filled, bacteria) => all_filled && bacteria, true)
+          }
+          return complete
         }, true)
         
       } else if (this.is_disinfectant) {
@@ -1104,6 +1118,7 @@ export default {
       },
       update: data => data.get_submission.result,
       result (res) {
+        if (!res.data) return
         const {
           backuser,
           submission_type,
@@ -1166,7 +1181,7 @@ export default {
 
 .back-btn {
   position: absolute;
-  top: 0;
+  top: 3rem;
   left: -120px;
 }
 @keyframes expand-in-batch {

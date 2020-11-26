@@ -16,7 +16,7 @@ const AUTH_TOKEN = 'apollo-token'
 
 // Http endpoint
 /*/
-const httpEndpoint = process.env.BACKEND_API_URL
+const httpEndpoint = 'https://ec2-54-169-84-184.ap-southeast-1.compute.amazonaws.com:16888/api/graphql'
 /*/
 const httpEndpoint = 'http://localhost:16888/api/graphql'
 //*/
@@ -211,12 +211,12 @@ export async function on_logout (apolloClient) {
   }
   
   remove_jwt()
+  // Cancel checking of jwt expiry at intervals
   if (JWT_REFRESH_TIMER) {
     clearInterval(JWT_REFRESH_TIMER)
   }
 
   if (apolloClient.wsClient) restartWebsockets(apolloClient.wsClient)
-  // Cancel checking of jwt expiry at intervals
 }
 
 function get_auth_data_from_jwt (jwt) {

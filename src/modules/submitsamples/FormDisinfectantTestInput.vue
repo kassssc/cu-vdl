@@ -379,7 +379,7 @@ export default {
   apollo: {
     disinfectant_virus_list: {
       query: DISINFECTANT_TEST_METHODS,
-      update: data => data.test_method_disinfectant_virus_get.result,
+      update: data => data.test_method_disinfectant_virus.result,
       skip () {
         return !this.is_virus
       }

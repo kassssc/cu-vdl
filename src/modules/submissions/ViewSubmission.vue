@@ -79,26 +79,46 @@
               </div>
             </div>
           </div>
-    
+
           <div class="row mb-4">
             <div class="col-2">
-              <h4>ใบส่งตัวอย่าง</h4>
+              <!-- <h4>ใบส่งตัวอย่าง</h4> -->
             </div>
             <div class="col pt-1">
               <div class="form-row">
-                <FileView
+                <!-- <FileView
                   class="col-6"
                   btn-class="btn-secondary"
                   :file="{
                     file_name: `${$route.params.id}_submission_form.pdf`,
                     S3_key: 'submission_form.pdf'
                   }"
-                  icon-class="fas fa-file-alt" />
+                  icon-class="fas fa-file-alt" /> -->
                 <div class="w-100"></div>
-                <div class="col-6 form-group">
+                <DownloadSlip
+                  class="col-6"
+                  :submission-key="submission_key" />
+                <!-- <div class="col-6 form-group">
                   <button class="btn btn-secondary btn-block font-cu">
                     <i class="fas fa-print btn-inner-icon"></i> ปริ้นสลิปการส่งตัวอย่าง
                   </button>
+                </div> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-2">
+              <h4>ประเภทการทดสอบ</h4>
+            </div>
+            <div class="col pt-1">
+              <div class="form-row">
+                <div class="form-group col-6">
+                  <ColorTag
+                    class="d-block font-cu"
+                    size="lg"
+                    :color="submission_type_colors[submission.submission_type]"
+                    :label="submission.submission_type" />
                 </div>
               </div>
             </div>
@@ -110,7 +130,7 @@
             </div>
             <div class="col pt-1">
               <div class="form-row">
-                <div class="col-6 form-group">
+                <!-- <div class="col-6 form-group">
                   <label>ประเภทการทดสอบ</label>
                   <ColorTag
                     class="d-block font-cu"
@@ -118,7 +138,7 @@
                     :color="submission_type_colors[submission.submission_type]"
                     :label="submission.submission_type" />
                 </div>
-                <div class="w-100"></div>
+                <div class="w-100"></div> -->
                 <FormDateInput
                   class="col-3"
                   label="วันที่ส่งตัวอย่าง"
@@ -139,11 +159,40 @@
                   type="text"
                   disabled
                   value="ยังไม่ได้รับตัวอย่าง" />
+                <div class="w-100"></div>
+                <div class="col-6">
+                  <div class="form-row">
+                    <FormInput
+                      class="col-12 mb-2"
+                      label="ผู้ส่งตัวอย่าง"
+                      disabled
+                      :value="submission.on_sent_record_submitter_name" />
+                    <FormTextarea
+                      class="col-12"
+                      rows="3"
+                      disabled
+                      :value="submission.on_sent_record_submitter_address" />
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-row">
+                    <FormInput
+                      class="col-12 mb-2"
+                      label="เจ้าของตัวอย่าง/ฟาร์ม"
+                      disabled
+                      :value="submission.on_sent_record_owner_name" />
+                    <FormTextarea
+                      class="col-12"
+                      rows="3"
+                      disabled
+                      :value="submission.on_sent_record_owner_address" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
   
-          <div class="row mb-4">
+          <!-- <div class="row mb-4">
             <div class="col-2">
               <h4>บุคคล/องค์กรที่เกี่ยวข้อง</h4>
             </div>
@@ -180,7 +229,7 @@
               </div>
               
             </div>
-          </div>
+          </div> -->
 
           <div v-if="submission.remarks" class="row mb-4">
             <div class="col-2">
@@ -261,20 +310,51 @@
             </div>
 
           </div>
+
           <div class="row mb-3">
             <div class="col-2">
-              <h4>ภาษารายงาน</h4>
+              <h5>ภาษารายงาน</h5>
             </div>
             <div class="col">
               <div class="form-row w-100">
                 <FormInput
-                    class="col-3"
-                    disabled
-                    :value="submission.english_report? 'English' : 'ภาษาไทย'" />
+                  class="col-4"
+                  disabled
+                  :value="submission.english_report? 'English' : 'ภาษาไทย'" />
               </div>
             </div>
           </div>
-          <div class="row">
+
+          <div class="row mb-3">
+            <div class="col-2">
+              <h5>ส่งรายงานทางไปรษณีย์</h5>
+            </div>
+            <div class="col">
+              <div class="form-row w-100">
+                <div class="form-group col-12">
+                  <h5>
+                    <i  v-if="submission.mail_report_to_submitter"
+                        class="fas fa-check icon-md text-primary mr-1" />
+                    <i  v-else
+                        class="fas fa-times icon-md text-danger mr-1" />
+                    ส่งรายงานให้ ผู้ส่งตัวอย่าง ทางไปรษณีย์
+                  </h5>
+                </div>
+                <div  v-if="submission.submitter.index !== submission.sample_owner.index"
+                      class="form-group col-12">
+                  <h5>
+                    <i  v-if="submission.mail_report_to_sample_owner"
+                        class="fas fa-check icon-md text-primary mr-1" />
+                    <i  v-else
+                        class="fas fa-times icon-md text-danger mr-1" />
+                    ส่งรายงานให้ เจ้าของตัวอย่าง/ฟาร์ม ทางไปรษณีย์
+                  </h5>
+                </div>
+                <h5></h5>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row">
             <div class="col-2">
               <h4>ช่องทางการแจ้งผล</h4>
             </div>
@@ -292,7 +372,7 @@
                   :value="submission.notify_to_phone" />
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
     
         <div  id="payment"
@@ -386,51 +466,51 @@
                   class="col-4"
                   label="ประเภทตัวอย่าง"
                   disabled
-                  :value="submission.submission_data.sample_details.sample_type" />
+                  :value="submission.sample_details.sample_type" />
                 <FormDateInput
                   class="col-2"
                   label="วันที่เก็บตัวอย่าง"
                   format="dd/MM/yy"
                   disabled
-                  :value="submission.submission_data.sample_details.sample_taken_date" />
+                  :value="submission.sample_details.sample_taken_date" />
                 <div class="w-100"></div>
                 <FormInput
                   class="col-4"
                   label="ชนิดสัตว์"
                   disabled
-                  :value="submission.submission_data.sample_details.animal_type" />
+                  :value="submission.sample_details.animal_type" />
                 <FormInput
                   class="col-4"
                   type="text"
                   label="พันธุ์"
                   disabled
-                  :value="submission.submission_data.sample_details.animal_species" />
+                  :value="submission.sample_details.animal_species" />
                 <FormInput
                   class="col-2"
                   type="text"
                   label="อายุสัตว์"
                   disabled
-                  :value="submission.submission_data.sample_details.animal_age" />
+                  :value="submission.sample_details.animal_age" />
                 <FormInput
                   class="col-2"
                   type="number"
                   label="จำนวนที่เลี้ยง"
                   disabled
-                  :value="submission.submission_data.sample_details.animal_count" />
+                  :value="submission.sample_details.animal_count" />
                 <FormTextarea 
                   class="col-6"
                   type="text"
                   label="ประวัติการป่วย"
                   rows="3"
                   disabled
-                  :value="submission.submission_data.sample_details.illness" />
+                  :value="submission.sample_details.illness" />
                 <FormTextarea
                   class="col-6"
                   type="text"
                   label="ประวัติการทำวัคซีน"
                   rows="3"
                   disabled
-                  :value="submission.submission_data.sample_details.vaccinations" />
+                  :value="submission.sample_details.vaccinations" />
               </div>
             </div>
           </div>
@@ -441,9 +521,9 @@
             <i class="fas fa-microscope icon-lg"></i>
             รายละเอียดการทดสอบ
           </h3>
-          <div v-if="submission.submission_data" class="row">
+          <div v-if="submission.submission_batches" class="row">
             <div class="col-12 px-4">
-              <div  v-for="(batch, idx) of submission.submission_data.batches"
+              <div  v-for="(batch, idx) of submission.submission_batches"
                     :key="idx"
                     class="mb-3 pb-5 d-flex"
                     :class="{'border-b': multiple_batches}">
@@ -460,9 +540,9 @@
                             class="mb-4">
                         <div class="row no-gutters py-3">
                           <div class="col-12">
-                            <div  class="light-tag department-tag font-cu"
+                            <div  class="light-tag lg font-cu"
                                   :class="department_colors[department]">
-                              <h4>งาน{{ department }}</h4>
+                              งาน{{ department }}
                             </div>
                           </div>
                         </div>
@@ -557,7 +637,7 @@
                       <div class="col-2"></div>
                       <div class="col">
                         <div class="row test-row">
-                          <div class="col-6"></div>
+                          <div class="col"></div>
                           <div class="col-1 text-right">
                             <h2 class="text-primary">
                               {{ batch.sample_count }}
@@ -573,7 +653,7 @@
                           <div class="col-1 text-right nowrap">
                             <h5 class="text-medium mt-2 ml-3">รวมเป็น</h5>
                           </div>
-                          <div class="col-2 text-right">
+                          <div class="col-3 text-right">
                             <h2 class="text-primary">
                               {{ to_display_price(batch.price) }}
                             </h2>
@@ -603,7 +683,7 @@
                         <h5>{{ sample.sample_id }}</h5>
                       </div>
                       <div class="col-6">
-                        <h5>{{ sample.extra_info }}</h5>
+                        <h5>{{ sample.extra_info? sample.extra_info : '-' }}</h5>
                       </div>
                     </div>
                   </div>
@@ -624,9 +704,9 @@
                         :value="batch.disinfectant_name" />
                       <div class="w-100"></div>  
                       <div class="col-5 form-group px-0">
-                        <div  class="light-tag department-tag d-block font-cu"
+                        <div  class="light-tag lg d-block font-cu"
                               :class="disinfectant_test_type_colors[batch.test_type]">
-                          <h4>ทดสอบต่อ {{ batch.test_type  }}</h4>
+                          ทดสอบต่อ {{ batch.test_type  }}
                         </div>
                       </div> 
                       <!-- <div class="col-12 p-0">
@@ -735,7 +815,7 @@
                     </div>
 
                     <div class="form-row p-3 border-b">
-                      <div class="col-9 d-flex justify-content-end align-items-end">
+                      <div class="col d-flex justify-content-end align-items-end">
                         <div  v-if="batch.test_type === 'ไวรัส'"
                               class="text-right position-relative cost-container">
                           <h4 class="text-primary">
@@ -767,8 +847,8 @@
                           <h5 class="text-medium">ค่าประเมินผล</h5>
                         </div>
                       </div>
-                      <div class="col-1 d-flex flex-column align-items-end justify-content-end">
-                        <h5 class="text-medium mb-4">รวมเป็น</h5>
+                      <div class="col-1">
+                        <h5 class="text-medium mt-2">รวมเป็น</h5>
                       </div>
                       <div class="col-2 pr-4 d-flex flex-column align-items-end justify-content-end">
                         <h2 class="text-primary">
@@ -788,7 +868,7 @@
                 </div>
                 <div class="w-100 form-row">
                   <div class="col"></div>
-                  <div class="col-1 form-group text-right nowrap">
+                  <div class="col-2 form-group text-right nowrap">
                     <template v-if="is_general">
                       <h2 class="text-primary">
                         {{ submission_sample_count }}
@@ -797,9 +877,9 @@
                     </template>
                     <template v-else-if="is_disinfectant">
                       <h2 class="text-primary">
-                        {{ submission.submission_data.batches.length }}
+                        {{ submission.submission_batches.length }}
                       </h2>
-                      <h5 class="text-medium">นํ้ายาฆ่าเชื้อ</h5>
+                      <h5 class="text-medium">รายการยาฆ่าเชื้อ</h5>
                     </template>
                   </div>
                   <div class="col-2 form-group text-right">
@@ -837,7 +917,6 @@
 import $ from 'jquery'
 import groupBy from 'lodash/groupBy'
 import cloneDeep from 'lodash/cloneDeep'
-import { get_jwt } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
 import { SUBMISSION_DETAIL, SUBMISSION_FORM_DATA } from '@/graphql/submission'
 import { GENERAL_TEST_METHODS } from '@/graphql/tests'
@@ -858,20 +937,20 @@ export default {
       return this.submission.submission_type === 'ทดสอบประสิทธิภาพยาฆ่าเชื้อ'
     },
     multiple_batches () {
-      return this.submission.submission_data.batches.length > 1
+      return this.submission.submission_batches.length > 1
     },
     submission_price () {
-      return this.submission.submission_data.batches.reduce(
+      return this.submission.submission_batches.reduce(
         (price, batch) => price += batch.price, 0
       )
     },
     submission_test_count () {
-      return this.submission.submission_data.batches.reduce(
+      return this.submission.submission_batches.reduce(
         (test_count, batch) => test_count += batch.test_count, 0
       )
     },
     submission_sample_count () {
-      return this.submission.submission_data.batches.reduce(
+      return this.submission.submission_batches.reduce(
         (sample_count, batch) => sample_count += batch.sample_count || 0, 0
       )
     },
@@ -923,15 +1002,15 @@ export default {
       query: SUBMISSION_DETAIL,
       variables () {
         return {
-          jwt: get_jwt(),
           key: this.$route.params.id
         }
       },
       update (data) {
         const submission = cloneDeep(data.get_submission.result)
-        submission.submission_data = JSON.parse(submission.submission_data)
+        submission.submission_batches = JSON.parse(submission.submission_batches)
         if (submission.submission_type === 'การตรวจทั่วไป') {
-          for (const batch of submission.submission_data.batches) {
+          submission.sample_details = JSON.parse(submission.sample_details)
+          for (const batch of submission.submission_batches) {
             for (const [department, tests] of Object.entries(batch.tests)) {
               if (tests) {
                 tests.test_list = groupBy(tests.test_list.map(
@@ -981,8 +1060,5 @@ export default {
     min-width: 15rem;
     max-width: 15rem;
   }
-}
-.department-tag {
-  padding: .25em .75em;
 }
 </style>

@@ -2,12 +2,10 @@ import gql from 'graphql-tag'
 
 export const INVOICE_LIST = gql`
   query (
-    $jwt: String!,
     $search_query: String,
     $invoice_status: String
   ) {
     search_invoice (
-      jwt: $jwt,
       search_query: $search_query,
       invoice_status: $invoice_status
     ) {
@@ -24,11 +22,9 @@ export const INVOICE_LIST = gql`
 
 export const INVOICE_DETAIL = gql`
   query (
-    $jwt: String!,
     $invoice_no: String!
   ) {
     get_invoice (
-      jwt: $jwt,
       invoice_no: $invoice_no
     ) {
       status
@@ -39,6 +35,7 @@ export const INVOICE_DETAIL = gql`
         invoice_status
         invoice_date
         invoice_amount
+        mail_invoice
         invoice_to {
           name
           address

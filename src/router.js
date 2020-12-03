@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import MainContent from '@/modules/main/MainContent'
-import Home from '@/modules/home/Home'
 
 import { apolloProvider } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
@@ -13,11 +12,52 @@ const routes = [
   {
     path: '/',
     component: MainContent,
+    redirect: { name: 'home' },
     children: [
       {
-        path: '',
-        name: 'home',
-        component: Home
+        path: '/home',
+        name: 'main',
+        redirect: { name: 'home' },
+        component: () => import(/* webpackChunkName: "group-home" */
+          '@/modules/home/HomeContent'
+        ),
+        children: [
+          {
+            path: '',
+            name: 'home',
+            component: () => import(/* webpackChunkName: "group-home" */
+              '@/modules/home/Home'
+            ),
+          },
+          {
+            path: 'services',
+            name: 'services',
+            component: () => import(/* webpackChunkName: "group-home" */
+              '@/modules/home/Services'
+            ),
+          },
+          {
+            path: 'orgchart',
+            name: 'org-chart',
+            component: () => import(/* webpackChunkName: "group-home" */
+              '@/modules/home/OrgChart'
+            ),
+          },
+          {
+            path: 'contact',
+            name: 'contact',
+            component: () => import(/* webpackChunkName: "group-home" */
+              '@/modules/home/Contact'
+            ),
+          },
+          {
+            path: 'pathogen',
+            name: 'pathogen-bank',
+            component: () => import(/* webpackChunkName: "group-home" */
+              '@/modules/home/PathogenBank'
+            ),
+          },
+        ]
       },
 
       {

@@ -106,7 +106,6 @@
 <script>
 import $ from 'jquery'
 import differenceWith from 'lodash/differenceWith'
-import { get_jwt } from '@/vue-apollo'
 import {
   CONTACTS_LIST,
   CREATE_CONTACT,
@@ -185,7 +184,6 @@ export default {
         let res = await this.$apollo.mutate({
           mutation: ADD_CONTACT_TO_USER,
           variables: {
-            jwt: get_jwt(),
             user_index: this.user.index,
             contact_index: this.contact_to_add
           }
@@ -203,7 +201,6 @@ export default {
         let res = await this.$apollo.mutate({
           mutation: CREATE_CONTACT,
           variables: {
-            jwt: get_jwt(),
             user_index: this.user.index,
             ...this.form
           }
@@ -222,7 +219,6 @@ export default {
       query: CONTACTS_LIST,
       variables () {
         return {
-          jwt: get_jwt(),
           search_query: this.contact_search_query,
           contact_type: 'องค์กร'
         }

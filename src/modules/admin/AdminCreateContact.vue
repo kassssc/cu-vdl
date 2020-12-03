@@ -122,7 +122,6 @@
 <script>
 import { CREATE_CONTACT } from '@/graphql/contact'
 import { SUBMITTERS_LIST } from '@/graphql/user'
-import { get_jwt } from '@/vue-apollo'
 
 export default {
   name: 'admin-create-contact',
@@ -162,10 +161,7 @@ export default {
       try {
         let res = await this.$apollo.mutate({
           mutation: CREATE_CONTACT,
-          variables: {
-            jwt: get_jwt(),
-            ...this.form
-          }
+          variables: { ...this.form }
         })
         const new_contact_index = res.data.create_contact.result.index
         this.$router.push({
@@ -182,11 +178,6 @@ export default {
   apollo: {
     submitters: {
       query: SUBMITTERS_LIST,
-      variables () {
-        return {
-          jwt: get_jwt()
-        }
-      },
       update: data => data.search_backuser.result
     }
   }

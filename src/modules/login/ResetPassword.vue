@@ -84,10 +84,11 @@ export default {
             new_pass: this.password
           }
         })
-        console.log(res)
-        this.$router.push({
-          name: 'login'
-        })
+        if (!res.data.change_password_with_token.status) {
+          console.log(res)
+        } else {
+          this.$router.push({ name: 'login' })
+        }
       } catch (e) {
         console.log(e)
       }

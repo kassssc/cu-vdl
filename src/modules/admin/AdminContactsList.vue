@@ -215,7 +215,6 @@
 
 <script>
 import $ from 'jquery'
-import { get_jwt } from '@/vue-apollo'
 import {
   CONTACTS_LIST,
   CONTACT_DETAIL,
@@ -295,7 +294,6 @@ export default {
         let res = await this.$apollo.mutate({
           mutation: UPDATE_CONTACT_INFO,
           variables: {
-            jwt: get_jwt(),
             index: this.selected_contact.index,
             ...this.form_info
           }
@@ -318,7 +316,6 @@ export default {
         let res = await this.$apollo.mutate({
           mutation: UPDATE_CONTACT_ENG_INFO,
           variables: {
-            jwt: get_jwt(),
             index: this.selected_contact.index,
             ...this.form_english_info
           }
@@ -344,7 +341,6 @@ export default {
       query: CONTACTS_LIST,
       variables () {
         return {
-          jwt: get_jwt(),
           search_query: this.search_query,
           contact_type: this.active_contact_type_filter
         }
@@ -359,7 +355,6 @@ export default {
       query: CONTACT_DETAIL,
       variables () {
         return { 
-          jwt: get_jwt(),
           index: parseInt(this.$route.params.id),
         }
       },

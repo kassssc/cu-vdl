@@ -116,7 +116,7 @@
               :value="to_date_object(selected_invoice.invoice_date)" />
             <div class="w-100"></div>
             <FormInput
-              class="col-12 col-md-6"
+              class="col-12 col-md-6 mb-2"
               label="Invoice ไปที่"
               disabled
               :value="selected_invoice.invoice_to.name" />
@@ -125,6 +125,16 @@
               class="col-12 col-md-6"
               disabled
               :value="selected_invoice.invoice_to.address" />
+            <div class="w-100"></div>
+            <div class="form-group col-12 mt-3 pl-3">
+              <h5>
+                <i  v-if="selected_invoice.mail_invoice"
+                    class="fas fa-check icon-md text-primary mr-1" />
+                <i  v-else
+                    class="fas fa-times icon-md text-danger mr-1" />
+                ส่งใบ Invoice ทางไปรษณีย์
+              </h5>
+            </div>
           </div>
 
           <div class="form-row border-b py-4">
@@ -212,7 +222,6 @@
 </template>
 
 <script>
-import { get_jwt } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
 import { INVOICE_LIST, INVOICE_DETAIL } from '@/graphql/invoice'
 
@@ -280,7 +289,6 @@ export default {
       query: INVOICE_LIST,
       variables () {
         return {
-          jwt: get_jwt(),
           search_query: this.search_query,
           invoice_status: this.active_invoice_status_filter
         }
@@ -295,7 +303,6 @@ export default {
       query: INVOICE_DETAIL,
       variables () {
         return {
-          jwt: get_jwt(),
           invoice_no: this.$route.params.id
         }
       },

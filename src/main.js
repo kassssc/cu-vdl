@@ -53,6 +53,9 @@ const FileView = () => import(/* webpackChunkName: "group-form" */
 const SearchInput = () => import(/* webpackChunkName: "group-form" */
   '@/util/SearchInput'
 )
+const DownloadSlip = () => import(/* webpackChunkName: "group-form" */
+  '@/util/DownloadSlip'
+)
 const Modal = () => import(/* webpackChunkName: "group-util" */
   '@/util/Modal'
 )
@@ -79,6 +82,7 @@ Vue.component('FormContactNameInput', FormContactNameInput)
 Vue.component('FormPhoneInput', FormPhoneInput)
 Vue.component('FileView', FileView)
 Vue.component('SearchInput', SearchInput)
+Vue.component('DownloadSlip', DownloadSlip)
 Vue.component('Modal', Modal)
 Vue.component('ColorTag', ColorTag)
 Vue.component('LoadingAnimation', LoadingAnimation)

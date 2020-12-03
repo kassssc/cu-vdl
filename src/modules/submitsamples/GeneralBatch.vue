@@ -53,38 +53,39 @@
             </checkbox>
           </div>
         </div>
-        <div  v-if="batch.tests[department]"
-              class="row row-header border-b py-2">
-          <div class="col-2">
-            <h5>กลุ่มย่อย</h5>
-          </div>
-          <div class="col-10">
-            <div class="form-row">
-              <div class="col-7">
-                <h5>รายการทดสอบ</h5>
-              </div>
-              <div class="col-2 text-right">
-                <h5>ราคา/ตัวอย่าง</h5>
-              </div>
-              <div class="col-1"></div>
-              <div class="col-2 text-right">
-                <h5>ยอดค่าบริการ</h5>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <transition name="fade-no-delay">
-          <FormMethodSelection
-            v-if="batch.tests[department]"
-            :department="department"
-            :test_methods="tests"
-            :sample_count="batch.sample_count"
-            :color="department_colors[department]"
-            :is_validated="is_validated"
-            v-model="batch.tests[department]" />
-        </transition>
+          <div v-if="batch.tests[department]">
+            <div class="row row-header border-b py-2">
+              <div class="col-2">
+                <h5>กลุ่มย่อย</h5>
+              </div>
+              <div class="col-10">
+                <div class="form-row">
+                  <div class="col-7">
+                    <h5>รายการทดสอบ</h5>
+                  </div>
+                  <div class="col-2 text-right">
+                    <h5>ราคา/ตัวอย่าง</h5>
+                  </div>
+                  <div class="col-1"></div>
+                  <div class="col-2 text-right">
+                    <h5>ยอดค่าบริการ</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <FormMethodSelection
+              :department="department"
+              :test_methods="tests"
+              :sample_count="batch.sample_count"
+              :color="department_colors[department]"
+              :is_validated="is_validated"
+              v-model="batch.tests[department]" />
+          </div>
 
+        </transition>
       </div>
 
       <div class="form-row py-3 border-b">

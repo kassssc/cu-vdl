@@ -138,7 +138,6 @@
 </template>
 
 <script>
-import { get_jwt } from '@/vue-apollo'
 import { CREATE_USER } from '@/graphql/user'
 
 export default {
@@ -195,7 +194,6 @@ export default {
         let res = await this.$apollo.mutate({
           mutation: CREATE_USER,
           variables: {
-            jwt: get_jwt(),
             account_type,
             ...this.form
           }

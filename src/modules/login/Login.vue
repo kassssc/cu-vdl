@@ -163,7 +163,7 @@ export default {
       $('#forgot-password-modal').modal('show')
     },
     async submit_forgot_password () {
-      if (this.forgot_pass_email) {
+      if (!this.forgot_pass_email) {
         return
       }
       try {

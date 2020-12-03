@@ -2,12 +2,10 @@ import gql from 'graphql-tag'
 
 export const CONTACTS_LIST = gql`
   query (
-    $jwt: String!,
     $search_query: String,
     $contact_type: String
   ) {
     search_contact (
-      jwt: $jwt,
       search_query: $search_query,
       contact_type: $contact_type
     ) {
@@ -26,11 +24,9 @@ export const CONTACTS_LIST = gql`
 
 export const CONTACT_DETAIL = gql`
   query (
-    $jwt: String!,
     $index: Int!
   ) {
     get_contact (
-      jwt: $jwt,
       index: $index
     ) {
       status
@@ -51,7 +47,6 @@ export const CONTACT_DETAIL = gql`
 
 export const CREATE_CONTACT = gql`
   mutation (
-    $jwt: String!,
     $user_index: Int,
     $contact_type: String!,
     $name: String!,
@@ -60,7 +55,6 @@ export const CREATE_CONTACT = gql`
     $address_eng: String,
   ) {
     create_contact (
-      jwt: $jwt,
       user_index: $user_index,
       contact_type: $contact_type,
       name: $name,
@@ -80,15 +74,12 @@ export const CREATE_CONTACT = gql`
 
 export const ADD_CONTACT_TO_USER = gql`
   mutation (
-    $jwt: String!,
-    $user_index: Int!,
+    $user_index: Int,
     $contact_index: Int!
   ) {
     modify_contact_list (
-      jwt: $jwt,
       backuser_index: $user_index,
-      contact_index: $contact_index,
-      remove: 0
+      contact_index: $contact_index
     ) {
       statuscode
       status
@@ -99,13 +90,11 @@ export const ADD_CONTACT_TO_USER = gql`
 
 export const UPDATE_CONTACT_INFO = gql`
   mutation (
-    $jwt: String!,
     $index: Int!,
     $name: String!,
     $address: String!,
   ) {
     update_contact (
-      jwt: $jwt,
       contact_index: $index,
       name: $name,
       address: $address,
@@ -119,13 +108,11 @@ export const UPDATE_CONTACT_INFO = gql`
 
 export const UPDATE_CONTACT_ENG_INFO = gql`
   mutation (
-    $jwt: String!,
     $index: Int!,
     $name_eng: String!,
     $address_eng: String!,
   ) {
     update_contact (
-      jwt: $jwt,
       contact_index: $index,
       name_eng: $name_eng,
       address_eng: $address_eng,

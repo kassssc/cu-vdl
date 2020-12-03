@@ -3,13 +3,11 @@ import gql from 'graphql-tag'
 // For displaying users list for admin
 export const USERS_LIST = gql`
   query (
-    $jwt: String!,
     $search_query: String,
     $account_type: Int,
     $account_active: Boolean,
   ) {
     search_backuser (
-      jwt: $jwt,
       search_query: $search_query,
       account_type: $account_type,
       account_active: $account_active,
@@ -29,11 +27,8 @@ export const USERS_LIST = gql`
 `
 
 export const SUBMITTERS_LIST = gql`
-  query (
-    $jwt: String!
-  ) {
+  query {
     search_backuser (
-      jwt: $jwt,
       account_type: 201,
       search_query: "",
       account_active: true,
@@ -55,11 +50,9 @@ export const SUBMITTERS_LIST = gql`
 // Get user by ID
 export const USER_DETAIL = gql`
   query (
-    $jwt: String!,
-    $index: Int,
+    $index: Int
   ) {
     get_backuser (
-      jwt: $jwt,
       index: $index
     ) {
       status
@@ -69,7 +62,6 @@ export const USER_DETAIL = gql`
         index
         account_type
         account_active
-        name
         email
         phone
         default_contact {
@@ -93,32 +85,9 @@ export const USER_DETAIL = gql`
   }
 `
 
-export const USER_CONTACTS = gql`
-  query (
-    $jwt: String!,
-    $index: Int,
-  ) {
-    get_backuser (
-      jwt: $jwt,
-      querying_indices: [$index],
-    ) {
-      status
-      statuscode
-      message
-      result {
-        contact_list {
-          index
-          name
-        }
-      }
-    }
-  }
-`
-
 // Create user
 export const CREATE_USER = gql`
   mutation (
-    $jwt: String!,
     $account_type: Int!,
     $email: String!,
     $phone: String!,
@@ -129,15 +98,14 @@ export const CREATE_USER = gql`
     $address_eng: String,
   ) {
     create_backuser (
-      jwt: $jwt,
-      new_user_account_type: $account_type,
-      new_user_email: $email,
-      new_user_phone: $phone,
-      new_user_contact_type: $contact_type,
-      new_user_name: $name,
-      new_user_address: $address,
-      new_user_name_eng: $name_eng,
-      new_user_address_eng: $address_eng,
+      account_type: $account_type,
+      email: $email,
+      phone: $phone,
+      contact_type: $contact_type,
+      name: $name,
+      address: $address,
+      name_eng: $name_eng,
+      address_eng: $address_eng,
     ) {
       statuscode
       status
@@ -151,12 +119,10 @@ export const CREATE_USER = gql`
 
 export const USER_UPDATE_PHONE = gql`
   mutation (
-    $jwt: String!,
     $account_index: Int,
     $phone: String!
   ) {
     update_phone (
-      jwt: $jwt,
       account_index: $account_index,
       phone: $phone
     ) {
@@ -169,14 +135,12 @@ export const USER_UPDATE_PHONE = gql`
 
 export const USER_CHANGE_PASSWORD = gql`
   mutation (
-    $jwt: String!,
     $old_pass: String!,
     $new_pass: String!
   ) {
-    change_pass_with_old_pass (
-      jwt: $jwt,
-      old_pass: $oldPass,
-      new_pass: $newPass
+    change_password (
+      old_pass: $old_pass,
+      new_pass: $new_pass
     ) {
       statuscode
       status
@@ -187,12 +151,10 @@ export const USER_CHANGE_PASSWORD = gql`
 
 export const USER_DEACTIVATE_ACCOUNT = gql`
   mutation (
-    $jwt: String!,
     $user_index: Int,
     $account_active: Boolean
   ) {
     deactivate_account (
-      jwt: $jwt,
       user_index: $user_index,
       account_active: $account_active
     ) {

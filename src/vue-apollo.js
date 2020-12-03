@@ -15,11 +15,12 @@ Vue.use(VueApollo)
 const AUTH_TOKEN = 'apollo-token'
 
 // Http endpoint
-/*/
-const httpEndpoint = 'https://ec2-54-169-84-184.ap-southeast-1.compute.amazonaws.com:16888/api/graphql'
+//*/
+const httpEndpoint = 'https://cuvdl.com/api/graphql'
 /*/
 const httpEndpoint = 'http://localhost:16888/api/graphql'
 //*/
+
 
 const NOT_LOGGED_IN_AUTH_DATA = {
   logged_in: false,
@@ -141,11 +142,8 @@ async function refresh_jwt (old_jwt) {
       mutation: JWT_REFRESH,
       variables: { jwt: old_jwt }
     })
-    console.log(res)
     // Replace old jwt with new jwt
     if (res.data.refresh_token.statuscode == 200) {
-      console.log('jwt successfully refreshed')
-      console.log(res.data.refresh_token.result.jwt)
       set_jwt(res.data.refresh_token.result.jwt)
     } else {
       console.log('jwt refresh error')
@@ -222,13 +220,13 @@ export async function on_logout (apolloClient) {
 function get_auth_data_from_jwt (jwt) {
   const {
     index,
-    account_type,
-    name
+    is_admin,
+    name,
   } = jwt_decode(jwt)
   
   return {
     logged_in: true,
-    is_admin: account_type === 101,
+    is_admin,
     index,
     name
   }

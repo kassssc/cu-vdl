@@ -2,7 +2,6 @@ import gql from 'graphql-tag'
 
 export const SUBMISSION_LIST = gql`
   query (
-    $jwt: String!,
     $submission_status: String,
     $search_query: String,
     $contact: Int,
@@ -10,7 +9,6 @@ export const SUBMISSION_LIST = gql`
     $n_per_page: Int
   ) {
     search_submission (
-      jwt: $jwt,
       submission_status: $submission_status,
       search_by_contact_index: $contact,
       search_query: $search_query,
@@ -26,9 +24,6 @@ export const SUBMISSION_LIST = gql`
         submission_type
         submission_status
         submission_submit_date
-        backuser {
-          name
-        }
         submitter {
           name
         }
@@ -50,14 +45,8 @@ export const SUBMISSION_LIST = gql`
 `
 
 export const SUBMISSION_DETAIL = gql`
-  query (
-    $jwt: String!,
-    $key: String!
-  ) {
-    get_submission (
-      jwt: $jwt,
-      key: $key
-    ) {
+  query ($key: String!) {
+    get_submission (key: $key) {
       status
       statuscode
       message
@@ -86,10 +75,6 @@ export const SUBMISSION_DETAIL = gql`
           invoice_no
           invoice_status
           invoice_amount
-          invoice_file {
-            S3_key
-            file_name
-          }
         }
         reports {
           report_no
@@ -107,11 +92,12 @@ export const SUBMISSION_DETAIL = gql`
         on_sent_record_owner_address
         on_sent_record_invoice_to_name
         on_sent_record_invoice_to_address
-        final_price
-        notify_to_email
-        notify_to_phone
+        mail_invoice
+        mail_report_to_submitter
+        mail_report_to_sample_owner
         submission_sent_to_BestLIMS
-        submission_data
+        sample_details
+        submission_batches
       }
     }
   }
@@ -119,30 +105,68 @@ export const SUBMISSION_DETAIL = gql`
 
 export const SEND_SUBMISSION = gql`
   mutation (
-    $jwt: String!,
     $backuser: Int,
     $submission_type: String!,
     $english_report: Boolean!,
     $submitter: Int!,
     $sample_owner: Int!,
     $invoice_to: Int!,
-    $notify_to_email: String,
-    $notify_to_phone: String,
+    $mail_invoice: Boolean!,
+    $mail_report_to_submitter: Boolean!,
+    $mail_report_to_sample_owner: Boolean!,
     $remarks: String,
-    $submission_data: String!
+    $sample_details: String
+    $submission_batches: String!
   ) {
     send_submission (
-      jwt: $jwt,
-      backuser_index: $backuser,
+      backuser: $backuser,
       submission_type: $submission_type,
       english_report: $english_report,
       submitter: $submitter,
       sample_owner: $sample_owner,
       invoice_to: $invoice_to,
-      notify_to_email: $notify_to_email,
-      notify_to_phone: $notify_to_phone,
+      mail_invoice: $mail_invoice,
+      mail_report_to_submitter: $mail_report_to_submitter,
+      mail_report_to_sample_owner: $mail_report_to_sample_owner,
       remarks: $remarks,
-      submission_data: $submission_data
+      sample_details: $sample_details,
+      submission_batches: $submission_batches
+    ) {
+      statuscode
+      status
+      message
+      result {
+        submission_backend_key
+        submission_BestLIMS_key
+      }
+    }
+  }
+`
+
+export const UPDATE_SUBMISSION = gql`
+  mutation (
+    $backend_key: String!,
+    $english_report: Boolean!,
+    $sample_owner: Int!,
+    $invoice_to: Int!,
+    $mail_invoice: Boolean!,
+    $mail_report_to_submitter: Boolean!,
+    $mail_report_to_sample_owner: Boolean!,
+    $remarks: String,
+    $sample_details: String
+    $submission_batches: String!
+  ) {
+    update_submission (
+      backend_key: $backend_key,
+      english_report: $english_report,
+      sample_owner: $sample_owner,
+      invoice_to: $invoice_to,
+      mail_invoice: $mail_invoice,
+      mail_report_to_submitter: $mail_report_to_submitter,
+      mail_report_to_sample_owner: $mail_report_to_sample_owner,
+      remarks: $remarks,
+      sample_details: $sample_details,
+      submission_batches: $submission_batches
     ) {
       statuscode
       status

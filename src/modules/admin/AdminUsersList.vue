@@ -88,7 +88,6 @@
 
 <script>
 import AdminUserInfo from './AdminUserInfo'
-import { get_jwt } from '@/vue-apollo'
 import { USERS_LIST } from '@/graphql/user'
 
 export default {
@@ -154,7 +153,6 @@ export default {
       query: USERS_LIST,
       variables () {
         return {
-          jwt: get_jwt(),
           search_query: this.search_query,
           account_type: this.active_user_type_filter,
           account_active: this.user_active_filter

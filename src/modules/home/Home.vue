@@ -1,8 +1,9 @@
 <template>
-<div class="page page-md d-flex flex-column align-items-center">
+<div class="d-flex flex-column align-items-center">
   <div  id="home"
+        v-if="auth"
         class="w-100 d-flex flex-column align-items-center pb-5">
-    <div class="home-section">
+    <div class="home-section mt-5">
       <div class="faded-logo" />
       <div class="w-100 intro">
         <h4 class="mb-2 text-muted">เกี่ยวกับเรา</h4>
@@ -76,7 +77,7 @@
       </div>
   
       <div class="d-flex w-100 justify-content-center">
-        <router-link  v-if="logged_in"
+        <router-link  v-if="auth.logged_in"
                       :to="{name: 'submit-samples'}"
                       tag="button"
                       class="btn btn-primary mt-3 home-section-btn">
@@ -134,32 +135,18 @@
     </div>
   </div>
 
-  <Services v-once class="w-100 py-5" />
-  <OrgChart v-once class="w-100 py-5" />
-  <Contact class="w-100 py-5" />
-  <FooterSection />
 </div>  
 </template>
 
 <script>
-import Services from './Services'
-import OrgChart from './OrgChart'
-import Contact from './Contact'
-import FooterSection from './FooterSection'
 import { AUTH_DATA } from '@/graphql/local'
 
 export default {
   name: 'home',
-  components: {
-    Services,
-    OrgChart,
-    Contact,
-    FooterSection
-  },
   apollo: {
-    logged_in: {
+    auth: {
       query: AUTH_DATA,
-      update: data => data.auth.logged_in
+      update: data => data.auth
     }
   }
 }

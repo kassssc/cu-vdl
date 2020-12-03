@@ -1,8 +1,13 @@
 <template>
   <div id="services">
-    <h1 class="mb-4 pb-2 text-primary border-b-gradient">
+    <!-- <h1 class="mb-4 pb-2 text-primary border-b-gradient">
       <span class="text-primary">฿</span> รายการค่าบริการ
-    </h1>
+    </h1> -->
+
+    <h3  class="pb-3 border-b mb-4">
+      <i class="fas fa-microscope mr-2"></i> รายการบริการทดสอบ หน่วยชันสูตรโรคสัตว์กลาง จุฬาฯ
+    </h3>
+
     <div  v-for="(test_department, department, idx) in test_methods"
           :key="department"
           class="pr-md-5 mr-md-5">
@@ -45,27 +50,12 @@
 
     <div class="pb-5 pt-4 pr-5">
       <h2 class="pb-3 pr-4">
-        6. งานทดสอบประสิทธิภาพยาฆ่าเชื้อ
+        5. งานทดสอบประสิทธิภาพยาฆ่าเชื้อ
       </h2>
       <h5 class="text-muted ml-5">
         ประเมินราคาได้ที่หน้าส่งตัวอย่าง
       </h5>
     </div>
-
-    <!-- <div v-for="i in [0,1,2,3,4]" :key="i" class="border-b mb-4 pb-3">
-      <div class="d-flex justify-content-between align-items-center mb-1">
-        <h3 class="m-none font-weight-bold">
-          {{ `${i+1}. ${text[i]}` }}
-        </h3>
-        <a :href="'/downloads/' + downloads[i]" download target="_blank"
-           class="btn btn-secondary mr-1" >
-          <i class="fas fa-cloud-download-alt btn-inner-icon"></i>
-          ดาวน์โหลด
-        </a>
-      </div>
-      <img :src="servicesImg[i]"
-           class="ml-3 img">
-    </div> -->
   </div>
 </template>
 
@@ -94,7 +84,7 @@ export default {
             } else {
               constraint_label = null
             }
-            return {...test, constraint_label}
+            return { ...test, constraint_label }
           })
           grouped[department] = groupBy(constraints, 'category')
         }

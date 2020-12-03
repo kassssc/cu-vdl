@@ -1,11 +1,14 @@
 <template>
 <div id="contact">
-  <h1 class="mb-5 pb-2 text-primary border-b-gradient">
+  <!-- <h1 class="mb-5 pb-2 text-primary border-b-gradient">
     <i class="fas fa-phone-volume mr-2"></i>ติดต่อสอบถาม
-  </h1>
+  </h1> -->
 
-  <div class="row font-chatthai">
-    <div class="col-8">
+  <h3  class="pb-3 border-b mb-4">
+    <i class="fas fa-phone mr-2"></i> ติดต่อสอบถาม
+  </h3>
+  <div class="row pt-4">
+    <div class="col-7 pr-4">
       <div class="form-group row">
         <div class="col-sm-2 col-form-label" />
         <div class="col-sm-10">
@@ -78,7 +81,7 @@
       </div>
     </div>
     <div class="col-4 pl-4">
-      <h2 class="mb-3 font-cu">ข้อมูลการติดต่อ</h2>
+      <h2 class="mb-3 font-cu">ข้อมูลติดต่อ</h2>
       <div class="row no-gutters mb-3">
         <div class="col-4">
           <h4>

@@ -13,10 +13,10 @@
     <div  v-if="!$apollo.loading"
           class="font-chatthai">
       <div class="border-b row w-100 py-4">
-        <div class="col-3 col-md-2">
-          <h4>ข้อมูลผู้ส่งตัวอย่าง</h4>
+        <div class="col-3 col-md-2 mb-3">
+          <h4>ประเภท Account</h4>
         </div>
-        <div class="col-9 col-md-9">
+        <div class="col-9 col-md-9 mb-3">
           <div class="form-row">
             <div class="form-group col-5">
               <ColorTag
@@ -25,13 +25,29 @@
                 :label="account_type_label[user.account_type]"
                 :color="account_type_colors[user.account_type]" />
             </div>
+          </div>
+        </div>
+
+        <div class="col-3 col-md-2">
+          <h4>ข้อมูล Contact</h4>
+        </div>
+        <div class="col-9 col-md-9">
+          <div class="form-row">
+            <div v-if="!auth.is_admin" class="form-group col-5">
+              <label>ประเภท Contact</label>
+              <ColorTag
+                class="d-block font-cu"
+                size="lg"
+                :label="user.default_contact.contact_type"
+                :color="contact_type_colors[user.default_contact.contact_type]" />
+            </div>
             <div class="w-100"></div>
             <div class="col-5">
               <div class="form-row">
                 <FormInput
                   class="col-12"
-                  label="ชื่อของ Account"
-                  :value="user.name"
+                  label="ชื่อ"
+                  :value="user.default_contact.name"
                   disabled />
                 <FormTextarea
                   v-if="!auth.is_admin"
@@ -98,11 +114,12 @@
             </template>
           </div>
         </div>
+
       </div>
     
       <div class="border-b row w-100 py-4">
         <div class="col-3 col-md-2">
-          <h4>ข้อมูลการติดต่อ</h4>
+          <h4>ข้อมูลติดต่อ</h4>
         </div>
         <div class="col-9 col-md-9">
           <div class="form-row">
@@ -380,7 +397,7 @@
 
 <script>
 import $ from 'jquery'
-import { get_jwt, on_logout } from '@/vue-apollo'
+import { on_logout } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
 import {
   USER_DETAIL,
@@ -452,7 +469,6 @@ export default {
         let res = await this.$apollo.mutate({
           mutation: UPDATE_CONTACT_ENG_INFO,
           variables: {
-            jwt: get_jwt(),
             index: this.contact_to_add_english_info.index,
             ...this.add_english_info_modal
           }
@@ -469,7 +485,6 @@ export default {
         let res = await this.$apollo.mutate({
           mutation: UPDATE_CONTACT_ENG_INFO,
           variables: {
-            jwt: get_jwt(),
             index: this.user.default_contact.index,
             ...this.english_info
           }
@@ -488,7 +503,6 @@ export default {
         let res = await this.$apollo.mutate({
           mutation: USER_UPDATE_PHONE,
           variables: {
-            jwt: get_jwt(),
             phone: this.phone_input
           }
         })
@@ -503,11 +517,13 @@ export default {
         let res = await this.$apollo.mutate({
           mutation: USER_CHANGE_PASSWORD,
           variables: {
-            jwt: get_jwt(),
             old_pass: this.change_password_modal.old_pass,
             new_pass: this.change_password_modal.new_pass
           }
         })
+        $('#change-password-modal').modal('hide')
+        await on_logout(this.$apollo.provider.defaultClient)
+        this.$router.push({ name: 'home' })
       } catch (err) {
         console.log(err)
       }
@@ -515,12 +531,7 @@ export default {
     async submit_deactivate_account () {
       try {
         let res = await this.$apollo.mutate({
-          mutation: USER_DEACTIVATE_ACCOUNT,
-          variables: {
-            jwt: get_jwt(),
-            index: this.user.index,
-            account_active: false
-          }
+          mutation: USER_DEACTIVATE_ACCOUNT
         })
         $('#deactivate-account-modal').modal('hide')
         await on_logout(this.$apollo.provider.defaultClient)
@@ -530,7 +541,12 @@ export default {
       }
     },
     show_change_password_modal () {
-      $('#change-password-modal').modal('show')
+      $('#change-password-modal').on('hidden.bs.modal', () => {
+        this.change_password_modal.old_pass = null
+        this.change_password_modal.new_pass = null
+        this.change_password_modal.confirm_new_pass = null
+      })
+      this.$nextTick( () => $('#change-password-modal').modal('show') )
     },
     show_deactivate_account_modal () {
       $('#deactivate-account-modal').modal('show')
@@ -541,7 +557,6 @@ export default {
         this.contact_to_add_english_info = null
         this.add_english_info_modal.name_eng = null
         this.add_english_info_modal.address_eng = null
-        $('#add-english-info-modal').modal('dispose')
       })
       this.$nextTick( () => $('#add-english-info-modal').modal('show') )
     }
@@ -553,11 +568,6 @@ export default {
     },
     user: {
       query: USER_DETAIL,
-      variables () {
-        return {
-          jwt: get_jwt()
-        }
-      },
       update: data => data.get_backuser.result,
     }
   }

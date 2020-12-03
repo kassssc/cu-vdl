@@ -16,10 +16,9 @@
     </h4>
   </div>
   <nav  v-if="auth.logged_in" class="d-flex">
-    <router-link  :to="{name: 'home'}"
+    <router-link  :to="{ name: 'main' }"
                   tag="a"
-                  class="btn btn-transparent mr-2"
-                  exact>
+                  class="btn btn-transparent mr-2">
       <i class="fas fa-home btn-inner-icon"></i>
       หน้าหลัก
     </router-link>
@@ -74,7 +73,7 @@
   </nav>
 
   <nav v-else class="d-flex">
-    <scrollactive active-class="scrollactive-active"
+    <!-- <scrollactive active-class="scrollactive-active"
                   :offset="80"
                   :modify-url="false"
                   highlight-first-item
@@ -99,10 +98,36 @@
         <i class="fas fa-phone btn-inner-icon"></i>
         ติดต่อสอบถาม
       </a>
-    </scrollactive>
+    </scrollactive> -->
+    <router-link  :to="{ name: 'main' }"
+                  class="btn btn-transparent mr-2"
+                  exact>
+      <i class="fas fa-home btn-inner-icon"></i>
+      หน้าหลัก
+    </router-link>
+    <router-link  :to="{ name: 'services' }"
+                  class="btn btn-transparent mr-2">
+      <i class="fas fa-microscope btn-inner-icon"></i>
+      การบริการของเรา
+    </router-link>
+    <router-link  :to="{ name: 'org-chart' }"
+                  class="btn btn-transparent mr-2">
+      <i class="fas fa-user-graduate btn-inner-icon"></i>
+      บุคลากร
+    </router-link>
+    <router-link  :to="{ name: 'contact' }"
+                  class="btn btn-transparent mr-2">
+      <i class="fas fa-phone btn-inner-icon"></i>
+      ติดต่อสอบถาม
+    </router-link>
+    <router-link  :to="{ name: 'pathogen-bank' }"
+                  class="btn btn-transparent mr-2">
+      <i class="fas fa-bacterium btn-inner-icon"></i>
+      Pathogen Bank
+    </router-link>
     <router-link  :to="{name: 'login'}"
                   tag="a"
-                  class="btn btn-primary ml-3 px-4">
+                  class="btn btn-primary ml-2 px-4">
       <i class="fas fa-sign-in-alt btn-inner-icon" />
       เข้าสู่ระบบ
     </router-link>

@@ -114,7 +114,7 @@
                 ชนิดตัวอย่าง
               </h5>
               <h5 class="col-2 ink border-r">
-                {{ submission.submission_data.sample_details.sample_type }}
+                {{ submission.sample_details.sample_type }}
               </h5>
               <h5 class="col-2">
                 จำนวนตัวอย่าง
@@ -126,7 +126,7 @@
                 วันที่เก็บตัวอย่าง
               </h5>
               <h5 class="col-2 ink">
-                {{ to_display_date(submission.submission_data.sample_details.sample_taken_date) }}
+                {{ to_display_date(submission.sample_details.sample_taken_date) }}
               </h5>
             </div>
             <div class="row no-gutters border-b">
@@ -134,19 +134,19 @@
                 ชนิดสัตว์
               </h5>
               <h5 class="col-2 border-r">
-                {{ submission.submission_data.sample_details.animal_type }}
+                {{ submission.sample_details.animal_type }}
               </h5>
               <h5 class="col-2">
                 พันธุ์
               </h5>
               <h5 class="col-2 border-r">
-                {{ submission.submission_data.sample_details.animal_species }}
+                {{ submission.sample_details.animal_species }}
               </h5>
               <h5 class="col-2">
                 อายุ
               </h5>
               <h5 class="col-2">
-                {{ submission.submission_data.sample_details.animal_age }}
+                {{ submission.sample_details.animal_age }}
               </h5>
             </div>
             <div class="row no-gutters tall">
@@ -156,7 +156,7 @@
                     ประวัติการป่วย
                   </h5>
                   <h5 class="ink col pre-line">
-                    {{ submission.submission_data.sample_details.illness }}
+                    {{ submission.sample_details.illness }}
                   </h5>
                 </div>
               </div>
@@ -166,7 +166,7 @@
                     ประวัติวัคซีน
                   </h5>
                   <h5 class="ink col pre-line">
-                    {{ submission.submission_data.sample_details.vaccinations }}
+                    {{ submission.sample_details.vaccinations }}
                   </h5>
                 </div>
               </div>

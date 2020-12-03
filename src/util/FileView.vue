@@ -20,7 +20,6 @@
 
 <script>
 import { GET_FILE_URL } from '@/graphql/file';
-import { get_jwt } from '@/vue-apollo';
 
 export default {
   name: 'file-view',
@@ -52,7 +51,6 @@ export default {
         const res = await this.$apollo.query({
           query: GET_FILE_URL,
           variables: {
-            jwt: get_jwt(),
             S3_key: this.file.S3_key
           }
         })

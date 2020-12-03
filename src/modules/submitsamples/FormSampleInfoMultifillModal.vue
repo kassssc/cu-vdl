@@ -7,6 +7,9 @@
   <template #modal-body>
     <div class="form-row">
       <div class="form-group col-12">
+        <h5>หมายเลขตัวอย่างที่ใส่ได้: 1 - {{ max_samples }}</h5>
+      </div>
+      <div class="form-group col-12">
         <label>หมายเลขตัวอย่าง</label>
         <input  type="text"
                 class="form-control"

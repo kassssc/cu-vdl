@@ -226,7 +226,6 @@
 <script>
 import $ from 'jquery'
 import { includes } from 'lodash'
-import { get_jwt } from '@/vue-apollo'
 import {
   USER_DETAIL,
   USER_UPDATE_SUBMISSION_PERMISSION,
@@ -260,7 +259,6 @@ export default {
         let res = this.$apollo.mutate({
           mutation: USER_DEACTIVATE_ACCOUNT,
           variables: {
-            jwt: get_jwt(),
             user_index: this.user.index,
             account_active: false
           }
@@ -280,7 +278,6 @@ export default {
         let res = this.$apollo.mutate({
           mutation: USER_DEACTIVATE_ACCOUNT,
           variables: {
-            jwt: get_jwt(),
             user_index: this.user.index,
             account_active: true
           }
@@ -298,7 +295,6 @@ export default {
       query: USER_DETAIL,
       variables () {
         return {
-          jwt: get_jwt(),
           index: parseInt(this.$route.params.id)
         }
       },

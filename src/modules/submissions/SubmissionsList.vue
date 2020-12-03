@@ -170,7 +170,6 @@
 </template>
 
 <script>
-import { get_jwt } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
 import { SUBMISSION_LIST } from '@/graphql/submission'
 import { USER_DETAIL } from '@/graphql/user'
@@ -247,18 +246,12 @@ export default {
     },
     user_detail: {
       query: USER_DETAIL,
-      variables () {
-        return {
-          jwt: get_jwt()
-        }
-      },
       update: data => data.get_backuser.result
     },
     submissions: {
       query: SUBMISSION_LIST,
       variables () {
         return {
-          jwt: get_jwt(),
           search_query: this.search_query,
           contact: this.active_contact_filter,
           submission_status: this.active_status_filter
@@ -277,7 +270,6 @@ export default {
       query: CONTACTS_LIST,
       variables () {
         return {
-          jwt: get_jwt(),
           search_query: ''
         }
       },

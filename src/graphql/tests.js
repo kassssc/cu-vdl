@@ -18,6 +18,7 @@ export const GENERAL_TEST_METHODS = gql`
     }
   }
 `
+
 export const BACTERIA_ANTIBIOTICS = gql`
   query {
     test_method_bacteria_antibiotic {

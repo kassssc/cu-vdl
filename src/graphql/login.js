@@ -50,12 +50,8 @@ export const FORGOT_PASSWORD = gql`
 `
 
 export const JWT_REFRESH = gql`
-  mutation (
-    $jwt: String!
-  ) {
-    refresh_token (
-      jwt: $jwt
-    ) {
+  mutation {
+    refresh_token {
       statuscode
       status
       message

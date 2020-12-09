@@ -1115,7 +1115,7 @@ export default {
       update: data => data.auth,
       result (res) {
         if (!res.data.auth.is_admin) {
-          this.submission.backuser = res.data.auth.index
+          this.submission.backuser = res.data.auth.user_index
         }
       }
     },

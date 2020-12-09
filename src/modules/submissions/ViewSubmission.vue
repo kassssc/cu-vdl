@@ -40,7 +40,7 @@
             <i class="fas fa-microscope btn-inner-icon-lg" />
             การทดสอบ
           </a>
-          <template v-if="is_admin">
+          <template v-if="auth.is_admin">
             <h4 class="text-medium border-t pt-4 pb-2">แอดมิน</h4>
             <router-link  :to="{
                             name: 'edit-submission',
@@ -126,7 +126,7 @@
     
           <div class="row mb-4">
             <div class="col-2">
-              <h4>ข้อมูลการส่งตัวอย่าง</h4>
+              <h4>ข้อมูลเบื้องต้น</h4>
             </div>
             <div class="col pt-1">
               <div class="form-row">
@@ -334,9 +334,9 @@
                 <div class="form-group col-12">
                   <h5>
                     <i  v-if="submission.mail_report_to_submitter"
-                        class="fas fa-check icon-md text-primary mr-1" />
+                        class="fas fa-check icon-md text-center text-primary mr-1" />
                     <i  v-else
-                        class="fas fa-times icon-md text-danger mr-1" />
+                        class="fas fa-times icon-md text-center text-danger mr-1" />
                     ส่งรายงานให้ ผู้ส่งตัวอย่าง ทางไปรษณีย์
                   </h5>
                 </div>
@@ -344,9 +344,9 @@
                       class="form-group col-12">
                   <h5>
                     <i  v-if="submission.mail_report_to_sample_owner"
-                        class="fas fa-check icon-md text-primary mr-1" />
+                        class="fas fa-check icon-md text-center text-primary mr-1" />
                     <i  v-else
-                        class="fas fa-times icon-md text-danger mr-1" />
+                        class="fas fa-times icon-md text-center text-danger mr-1" />
                     ส่งรายงานให้ เจ้าของตัวอย่าง/ฟาร์ม ทางไปรษณีย์
                   </h5>
                 </div>
@@ -440,7 +440,7 @@
               <div class="form-row">
                 <div class="form-group col-6 text-right">
                   <router-link  :to="{
-                                  name: is_admin? 'admin-invoice-list' : 'invoice-list',
+                                  name: auth.is_admin? 'admin-invoice-list' : 'invoice-list',
                                   params: { id: submission.invoice.invoice_no }
                                 }"
                                 tag="button"
@@ -548,7 +548,7 @@
                         </div>
                         <div class="row test-row row-header py-2">
                           <div class="col-2 nowrap">
-                            <h5>กลุ่มย่อย</h5>
+                            <h5>กลุ่ม</h5>
                           </div>
                           <div class="col">
                             <div class="row">
@@ -990,9 +990,9 @@ export default {
     },
   },
   apollo: {
-    is_admin: {
+    auth: {
       query: AUTH_DATA,
-      update: data => data.auth.is_admin
+      update: data => data.auth
     },
     test_methods: {
       query: GENERAL_TEST_METHODS,

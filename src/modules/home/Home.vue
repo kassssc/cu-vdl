@@ -14,10 +14,10 @@
             เราเป็นหน่วยงานบริการวิชาการ ที่ทำหน้าที่ในการดูแลรับผิดชอบงานบริการด้านการตรวจวินิจฉัยโรคทางห้องปฏิบัติการทางสัตวแพทย์
           </li>
           <li>
-            <button class="btn btn-gradient home-section-btn"
-                    v-scroll-to="{ el: '#contact', duration: 1000, offset: -80 }">
+            <router-link  :to="{ name: 'contact' }"
+                          class="btn btn-gradient home-section-btn">
               <i class="fas fa-info btn-inner-icon"></i> ติดต่อสอบถาม
-            </button>
+            </router-link>
           </li>
         </ul>
         
@@ -34,10 +34,10 @@
           <h1 class="text-primary mr-4">แบคทีเรียวิทยา</h1>
           <h1 class="text-primary">อณูชีววิทยา</h1>
         </div>
-        <button class="btn btn-gradient mt-4 home-section-btn"
-                v-scroll-to="{el: '#services', duration: 1000, offset: -80}">
+        <router-link  :to="{ name: 'services' }"
+                      class="btn btn-gradient mt-4 home-section-btn">
           ฿ รายการค่าบริการ
-        </button>
+        </router-link>
       </div>
     </div>
   
@@ -84,13 +84,11 @@
           <i class="fas fa-vial btn-inner-icon"></i> ส่งตัวอย่าง
         </router-link>
         <template v-else>
-          <router-link  :to="{name: 'signup'}"
-                        tag="button"
+          <router-link  :to="{ name: 'signup' }"
                         class="btn btn-secondary mt-3 home-section-btn mr-4">
             <i class="fas fa-user-plus btn-inner-icon"></i> สมัครสมาชิก
           </router-link>
-          <router-link  :to="{name: 'login'}"
-                        tag="button"
+          <router-link  :to="{ name: 'login' }"
                         class="btn btn-primary home-section-btn mt-3">
             <i class="fas fa-sign-in-alt btn-inner-icon"></i> เข้าสู่ระบบ
           </router-link>
@@ -123,11 +121,11 @@
           <li class="text">มีความพร้อมในการให้บริการด้านวิชาการ</li>
           <li class="text">มีการพัฒนาความสามารถในการตรวจวินิจฉัยโรคให้หลากหลายและทันสมัยอยู่เสมอ รวมถึงการเป็นแหล่งอ้างอิงในการชันสูตรโรคสัตว์ที่สำคัญ</li>
           <li>
-            <button class="btn btn-sm btn-gradient px-5 py-1"
-                    v-scroll-to="{el: '#orgchart', duration: 1500, offset: -80}">
+            <router-link  :to="{ name: 'org-chart' }"
+                          class="btn btn-gradient px-5 py-1">
               <i class="fas fa-user-graduate btn-inner-icon"></i>
               รู้จักกับบุคลากรของเรา
-            </button>
+            </router-link>
           </li>
         </ul>
       </div>

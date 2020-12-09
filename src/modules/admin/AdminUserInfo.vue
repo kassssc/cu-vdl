@@ -129,7 +129,7 @@
           </tbody>
         </table>
       </div>
-      <div v-if="user.contact_list.length < 1" class="p-4 border-b">
+      <div v-if="user.contact_list.length < 1" class="p-4 border-b text-center">
         <h5 class="text-muted">
           <i class="far fa-frown mr-2"></i>ไม่มี Contact ที่จะแสดง
         </h5>

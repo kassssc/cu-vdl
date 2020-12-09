@@ -5,7 +5,7 @@
       <div class="col-12">
         <h3 v-if="!$apollo.loading">
           <i class="fas fa-user icon-lg mr-1"></i>
-          ข้อมูล Account {{ user.name }}
+          ข้อมูล Account {{ user.default_contact.name }}
         </h3>
       </div>
     </div>
@@ -568,7 +568,7 @@ export default {
     },
     user: {
       query: USER_DETAIL,
-      update: data => data.get_backuser.result,
+      update: data => data.get_backuser.result
     }
   }
 }

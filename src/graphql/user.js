@@ -119,11 +119,11 @@ export const CREATE_USER = gql`
 
 export const USER_UPDATE_PHONE = gql`
   mutation (
-    $account_index: Int,
+    $user_index: Int,
     $phone: String!
   ) {
     update_phone (
-      account_index: $account_index,
+      user_index: $user_index,
       phone: $phone
     ) {
       statuscode
@@ -161,6 +161,26 @@ export const USER_DEACTIVATE_ACCOUNT = gql`
       statuscode
       status
       message
+    }
+  }
+`
+
+export const USER_NOTIFICATIONS = gql`
+  query {
+    get_backuser {
+      status
+      statuscode
+      message
+      result {
+        notifications {
+          notification_id
+          date
+          target
+          text
+          seen
+          clicked
+        }
+      }
     }
   }
 `

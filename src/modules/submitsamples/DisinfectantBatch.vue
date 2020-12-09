@@ -20,7 +20,7 @@
             class="form-group col-6"
             required
             :invalid="is_validated && !batch.disinfectant_name"
-            error-msg="จำเป็นต้องใส่ชื่อนํ้ายาฆ่าเชื้อ"
+            error-msg="จำเป็นต้องใส่ชื่อยาฆ่าเชื้อ"
             v-model="batch.disinfectant_name" />
         </div>
       </transition>

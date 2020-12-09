@@ -126,12 +126,12 @@
               disabled
               :value="selected_invoice.invoice_to.address" />
             <div class="w-100"></div>
-            <div class="form-group col-12 mt-3 pl-3">
+            <div class="form-group col-12 mt-3">
               <h5>
                 <i  v-if="selected_invoice.mail_invoice"
-                    class="fas fa-check icon-md text-primary mr-1" />
+                    class="fas fa-check icon-md text-center text-primary mr-1" />
                 <i  v-else
-                    class="fas fa-times icon-md text-danger mr-1" />
+                    class="fas fa-times icon-md text-center text-danger mr-1" />
                 ส่งใบ Invoice ทางไปรษณีย์
               </h5>
             </div>

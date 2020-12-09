@@ -139,6 +139,7 @@
 <script>
 import { on_logout } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
+import { USER_NOTIFICATIONS } from '@/graphql/user'
 
 export default {
   name: 'title-bar',
@@ -194,6 +195,10 @@ export default {
       query: AUTH_DATA,
       update: data => data.auth
     },
+    notifications: {
+      query: USER_NOTIFICATIONS,
+      update: data => data.get_backuser.result
+    }
   }
 }
 </script>

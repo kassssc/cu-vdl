@@ -4,7 +4,7 @@
     <div class="col-12 d-flex justify-content-between">
       <h4 class="mr-3 mb-3">{{ `เพิ่ม${is_virus? 'ไวรัส' : 'แบคทีเรีย'}เพื่อทดสอบ`}}</h4>
       <button v-if="is_CP"
-              class="btn btn-success btn-sm"
+              class="btn btn-success align-self-start"
               @click="use_CP()">
         ใช้ Default CP Protocol
       </button>

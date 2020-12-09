@@ -138,7 +138,7 @@ export default {
             password
           }
         })
-        if (res.data.login.statuscode == 200) {
+        if (res.data.login.status) {
           const jwt = res.data.login.result.jwt
           await on_login(
             this.$apollo.provider.defaultClient,
@@ -153,6 +153,8 @@ export default {
           this.login_form.password = null
         }
       } catch (err) {
+        this.error = true
+        this.loading = false
         console.log(err)
       }
     },

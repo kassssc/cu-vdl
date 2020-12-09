@@ -28,7 +28,7 @@
         ติดต่อสอบถาม
       </router-link>
       <router-link  :to="{ name: 'pathogen-bank' }"
-                  class="btn btn-transparent">
+                    class="btn btn-transparent">
         <i class="fas fa-bacterium btn-inner-icon"></i>
         Pathogen Bank
       </router-link>

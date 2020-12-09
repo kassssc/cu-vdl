@@ -77,8 +77,8 @@ export const ADD_CONTACT_TO_USER = gql`
     $user_index: Int,
     $contact_index: Int!
   ) {
-    modify_contact_list (
-      backuser_index: $user_index,
+    add_contact_to_backuser (
+      user_index: $user_index,
       contact_index: $contact_index
     ) {
       statuscode

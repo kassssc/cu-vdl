@@ -4,7 +4,7 @@ export const AUTH_DATA = gql`{
   auth @client {
     logged_in
     is_admin
-    index
+    user_index
     name
   }
 }`

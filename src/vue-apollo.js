@@ -15,7 +15,7 @@ Vue.use(VueApollo)
 const AUTH_TOKEN = 'apollo-token'
 
 // Http endpoint
-//*/
+/*/
 const httpEndpoint = 'https://cuvdl.com/api/graphql'
 /*/
 const httpEndpoint = 'http://localhost:16888/api/graphql'
@@ -25,7 +25,7 @@ const httpEndpoint = 'http://localhost:16888/api/graphql'
 const NOT_LOGGED_IN_AUTH_DATA = {
   logged_in: false,
   is_admin: false,
-  index: null,
+  user_index: null,
   name: null
 }
 
@@ -37,7 +37,7 @@ const typeDefs = gql`
   type Auth {
     logged_in: Boolean!,
     is_admin: Boolean!,
-    index: Int,
+    user_index: Int,
     name: String
   }
 `
@@ -219,7 +219,7 @@ export async function on_logout (apolloClient) {
 
 function get_auth_data_from_jwt (jwt) {
   const {
-    index,
+    user_index,
     is_admin,
     name,
   } = jwt_decode(jwt)
@@ -227,7 +227,7 @@ function get_auth_data_from_jwt (jwt) {
   return {
     logged_in: true,
     is_admin,
-    index,
+    user_index,
     name
   }
 }

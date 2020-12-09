@@ -58,7 +58,7 @@
           <div v-if="batch.tests[department]">
             <div class="row row-header border-b py-2">
               <div class="col-2">
-                <h5>กลุ่มย่อย</h5>
+                <h5>กลุ่ม</h5>
               </div>
               <div class="col-10">
                 <div class="form-row">

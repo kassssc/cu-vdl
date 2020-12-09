@@ -298,10 +298,10 @@ export default {
             ...this.form_info
           }
         })
-        console.log(res)
-        await this.$apollo.queries.contacts.refetch()
         await this.$apollo.queries.selected_contact.refetch()
-        this.$nextTick( () => this.cancel_edit_info() )
+        await this.$apollo.queries.contacts.refetch()
+        // this.$nextTick( () => this.cancel_edit_info() )
+        //setTimeout( () => this.cancel_edit_info(), 3000)
       } catch (err) {
         console.log(err)
         this.info_error = 'ระบบขัดข้อง กรุณาลองใหม่ในภายหลัง'

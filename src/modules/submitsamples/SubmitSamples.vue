@@ -608,12 +608,12 @@
       </template>
     </Modal>
   
-    <div class="font-chatthai">
+    <!-- <div class="font-chatthai">
       <h3>JSON Form Data</h3>
       <h4 class="text-default pre font-chatthai">
         {{ JSON.stringify(submission, null, '\t') }}
       </h4>
-    </div>
+    </div> -->
   </template>
 
 </div>
@@ -711,7 +711,7 @@ export default {
       return this.user_detail.default_contact.name_eng && this.user_detail.default_contact.address_eng
     },
     needs_english_info_sample_owner () {
-      return this.submission.english_report && !this.contact_has_english_info(this.submission.sample_owner)
+      return this.submission.english_report && (!this.selected_sample_owner.name_eng || !this.selected_sample_owner.address_eng)
     },
     select_contacts () {
       return [ ...this.user_detail.contact_list, { index: -1, name: '* ไม่มีในรายชื่อนี้ *' } ]
@@ -726,14 +726,6 @@ export default {
     selected_invoice_to () {
       if (this.submission.invoice_to === this.submission.submitter) return this.user_detail.default_contact
       return this.user_detail.contact_list.find(c => c.index === this.submission.invoice_to)
-    },
-    email_suggest_list () {
-      if (!this.user_detail) return []
-      return [ this.user_detail.email ]
-    },
-    phone_suggest_list () {
-      if (!this.user_detail) return []
-      return [ this.user_detail.phone ]
     },
     add_batch_label () {
       return  this.is_general? 'เพิ่มกลุ่มการทดสอบ' :
@@ -843,7 +835,7 @@ export default {
       }
     },
     get_batch_label (number) {
-      return  (!this.multiple_batches)? 'รายการทดสอบ' :
+      return  (!this.multiple_batches)? 'การทดสอบ' :
               (this.is_general)? `กลุ่ม ${number+1}` :
               (this.is_disinfectant)? this.submission.submission_batches[number].disinfectant_name || `ยาฆ่าเชื้อ ${number+1}` : '???'
     },
@@ -1096,7 +1088,8 @@ export default {
             mail_report_to_submitter,
             mail_report_to_sample_owner,
             sample_details,
-            submission_batches
+            submission_batches,
+            remarks
           }
         })
         this.submitting = false

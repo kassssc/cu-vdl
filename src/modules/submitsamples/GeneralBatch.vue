@@ -91,8 +91,8 @@
       <div class="form-row py-3 border-b">
         <div class="col-2"></div>
         <div class="col-10">
-          <div class="form-row">
-            <div class="col-5"></div>
+          <div class="row">
+            <div class="col-6"></div>
             <div class="col-1 text-right">
               <h2 class="text-primary">
                 {{ batch.sample_count? batch.sample_count : 'N/A' }}
@@ -113,10 +113,10 @@
                 {{ batch.sample_count? to_display_price(batch.price) : 'N/A' }}
               </h2>
               <h5 class="text-medium">ค่าบริการ</h5>
-              <h6 v-if="custom_bacteria_test_count > 0"
+              <!-- <h6 v-if="custom_bacteria_test_count > 0"
                   class="text-medium">
                 *เป็นราคาโดยประมานเท่านั้น
-              </h6>
+              </h6> -->
             </div>
           </div>
         </div>

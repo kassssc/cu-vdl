@@ -103,26 +103,25 @@
         <div class="font-chatthai">
           <div class="form-row border-b pb-4">
             <FileView
-              class="col-12 col-md-6"
+              class="col-12 col-md-5 col-lg-4"
               label="ไฟล์ Invoice"
               icon-class="fas fa-file-invoice-dollar"
               :file="selected_invoice.invoice_file" />
-            <div class="w-100"></div>
             <FormDateInput
-              class="col-12 col-md-6"
+              class="col-12 col-md-3 col-lg-2"
               label="วันที่ออก Invoice"
               format="dd/MM/yy"
               disabled
               :value="to_date_object(selected_invoice.invoice_date)" />
             <div class="w-100"></div>
             <FormInput
-              class="col-12 col-md-6 mb-2"
+              class="col-12 col-md-8 col-lg-6 mb-2"
               label="Invoice ไปที่"
               disabled
               :value="selected_invoice.invoice_to.name" />
             <div class="w-100"></div>
             <FormTextarea
-              class="col-12 col-md-6"
+              class="col-12 col-md-8 col-lg-6"
               disabled
               :value="selected_invoice.invoice_to.address" />
             <div class="w-100"></div>
@@ -138,7 +137,7 @@
           </div>
 
           <div class="form-row border-b py-4">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-8 col-lg-6">
               <div class="row no-gutters">
                 <template v-if="selected_invoice.submissions.length > 1">
                   <div class="col-4 text-right">
@@ -163,7 +162,7 @@
           </div>
 
           <h4 class="font-cu mt-4 mb-3">
-            <i class="fas fa-file-invoice mr-3"></i>การส่งตัวอย่างที่เกี่ยวข้อง
+            <i class="fas fa-file-invoice mr-3"></i>การส่งตัวอย่างที่รวมใน Invoice
           </h4>
           <div class="form-row border-b pb-4">
             <div class="form-group col-12">

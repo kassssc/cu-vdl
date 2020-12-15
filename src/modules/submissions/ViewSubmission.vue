@@ -11,8 +11,8 @@
           <i class="fas fa-chevron-left mr-2" />กลับไป
         </router-link>
         <scrollactive active-class="scrollactive-active"
-                      :offset="250"
-                      :modify-url="false"
+                      :offset="150"
+                      :modify-url="true"
                       highlight-first-item>
           <a  href="#info"
               class="btn btn-transparent btn-block btn-lg scrollactive-item">
@@ -96,6 +96,7 @@
                   icon-class="fas fa-file-alt" /> -->
                 <div class="w-100"></div>
                 <DownloadSlip
+                  v-if="submission.submission_status === 'ส่งแล้ว'"
                   class="col-6"
                   :submission-key="submission_key" />
                 <!-- <div class="col-6 form-group">

@@ -209,6 +209,7 @@ export async function on_logout (apolloClient) {
   }
   
   remove_jwt()
+  
   // Cancel checking of jwt expiry at intervals
   if (JWT_REFRESH_TIMER) {
     clearInterval(JWT_REFRESH_TIMER)

@@ -8,6 +8,14 @@ import { AUTH_DATA } from '@/graphql/local'
 
 Vue.use(Router)
 
+const LAST_ROUTE = 'cuvdl-last-route'
+
+export const get_last_route = () => {
+  return localStorage.getItem(LAST_ROUTE)
+}
+
+localStorage.removeItem(LAST_ROUTE)
+
 const routes = [
   {
     path: '/',
@@ -179,6 +187,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "group-login" */
       '@/modules/login/Login'
     ),
+    meta: { cannot_be_logged_in: true }
   },
   {
     path: '/signup',
@@ -186,6 +195,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "group-login" */
       '@/modules/login/Signup'
     ),
+    meta: { cannot_be_logged_in: true }
   },
   {
     path: '/reset/:token',
@@ -193,6 +203,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "group-login" */
       '@/modules/login/ResetPassword'
     ),
+    meta: { cannot_be_logged_in: true }
   },
   {
     path: '*',
@@ -211,7 +222,7 @@ const router = new Router({
 })
 
 // Route Guard
-router.beforeEach(async (to, from, next) => {
+router.beforeEach( async (to, from, next) => {
   try {
     const res = await apolloProvider.defaultClient.query({
       query: AUTH_DATA
@@ -221,9 +232,14 @@ router.beforeEach(async (to, from, next) => {
       (route_requires_login(to) && !logged_in) ||
       (route_requires_admin(to) && !is_admin)
     )
+
+    const cannot_be_logged_in = route_cannot_be_logged_in(to) && logged_in
   
     if (unauthorized) {
+      localStorage.setItem(LAST_ROUTE, to.fullPath)
       next({ name: 'login' })
+    } else if (cannot_be_logged_in) {
+      next({ name: 'home' })
     } else {
       next()
     }
@@ -238,6 +254,9 @@ const route_requires_login = route => {
 }
 const route_requires_admin = route => {
   return route.matched.some(record => record.meta.requires_admin)
+}
+const route_cannot_be_logged_in = route => {
+  return route.matched.some(record => record.meta.cannot_be_logged_in)
 }
 
 export default router

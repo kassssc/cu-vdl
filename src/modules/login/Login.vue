@@ -105,6 +105,7 @@
 
 <script>
 import $ from 'jquery'
+import { get_last_route } from '@/router'
 import { on_login } from '@/vue-apollo'
 import { LOGIN, FORGOT_PASSWORD } from '@/graphql/login'
 
@@ -145,7 +146,13 @@ export default {
             jwt,
             this.login_form.stay_logged_in
           )
-          this.$router.push({ name: 'submissions-list' })
+          const last_route_path = get_last_route()
+          if (last_route_path) {
+            this.$router.push(last_route_path)
+          } else {
+            this.$router.push({ name: 'submissions-list' })
+          }
+
         } else {
           this.error = true
           this.loading = false

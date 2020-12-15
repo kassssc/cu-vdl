@@ -174,13 +174,37 @@ export const USER_NOTIFICATIONS = gql`
       result {
         notifications {
           notification_id
+          notification_type
           date
           target
           text
           seen
-          clicked
         }
       }
     }
   }
+`
+
+export const SET_NOTIFICATIONS_SEEN = gql`
+  mutation (
+    $notification_ids: [String!]!
+  ) {
+    set_notifications_seen (
+      notification_ids: $notification_ids
+    ) {
+      statuscode
+      status
+      message
+    }
+  } 
+`
+
+export const CLEAN_NOTIFICATIONS = gql`
+  mutation {
+    clean_notifications {
+      statuscode
+      status
+      message
+    }
+  } 
 `

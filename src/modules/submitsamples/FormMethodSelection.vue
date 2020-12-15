@@ -49,7 +49,7 @@
     </div>
     <div class="col-10">
       <div class="form-row">
-        <div class="col-8">
+        <div class="col-9">
           <div  v-for="(custom_test, idx) of custom_bacteria_tests"
                 :key="idx"
                 class="form-group d-block mb-2 position-relative">
@@ -72,13 +72,13 @@
             <button class="btn btn-pink btn-sm font-cu"
                     :disabled="custom_bacteria_tests.length >= 5"
                     @click="add_custom_bacteria_test()">
-              เพิ่มรายการแบคทีเรีย
+              เพิ่มแบคทีเรีย
             </button>
             <h5>รอประเมินราคา (ประมาน 500฿ ต่อรายการ ต่อตัวอย่าง)</h5>
           </div>
         </div>
         <div  v-if="custom_bacteria_tests.length > 0 && sample_count > 0"
-              class="col-4 d-flex align-items-end justify-content-end pt-2">
+              class="col d-flex align-items-end justify-content-end pt-2">
           <h4>~{{ to_display_price(custom_bacteria_test_price) }}</h4>
         </div>
       </div>

@@ -96,6 +96,7 @@ Vue.mixin({
   methods: {
     to_display_price: raw => `${raw.toLocaleString()}฿`,
     to_display_date: raw => new Date(parseInt(raw)).toLocaleDateString('en-GB'),
+    to_display_datetime: raw => new Date(parseInt(raw)).toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'short' }),
     to_date_object: raw => new Date(parseInt(raw))
   }
 })

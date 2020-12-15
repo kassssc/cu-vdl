@@ -48,7 +48,7 @@
       <router-link :to="{name: 'invoice-list'}"
                   tag="a"
                   class="btn btn-transparent mr-2">
-        ฿ รายการ Invoice
+        ฿ Invoice
       </router-link>
     </template>
 
@@ -59,17 +59,20 @@
       {{ auth.is_admin? 'สร้างการส่งตัวอย่าง' : 'ส่งตัวอย่าง' }}
     </router-link>
 
-    <router-link  :to="{name: 'account'}"
+    <router-link  :to="{ name: 'account' }"
                   tag="a"
                   class="btn btn-transparent mr-2">
       <span class="mr-2">{{ auth.name }}</span>
       <i class="fas fa-cog btn-inner-icon mr-0"></i>
     </router-link>
+
+    <Notifications />
+
     <button class="btn btn-transparent btn-icon"
             @click="logout_and_go_to_home()">
       <i class="fas fa-sign-out-alt" />
     </button>
-    
+
   </nav>
 
   <nav v-else class="d-flex">
@@ -137,24 +140,26 @@
 </template>
 
 <script>
+import Notifications from './Notifications'
+
 import { on_logout } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
-import { USER_NOTIFICATIONS } from '@/graphql/user'
 
 export default {
   name: 'title-bar',
+  components: { Notifications },
   data () {
     return {
       no_scroll_routes: [
         'submissions-list',
         'invoice-list'
-      ]
+      ],
     }
   },
   computed: {
     is_in_no_scroll_route () {
       return /^admin/.test(this.$route.name) || this.no_scroll_routes.includes(this.$route.name)
-    }
+    },
   },
   methods: {
     async logout_and_go_to_home () {
@@ -180,7 +185,7 @@ export default {
         title_bar.classList.remove('scrolled')
         window.onscroll = () => { this.on_scroll() }
       }
-    }
+    },
   },
   watch: {
     '$route.name': function () { this.set_titlebar_scroll() }
@@ -193,11 +198,7 @@ export default {
   apollo: {
     auth: {
       query: AUTH_DATA,
-      update: data => data.auth
-    },
-    notifications: {
-      query: USER_NOTIFICATIONS,
-      update: data => data.get_backuser.result
+      update: data => data.auth,
     }
   }
 }
@@ -237,6 +238,7 @@ export default {
     transition: all 100ms ease-in-out;
   }
 }
+
 // Firefox style fixes for no backdrop-filter support
 @-moz-document url-prefix() {
   #titlebar {

@@ -4,18 +4,20 @@
     <SearchInput
       class="mb-2"
       placeholder="ค้นหา User Account..."
-      @search="set_search_query($event)" />
+      :initial-query="$route.query.query"
+      @search="loading = true"
+      @debounced-search="apply_search_query($event)" />
     <div class="d-flex mb-2">
       <button v-for="filter of user_type_filters"
               :key="filter.id"
               class="filter-btn filter-btn-sm btn w-100 mr-2 px-2"
               :class="[
                 user_type_colors[filter.id],
-                {'active': active_user_type_filter === filter.id}
+                {'active': user_type_filter == filter.id}
               ]"
-              :disabled="loading || active_user_type_filter === filter.id"
-              @click="set_user_type_filter(filter.id)">
-        <i  v-if="active_user_type_filter === filter.id"
+              :disabled="loading || user_type_filter == filter.id"
+              @click="apply_user_type_filter(filter.id)">
+        <i  v-if="user_type_filter == filter.id"
             class="fas fa-check btn-inner-icon" />
         <div  v-else
               class="small-square mr-1"
@@ -23,9 +25,9 @@
         {{ filter.name }}
       </button>
       <button class="filter-btn filter-btn-sm btn w-100 grey"
-              :class="{'active': !user_active_filter}"
-              :disabled="loading || !user_active_filter"
-              @click="set_deactivated_user_filter()">
+              :class="{'active': !account_active_filter}"
+              :disabled="loading || !account_active_filter"
+              @click="apply_deactivated_user_filter()">
         <i class="fas fa-ban btn-inner-icon" />
         ถูกระงับ
       </button>
@@ -39,7 +41,12 @@
         <ul v-if="users.length > 0" class="item-list font-chatthai">
           <router-link  :to="{
                           name: 'admin-users-list',
-                          params: { id: user.index }
+                          params: { id: user.index },
+                          query: {
+                            ...($route.query.type && { type: $route.query.type }),
+                            ...($route.query.query && { query: $route.query.query }),
+                            ...($route.query.active && { active: $route.query.active }),
+                          }
                         }"
                         tag="li"
                         v-for="(user, idx) of users"
@@ -47,13 +54,13 @@
                         class="clickable"
                         :class="{
                           'active': $route.params.id == user.index,
-                          'faded': !user_active_filter
+                          'faded': !account_active_filter
                         }">
             <div class="row no-gutters">
-              <div class="col-8 d-flex align-items-center">
-                <i  v-if="!user_active_filter"
+              <div class="col-8 d-flex align-items-center pr-2">
+                <i  v-if="!account_active_filter"
                     class="fas fa-ban btn-inner-icon mr-2" />
-                <h5>{{ user.default_contact.name }}</h5>
+                <h5 class="ellipsis">{{ user.default_contact.name }}</h5>
               </div>
               <div class="col-4">
                 <ColorTag
@@ -87,6 +94,8 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce'
+
 import AdminUserInfo from './AdminUserInfo'
 import { USERS_LIST } from '@/graphql/user'
 
@@ -97,10 +106,7 @@ export default {
   },
   data () {
     return {
-      search_query: '',
       loading: true,
-      active_user_type_filter: 201,
-      user_active_filter: true,
       user_type_filters: [
         { id: 201, name: 'ผู้ส่งตัวอย่าง'},
         { id: 101, name: 'แอดมิน'}
@@ -115,37 +121,79 @@ export default {
       }
     }
   },
+  computed: {
+    account_active_filter () {
+      // excludes undefined and null
+      if (this.$route.query.active === false) {
+        return false
+      }
+      return true
+    },
+    user_type_filter () {
+      if (!this.$route.query.type) {
+        if (this.account_active_filter === false) {
+          return null
+        }
+        return 201
+      }
+      return parseInt(this.$route.query.type)
+    }
+  },
   methods: {
-    set_search_query (query) {
+    apply_user_type_filter (type) {
       this.loading = true
-      this.search_query = query
+      this.$router.push({
+        name: 'admin-users-list',
+        query: {
+          ...(this.$route.query.query && { query: this.$route.query.query }),
+          ...(type && { type })
+        }
+      })
     },
-    set_user_type_filter (filter) {
+    apply_deactivated_user_filter () {
       this.loading = true
-      this.active_user_type_filter = filter
-      this.user_active_filter = true
-      this.clear_selected_user()
+      this.$router.push({
+        name: 'admin-users-list',
+        query: {
+          active: false
+        }
+      })
     },
-    set_deactivated_user_filter () {
-      this.loading = true
-      this.active_user_type_filter = null,
-      this.user_active_filter = false
-      this.clear_selected_user()
-    },
-    clear_selected_user () {
-      if (this.$route.params.id) {
-        this.$router.push({ name: 'admin-users-list' })
+    apply_search_query (query) {
+      if (query == this.$route.query.query) {
+        this.loading = false
+      } else {
+        this.$router.push({
+          name: 'admin-users-list',
+          params: { id: this.$route.params.id },
+          query: {
+            ...(this.$route.query.type && { type: this.$route.query.type }),
+            ...(this.$route.query.active === false? { active: false } : null),
+            ...(query && { query }),
+          }
+        })
       }
     },
     on_deactivate_account () {
       this.loading = true
-      this.active_user_type_filter = null
-      this.user_active_filter = false
+      this.$router.push({
+        name: 'admin-users-list',
+        params: { id: this.$route.params.id },
+        query: {
+          ...(this.$route.query.query && { active: this.$route.query.query }),
+          active: false
+        }
+      })
     },
     on_reactivate_account () {
       this.loading = true
-      this.active_user_type_filter = 201
-      this.user_active_filter = true
+      this.$router.push({
+        name: 'admin-users-list',
+        params: { id: this.$route.params.id },
+        query: {
+          ...(this.$route.query.query && { active: this.$route.query.query }),
+        }
+      })
     }
   },
   apollo: {
@@ -153,12 +201,11 @@ export default {
       query: USERS_LIST,
       variables () {
         return {
-          search_query: this.search_query,
-          account_type: this.active_user_type_filter,
-          account_active: this.user_active_filter
+          search_query: this.$route.query.query,
+          account_type: this.user_type_filter,
+          account_active: this.account_active_filter
         }
       },
-      debounce: 200,
       update: data => data.search_backuser.result,
       result () {
         this.$nextTick( () => this.loading = false )

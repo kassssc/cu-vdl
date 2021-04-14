@@ -4,13 +4,15 @@
     <SearchInput
       class="mb-2"
       placeholder="ค้นหา Contact..."
-      @search="set_search_query($event)" />
+      :initial-query="$route.query.query"
+      @search="loading = true"
+      @debounced-search="apply_search_query($event)" />
     <div class="d-flex mb-2">
       <button class="filter-btn filter-btn-sm btn btn-sm primary w-100"
-              :class="{'active': active_contact_type_filter === null}"
-              :disabled="loading || active_contact_type_filter === null"
-              @click="set_contact_type_filter(null)">
-        <i  v-if="active_contact_type_filter === null"
+              :class="{'active': !$route.query.type}"
+              :disabled="loading || !$route.query.type"
+              @click="apply_contact_type_filter(null)">
+        <i  v-if="!$route.query.type"
             class="fas fa-check btn-inner-icon" />
         ทั้งหมด
       </button>
@@ -19,11 +21,11 @@
               class="filter-btn filter-btn-sm btn btn-sm w-100 ml-2 px-2"
               :class="[
                 contact_type_colors[filter],
-                {'active': active_contact_type_filter === filter}
+                {'active': $route.query.type == filter}
               ]"
-              :disabled="loading || active_contact_type_filter === filter"
-              @click="set_contact_type_filter(filter)">
-        <i  v-if="active_contact_type_filter === filter"
+              :disabled="loading || !$route.query.type == filter"
+              @click="apply_contact_type_filter(filter)">
+        <i  v-if="$route.query.type == filter"
             class="fas fa-check btn-inner-icon" />
         <div  v-else
               class="small-square mr-1"
@@ -50,8 +52,8 @@
                         :class="{'active': $route.params.id == contact.index}"
                         @click="selected_contact = null">
             <div class="row no-gutters">
-              <div class="col-8 d-flex align-items-center">
-                <h5>{{ contact.name }}</h5>
+              <div class="col-8 pr-2 d-flex align-items-center">
+                <h5 class="ellipsis">{{ contact.name }}</h5>
               </div>
               <div class="col-4 d-flex justify-content-between align-items-center">
                 <ColorTag
@@ -226,7 +228,6 @@ export default {
   name: 'admin-contacts-list',
   data () {
     return {
-      search_query: '',
       loading: true,
       editing_info: false,
       editing_english_info: false,
@@ -240,7 +241,6 @@ export default {
         name_eng: null,
         address_eng: null
       },
-      active_contact_type_filter: null,
       contact_type_filters: [
         'องค์กร',
         'บุคคล'
@@ -252,15 +252,28 @@ export default {
     }
   },
   methods: {
-    set_search_query (query) {
+    apply_contact_type_filter (type) {
       this.loading = true
-      this.search_query = query
+      this.$router.push({
+        name: 'admin-contacts-list',
+        query: {
+          ...(this.$route.query.query && { query: this.$route.query.query }),
+          ...(type && { type })
+        }
+      })
     },
-    set_contact_type_filter (filter) {
-      this.active_contact_type_filter = filter
-      this.loading = true
-      if (this.$route.params.id) {
-        this.$router.push({ name: 'admin-contacts-list' })
+    apply_search_query (query) {
+      if (query == this.$route.query.query) {
+        this.loading = false
+      } else {
+        this.$router.push({
+          name: 'admin-contacts-list',
+          params: { id: this.$route.params.id },
+          query: {
+            ...(this.$route.query.type && { type: this.$route.query.type }),
+            ...(query && { query }),
+          }
+        })
       }
     },
     edit_info () {
@@ -330,22 +343,15 @@ export default {
       }
     },
   },
-/*   watch: {
-    // So that the contact info section re-renders when selected contact change
-    '$route.params.id': function () {
-      this.selected_contact = null
-    }
-  }, */
   apollo: {
     contacts: {
       query: CONTACTS_LIST,
       variables () {
         return {
-          search_query: this.search_query,
-          contact_type: this.active_contact_type_filter
+          search_query: this.$route.query.query,
+          contact_type: this.$route.query.type
         }
       },
-      debounce: 200,
       update: data => data.search_contact.result,
       result () {
         this.$nextTick( () => this.loading = false )

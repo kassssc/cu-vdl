@@ -196,6 +196,18 @@ $content-height-with-subnav: calc(100vh - #{$titlebar-height-scrolled} - #{$subn
   color: $white;
 }
 
+@mixin scrollbar-style {
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(50, 50, 50, .5);
+    box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+  }
+}
+
 @mixin dropdown-menu {
   position: absolute;
   font-weight: bold;

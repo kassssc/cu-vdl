@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce'
+
 export default {
   name: 'search-input',
   inheritAttrs: false,
@@ -31,20 +33,43 @@ export default {
     placeholder: {
       type: String,
       default: 'ค้นหา...'
+    },
+    initialQuery: {
+      type: String,
+      default: null
+    },
+    debounceInterval: {
+      type: Number,
+      default: 300
+    }
+  },
+  beforeMount () {
+    if (this.initialQuery) {
+      this.query = this.initialQuery
     }
   },
   data () {
     return {
-      query: ''
+      query: null
+    }
+  },
+  computed: {
+    debounced_search () {
+      return debounce( (query) => {
+        this.$emit('debounced-search', query)
+      }, this.debounceInterval)
     }
   },
   methods: {
     search (ev) {
-      this.$emit('search', ev.target.value)
+      const query = ev.target.value === ''? null : ev.target.value
+      this.$emit('search', query)
+      this.debounced_search(query)
     },
     clear () {
-      this.query = ''
+      this.query = null
       this.$emit('search', this.query)
+      this.debounced_search(this.query)
     }
   }
 }

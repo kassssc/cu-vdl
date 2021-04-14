@@ -14,13 +14,15 @@
     <SearchInput
       class="mb-2"
       placeholder="ค้นหา Invoice..."
-      @search="set_search_query($event)" />
+      :initial-query="$route.query.query"
+      @search="loading = true"
+      @debounced-search="apply_search_query($event)"  />
     <div class="d-flex mb-2">
       <button class="filter-btn filter-btn-sm btn btn-sm primary w-100"
-              :class="{'active': active_invoice_status_filter === null}"
-              :disabled="active_invoice_status_filter === null"
-              @click="set_invoice_status_filter(null)">
-        <i  v-if="active_invoice_status_filter === null"
+              :class="{'active': !$route.query.status}"
+              :disabled="!$route.query.status"
+              @click="apply_invoice_status_filter(null)">
+        <i  v-if="!$route.query.status"
             class="fas fa-check btn-inner-icon" />
         ทั้งหมด
       </button>
@@ -29,11 +31,11 @@
               class="filter-btn filter-btn-sm btn btn-sm w-100 ml-2 px-2"
               :class="[
                 invoice_status_colors[filter],
-                {'active': active_invoice_status_filter === filter}
+                {'active': $route.query.status == filter}
               ]"
-              :disabled="active_invoice_status_filter === filter"
-              @click="set_invoice_status_filter(filter)">
-        <i  v-if="active_invoice_status_filter === filter"
+              :disabled="$route.query.status == filter"
+              @click="apply_invoice_status_filter(filter)">
+        <i  v-if="$route.query.status == filter"
             class="fas fa-check btn-inner-icon" />
         <div  v-else
               class="small-square mr-1"
@@ -228,9 +230,7 @@ export default {
   name: 'admin-invoice-list',
   data () {
     return {
-      search_query: '',
       loading: true,
-      active_invoice_status_filter: null,
       invoice_status_filters: [
         'รอการชำระเงิน',
         'ชำระเงินแล้ว'
@@ -249,35 +249,33 @@ export default {
         'เสร็จสิ้น': 'green',
         'ยกเลิก': 'red',
       },
-      /* invoice_mocks: [
-        { invoice_no: 'INV00001', invoice_status: 'รอการชำระเงิน',  invoice_amount: 45000, submissions: [1,2,3,4]},
-        { invoice_no: 'INV00002', invoice_status: 'รอการชำระเงิน',  invoice_amount: 45000, submissions: [1,2,3,4]},
-        { invoice_no: 'INV00003', invoice_status: 'ชำระเงินแล้ว',    invoice_amount: 45000, submissions: [1,2,3,4]},
-        { invoice_no: 'INV00004', invoice_status: 'รอการชำระเงิน',  invoice_amount: 45000, submissions: [1,2,3,4]},
-        { invoice_no: 'INV00005', invoice_status: 'ชำระเงินแล้ว',    invoice_amount: 45000, submissions: [1,2,3,4]},
-        { invoice_no: 'INV00006', invoice_status: 'รอการชำระเงิน',  invoice_amount: 45000, submissions: [1,2,3,4]},
-      ],
-      selected_invoice: {
-        invoice_no: 'INV00002',
-        invoice_status: 'รอการชำระเงิน',
-        invoice_amount: 45000,
-        invoice_date: new Date(),
-        invoice_to: {
-          name: 'นาย สมควร สมสกุล',
-          address: '333 ถนนสมควร\nแขวงสมควร เขตสมควร\nกรุงเทพฯ 33333'
-        },
-        submissions: [1,2,3,4]} */
     }
   },
   methods: {
-    set_invoice_status_filter (filter) {
+    apply_invoice_status_filter (status) {
       this.loading = true
-      this.active_invoice_status_filter = filter
+      this.$router.push({
+        name: this.auth.is_admin? 'admin-invoice-list' : 'invoice-list',
+        query: {
+          ...(this.$route.query.query && { query: this.$route.query.query }),
+          ...(status && { status })
+        }
+      })
     },
-    set_search_query (query) {
-      this.loading = true
-      this.search_query = query
-    }
+    apply_search_query (query) {
+      if (query == this.$route.query.query) {
+        this.loading = false
+      } else {
+        this.$router.push({
+          name: this.auth.is_admin? 'admin-invoice-list' : 'invoice-list',
+          params: { id: this.$route.params.id },
+          query: {
+            ...(this.$route.query.status && { type: this.$route.query.status }),
+            ...(query && { query }),
+          }
+        })
+      }
+    },
   },
   apollo: {
     auth: {
@@ -288,11 +286,10 @@ export default {
       query: INVOICE_LIST,
       variables () {
         return {
-          search_query: this.search_query,
-          invoice_status: this.active_invoice_status_filter
+          search_query: this.$route.query.query,
+          invoice_status: this.$route.query.status
         }
       },
-      debounce: 200,
       update: data => data.search_invoice.result,
       result () {
         this.$nextTick( () => this.loading = false )

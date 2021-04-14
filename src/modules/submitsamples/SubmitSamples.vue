@@ -61,7 +61,7 @@
           <div class="form-row mb-3">
             <FormSelect
               v-if="auth.is_admin && !edit_mode"
-              class="col-4 mb-2"
+              class="col-6 mb-2"
               form-label="ผู้ส่งตัวอย่าง"
               label="name"
               :reduce="o => o.index"
@@ -75,7 +75,7 @@
               v-model="submission.backuser" />
             <FormInput
               v-else-if="selected_submitter"
-              class="col-4 mb-2"
+              class="col-6 mb-2"
               label="ผู้ส่งตัวอย่าง"
               disabled
               :value="submission.english_report? selected_submitter.name_eng : selected_submitter.name" />
@@ -88,13 +88,13 @@
             <div class="w-100"></div>
             <FormInput
               v-if="auth.is_admin && submission.english_report && !edit_mode"
-              class="col-4 mb-2"
+              class="col-6 mb-2"
               disabled
               :value="selected_submitter.name_eng" />
             <div class="w-100"></div>
             <FormTextarea
               v-if="selected_submitter"
-              class="col-4"
+              class="col-6"
               disabled
               :value="submission.english_report? selected_submitter.address_eng : selected_submitter.address" />
           </div>

@@ -61,8 +61,8 @@
 
     <router-link  :to="{ name: 'account' }"
                   tag="a"
-                  class="btn btn-transparent mr-2">
-      <span class="mr-2">{{ auth.name }}</span>
+                  class="btn btn-transparent mr-2 d-flex align-items-center">
+      <div class="mr-2 auth-name ellipsis">{{ auth.name }}</div>
       <i class="fas fa-cog btn-inner-icon mr-0"></i>
     </router-link>
 
@@ -237,6 +237,10 @@ export default {
     margin-right: 15px;
     transition: all 100ms ease-in-out;
   }
+}
+
+.auth-name {
+  max-width: 175px;
 }
 
 // Firefox style fixes for no backdrop-filter support

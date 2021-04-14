@@ -11,17 +11,17 @@
         placeholder="ค้นหา บุคคล/องค์กร..."
         :reduce="o => o.index"
         :options="contact_list"
-        v-model="active_contact_filter"
-        @input="loading = true" />
+        :value="parseInt($route.query.contact)"
+        @input="apply_contact_filter($event)" />
     </div>
     <div class="col pl-4 form-group mb-0">
       <label class="label-sm">สถานะการส่งตัวอย่าง</label>
       <div class="d-flex align-items-end">
-        <button class="filter-btn btn primary"
-                :class="{'active': active_status_filter === null}"
-                :disabled="active_status_filter === null"
-                @click="filter_by_status(null)">
-          <i  v-if="active_status_filter === null"
+        <button  class="filter-btn btn primary"
+                      :class="{'active': !$route.query.status}"
+                      :disabled="loading || !$route.query.status"
+                      @click="apply_status_filter(null)">
+          <i  v-if="!$route.query.status"
               class="fas fa-check btn-inner-icon" />
           <div v-else class="small-square mr-1" />
           ทั้งหมด
@@ -31,11 +31,11 @@
                 class="filter-btn btn ml-2"
                 :class="[
                   submission_status_colors[filter],
-                  {'active': active_status_filter === filter}
+                  {'active': $route.query.status === filter}
                 ]"
-                :disabled="active_status_filter === filter"
-                @click="filter_by_status(filter)">
-          <i  v-if="active_status_filter === filter"
+                :disabled="loading || $route.query.status === filter"
+                @click="apply_status_filter(filter)">
+          <i  v-if="$route.query.status === filter"
               class="fas fa-check btn-inner-icon" />
           <div  v-else
                 class="small-square mr-1"
@@ -48,45 +48,47 @@
       <SearchInput
         class="w-100"
         placeholder="ค้นหา..."
-        @search="search($event)" />
+        :initial-query="$route.query.query"
+        @search="loading = true"
+        @debounced-search="apply_search_query($event)" />
     </div>
   </div>
-  <div id="table-container" class="w-100">
+  <div class="table-height w-100">
     <transition name="fade">
       <div  v-if="!loading"
             key="list">
         <transition name="fade">
           <div  v-if="submissions && submissions.length > 0"
-                class="w-100 scroll-container">
+                class="w-100 pr-2 table-height scroll-container">
             <table  class="small-font">
               <thead>
                 <tr>
                   <th>
-                    หมายเลข<!-- <div class="shadow-th"></div> -->
+                    หมายเลข<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                   <th>
-                    สถานะ<!-- <div class="shadow-th"></div> -->
+                    สถานะ<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                   <th>
-                    สถานะ Invoice<!-- <div class="shadow-th"></div> -->
+                    สถานะ Invoice<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                   <th>
-                    วันที่ส่ง<!-- <div class="shadow-th"></div> -->
+                    วันที่ส่ง<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                   <th v-if="auth.is_admin">
-                    ผู้ส่งตัวอย่าง<!-- <div class="shadow-th"></div> -->
+                    ผู้ส่งตัวอย่าง<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                   <th>
-                    เจ้าของตัวอย่าง<!-- <div class="shadow-th"></div> -->
+                    เจ้าของตัวอย่าง<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                   <th>
-                    Invoice ไปที่<!-- <div class="shadow-th"></div> -->
+                    Invoice ไปที่<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                   <th>
-                    ประเภทการทดสอบ<!-- <div class="shadow-th"></div> -->
+                    ประเภทการทดสอบ<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                   <th>
-                    จำนวน Report<!-- <div class="shadow-th"></div> -->
+                    จำนวน Report<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                 </tr>
               </thead>
@@ -137,35 +139,44 @@
       </div>
       <div  v-else
             key="loading"
-            class="w-100 py-4 text-center">
+            class="w-100 py-5 text-center">
         <LoadingAnimation color="primary" size="lg" />
       </div>
     </transition>
   </div>
 
   <nav aria-label="Page navigation example">
-    <ul class="pagination mt-3">
+    <ul class="pagination mt-4">
       <li class="page-item">
-        <a class="page-link" href="#" aria-label="Previous">
+        <button class="page-link arrow"
+                aria-label="Previous"
+                :disabled="!$route.query.page || parseInt($route.query.page) < 2"
+                @click="prev_page()">
           <span aria-hidden="true"><i class="fas fa-angle-double-left"></i></span>
           <span class="sr-only">Previous</span>
-        </a>
+        </button>
       </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item"><a class="page-link" href="#">4</a></li>
-      <li class="page-item"><a class="page-link" href="#">5</a></li>
-      <li class="page-item"><a class="page-link" href="#">6</a></li>
-      <li class="page-item"><a class="page-link" href="#">7</a></li>
+      <li v-for="page of pages"
+          :key="page"
+          class="page-item">
+        <button class="page-link number"
+                :disabled="$route.query.page == page || (page == 1 && !$route.query.page)"
+                @click="go_to_page(page)">
+          {{ page }}
+        </button>
+      </li>
       <li class="page-item">
-        <a class="page-link" href="#" aria-label="Next">
+        <button class="page-link arrow"
+                aria-label="Next"
+                :disabled="submissions.length <= 0"
+                @click="next_page()">
           <span aria-hidden="true"><i class="fas fa-angle-double-right"></i></span>
           <span class="sr-only">Next</span>
-        </a>
+        </button>
       </li>
     </ul>
   </nav>
+
 </div>  
 </template>
 
@@ -185,16 +196,22 @@ export default {
         return [...this.user_detail.contact_list, this.user_detail.default_contact ]
       }
       return []
+    },
+    pages () {
+      const curr_page = this.$route.query.page? parseInt(this.$route.query.page) : 1
+      if (curr_page <= 4) {
+        return [1,2,3,4,5,6,7]
+      }
+      const pages = []
+      for (let i = 1; i <= curr_page + 3; i++) {
+        pages.push(i)
+      }
+      return pages
     }
   },
   data () {
     return {
       loading: true,
-      search_query: null,
-      active_status_filter: null,
-      active_invoice_status_filter: null,
-      active_submitter_filter: null,
-      active_contact_filter: null,
       submission_type_colors: {
         'การตรวจทั่วไป': 'primary',
         'ทดสอบประสิทธิภาพยาฆ่าเชื้อ': 'blue'
@@ -230,14 +247,78 @@ export default {
       }
       return submission.backend_key
     },
-    filter_by_status (filter) {
+    apply_status_filter (status) {
       this.loading = true
-      this.active_status_filter = filter
+      this.$router.push({
+        name: 'submissions-list',
+        query: {
+          ...(this.$route.query.contact && { contact: this.$route.query.contact }),
+          ...(this.$route.query.query && { query: this.$route.query.query }),
+          ...(status && { status }),
+        }
+      })
     },
-    search (query) {
+    apply_contact_filter (contact) {
       this.loading = true
-      this.search_query = query
+      this.$router.push({
+        name: 'submissions-list',
+        query: {
+          ...(this.$route.query.status && { status: this.$route.query.status }),
+          ...(this.$route.query.query && { query: this.$route.query.query }),
+          ...(contact && { contact }),
+        }
+      })
     },
+    apply_search_query (query) {
+      if (query == this.$route.query.query) {
+        this.loading = false
+      } else {
+        this.$router.push({
+          name: 'submissions-list',
+          query: {
+            ...(this.$route.query.status && { status: this.$route.query.status }),
+            ...(this.$route.query.contact && { contact: this.$route.query.contact }),
+            ...(query && { query }),
+          }
+        })
+      }
+    },
+    go_to_page (page) {
+      this.loading = true
+      this.$router.push({
+        name: 'submissions-list',
+        query: {
+          ...(this.$route.query.status && { status: this.$route.query.status }),
+          ...(this.$route.query.contact && { contact: this.$route.query.contact }),
+          ...(this.$route.query.query && { query: this.$route.query.query }),
+          page
+        }
+      })
+    },
+    prev_page () {
+      this.loading = true
+      this.$router.push({
+        name: 'submissions-list',
+        query: {
+          ...(this.$route.query.status && { status: this.$route.query.status }),
+          ...(this.$route.query.contact && { contact: this.$route.query.contact }),
+          ...(this.$route.query.query && { query: this.$route.query.query }),
+          page: parseInt(this.$route.query.page) - 1
+        }
+      })
+    },
+    next_page () {
+      this.loading = true
+      this.$router.push({
+        name: 'submissions-list',
+        query: {
+          ...(this.$route.query.status && { status: this.$route.query.status }),
+          ...(this.$route.query.contact && { contact: this.$route.query.contact }),
+          ...(this.$route.query.query && { query: this.$route.query.query }),
+          page: this.$route.query.page? parseInt(this.$route.query.page) + 1 : 2
+        }
+      })
+    }
   },
   apollo: {
     auth: {
@@ -252,13 +333,14 @@ export default {
       query: SUBMISSION_LIST,
       variables () {
         return {
-          search_query: this.search_query,
-          contact: this.active_contact_filter,
-          submission_status: this.active_status_filter
+          search_query: this.$route.query.query ?? null,
+          contact: parseInt(this.$route.query.contact) ?? null,
+          submission_status: this.$route.query.status ?? null,
+          page_number: parseInt(this.$route.query.page) ?? 1,
+          n_per_page: 30,
         }
       },
       update: data => data.search_submission.result,
-      debounce: 200,
       result () {
         this.loading = false
       },
@@ -283,13 +365,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#table-container {
-  height: calc(100vh - #{$titlebar-height} - 125px);
-  padding-bottom: 1.5rem;
-  padding-right: .75rem;
-}
-.fixed-height {
-  height: 6rem;
+.table-height {
+  height: calc(100vh - #{$titlebar-height} - 120px);
 }
 .filters {
   position: sticky;

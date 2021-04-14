@@ -154,8 +154,12 @@ export default {
   }
   .vs__dropdown-menu {
     @include dropdown-menu;
+    @include scrollbar-style;
     .vs__dropdown-option {
       @include dropdown-option;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     .vs__dropdown-option--highlight {
       background: $accent;

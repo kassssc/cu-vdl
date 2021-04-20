@@ -18,6 +18,7 @@ export const SUBMISSION_LIST = gql`
       status
       statuscode
       message
+      filtered_submission_count
       result {
         backend_key
         BestLIMS_key

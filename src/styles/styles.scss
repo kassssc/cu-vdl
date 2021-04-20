@@ -131,6 +131,7 @@ button.btn, a.btn {
     color: $default;
     background: $secondary;
     position: relative;
+    justify-content: flex-start;
     &.filter-btn-sm {
       font-size: 1rem;
       padding-top: .2em;
@@ -139,7 +140,6 @@ button.btn, a.btn {
         font-size: 1.15rem;
       }
     }
-    justify-content: flex-start;
     &[disabled] {
       opacity: 1;
     }
@@ -158,6 +158,9 @@ button.btn, a.btn {
       &.purple  { background: $purple; }
       &.grey    { background: $medium; }
       &.red     { background: $red; }
+    }
+    .btn-inner-icon {
+      width: .7em;
     }
   }
   &.btn-x {
@@ -216,7 +219,11 @@ button.btn, a.btn {
 button.page-link {
   cursor: pointer;
   font-weight: bold;
-  padding: 0.3rem 0.65rem;
+  width: 2em;
+  padding: 0.35rem 0rem;
+  &.double-arrow {
+    border-radius: $border-radius-sm;
+  }
   &[disabled] {
     cursor: default;
     pointer-events: none;
@@ -226,7 +233,8 @@ button.page-link {
     color: $light;
     border-color: $primary;
   }
-  &.arrow[disabled] {
+  &.arrow[disabled],
+  &.double-arrow[disabled] {
     color: $accent-dark;
   }
 }
@@ -361,6 +369,12 @@ table {
         padding: 0.3em .55em;
         &.small-font {
           font-size: .95em;
+        }
+        &.limit-width {
+          max-width: 15vw;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
         }
       }
     }

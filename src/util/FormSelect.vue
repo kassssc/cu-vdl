@@ -112,8 +112,16 @@ export default {
     margin: 0;
     padding: 0;
   }
-  .vs__actions {
-    //height: 33px;
+  .vs__selected-options {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    span.vs__selected {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 98%;
+    }
   }
   input.vs__search::placeholder {
     color: $placeholder;

@@ -58,7 +58,7 @@
       <div  v-if="!loading"
             key="list">
         <transition name="fade">
-          <div  v-if="submissions && submissions.length > 0"
+          <div  v-if="submissions && submissions.result.length > 0"
                 class="w-100 pr-2 table-height scroll-container">
             <table  class="small-font">
               <thead>
@@ -88,7 +88,7 @@
                     ประเภทการทดสอบ<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                   <th>
-                    จำนวน Report<div class="shadow-th" /><div class="border-top-th" />
+                    Reports<div class="shadow-th" /><div class="border-top-th" />
                   </th>
                 </tr>
               </thead>
@@ -99,36 +99,45 @@
                               }"
                               tag="tr"
                               class="clickable"
-                              v-for="submission of submissions"
+                              v-for="submission of submissions.result"
                               :key="submission.backend_key">
-                  <td>
+                  <td class="limit-width">
                     <div class="my-1">{{ resolve_key(submission) }}</div>
                   </td>
-                  <td>
+                  <td class="limit-width">
                     <ColorTag
                       :color="submission_status_colors[submission.submission_status]"
                       :label="submission.submission_status" />
                   </td>
-                  <td>
+                  <td class="limit-width">
                     <ColorTag
                       :color="submission.invoice? invoice_status_colors[submission.invoice.invoice_status] : 'grey'"
                       :label="submission.invoice? submission.invoice.invoice_status : 'ยังไม่ออก Invoice'" />
                   </td>
-                  <td>{{ to_display_date(submission.submission_submit_date) }}</td> 
-                  <td v-if="auth.is_admin">{{ submission.submitter.name }}</td>
-                  <td>{{ submission.sample_owner.name }}</td>
-                  <td>{{ submission.invoice_to.name }}</td>
-                  <td>
+                  <td class="limit-width">
+                    {{ to_display_date(submission.submission_submit_date) }}
+                  </td> 
+                  <td v-if="auth.is_admin" class="limit-width">
+                    {{ submission.submitter.name }}
+                  </td>
+                  <td class="limit-width">
+                    {{ submission.sample_owner.name }}
+                  </td>
+                  <td class="limit-width">
+                    {{ submission.invoice_to.name }}
+                  </td>
+                  <td class="limit-width">
                     <ColorTag
                       :color="submission_type_colors[submission.submission_type]"
                       :label="submission.submission_type" />
                   </td>
-                  <td class="text-center">
+                  <td class="text-center limit-width">
                     <h5>{{ submission.reports.length > 0? submission.reports.length : '-' }}</h5>
                   </td>
                 </router-link>
               </tbody>
             </table>
+            <div class="fade-gradient-bottom" />
           </div>
           <div v-else class="w-100 py-4 border-b border-t text-center">
             <h5 class="text-muted">
@@ -145,15 +154,24 @@
     </transition>
   </div>
 
-  <nav aria-label="Page navigation example">
-    <ul class="pagination mt-4">
+  <nav  v-if="page_count > 1"
+        class="d-flex align-items-center mt-4">
+    <ul v-if="page_count >= 5"
+        class="pagination mr-3">
+      <li class="page-item">
+        <button class="page-link double-arrow"
+                :disabled="curr_page <= 1"
+                @click="go_to_page(1)">
+          <i class="fas fa-angle-double-left"></i>
+        </button>
+      </li>
+    </ul>
+    <ul class="pagination">
       <li class="page-item">
         <button class="page-link arrow"
-                aria-label="Previous"
-                :disabled="!$route.query.page || parseInt($route.query.page) < 2"
+                :disabled="curr_page <= 1"
                 @click="prev_page()">
-          <span aria-hidden="true"><i class="fas fa-angle-double-left"></i></span>
-          <span class="sr-only">Previous</span>
+          <i class="fas fa-chevron-left"></i>
         </button>
       </li>
       <li v-for="page of pages"
@@ -167,11 +185,18 @@
       </li>
       <li class="page-item">
         <button class="page-link arrow"
-                aria-label="Next"
-                :disabled="submissions.length <= 0"
+                :disabled="curr_page >= page_count"
                 @click="next_page()">
-          <span aria-hidden="true"><i class="fas fa-angle-double-right"></i></span>
-          <span class="sr-only">Next</span>
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </li>
+    </ul>
+    <ul v-if="page_count >= 5" class="pagination ml-3">
+      <li class="page-item">
+        <button class="page-link double-arrow"
+                :disabled="curr_page >= page_count"
+                @click="go_to_page(page_count)">
+          <i class="fas fa-angle-double-right"></i>
         </button>
       </li>
     </ul>
@@ -193,25 +218,42 @@ export default {
       if (this.auth.is_admin) {
         return this.all_contacts
       } else if (this.user_detail) {
-        return [...this.user_detail.contact_list, this.user_detail.default_contact ]
+        return [ ...this.user_detail.contact_list, this.user_detail.default_contact ]
       }
       return []
     },
     pages () {
-      const curr_page = this.$route.query.page? parseInt(this.$route.query.page) : 1
-      if (curr_page <= 4) {
-        return [1,2,3,4,5,6,7]
-      }
       const pages = []
-      for (let i = 1; i <= curr_page + 3; i++) {
-        pages.push(i)
+      if (this.curr_page <= 7) {
+        for (let i = 1; i <= this.page_count && i <= 15; i++) {
+          pages.push(i)
+        }
+      } else if (this.curr_page >= this.page_count - 7) {
+        for (let i = this.page_count; i > this.page_count - 15; i--) {
+          pages.unshift(i)
+        }
+      } else {
+        for (let i = this.curr_page - 7; i <= this.curr_page + 7; i++) {
+          pages.push(i)
+        }
       }
       return pages
+    },
+    page_count () {
+      if (!this.submissions) return 1
+      return Math.ceil(this.submissions.filtered_submission_count / this.submissions_per_page)
+    },
+    curr_page () {
+      if (!this.$route.query.page) {
+        return 1
+      }
+      return parseInt(this.$route.query.page)
     }
   },
   data () {
     return {
       loading: true,
+      submissions_per_page: 20,
       submission_type_colors: {
         'การตรวจทั่วไป': 'primary',
         'ทดสอบประสิทธิภาพยาฆ่าเชื้อ': 'blue'
@@ -303,7 +345,7 @@ export default {
           ...(this.$route.query.status && { status: this.$route.query.status }),
           ...(this.$route.query.contact && { contact: this.$route.query.contact }),
           ...(this.$route.query.query && { query: this.$route.query.query }),
-          page: parseInt(this.$route.query.page) - 1
+          page: this.curr_page - 1
         }
       })
     },
@@ -315,10 +357,10 @@ export default {
           ...(this.$route.query.status && { status: this.$route.query.status }),
           ...(this.$route.query.contact && { contact: this.$route.query.contact }),
           ...(this.$route.query.query && { query: this.$route.query.query }),
-          page: this.$route.query.page? parseInt(this.$route.query.page) + 1 : 2
+          page: this.curr_page + 1
         }
       })
-    }
+    },
   },
   apollo: {
     auth: {
@@ -336,11 +378,11 @@ export default {
           search_query: this.$route.query.query ?? null,
           contact: parseInt(this.$route.query.contact) ?? null,
           submission_status: this.$route.query.status ?? null,
-          page_number: parseInt(this.$route.query.page) ?? 1,
-          n_per_page: 30,
+          page_number: this.curr_page ?? 1,
+          n_per_page: this.submissions_per_page,
         }
       },
-      update: data => data.search_submission.result,
+      update: data => data.search_submission,
       result () {
         this.loading = false
       },
@@ -366,7 +408,7 @@ export default {
 
 <style lang="scss" scoped>
 .table-height {
-  height: calc(100vh - #{$titlebar-height} - 120px);
+  height: calc(100vh - #{$titlebar-height} - 130px);
 }
 .filters {
   position: sticky;

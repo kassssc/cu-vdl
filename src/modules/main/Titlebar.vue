@@ -69,39 +69,13 @@
     <Notifications />
 
     <button class="btn btn-transparent btn-icon"
-            @click="logout_and_go_to_home()">
+            @click="$emit('logout')">
       <i class="fas fa-sign-out-alt" />
     </button>
 
   </nav>
 
   <nav v-else class="d-flex">
-    <!-- <scrollactive active-class="scrollactive-active"
-                  :offset="80"
-                  :modify-url="false"
-                  highlight-first-item
-                  class="d-flex align-items-center">
-      <a  href="#home"
-          class="btn btn-transparent scrollactive-item mr-2">
-        <i class="fas fa-home btn-inner-icon"></i>
-        หน้าหลัก
-      </a>
-      <a  href="#services"
-          class="btn btn-transparent scrollactive-item mr-2">
-        <i class="fas fa-microscope btn-inner-icon"></i>
-        การบริการของเรา
-      </a>
-      <a  href="#orgchart"
-          class="btn btn-transparent scrollactive-item mr-2">
-        <i class="fas fa-user-graduate btn-inner-icon"></i>
-        บุคลากร
-      </a>
-      <a  href="#contact"
-          class="btn btn-transparent scrollactive-item mr-2">
-        <i class="fas fa-phone btn-inner-icon"></i>
-        ติดต่อสอบถาม
-      </a>
-    </scrollactive> -->
     <router-link  :to="{ name: 'main' }"
                   class="btn btn-transparent mr-2"
                   exact>
@@ -128,7 +102,7 @@
       <i class="fas fa-bacterium btn-inner-icon"></i>
       Pathogen Bank
     </router-link>
-    <router-link  :to="{name: 'login'}"
+    <router-link  :to="{ name: 'login' }"
                   tag="a"
                   class="btn btn-primary ml-2 px-4">
       <i class="fas fa-sign-in-alt btn-inner-icon" />
@@ -140,9 +114,9 @@
 </template>
 
 <script>
+
 import Notifications from './Notifications'
 
-import { on_logout } from '@/vue-apollo'
 import { AUTH_DATA } from '@/graphql/local'
 
 export default {
@@ -162,12 +136,6 @@ export default {
     },
   },
   methods: {
-    async logout_and_go_to_home () {
-      await on_logout(this.$apollo.provider.defaultClient)
-      if (this.$route.name !== 'home') {
-        this.$router.push('/')
-      }
-    },
     on_scroll () {
       const title_bar = document.getElementById('titlebar')
       if (window.pageYOffset > 20) {
@@ -186,6 +154,7 @@ export default {
         window.onscroll = () => { this.on_scroll() }
       }
     },
+    
   },
   watch: {
     '$route.name': function () { this.set_titlebar_scroll() }
